@@ -1,19 +1,48 @@
 "use client";
 
 import React from "react";
-import {Button, Input, Checkbox, Link, Divider} from "@nextui-org/react";
-import {Icon} from "@iconify/react";
-
+import { Button, Input, Checkbox, Link, Divider } from "@nextui-org/react";
+import { Icon } from "@iconify/react";
+import { signIn } from "next-auth/react";
 
 export default function Login() {
+
   const [isVisible, setIsVisible] = React.useState(false);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    try {
+
+      const result = await signIn('credentials', {
+          redirect: false,
+          email,
+          password,
+      });
+      console.log(1111)
+      console.log(result)
+
+    
+  } catch (error) {
+      console.error("Login attempt failed", error);
+  }
+
+
+  };
+
   return (
     <div className="flex h-full  w-full flex-col items-center justify-center">
       <div className="mt-2 flex w-full max-w-sm flex-col gap-4 rounded-large bg-content1 px-8 py-6 shadow-small">
-        <form className="flex flex-col gap-3" onSubmit={(e) => e.preventDefault()}>
+        <form
+          className="flex flex-col gap-3"
+          onSubmit={handleSubmit}
+        >
           <Input
             label="Email Address"
             name="email"
@@ -68,7 +97,9 @@ export default function Login() {
             Continue with Google
           </Button>
           <Button
-            startContent={<Icon className="text-default-500" icon="fe:github" width={24} />}
+            startContent={
+              <Icon className="text-default-500" icon="fe:github" width={24} />
+            }
             variant="bordered"
           >
             Continue with Github
