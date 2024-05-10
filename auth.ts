@@ -54,16 +54,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientId: process.env.AUTH_AUTHENTIK_CLIENT_ID,
       clientSecret: process.env.AUTH_AUTHENTIK_CLIENT_SECRET,
       issuer: process.env.AUTH_AUTHENTIK_ISSUER,
+      authorization: {
+        params: {
+          scope: "openid profile email",
+        }
+      }
     }),
   ],
   session: {
     strategy: "jwt",
   },
   callbacks: {
-    jwt: async ({ token, user, session }) => {
+    jwt: async ({ token, user, profile}) => {
       console.log("jwt callback");
-      console.log(user)
       if (user) {
+        console.log(user)
+        console.log(profile)
+        console.log(token)
+        // define token here
         token.email = user.email;
         token.access_token = user.access_token;
       }
