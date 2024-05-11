@@ -26,7 +26,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           email: email,
           password: password,
         };
-
         const apiUrl = process.env.API_URL;
         const response = await fetch(`${apiUrl}/v1/user/login`, {
           method: "POST",
@@ -71,7 +70,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         console.log(user)
         console.log(profile)
         console.log(token)
-        // define token here
         token.email = user.email;
         token.access_token = user.access_token;
       }
