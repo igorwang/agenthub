@@ -1,6 +1,7 @@
 // "use client";
-import Login from "../../components/login";
-import { AcmeIcon } from "@/app/social";
+
+import { AcmeIcon } from "@/components/ui/social";
+import Login from "@/components/Login";
 
 export default function LoginPage() {
   return (
