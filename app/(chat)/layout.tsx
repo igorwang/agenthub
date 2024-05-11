@@ -1,25 +1,22 @@
-"use client";
-
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
-import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
 import { Providers } from "@/app/providers";
-import { Navbar } from "@/components/navbar";
 import { Link } from "@nextui-org/link";
 import clsx from "clsx";
 
+import {
+  Avatar,
+  Button,
+  ScrollShadow,
+  Spacer,
+  Tooltip,
+} from "@nextui-org/react";
+import { Icon } from "@iconify/react";
 
-// export const metadata: Metadata = {
-//   title: {
-//     default: siteConfig.name,
-//     template: `%s - ${siteConfig.name}`,
-//   },
-//   description: siteConfig.description,
-//   icons: {
-//     icon: "/favicon.ico",
-//   },
-// };
+import SideBar from "@/components/Sidebar";
+
+import { AcmeLogo } from "@/components/ui/icons";
 
 export const viewport: Viewport = {
   themeColor: [
@@ -43,9 +40,12 @@ export default function RootLayout({
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "white" }}>
-          <div>
-            <section>{children}</section>
+
+          <div className="flex flex-row">
+            <SideBar></SideBar>
+            <div className="bg-slate-100 flex-grow">{children}</div>
           </div>
+
         </Providers>
       </body>
     </html>

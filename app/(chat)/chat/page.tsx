@@ -3,10 +3,10 @@ import { auth } from "@/auth";
 
 export default async function ChatPage() {
   const session = await auth();
-  
+
   return (
     <div>
-      <h1 className={title()}>Blog</h1>
+      <h1 className={title()}>Chat</h1>
     </div>
   );
 }
