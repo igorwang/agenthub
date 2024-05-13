@@ -9,7 +9,6 @@ export default async function ChatPage() {
     <div className="flex flex-row">
       <ChatHub></ChatHub>
       <div className="bg-yellow-100 w-full flex-grow">Chat UI</div>
-
     </div>
   );
 }

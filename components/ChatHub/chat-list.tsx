@@ -51,7 +51,7 @@ export const ChatList: React.FC<ChatListProps> = ({ data, ...props }) => {
       [id]: !prevStates[id],
     }));
   };
-  
+
   const chatListContent = data.map((group) => (
     <div className="flex flex-col" key={group.id}>
       {group.name && (
