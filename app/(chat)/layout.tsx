@@ -40,12 +40,10 @@ export default function RootLayout({
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "white" }}>
-
-          <div className="flex flex-row">
+          <div className="flex flex-row w-dvw">
             <SideBar></SideBar>
-            <div className="bg-slate-100 flex-grow">{children}</div>
+            <div className="flex-grow">{children}</div>
           </div>
-
         </Providers>
       </body>
     </html>

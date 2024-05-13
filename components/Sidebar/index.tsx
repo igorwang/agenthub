@@ -34,12 +34,11 @@ export default function SideBar() {
                 src="https://i.pravatar.cc/150?u=a04258114e29026708c"
               />
             </div>
-
             <Spacer y={2} />
 
             <SidebarNav
               isCompact
-              defaultSelectedKey="home"
+              defaultSelectedKey="chat"
               items={sectionItems}
             />
           </div>
