@@ -3,6 +3,7 @@
 import { cn } from "@/cn";
 import { Avatar, ScrollShadow, Tab, Tabs } from "@nextui-org/react";
 import React from "react";
+import MessageWindow from "./message-window";
 
 export type BotDTO = {
   id: number;
@@ -44,6 +45,13 @@ export const Conversation: React.FC<ConversationProps> = ({
           <Tab key="technical" title="深入" />
           <Tab key="creative" title="创造" />
         </Tabs>
+      </div>
+      <div className="pt-2">
+        <ScrollShadow
+          className={cn("flex h-full flex-col", scrollShadowClassname)}
+        >
+          <MessageWindow></MessageWindow>
+        </ScrollShadow>
       </div>
     </div>
   );
