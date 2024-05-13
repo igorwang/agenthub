@@ -53,7 +53,7 @@ const ChatHub = () => {
   return (
     <div className="h-dvh w-64 flex flex-col">
       <div className="text-3xl font-semibold leading-7 text-default-foreground px-2 pt-4">
-        ChatHub
+        AgentHub
       </div>
       <Spacer y={4} />
       <SearchBar></SearchBar>
