@@ -126,6 +126,7 @@ export default function MessageWindow() {
 
   return (
     <div className="flex flex-col gap-4 px-1">
+      
       {messages.map(({ role, message }, index) => (
         <MessageCard
           key={index}

@@ -4,6 +4,7 @@ import { cn } from "@/cn";
 import { Avatar, ScrollShadow, Tab, Tabs } from "@nextui-org/react";
 import React from "react";
 import MessageWindow from "./message-window";
+import PromptInputWithFaq from "./prompt-input-with-faq";
 
 export type BotDTO = {
   id: number;
@@ -24,7 +25,7 @@ export const Conversation: React.FC<ConversationProps> = ({
   scrollShadowClassname,
 }) => {
   const headerElement = (
-    <div className="flex flex-wrap items-center justify-center gap-2 border-b-small border-divider py-1 px-2 sm:justify-between">
+    <div className="relative flex flex-wrap items-center justify-center gap-2 border-b-small border-divider py-1 px-2 sm:justify-between">
       <div className="flex flex-row items-center">
         <Avatar
           alt={bot.name}
@@ -47,17 +48,20 @@ export const Conversation: React.FC<ConversationProps> = ({
     </div>
   );
   return (
-    <div className="bg-slate-100 w-full">
+    <div className="bg-slate-200  max-h-dvh">
       {headerElement}
       <div className="relative flex flex-col pt-2">
-          <ScrollShadow className="flex max-h-[80vh] flex-col gap-4 overflow-y-auto pb-8">
-            <MessageWindow />
-            <MessageWindow />
-          </ScrollShadow>
-        </div>
+        <ScrollShadow className="flex max-h-[60vh] flex-col gap-6 overflow-y-auto pb-8">
+          <MessageWindow />
+          <MessageWindow />
+        </ScrollShadow>
+        {/* <div> */}
+          {/* <PromptInputWithFaq></PromptInputWithFaq> */}
+        {/* </div> */}
+      </div>
 
       {/* <ScrollShadow className="max-h-dvh"> */}
-        {/* <MessageWindow></MessageWindow> */}
+      {/* <MessageWindow></MessageWindow> */}
       {/* </ScrollShadow> */}
     </div>
     // <div className={cn("flex w-full flex-col h-f", className)}>
