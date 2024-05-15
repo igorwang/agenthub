@@ -63,7 +63,7 @@ export const Conversation: React.FC<ConversationProps> = ({
             </p>
           </div>
         </div>
-        <div className="hidden  md:flex w-60 bg-yellow-200 m-2 min-w-40">
+        <div className="hidden md:flex w-80 bg-yellow-200 m-2 min-w-60">
           right
         </div>
       </div>

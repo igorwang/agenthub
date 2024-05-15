@@ -18,7 +18,7 @@ import { sectionItems } from "./sidebar-items";
 
 export default function SideBar() {
   return (
-    <div className="relative h-full flex w-14 flex-col items-center border-r-small border-divider px-2 py-4">
+    <div className="hidden sm:flex relative h-full w-14 flex-col items-center border-r-small border-divider px-2 py-4">
       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-foreground">
         <AcmeLogo className="text-background" />
       </div>
