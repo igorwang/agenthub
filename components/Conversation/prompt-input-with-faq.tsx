@@ -10,7 +10,7 @@ import PromptInput from "./prompt-input";
 export default function PromptInputWithFaq() {
   const ideas = [
     {
-      title: "Create a blog post about NextUI",
+      title: "Create a blog post about NextUI ",
       description: "explain it in simple terms",
     },
     {
@@ -25,22 +25,34 @@ export default function PromptInputWithFaq() {
       title: "Write a text message to my friend",
       description: "be polite and friendly",
     },
+    {
+      title: "Write a text message to my friend",
+      description: "be polite and friendly",
+    },
+    {
+      title: "Write a text message to my friend",
+      description: "be polite and friendly",
+    },
+    {
+      title: "Write a text message to my friend",
+      description: "be polite and friendly",
+    },
   ];
 
   const [prompt, setPrompt] = React.useState<string>("");
 
   return (
-    <div className=" flex  flex-col gap-4">
+    <div className="flex flex-col gap-4 p-2 items-center">
       <ScrollShadow
         hideScrollBar
-        className="flex flex-nowrap gap-2"
+        className="flex flex-nowrap gap-2 overflow-auto w-0 h-0 lg:h-full lg:w-auto md:max-w-screen-lg "
         orientation="horizontal"
       >
         <div className="flex gap-2">
           {ideas.map(({ title, description }, index) => (
             <Button
               key={index}
-              className="flex h-14 flex-col items-start gap-0"
+              className="flex h-14 flex-col items-start gap-0 over"
               variant="flat"
             >
               <p>{title}</p>
@@ -49,7 +61,10 @@ export default function PromptInputWithFaq() {
           ))}
         </div>
       </ScrollShadow>
-      <form className="flex flex-col items-start rounded-medium bg-default-100 transition-colors hover:bg-default-200/70">
+      {/* <div className="overflow-hidden text-nowrap text-ellipsis whitespace-nowrap border border-blue-500 p-2">
+  Create a blog post about NextUI Create a blog post about NextUI Create a blog post about NextUI Create a blog post about NextUI Create a blog post about NextUI Create a blog post about NextUI Create a blog post about NextUI Create a blog post about NextUI Create a blog post about NextUI Create a blog post about NextUI
+</div> */}
+      <form className="flex flex-col w-full items-start rounded-medium bg-default-100 transition-colors hover:bg-default-200/70">
         <PromptInput
           classNames={{
             inputWrapper: "!bg-transparent shadow-none",
