@@ -50,7 +50,7 @@ export const Conversation: React.FC<ConversationProps> = ({
   return (
     <div className="flex flex-col h-dvh w-full">
       {headerElement}
-      <div className="flex flex-row flex-grow w-full overflow-y-hidden ">
+      <div className="flex flex-row flex-grow w-full overflow-auto ">
         <div className="flex flex-grow flex-col pt-2 ">
           <ScrollShadow className="flex flex-grow flex-col gap-6 pb-8 ">
             <MessageWindow />
@@ -63,7 +63,9 @@ export const Conversation: React.FC<ConversationProps> = ({
             </p>
           </div>
         </div>
-        <div className="flex w-60 h-dvh m-2">right</div>
+        <div className="hidden  md:flex w-60 bg-yellow-200 m-2 min-w-40">
+          right
+        </div>
       </div>
     </div>
   );
