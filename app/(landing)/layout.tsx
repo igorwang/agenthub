@@ -42,7 +42,7 @@ export default function RootLayout({
 			>
 				<Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
 					<div className="relative flex flex-col h-screen">
-						<Navbar />
+						{/* <Navbar />
 						<main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
 							{children}
 						</main>
@@ -56,7 +56,8 @@ export default function RootLayout({
 								<span className="text-default-600">Powered by</span>
 								<p className="text-primary">NextUI</p>
 							</Link>
-						</footer>
+						</footer> */}
+						{children}
 					</div>
 				</Providers>
 			</body>

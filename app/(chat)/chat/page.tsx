@@ -12,7 +12,7 @@ export default async function ChatPage() {
   };
 
   return (
-    <div className="flex flex-row">
+    <div className="flex flex-row h-full w-full">
       <ChatHub></ChatHub>
       <Conversation bot={bot}></Conversation>
     </div>

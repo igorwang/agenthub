@@ -102,31 +102,31 @@ export default function MessageWindow() {
       role: "assistant",
       message: assistantMessages[1],
     },
-    {
-      role: "assistant",
-      message: assistantMessages[1],
-    },
-    {
-      role: "assistant",
-      message: assistantMessages[1],
-    },
-    {
-      role: "assistant",
-      message: assistantMessages[1],
-    },
-    {
-      role: "assistant",
-      message: assistantMessages[1],
-    },
-    {
-      role: "assistant",
-      message: assistantMessages[1],
-    },
+    // {
+    //   role: "assistant",
+    //   message: assistantMessages[1],
+    // },
+    // {
+    //   role: "assistant",
+    //   message: assistantMessages[1],
+    // },
+    // {
+    //   role: "assistant",
+    //   message: assistantMessages[1],
+    // },
+    // {
+    //   role: "assistant",
+    //   message: assistantMessages[1],
+    // },
+    // {
+    //   role: "assistant",
+    //   message: assistantMessages[1],
+    // },
   ];
 
   return (
-    <div className="flex flex-col gap-4 px-1">
-      
+    <div className="flex flex-1 flex-grow flex-col gap-4 px-1 ">
+    
       {messages.map(({ role, message }, index) => (
         <MessageCard
           key={index}

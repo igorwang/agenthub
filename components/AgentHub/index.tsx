@@ -51,7 +51,7 @@ export const chatListData: GroupedChatListDTO[] = [
 
 const ChatHub = () => {
   return (
-    <div className="h-dvh w-64 flex flex-col border-r-1">
+    <div className="h-full min-w-9 flex flex-col border-r-1">
       <div className="text-3xl font-semibold leading-7 text-default-foreground px-2 pt-4">
         AgentHub
       </div>

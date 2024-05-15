@@ -48,22 +48,24 @@ export const Conversation: React.FC<ConversationProps> = ({
     </div>
   );
   return (
-    <div className="max-h-screen flex flex-col w-full">
+    <div className="flex flex-col h-dvh w-full">
       {headerElement}
-      <div className="flex flex-row h-full overflow-y-auto">
-        <div className="flex flex-col pt-2 flex-grow">
-          <ScrollShadow className="flex flex-col gap-6 pb-8 overflow-auto">
+      <div className="flex flex-grow w-full overflow-auto">
+        <div className="flex flex-col pt-2 ">
+          <ScrollShadow className="flex flex-grow flex-col gap-6 pb-8 ">
             <MessageWindow />
             <MessageWindow />
           </ScrollShadow>
-          <div className="flex flex-col">
+          <div className="flex flex-col ">
             <PromptInputWithFaq></PromptInputWithFaq>
             <p className="px-2 text-tiny text-default-400">
               AI can make mistakes. Consider checking important information.
             </p>
           </div>
         </div>
-        {/* <div className="w-52">right</div> */}
+        <div className="flex flex-col p-2 w-12">
+          <div className="flex  w-60 bg-yellow-300 h-dvh">right</div>
+        </div>
       </div>
     </div>
   );
