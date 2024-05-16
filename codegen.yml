@@ -1,0 +1,13 @@
+schema:
+  - ${HASURA_ENDPOINT}:
+      headers:
+        x-hasura-admin-secret: ${HASURA_ADMIN_SECRET}
+documents: 
+  - "./app/**/*.{gql,ts,tsx,graphql}"
+  - "./graphql/**/*.{gql,ts,tsx,graphql}"
+generates:
+  ./graphql/generated/types.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"

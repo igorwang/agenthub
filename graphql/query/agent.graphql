@@ -1,0 +1,12 @@
+query GetAgentListByType {
+  agent_type(where: {agents: {id: {_is_null: false}}}) {
+    id
+    name
+    agents {
+      id
+      name
+      description
+      avatar
+    }
+  }
+}
