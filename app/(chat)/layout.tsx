@@ -40,14 +40,14 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        <Providers themeProps={{ attribute: "class", defaultTheme: "white" }}>
-          <SessionProvider>
+        <SessionProvider>
+          <Providers themeProps={{ attribute: "class", defaultTheme: "white" }}>
             <div className="flex flex-row h-dvh w-dvw">
               <SideBar></SideBar>
               {children}
             </div>
-          </SessionProvider>
-        </Providers>
+          </Providers>
+        </SessionProvider>
       </body>
     </html>
   );

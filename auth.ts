@@ -2,9 +2,9 @@ import NextAuth from "next-auth";
 
 import Credentials from "next-auth/providers/credentials";
 import Authentik from "next-auth/providers/authentik";
-
 import { use } from "react";
-
+import { getToken } from "next-auth/jwt";
+import jwt from "jsonwebtoken";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -56,28 +56,46 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       authorization: {
         params: {
           scope: "openid profile email",
-        }
-      }
+        },
+      },
     }),
   ],
   session: {
     strategy: "jwt",
   },
   callbacks: {
-    jwt: async ({ token, user, profile}) => {
-      console.log("jwt callback");
+    jwt: async ({ token, user, profile }) => {
+      // console.log(1111);
+      // console.log(token);
+      // console.log(profile);
+      // console.log(user);
+
       if (user) {
-        console.log(user)
-        console.log(profile)
-        console.log(token)
+        console.log("User logged in:", user);
+        const payload = {
+          "https://hasura.io/jwt/claims": {
+            "x-hasura-user-id": user.id,
+            "x-hasura-role": "user",
+            "x-hasura-default-role": "user",
+            "x-hasura-allowed-roles": ["authentik Admins", "admin", "user"],
+          },
+          ...user,
+        };
+        const accessToken = jwt.sign(
+          { ...payload },
+          process.env.HASURA_API_SECRET as string,
+          {
+            algorithm: "HS256",
+          }
+        );
         token.email = user.email;
-        token.access_token = user.access_token;
+        token.access_token = accessToken;
+        console.log(accessToken);
       }
       return token;
     },
     session: async ({ session, token }) => {
-      console.log("session callback");
-      session.access_token = token.access_token;
+      console.log(token);
       return session;
     },
   },

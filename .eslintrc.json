@@ -1,3 +1,13 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": "next/core-web-vitals",
+  "plugins": ["graphql"],
+  "rules": {
+    "graphql/template-strings": [
+      "error",
+      {
+        "env": "apollo",
+        "tagName": "gql"
+      }
+    ]
+  }
 }
