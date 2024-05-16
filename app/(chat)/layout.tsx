@@ -17,6 +17,7 @@ import { Icon } from "@iconify/react";
 import SideBar from "@/components/Sidebar";
 
 import { AcmeLogo } from "@/components/ui/icons";
+import { SessionProvider } from "next-auth/react";
 
 export const viewport: Viewport = {
   themeColor: [
@@ -40,10 +41,12 @@ export default function RootLayout({
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "white" }}>
-          <div className="flex flex-row h-dvh w-dvw">
-            <SideBar></SideBar>
-            {children}
-          </div>
+          <SessionProvider>
+            <div className="flex flex-row h-dvh w-dvw">
+              <SideBar></SideBar>
+              {children}
+            </div>
+          </SessionProvider>
         </Providers>
       </body>
     </html>

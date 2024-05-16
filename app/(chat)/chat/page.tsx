@@ -2,8 +2,12 @@ import { title } from "@/components/primitives";
 import { auth } from "@/auth";
 import ChatHub from "@/components/AgentHub";
 import { Conversation } from "@/components/Conversation";
+import { log } from "console";
 export default async function ChatPage() {
   const session = await auth();
+
+  console.log(session)
+
   const bot = {
     id: 1,
     name: "hello world",
