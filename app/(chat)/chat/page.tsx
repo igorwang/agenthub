@@ -4,9 +4,8 @@ import ChatHub from "@/components/AgentHub";
 import { Conversation } from "@/components/Conversation";
 
 export default async function ChatPage() {
-
-  const session = auth()
-  // console.log(session)
+  const session = await auth()
+  // console.log(session?.access_token)
 
   const bot = {
     id: 1,
@@ -18,7 +17,6 @@ export default async function ChatPage() {
   return (
     <div className="flex flex-row h-full w-full">
       <ChatHub></ChatHub>
-
       <Conversation bot={bot}></Conversation>
     </div>
   );

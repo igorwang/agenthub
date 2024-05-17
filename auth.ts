@@ -65,11 +65,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     jwt: async ({ token, user, profile }) => {
-      // console.log(1111);
-      // console.log(token);
-      // console.log(profile);
-      // console.log(user);
-
       if (user) {
         console.log("User logged in:", user);
         const payload = {
@@ -90,15 +85,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         );
         token.email = user.email;
         token.access_token = accessToken;
-        console.log(accessToken);
+
       }
       return token;
     },
     session: async ({ session, token }) => {
-      console.log(token);
+      session.access_token = token.access_token as string;
       return session;
     },
   },
+  secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/auth/login",
   },

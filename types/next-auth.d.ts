@@ -1,6 +1,6 @@
+import { Session } from "inspector";
 import "next-auth";
 import { JWT } from "next-auth/jwt";
-
 declare module "next-auth" {
   // Extending the built-in User model
   interface User {
@@ -11,6 +11,14 @@ declare module "next-auth" {
 
   interface Session {
     access_token?: string;
+  }
+
+  interface Token {
+    access_token?: string;
+  }
+
+  interface Profile {
+    groups?: string[];
   }
 }
 
