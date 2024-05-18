@@ -5,6 +5,7 @@ import Authentik from "next-auth/providers/authentik";
 import { use } from "react";
 import { getToken } from "next-auth/jwt";
 import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -85,6 +86,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         );
         token.email = user.email;
         token.access_token = accessToken;
+        cookies().set("API_ACCESS_TOKEN", accessToken);
       }
       return token;
     },
