@@ -1,12 +1,13 @@
-'use client'
+"use client";
 import React from "react";
 
 import { Spacer } from "@nextui-org/react";
 import SearchBar from "./searchbar";
 import { ChatList, GroupedChatListDTO } from "./chat-list";
 import {
-  useGetAgentListByTypeQuery,
   GetAgentListByTypeDocument,
+  useGetAgentListByTypeQuery,
+  useGetAgentListByTypeSuspenseQuery,
 } from "@/graphql/generated/types";
 
 export const chatListData: GroupedChatListDTO[] = [
@@ -54,8 +55,10 @@ export const chatListData: GroupedChatListDTO[] = [
   },
 ];
 const ChatHub = () => {
-  const { loading, error, data } = useGetAgentListByTypeQuery();
-  console.log(data)
+
+  const { error, data } = useGetAgentListByTypeQuery();
+
+  console.log(data);
   return (
     <div className="hidden sm:flex h-full min-w-40  flex-col border-r-1">
       <div className="text-3xl font-semibold leading-7 text-default-foreground px-2 pt-4">

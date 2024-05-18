@@ -7,7 +7,7 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { ThemeProviderProps } from "next-themes/dist/types";
 
 import { ApolloProvider, NormalizedCacheObject } from "@apollo/client";
-import createApolloClient from "./lib/apolloClient";
+import {createApolloClient} from "./lib/apolloClient";
 
 export interface ProvidersProps {
   children: React.ReactNode;

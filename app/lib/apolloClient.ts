@@ -1,8 +1,14 @@
 import { auth } from "@/auth";
-import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
+import {
+  ApolloClient,
+  InMemoryCache,
+  HttpLink,
+  NormalizedCacheObject,
+} from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { WebSocketLink } from "@apollo/client/link/ws";
-import { getToken } from "next-auth/jwt";
+import { getSession } from "next-auth/react";
+import { useMemo } from "react";
 import { SubscriptionClient } from "subscriptions-transport-ws";
 
 let accessToken: string | null = null;
@@ -11,21 +17,14 @@ const requestAccessToken = async (): Promise<void> => {
   console.log("check token");
 
   if (accessToken) return;
-  const session = await auth();
+  const session = await getSession();
   console.log("session");
+
   if (session && session?.access_token) {
     accessToken = session.access_token;
   } else {
     accessToken = "public";
   }
-  // const res = await fetch(`${process.env.APP_HOST}/api/auth/session`);
-  // if (res.ok) {
-  //   const json = await res.json();
-  //   console.log(json);
-  //   accessToken = json.access_token;
-  // } else {
-  //   accessToken = "public";
-  // }
 };
 
 const resetTokenLink = onError(({ networkError }) => {
@@ -39,31 +38,28 @@ const resetTokenLink = onError(({ networkError }) => {
 });
 
 const createHttpLink = (headers: Record<string, string> | null) => {
+  console.log(`createHttpLink: ${JSON.stringify(headers, null, 2)}`);
   const httpLink = new HttpLink({
     uri: `${process.env.HTTP_API_HOST}`,
     credentials: "include",
-    headers: {
-      authorization: accessToken ? `Bearer ${accessToken}` : "",
-      ...headers,
-    },
+    headers: { ...headers },
     fetch,
   });
   return httpLink;
 };
 
 const createWSLink = (): WebSocketLink => {
-  console.log(`createWSLink: ${accessToken}`);
   return new WebSocketLink(
     new SubscriptionClient(`${process.env.WS_API_HOST}`, {
       lazy: true,
       reconnect: true,
       connectionParams: async () => {
         await requestAccessToken();
-        
+        console.log(`createWSLink: ${accessToken}`);
         // happens on the client
         return {
           headers: {
-            authorization: accessToken ? `Bearer ${accessToken}` : "",
+            Authorization: accessToken ? `Bearer ${accessToken}` : "",
           },
         };
       },
@@ -71,15 +67,14 @@ const createWSLink = (): WebSocketLink => {
   );
 };
 
-interface InitialState {
+export interface InitialState {
   [key: string]: any;
 }
 
-export default function createApolloClient(
+export function createApolloClient(
   initialState: InitialState,
   headers: Record<string, string> | null
 ) {
-  
   const ssrMode = typeof window === "undefined";
   let link;
   if (ssrMode) {
@@ -92,4 +87,23 @@ export default function createApolloClient(
     link,
     cache: new InMemoryCache().restore(initialState),
   });
+}
+
+let apolloClient: ApolloClient<NormalizedCacheObject> | null = null;
+
+export function initializeApollo(
+  initialState: InitialState,
+  headers: Record<string, string>
+) {
+  const _apolloClient =
+    apolloClient ?? createApolloClient(initialState, headers);
+
+  if (initialState) {
+    _apolloClient.cache.restore(initialState);
+  }
+
+  if (typeof window === "undefined") return _apolloClient;
+  if (!apolloClient) apolloClient = _apolloClient;
+
+  return _apolloClient;
 }

@@ -4,8 +4,8 @@ import ChatHub from "@/components/AgentHub";
 import { Conversation } from "@/components/Conversation";
 
 export default async function ChatPage() {
-  const session = await auth()
-  // console.log(session?.access_token)
+  // const session = await auth()
+  // console.log(session)
 
   const bot = {
     id: 1,
