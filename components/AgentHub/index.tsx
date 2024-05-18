@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import React from "react";
 
 import { Spacer } from "@nextui-org/react";
@@ -9,6 +9,7 @@ import {
   useGetAgentListByTypeQuery,
   useGetAgentListByTypeSuspenseQuery,
 } from "@/graphql/generated/types";
+import { fetchData } from "@/app/lib/apolloRequest";
 
 export const chatListData: GroupedChatListDTO[] = [
   {
@@ -54,9 +55,8 @@ export const chatListData: GroupedChatListDTO[] = [
     ],
   },
 ];
-const ChatHub = () => {
-
-  const { error, data } = useGetAgentListByTypeQuery();
+const ChatHub = async () => {
+  const data = await fetchData(GetAgentListByTypeDocument);
 
   console.log(data);
   return (

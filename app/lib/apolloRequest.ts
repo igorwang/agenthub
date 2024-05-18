@@ -25,7 +25,6 @@ export async function fetchData(query: DocumentNode) {
     const { data } = await client.query({
       query,
     });
-
     return data;
   } catch (error) {
     console.error("Error fetching data:", error);

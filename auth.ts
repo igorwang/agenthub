@@ -85,7 +85,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         );
         token.email = user.email;
         token.access_token = accessToken;
-
       }
       return token;
     },

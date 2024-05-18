@@ -1,15 +1,20 @@
 // At the same level as pages or app
 import { auth } from "./auth";
 import React from "react";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export default async function middleware() {
-//   console.log('middleware')
-//   const session = await auth();
-//   console.log(session)
-//   const response = NextResponse.next();
-//   if (session) {
-//     response.headers.set("Authorization", `Bearer ${session.access_token}`);
-//   }
-//   return response;
+const protectedRoutes = ["/chat"]; // Add any other protected routes here
+
+export default async function middleware(request: NextRequest) {
+  const session = await auth();
+  const { pathname, origin } = request.nextUrl;
+
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
+
+  if (!session && isProtectedRoute) {
+    return NextResponse.redirect(`${origin}/auth/login`);
+  }
+  return NextResponse.next();
 }
