@@ -1,9 +1,13 @@
-"use client";
+import { ChatList } from "@/components/AgentHub/chat-list";
 import { DiscussionIcon, PlusIcon } from "@/components/ui/icons";
-import { Button, Listbox, ListboxItem } from "@nextui-org/react";
+import { Button, Listbox, ListboxItem, ScrollShadow } from "@nextui-org/react";
 import React from "react";
 
-export const TopicHistory = () => {
+interface TopicHistoryProps {
+  agent_id?: number;
+}
+
+export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   const histories = [
     {
       id: 1,
@@ -16,6 +20,21 @@ export const TopicHistory = () => {
       agent_id: 1,
       title: "我是一个标题",
     },
+    {
+      id: 3,
+      agent_id: 1,
+      title: "我是一个标题",
+    },
+    {
+      id: 4,
+      agent_id: 1,
+      title: "我是一个标题",
+    },
+    {
+      id: 5,
+      agent_id: 1,
+      title: "我是一个标题1111111",
+    },
   ];
 
   const handleSelect = (sId: number) => {
@@ -26,8 +45,8 @@ export const TopicHistory = () => {
     return (
       <ListboxItem
         key={item.id}
-        className="flex py-2 px-4 bg-slate-100"
-        startContent={<DiscussionIcon></DiscussionIcon>}
+        className="flex py-2 px-4 bg-slate-100 h-full"
+        startContent={<DiscussionIcon />}
         onClick={() => handleSelect(item.id)}
       >
         {item.title}
@@ -35,14 +54,11 @@ export const TopicHistory = () => {
     );
   });
   return (
-    <div>
-      <Button className="w-full bg-slate-100 " endContent={<PlusIcon />}>
-        新增话题
-      </Button>
+    <div className=" flex flex-col">
       <Listbox
         aria-label="TopicHistory"
         selectionMode="single"
-        className="flex flex-col w-full"
+        className="h-full"
       >
         {historyItems}
       </Listbox>
