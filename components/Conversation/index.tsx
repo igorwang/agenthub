@@ -1,10 +1,14 @@
 "use client";
 
 import { cn } from "@/cn";
-import { Avatar, ScrollShadow, Tab, Tabs } from "@nextui-org/react";
+import { Avatar, ScrollShadow, Tab, Tabs, Tooltip } from "@nextui-org/react";
 import React from "react";
 import MessageWindow from "./message-window";
 import PromptInputWithFaq from "./prompt-input-with-faq";
+import { selectSelectedChatId } from "@/lib/features/chatListSlice";
+import { useSelector } from "react-redux";
+import { useAgentByIdQuery } from "@/graphql/generated/types";
+import { FunctionTab } from "@/components/FunctionTab";
 
 export type BotDTO = {
   id: number;
@@ -24,19 +28,37 @@ export const Conversation: React.FC<ConversationProps> = ({
   className,
   scrollShadowClassname,
 }) => {
+  const agent_id = useSelector(selectSelectedChatId);
+  console.log(agent_id);
+
+  const { data, loading, error } = useAgentByIdQuery({
+    variables: {
+      id: agent_id,
+    },
+  });
+  console.log(data);
+
+  const agent = {
+    id: data?.agent_by_pk?.id,
+    name: data?.agent_by_pk?.name,
+    description: data?.agent_by_pk?.description,
+    avatar: data?.agent_by_pk?.avatar,
+  };
+
+  // const{data} = use
   const headerElement = (
     <div className="relative flex flex-wrap items-center justify-center gap-2 border-b-small border-divider py-1 px-2 sm:justify-between">
       <div className="flex flex-row items-center">
         <Avatar
-          alt={bot.name}
+          alt={agent.name}
           className="flex-shrink-0 "
           size="md"
-          src={bot.avatar}
+          src={agent.avatar || ""}
         />
         <div className="pl-2">
-          <p className="text-3xl font-medium">{bot.name}</p>
+          <p className="text-3xl font-medium">{agent.name}</p>
           <p className="text-sm font-light overflow-hidden text-nowrap text-ellipsis max-w-sm">
-            {bot.description}
+            <Tooltip content={agent.description}>{agent.description}</Tooltip>
           </p>
         </div>
       </div>
@@ -47,6 +69,7 @@ export const Conversation: React.FC<ConversationProps> = ({
       </Tabs>
     </div>
   );
+
   return (
     <div className="flex flex-col h-dvh w-full">
       {headerElement}
@@ -63,8 +86,8 @@ export const Conversation: React.FC<ConversationProps> = ({
             </p>
           </div>
         </div>
-        <div className="hidden md:flex w-80 bg-yellow-200 m-2 min-w-60">
-          right
+        <div className="hidden md:flex w-80 m-2 min-w-60 border-2 rounded-lg">
+          <FunctionTab></FunctionTab>
         </div>
       </div>
     </div>

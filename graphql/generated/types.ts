@@ -995,6 +995,13 @@ export type GetAgentListByTypeQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetAgentListByTypeQuery = { __typename?: 'query_root', agent_type: Array<{ __typename?: 'agent_type', id: number, name: string, agents: Array<{ __typename?: 'agent', id: number, name: string, description?: string | null, avatar?: string | null }> }> };
 
+export type AgentByIdQueryVariables = Exact<{
+  id?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type AgentByIdQuery = { __typename?: 'query_root', agent_by_pk?: { __typename?: 'agent', id: number, name: string, description?: string | null, avatar?: string | null } | null };
+
 
 export const GetAgentListByTypeDocument = gql`
     query GetAgentListByType {
@@ -1042,3 +1049,46 @@ export type GetAgentListByTypeQueryHookResult = ReturnType<typeof useGetAgentLis
 export type GetAgentListByTypeLazyQueryHookResult = ReturnType<typeof useGetAgentListByTypeLazyQuery>;
 export type GetAgentListByTypeSuspenseQueryHookResult = ReturnType<typeof useGetAgentListByTypeSuspenseQuery>;
 export type GetAgentListByTypeQueryResult = Apollo.QueryResult<GetAgentListByTypeQuery, GetAgentListByTypeQueryVariables>;
+export const AgentByIdDocument = gql`
+    query AgentByID($id: Int = 10) {
+  agent_by_pk(id: $id) {
+    id
+    name
+    description
+    avatar
+  }
+}
+    `;
+
+/**
+ * __useAgentByIdQuery__
+ *
+ * To run a query within a React component, call `useAgentByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAgentByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAgentByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useAgentByIdQuery(baseOptions?: Apollo.QueryHookOptions<AgentByIdQuery, AgentByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AgentByIdQuery, AgentByIdQueryVariables>(AgentByIdDocument, options);
+      }
+export function useAgentByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AgentByIdQuery, AgentByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AgentByIdQuery, AgentByIdQueryVariables>(AgentByIdDocument, options);
+        }
+export function useAgentByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<AgentByIdQuery, AgentByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AgentByIdQuery, AgentByIdQueryVariables>(AgentByIdDocument, options);
+        }
+export type AgentByIdQueryHookResult = ReturnType<typeof useAgentByIdQuery>;
+export type AgentByIdLazyQueryHookResult = ReturnType<typeof useAgentByIdLazyQuery>;
+export type AgentByIdSuspenseQueryHookResult = ReturnType<typeof useAgentByIdSuspenseQuery>;
+export type AgentByIdQueryResult = Apollo.QueryResult<AgentByIdQuery, AgentByIdQueryVariables>;
