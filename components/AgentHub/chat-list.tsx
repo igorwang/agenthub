@@ -24,6 +24,7 @@ import { GroupedChatListDTO } from "@/types/chatTypes";
 import { AppDispatch } from "../../lib/store";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  selectChat,
   selectChatList,
   selectSelectedChatId,
   setChatList,
@@ -52,6 +53,12 @@ export const ChatList: React.FC = () => {
           })),
         })
       );
+
+      const defaultSelectedChatId = data.agent_type[0].agents[0].id;
+      if (defaultSelectedChatId) {
+        dispatch(selectChat(defaultSelectedChatId));
+      }
+
       dispatch(setChatList(groupedChatList));
       // Initialize open states
       const initialOpenStates: Record<number, boolean> = {};
@@ -77,9 +84,13 @@ export const ChatList: React.FC = () => {
     }));
   };
 
+  const handleSelectChat = (selectId: number) => {
+    dispatch(selectChat(selectId));
+  };
+
   const chatListContent = chatList.map((group) => (
     <div className="flex flex-col" key={group.id}>
-      {group.name && group.name != 'system' && (
+      {group.name && group.name != "system" && (
         <div className="flex flex-row justify-between px-2 py-2 items-center hover:bg-slate-200 bg-slate-100 h-12">
           <div className="text-sm text-nowrap text-ellipsis overflow-hidden">
             {group.name}
@@ -116,7 +127,11 @@ export const ChatList: React.FC = () => {
           hideSelectedIcon={true}
         >
           {group.agents.map((item) => (
-            <ListboxItem key={item.id} textValue={item.name}>
+            <ListboxItem
+              key={item.id}
+              textValue={item.name}
+              onClick={() => handleSelectChat(item.id)}
+            >
               <div className="flex gap-2 items-center">
                 <Avatar
                   alt={item.name}
@@ -129,11 +144,11 @@ export const ChatList: React.FC = () => {
                 />
                 <div className="flex flex-col">
                   <span className="text-small">{item.name}</span>
-                  <Tooltip content={item.description}>
-                    <span className="text-tiny text-default-400 text-nowrap max-w-[120px] truncate">
-                      {item.description}
-                    </span>
-                  </Tooltip>
+                  {/* <Tooltip content={item.description}> */}
+                  <span className="text-tiny text-default-400 text-nowrap max-w-[120px] truncate">
+                    {item.description}
+                  </span>
+                  {/* </Tooltip> */}
                 </div>
               </div>
             </ListboxItem>

@@ -33,6 +33,7 @@ const chatListSlice = createSlice({
     selectChat: (state, action: PayloadAction<number>) => {
       state.selectedChatId = action.payload;
     },
+    
   },
 });
 export const { setChatList, selectChat } = chatListSlice.actions;
