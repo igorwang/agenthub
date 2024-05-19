@@ -42,10 +42,12 @@ export default function RootLayout({
       >
         <SessionProvider>
           <Providers themeProps={{ attribute: "class", defaultTheme: "white" }}>
-            <div className="flex flex-row h-dvh w-dvw">
-              <SideBar></SideBar>
-              {children}
-            </div>
+            {/* <StoreProvder> */}
+              <div className="flex flex-row h-dvh w-dvw">
+                <SideBar></SideBar>
+                {children}
+              </div>
+            {/* </StoreProvder> */}
           </Providers>
         </SessionProvider>
       </body>

@@ -19,8 +19,10 @@
         "name": "next"
       }
     ],
+    "baseUrl": ".",  // Ensure this is set
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@types/*": ["types/*"] // Add this to map your types directory
     }
   },
   "include": [
@@ -28,6 +30,7 @@
     "**/*.ts",
     "**/*.tsx",
     "**/**/*.tsx",
+    ".next/lib/**/*.ts",
     ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules"]

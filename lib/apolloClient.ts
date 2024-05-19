@@ -12,10 +12,8 @@ import { useMemo } from "react";
 import { SubscriptionClient } from "subscriptions-transport-ws";
 
 let accessToken: string | null = null;
-
 const requestAccessToken = async (): Promise<void> => {
-  console.log("check token");
-
+  console.log('check token')
   if (accessToken) return;
   const session = await getSession();
   console.log("session");
@@ -26,6 +24,7 @@ const requestAccessToken = async (): Promise<void> => {
     accessToken = "public";
   }
 };
+
 
 const resetTokenLink = onError(({ networkError }) => {
   if (
@@ -49,6 +48,7 @@ const createHttpLink = (headers: Record<string, string> | null) => {
 };
 
 const createWSLink = (): WebSocketLink => {
+  console.log(`createWSLink: ${accessToken}`);
   return new WebSocketLink(
     new SubscriptionClient(`${process.env.WS_API_HOST}`, {
       lazy: true,
@@ -56,7 +56,6 @@ const createWSLink = (): WebSocketLink => {
       connectionParams: async () => {
         await requestAccessToken();
         console.log(`createWSLink: ${accessToken}`);
-        // happens on the client
         return {
           headers: {
             Authorization: accessToken ? `Bearer ${accessToken}` : "",
@@ -77,11 +76,13 @@ export function createApolloClient(
 ) {
   const ssrMode = typeof window === "undefined";
   let link;
+  console.log(`ssrMode: ${ssrMode}`)
   if (ssrMode) {
     link = createHttpLink(headers);
   } else {
     link = createWSLink();
   }
+
   return new ApolloClient({
     ssrMode,
     link,

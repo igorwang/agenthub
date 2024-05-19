@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Listbox,
@@ -11,6 +11,7 @@ import {
   ListboxSection,
   ListboxSectionProps,
   Button,
+  Tooltip,
 } from "@nextui-org/react";
 import {
   OcticonChevronDownIcon,
@@ -19,27 +20,51 @@ import {
   TagIcon,
 } from "../ui/icons";
 
-export type ChatDTO = {
-  id: number;
-  name: string;
-  description: string;
-  avatar: string;
-};
+import { GroupedChatListDTO } from "@/types/chatTypes";
+import { AppDispatch } from "../../lib/store";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectChatList,
+  selectSelectedChatId,
+  setChatList,
+} from "@/lib/features/chatListSlice";
+import { useGetAgentListByTypeQuery } from "@/graphql/generated/types";
+import { group } from "console";
 
-export type GroupedChatListDTO = {
-  id: number;
-  name: string;
-  items: ChatDTO[];
-};
+export const ChatList: React.FC = () => {
+  const dispatch: AppDispatch = useDispatch();
+  const chatList = useSelector(selectChatList);
+  const selectedChatId = useSelector(selectSelectedChatId);
 
-export type ChatListProps = {
-  data: GroupedChatListDTO[]; // Array of grouped chat data
-};
+  const { data, loading, error } = useGetAgentListByTypeQuery();
 
-export const ChatList: React.FC<ChatListProps> = ({ data, ...props }) => {
+  useEffect(() => {
+    if (data) {
+      const groupedChatList: GroupedChatListDTO[] = data.agent_type.map(
+        (group) => ({
+          id: group.id,
+          name: group.name,
+          agents: group.agents.map((agent) => ({
+            id: agent.id,
+            name: agent.name,
+            description: agent.description,
+            avatar: agent.avatar,
+          })),
+        })
+      );
+      dispatch(setChatList(groupedChatList));
+      // Initialize open states
+      const initialOpenStates: Record<number, boolean> = {};
+      groupedChatList.forEach((group) => {
+        initialOpenStates[group.id] = true;
+      });
+      setOpenStates(initialOpenStates);
+    }
+  }, [data, dispatch]);
+
   const [openStates, setOpenStates] = useState<Record<number, boolean>>(() => {
     const initialState: Record<number, boolean> = {};
-    data.forEach((group) => {
+    chatList.forEach((group) => {
       initialState[group.id] = true;
     });
     return initialState;
@@ -52,15 +77,14 @@ export const ChatList: React.FC<ChatListProps> = ({ data, ...props }) => {
     }));
   };
 
-  const chatListContent = data.map((group) => (
+  const chatListContent = chatList.map((group) => (
     <div className="flex flex-col" key={group.id}>
-      {group.name && (
+      {group.name && group.name != 'system' && (
         <div className="flex flex-row justify-between px-2 py-2 items-center hover:bg-slate-200 bg-slate-100 h-12">
           <div className="text-sm text-nowrap text-ellipsis overflow-hidden">
             {group.name}
           </div>
           <div className="flex flex-row items-center">
-            {/* <div className="flex gap-1 items-center"></div> */}
             <Button isIconOnly variant="light">
               <OcticonKebabHorizontalIcon />
             </Button>
@@ -91,20 +115,25 @@ export const ChatList: React.FC<ChatListProps> = ({ data, ...props }) => {
           variant="flat"
           hideSelectedIcon={true}
         >
-          {group.items.map((item) => (
+          {group.agents.map((item) => (
             <ListboxItem key={item.id} textValue={item.name}>
               <div className="flex gap-2 items-center">
                 <Avatar
                   alt={item.name}
                   className="flex-shrink-0"
                   size="sm"
-                  src={item.avatar}
+                  src={
+                    item.avatar ||
+                    "https://api.dicebear.com/8.x/fun-emoji/svg?seed=Tigger"
+                  }
                 />
                 <div className="flex flex-col">
                   <span className="text-small">{item.name}</span>
-                  <span className="text-tiny text-default-400">
-                    {item.description}
-                  </span>
+                  <Tooltip content={item.description}>
+                    <span className="text-tiny text-default-400 text-nowrap max-w-[120px] truncate">
+                      {item.description}
+                    </span>
+                  </Tooltip>
                 </div>
               </div>
             </ListboxItem>
