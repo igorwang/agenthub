@@ -57,9 +57,11 @@ export const Conversation: React.FC<ConversationProps> = ({
         />
         <div className="pl-2">
           <p className="text-3xl font-medium">{agent.name}</p>
-          <p className="text-sm font-light overflow-hidden text-nowrap text-ellipsis max-w-sm">
-            <Tooltip content={agent.description}>{agent.description}</Tooltip>
-          </p>
+          <Tooltip content={agent.description}>
+            <p className="text-sm font-light overflow-hidden text-nowrap text-ellipsis max-w-sm">
+              {agent.description}
+            </p>
+          </Tooltip>
         </div>
       </div>
       <Tabs className="justify-center" defaultSelectedKey="simple">
