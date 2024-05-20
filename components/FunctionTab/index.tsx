@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   AddNewTopicMutationMutation,
   useAddNewTopicMutationMutation,
+  useGetTopicHistoriesQuery,
 } from "../../graphql/generated/types";
 import { toast } from "sonner";
 
@@ -23,6 +24,11 @@ export const FunctionTab = () => {
 
   const [addNewTopicMutation, { data, loading, error }] =
     useAddNewTopicMutationMutation();
+
+  const { refetch: refetchTopicHistories } = useGetTopicHistoriesQuery({
+    variables: { agent_id, user_id },
+    skip: !agent_id || !user_id, // Skip the query if agent_id or user_id is not available
+  });
 
   const handleAddTopic = async ({ agent_id, user_id }: AddTopicParams) => {
     console.log("handleAddTopic");
@@ -38,6 +44,7 @@ export const FunctionTab = () => {
         console.error(errors);
       } else {
         toast.success("成功添加", { duration: 1000, position: "bottom-left" });
+        refetchTopicHistories();
       }
     } catch (error) {
       //   console.error("Error adding topic:", error);
@@ -70,7 +77,7 @@ export const FunctionTab = () => {
             新增话题
           </Button>
           <ScrollShadow className="flex flex-grow flex-col gap-6 pb-8 max-h-full ">
-            <TopicHistory></TopicHistory>
+            {agent_id && <TopicHistory agent_id={agent_id} />}
           </ScrollShadow>
         </Tab>
         <Tab

@@ -1,47 +1,54 @@
+"use client";
 import { ChatList } from "@/components/AgentHub/chat-list";
 import { DiscussionIcon, PlusIcon } from "@/components/ui/icons";
+import { useGetTopicHistoriesQuery } from "@/graphql/generated/types";
+import { selectSelectedChatId } from "@/lib/features/chatListSlice";
+import { AppDispatch } from "@/lib/store";
 import { Button, Listbox, ListboxItem, ScrollShadow } from "@nextui-org/react";
+import { useSession } from "next-auth/react";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Session } from "inspector";
 
 interface TopicHistoryProps {
   agent_id?: number;
 }
 
 export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
-  const histories = [
-    {
-      id: 1,
-      agent_id: 1,
-      title:
-        "我是一个标题我是一个标题我是一个标题我是一个标题我是一个标题我是一个标题我是一个标题我是一个标题",
+  // const dispatch: AppDispatch = useDispatch();
+  // const selectedChatId = useSelector(selectSelectedChatId);
+  const { data: sessionData, status } = useSession();
+
+  const user_id = sessionData?.user?.id;
+
+  if (!status) {
+    return <div></div>;
+  }
+  
+  const { data, loading, error } = useGetTopicHistoriesQuery({
+    variables: {
+      agent_id: agent_id,
+      user_id: user_id,
+      //  limit: 100
     },
-    {
-      id: 2,
-      agent_id: 1,
-      title: "我是一个标题",
-    },
-    {
-      id: 3,
-      agent_id: 1,
-      title: "我是一个标题",
-    },
-    {
-      id: 4,
-      agent_id: 1,
-      title: "我是一个标题",
-    },
-    {
-      id: 5,
-      agent_id: 1,
-      title: "我是一个标题1111111",
-    },
-  ];
+  });
+
+  if (loading) {
+    return <div>加载中...</div>;
+  }
+
+  const histories = data?.topic_history.map((item) => ({
+    id: item.id,
+    title: item.title,
+    agent_id: item.agent_id,
+  }));
+  const defaultSelectedKey = data?.topic_history[0]?.id;
 
   const handleSelect = (sId: number) => {
     console.log(sId);
   };
 
-  const historyItems = histories.map((item) => {
+  const historyItems = histories?.map((item) => {
     return (
       <ListboxItem
         key={item.id}
@@ -55,14 +62,16 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   });
   return (
     <div className=" flex flex-col">
-      <Listbox
-        aria-label="TopicHistory"
-        selectionMode="single"
-        className="h-full"
-      >
-        {historyItems}
-      </Listbox>
+      {historyItems && (
+        <Listbox
+          aria-label="TopicHistory"
+          selectionMode="single"
+          className="h-full"
+          defaultSelectedKeys={[defaultSelectedKey]}
+        >
+          {historyItems}
+        </Listbox>
+      )}
     </div>
   );
-  // return <div></div>
 };

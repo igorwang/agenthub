@@ -1387,6 +1387,15 @@ export type AddNewTopicMutationMutationVariables = Exact<{
 
 export type AddNewTopicMutationMutation = { __typename?: 'mutation_root', insert_topic_history_one?: { __typename?: 'topic_history', id: any, title: string, agent_id: number, user_id: string } | null };
 
+export type GetTopicHistoriesQueryVariables = Exact<{
+  agent_id?: InputMaybe<Scalars['Int']['input']>;
+  user_id?: InputMaybe<Scalars['String']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type GetTopicHistoriesQuery = { __typename?: 'query_root', topic_history: Array<{ __typename?: 'topic_history', id: any, title: string, updated_at: any, user_id: string, created_at: any, agent_id: number }> };
+
 export type GetAgentListByTypeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1440,6 +1449,57 @@ export function useAddNewTopicMutationMutation(baseOptions?: Apollo.MutationHook
 export type AddNewTopicMutationMutationHookResult = ReturnType<typeof useAddNewTopicMutationMutation>;
 export type AddNewTopicMutationMutationResult = Apollo.MutationResult<AddNewTopicMutationMutation>;
 export type AddNewTopicMutationMutationOptions = Apollo.BaseMutationOptions<AddNewTopicMutationMutation, AddNewTopicMutationMutationVariables>;
+export const GetTopicHistoriesDocument = gql`
+    query GetTopicHistories($agent_id: Int = 10, $user_id: String = "", $limit: Int = 100) {
+  topic_history(
+    where: {agent_id: {_eq: $agent_id}, user_id: {_eq: $user_id}}
+    order_by: {updated_at: desc_nulls_last}
+    limit: $limit
+  ) {
+    id
+    title
+    updated_at
+    user_id
+    created_at
+    agent_id
+  }
+}
+    `;
+
+/**
+ * __useGetTopicHistoriesQuery__
+ *
+ * To run a query within a React component, call `useGetTopicHistoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTopicHistoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTopicHistoriesQuery({
+ *   variables: {
+ *      agent_id: // value for 'agent_id'
+ *      user_id: // value for 'user_id'
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useGetTopicHistoriesQuery(baseOptions?: Apollo.QueryHookOptions<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>(GetTopicHistoriesDocument, options);
+      }
+export function useGetTopicHistoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>(GetTopicHistoriesDocument, options);
+        }
+export function useGetTopicHistoriesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>(GetTopicHistoriesDocument, options);
+        }
+export type GetTopicHistoriesQueryHookResult = ReturnType<typeof useGetTopicHistoriesQuery>;
+export type GetTopicHistoriesLazyQueryHookResult = ReturnType<typeof useGetTopicHistoriesLazyQuery>;
+export type GetTopicHistoriesSuspenseQueryHookResult = ReturnType<typeof useGetTopicHistoriesSuspenseQuery>;
+export type GetTopicHistoriesQueryResult = Apollo.QueryResult<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>;
 export const GetAgentListByTypeDocument = gql`
     query GetAgentListByType {
   agent_type(where: {agents: {id: {_is_null: false}}}) {
