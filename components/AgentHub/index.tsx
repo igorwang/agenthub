@@ -20,50 +20,6 @@ import {
 import { useQuery } from "@apollo/client";
 import { GetAgentListByTypeQuery } from "../../graphql/generated/types";
 
-// export const chatListData: GroupedChatListDTO[] = [
-//   {
-//     id: 1,
-//     name: "",
-//     agents: [
-//       {
-//         id: 1,
-//         name: "Tony Reichert",
-//         description: "Management",
-//         avatar: "https://api.dicebear.com/8.x/fun-emoji/svg?seed=Tigger",
-//       },
-//     ],
-//   },
-//   {
-//     id: 2,
-//     name: "默认分组",
-//     agents: [
-//       {
-//         id: 2,
-//         name: "Zoey Lang",
-//         description: "Development",
-//         avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/female/1.png",
-//       },
-//       {
-//         id: 3,
-//         name: "Jane Fisher",
-//         description: "Sr. Dev",
-//         avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/female/2.png",
-//       },
-//       {
-//         id: 4,
-//         name: "William Howard",
-//         description: "C.M.",
-//         avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/male/2.png",
-//       },
-//       {
-//         id: 5,
-//         name: "Kristen Copper",
-//         description: "S. Manager",
-//         avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/female/3.png",
-//       },
-//     ],
-//   },
-// ];
 
 const ChatHub = () => {
  

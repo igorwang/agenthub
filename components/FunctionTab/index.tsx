@@ -70,13 +70,13 @@ export const FunctionTab = () => {
         >
           <Button
             className="flex w-full bg-slate-100 "
-            endContent={<PlusIcon />}
+            endContent={<PlusIcon/>}
             onClick={() => handleAddTopic({ agent_id, user_id })}
             disabled={!user_id}
           >
             新增话题
           </Button>
-          <ScrollShadow className="flex flex-grow flex-col gap-6 pb-8 max-h-full ">
+          <ScrollShadow className="flex flex-grow flex-col gap-6 pb-8 max-h-full min-h-6 ">
             {agent_id && <TopicHistory agent_id={agent_id} />}
           </ScrollShadow>
         </Tab>

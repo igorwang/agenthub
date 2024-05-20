@@ -5,6 +5,7 @@ import { RootState } from "../store";
 interface ChatListState {
   chatList: GroupedChatListDTO[];
   selectedChatId: number | null;
+  selectedSessionId: string | null;
 }
 
 const initialState: ChatListState = {
@@ -16,6 +17,7 @@ const initialState: ChatListState = {
     },
   ],
   selectedChatId: null,
+  selectedSessionId: null,
 };
 
 const chatListSlice = createSlice({
@@ -33,14 +35,18 @@ const chatListSlice = createSlice({
     selectChat: (state, action: PayloadAction<number>) => {
       state.selectedChatId = action.payload;
     },
-    
+    selectSession: (state, action: PayloadAction<string>) => {
+      state.selectedSessionId = action.payload;
+    },
   },
 });
-export const { setChatList, selectChat } = chatListSlice.actions;
+export const { setChatList, selectChat, selectSession } = chatListSlice.actions;
 
 export const selectChatList = (state: RootState): GroupedChatListDTO[] =>
   state.chatList.chatList;
 export const selectSelectedChatId = (state: RootState): number | null =>
   state.chatList.selectedChatId;
+export const selectSelectedSessionId = (state: RootState): string | null =>
+  state.chatList.selectedSessionId;
 
 export default chatListSlice.reducer;
