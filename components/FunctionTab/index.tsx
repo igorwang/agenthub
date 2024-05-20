@@ -40,7 +40,11 @@ export const FunctionTab = () => {
         toast.success("成功添加", { duration: 1000, position: "bottom-left" });
       }
     } catch (error) {
-      console.error("Error adding topic:", error);
+      //   console.error("Error adding topic:", error);
+      toast.success("系统错误请稍后重试", {
+        duration: 1000,
+        position: "bottom-left",
+      });
     }
   };
 
