@@ -67,6 +67,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     jwt: async ({ token, user, profile }) => {
       if (user) {
         console.log("User logged in:", user);
+        console.log("User profile:", profile);
+
         const payload = {
           "https://hasura.io/jwt/claims": {
             "x-hasura-user-id": user.id,
@@ -83,12 +85,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             algorithm: "HS256",
           }
         );
-        token.email = user.email;
+        if (profile?.sub) {
+          token.uid = profile.sub;
+        }
         token.access_token = accessToken;
       }
       return token;
     },
     session: ({ session, token }) => {
+      if (token.uid) {
+      session.user.id = token.uid;
+      }
       session.access_token = token.access_token as string;
       return session;
     },

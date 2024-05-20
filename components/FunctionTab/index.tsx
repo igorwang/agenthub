@@ -1,10 +1,49 @@
 "use client";
 import { TopicHistory } from "@/components/TopicHistory";
 import { TopicFolderIcon, BookIcon, PlusIcon } from "@/components/ui/icons";
+import { selectSelectedChatId } from "@/lib/features/chatListSlice";
+import { AppDispatch } from "@/lib/store";
 import { Button, ScrollShadow, Tab, Tabs } from "@nextui-org/react";
+import { useSession } from "next-auth/react";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  AddNewTopicMutationMutation,
+  useAddNewTopicMutationMutation,
+} from "../../graphql/generated/types";
 
 export const FunctionTab = () => {
+  const dispatch: AppDispatch = useDispatch();
+  const selectedChatId = useSelector(selectSelectedChatId);
+  const session = useSession();
+
+  const user_id = session.data?.user?.id;
+  const agent_id = selectedChatId;
+
+  const [addNewTopicMutation, { data, loading, error }] =
+    useAddNewTopicMutationMutation();
+
+  const handleAddTopic = async ({ agent_id, user_id }: AddTopicParams) => {
+    console.log("handleAddTopic");
+
+    try {
+      const { data, errors } = await addNewTopicMutation({
+        variables: {
+          title: "新的话题",
+          user_id: user_id,
+          agent_id: agent_id,
+        },
+      });
+      if (errors) {
+        console.error(errors);
+      } else {
+        console.log(data);
+      }
+    } catch (error) {
+      console.error("Error adding topic:", error);
+    }
+  };
+
   return (
     <div className="flex flex-col w-full  items-center pt-2">
       <Tabs aria-label="Options" variant="light" className="flex flex-col">
@@ -21,6 +60,8 @@ export const FunctionTab = () => {
           <Button
             className="flex w-full bg-slate-100 "
             endContent={<PlusIcon />}
+            onClick={() => handleAddTopic({ agent_id, user_id })}
+            disabled={!user_id}
           >
             新增话题
           </Button>
