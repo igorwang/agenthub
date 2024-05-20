@@ -11,6 +11,7 @@ import {
   AddNewTopicMutationMutation,
   useAddNewTopicMutationMutation,
 } from "../../graphql/generated/types";
+import { toast } from "sonner";
 
 export const FunctionTab = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -25,7 +26,6 @@ export const FunctionTab = () => {
 
   const handleAddTopic = async ({ agent_id, user_id }: AddTopicParams) => {
     console.log("handleAddTopic");
-
     try {
       const { data, errors } = await addNewTopicMutation({
         variables: {
@@ -37,7 +37,7 @@ export const FunctionTab = () => {
       if (errors) {
         console.error(errors);
       } else {
-        console.log(data);
+        toast.success("成功添加", { duration: 1000, position: "bottom-left" });
       }
     } catch (error) {
       console.error("Error adding topic:", error);
