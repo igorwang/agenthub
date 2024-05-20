@@ -1,0 +1,10 @@
+mutation AddNewTopicMutation($title: String, $user_id: String, $agent_id: Int) {
+  insert_topic_history_one(
+    object: { title: $title, user_id: $user_id, agent_id: $agent_id }
+  ) {
+    id
+    title
+    agent_id
+    user_id
+  }
+}
