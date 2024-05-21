@@ -1,9 +1,19 @@
 "use client";
 import { TopicHistory } from "@/components/TopicHistory";
 import { TopicFolderIcon, BookIcon, PlusIcon } from "@/components/ui/icons";
-import { selectSelectedChatId } from "@/lib/features/chatListSlice";
+import {
+  selectSelectedChatId,
+  selectSelectedSessionId,
+  selectSession,
+} from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
-import { Button, ScrollShadow, Tab, Tabs } from "@nextui-org/react";
+import {
+  Button,
+  ScrollShadow,
+  SelectSection,
+  Tab,
+  Tabs,
+} from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +27,8 @@ import { toast } from "sonner";
 export const FunctionTab = () => {
   const dispatch: AppDispatch = useDispatch();
   const selectedChatId = useSelector(selectSelectedChatId);
+  const selectedSessionId = useSelector(selectSelectedSessionId);
+
   const session = useSession();
 
   const user_id = session.data?.user?.id;
@@ -44,6 +56,10 @@ export const FunctionTab = () => {
         console.error(errors);
       } else {
         toast.success("成功添加", { duration: 1000, position: "bottom-left" });
+        const new_sid = data?.insert_topic_history_one?.id;
+        if (new_sid) {
+          dispatch(selectSession(new_sid));
+        }
         refetchTopicHistories();
       }
     } catch (error) {
@@ -70,13 +86,13 @@ export const FunctionTab = () => {
         >
           <Button
             className="flex w-full bg-slate-100 "
-            endContent={<PlusIcon/>}
+            endContent={<PlusIcon />}
             onClick={() => handleAddTopic({ agent_id, user_id })}
             disabled={!user_id}
           >
             新增话题
           </Button>
-          <ScrollShadow className="flex flex-grow flex-col gap-6 pb-8 max-h-full min-h-6 ">
+          <ScrollShadow className="flex flex-grow flex-col gap-6 pb-8 max-h-full min-h-10 ">
             {agent_id && <TopicHistory agent_id={agent_id} />}
           </ScrollShadow>
         </Tab>

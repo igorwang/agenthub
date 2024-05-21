@@ -12,7 +12,16 @@ import {
   selectSession,
 } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
-import { Button, Listbox, ListboxItem, ScrollShadow } from "@nextui-org/react";
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Listbox,
+  ListboxItem,
+  ScrollShadow,
+} from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,10 +34,6 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   const dispatch: AppDispatch = useDispatch();
 
   const selectedSessionId = useSelector(selectSelectedSessionId);
-
-  // const [selectedColor, setSelectedColor] = React.useState<
-  //   "default" | "primary" | "secondary" | "success" | "warning" | "danger"
-  // >("default");
 
   const { data: sessionData, status } = useSession();
 
@@ -61,15 +66,28 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
     dispatch(selectSession(sId));
   };
 
+  const dropdownContent = (
+    <Dropdown>
+      <DropdownTrigger>
+        <Button
+          isIconOnly
+          className="max-h-full absolute right-1 top-0.5 "
+          variant="light"
+          startContent={<OcticonKebabHorizontalIcon />}
+        ></Button>
+      </DropdownTrigger>
+      <DropdownMenu aria-label="Static Actions">
+        {/* <DropdownItem key="new">New file</DropdownItem> */}
+        {/* <DropdownItem key="copy">Copy link</DropdownItem> */}
+        <DropdownItem key="edit">重命名</DropdownItem>
+        <DropdownItem key="delete" className="text-danger" color="danger">
+          删除
+        </DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
+  );
+
   const historyItems = histories?.map((item) => {
-    const moreButton = (
-      <Button
-        isIconOnly
-        className="max-h-full absolute right-1 top-0.5 "
-        variant="light"
-        startContent={<OcticonKebabHorizontalIcon/>}
-      ></Button>
-    );
     return (
       <ListboxItem
         classNames={{ base: "flex py-2 px-4 bg-slate-100 h-full" }}
@@ -78,7 +96,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
         }
         key={item.id}
         startContent={<DiscussionIcon className="hidden" />}
-        endContent={moreButton}
+        endContent={dropdownContent}
         shouldHighlightOnFocus={true}
         onClick={() => handleSelect(item.id)}
       >
