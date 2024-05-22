@@ -1,5 +1,3 @@
-// "use client";
-
 import { AcmeIcon } from "@/components/ui/social";
 import Login from "@/components/Login";
 
