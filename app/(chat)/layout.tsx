@@ -43,14 +43,11 @@ export default function RootLayout({
       >
         <SessionProvider>
           <Providers themeProps={{ attribute: "class", defaultTheme: "white" }}>
-            {/* <StoreProvder> */}
-
             <div className="flex flex-row h-dvh w-dvw">
               <SideBar></SideBar>
               {children}
               <Toaster />
             </div>
-            {/* </StoreProvder> */}
           </Providers>
         </SessionProvider>
       </body>

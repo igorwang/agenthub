@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { Button, Tooltip, ScrollShadow } from "@nextui-org/react";
+import React, { useRef } from "react";
+import { Button, Tooltip, ScrollShadow, Input } from "@nextui-org/react";
 import { Icon } from "@iconify/react";
 import { cn } from "@/cn";
 
@@ -40,6 +40,22 @@ export default function PromptInputWithFaq() {
   ];
 
   const [prompt, setPrompt] = React.useState<string>("");
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleFileButtonClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      console.log("Selected file:", file.name);
+      // 在这里可以进一步处理文件，例如上传到服务器
+    }
+  };
 
   return (
     <div className="flex flex-col gap-4 p-2 items-center">
@@ -102,6 +118,12 @@ export default function PromptInputWithFaq() {
         />
         <div className="flex  items-center justify-between  gap-2 overflow-scroll px-4 pb-4">
           <div className="flex gap-1 md:gap-3">
+            <input
+              type="file"
+              className="hidden"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+            />
             <Button
               size="sm"
               startContent={
@@ -112,8 +134,9 @@ export default function PromptInputWithFaq() {
                 />
               }
               variant="flat"
+              onClick={handleFileButtonClick}
             >
-              Attach
+              文件
             </Button>
             <Button
               size="sm"
@@ -126,9 +149,10 @@ export default function PromptInputWithFaq() {
               }
               variant="flat"
             >
-              Voice Commands
+              语音
             </Button>
-            <Button
+
+            {/* <Button
               size="sm"
               startContent={
                 <Icon
@@ -140,7 +164,7 @@ export default function PromptInputWithFaq() {
               variant="flat"
             >
               Templates
-            </Button>
+            </Button> */}
           </div>
           <p className="py-1 text-tiny text-default-400">
             {prompt.length}/2000

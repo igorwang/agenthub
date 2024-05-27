@@ -15,9 +15,8 @@ export default async function middleware(request: NextRequest) {
   );
 
   if (!session && isProtectedRoute) {
-
+    signIn
     return NextResponse.redirect(`${origin}/auth/login`);
   }
   return NextResponse.next();
 }
-// export { auth as middleware } from "@/auth"
