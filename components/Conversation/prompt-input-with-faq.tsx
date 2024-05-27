@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Button, Tooltip, ScrollShadow, Input } from "@nextui-org/react";
 import { Icon } from "@iconify/react";
 import { cn } from "@/cn";
@@ -39,7 +39,8 @@ export default function PromptInputWithFaq() {
     },
   ];
 
-  const [prompt, setPrompt] = React.useState<string>("");
+  const [file, setFile] = useState<File | null>(null);
+  const [prompt, setPrompt] = useState<string>("");
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -49,11 +50,23 @@ export default function PromptInputWithFaq() {
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
       console.log("Selected file:", file.name);
+      try {
+        const res = await fetch(
+          `/api/file/presigned_url?fileName=${file.name}&fileType=${file.type}&location=chat`
+        );
+        const { url } = await res.json();
+        console.log(url);
+      } catch (error) {
+        console.error("Error:", error);
+      }
       // 在这里可以进一步处理文件，例如上传到服务器
+      // 执行上传流程
     }
   };
 
