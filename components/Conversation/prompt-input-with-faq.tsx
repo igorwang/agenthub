@@ -84,7 +84,7 @@ export default function PromptInputWithFaq() {
             "Content-Type": file.type,
           },
         });
-        
+
         if (!uploadResponse.ok) {
           throw new Error("Failed to upload file");
         }
@@ -233,7 +233,7 @@ export default function PromptInputWithFaq() {
             </Button> */}
           </div>
           <p className="py-1 text-tiny text-default-400">
-            {prompt.length}/2000
+            {prompt.length}/8000
           </p>
         </div>
       </form>

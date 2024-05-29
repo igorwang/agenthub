@@ -89,7 +89,7 @@ export const Conversation: React.FC<ConversationProps> = ({
           <div className="flex flex-col">
             <PromptInputWithFaq></PromptInputWithFaq>
             <p className="px-2 text-tiny text-default-400">
-              AI can make mistakes. Consider checking important information.
+              AI也可能会犯错。请核查重要信息。
             </p>
           </div>
         </div>
