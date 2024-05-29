@@ -1,0 +1,11 @@
+subscription GetMessageList($session_id: uuid , $limit: Int = 10) {
+  message(where: {session_id: {_eq: $session_id}}, limit: $limit) {
+    id
+    role
+    feedback
+    created_at
+    content
+    status
+    updated_at
+  }
+}

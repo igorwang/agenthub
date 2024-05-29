@@ -10,9 +10,22 @@ import {
   UploadFile,
   UploadFileProps,
 } from "@/components/Conversation/upload-file";
-import { url } from "inspector";
+import { AppDispatch } from "@/lib/store";
+import { useDispatch, useSelector } from "react-redux";
+import { selectSelectedChatId, selectSelectedSessionId } from "@/lib/features/chatListSlice";
+import { useSession } from "next-auth/react";
 
 export default function PromptInputWithFaq() {
+  const dispatch: AppDispatch = useDispatch();
+
+  const selectedChatId = useSelector(selectSelectedChatId);
+  const selectedSessionId = useSelector(selectSelectedSessionId);
+
+  const session = useSession();
+  const user_id = session.data?.user?.id;
+  const agent_id = selectedChatId;
+
+  // TODO 默认推荐 与用户的聊天内容相关的推荐
   const ideas = [
     {
       title: "Create a blog post about NextUI ",
@@ -43,6 +56,7 @@ export default function PromptInputWithFaq() {
       description: "be polite and friendly",
     },
   ];
+
 
   const [files, setFiles] = useState<UploadFileProps[]>([]);
 
@@ -104,6 +118,10 @@ export default function PromptInputWithFaq() {
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
+  const sendMessageHanlder = () => {
+
+  };
+
   const uploadFileListElement = files.map((item, index) => (
     <UploadFile
       key={index}
@@ -136,9 +154,6 @@ export default function PromptInputWithFaq() {
           ))}
         </div>
       </ScrollShadow>
-      {/* <div className="overflow-hidden text-nowrap text-ellipsis whitespace-nowrap border border-blue-500 p-2">
-  Create a blog post about NextUI Create a blog post about NextUI Create a blog post about NextUI Create a blog post about NextUI Create a blog post about NextUI Create a blog post about NextUI Create a blog post about NextUI Create a blog post about NextUI Create a blog post about NextUI Create a blog post about NextUI
-          </div> */}
       <form className="flex flex-col w-full items-start rounded-medium bg-default-100 transition-colors hover:bg-default-200/70">
         <ScrollShadow
           className="flex flex-row flex-nowrap gap-2 overflow-auto w-full"
@@ -146,7 +161,6 @@ export default function PromptInputWithFaq() {
         >
           {uploadFileListElement}
         </ScrollShadow>
-
         <PromptInput
           classNames={{
             inputWrapper: "!bg-transparent shadow-none",
@@ -155,14 +169,15 @@ export default function PromptInputWithFaq() {
           }}
           endContent={
             <div className="flex items-end gap-2">
-              <Tooltip showArrow content="Send message">
+              <Tooltip showArrow content="发送消息">
                 <Button
                   isIconOnly
                   color={!prompt ? "default" : "primary"}
                   isDisabled={!prompt}
                   radius="lg"
-                  size="sm"
+                  size="md"
                   variant="solid"
+                  onClick={sendMessageHanlder}
                 >
                   <Icon
                     className={cn(
@@ -217,20 +232,6 @@ export default function PromptInputWithFaq() {
             >
               语音
             </Button>
-
-            {/* <Button
-              size="sm"
-              startContent={
-                <Icon
-                  className="text-default-500"
-                  icon="solar:notes-linear"
-                  width={18}
-                />
-              }
-              variant="flat"
-            >
-              Templates
-            </Button> */}
           </div>
           <p className="py-1 text-tiny text-default-400">
             {prompt.length}/8000

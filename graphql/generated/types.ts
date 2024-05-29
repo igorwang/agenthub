@@ -15,8 +15,22 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  jsonb: { input: any; output: any; }
   timestamptz: { input: any; output: any; }
   uuid: { input: any; output: any; }
+};
+
+/** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
+export type Boolean_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['Boolean']['input']>;
+  _gt?: InputMaybe<Scalars['Boolean']['input']>;
+  _gte?: InputMaybe<Scalars['Boolean']['input']>;
+  _in?: InputMaybe<Array<Scalars['Boolean']['input']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _lt?: InputMaybe<Scalars['Boolean']['input']>;
+  _lte?: InputMaybe<Scalars['Boolean']['input']>;
+  _neq?: InputMaybe<Scalars['Boolean']['input']>;
+  _nin?: InputMaybe<Array<Scalars['Boolean']['input']>>;
 };
 
 /** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
@@ -30,6 +44,23 @@ export type Int_Comparison_Exp = {
   _lte?: InputMaybe<Scalars['Int']['input']>;
   _neq?: InputMaybe<Scalars['Int']['input']>;
   _nin?: InputMaybe<Array<Scalars['Int']['input']>>;
+};
+
+/** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
+export type String_Array_Comparison_Exp = {
+  /** is the array contained in the given array value */
+  _contained_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** does the array contain the given value */
+  _contains?: InputMaybe<Array<Scalars['String']['input']>>;
+  _eq?: InputMaybe<Array<Scalars['String']['input']>>;
+  _gt?: InputMaybe<Array<Scalars['String']['input']>>;
+  _gte?: InputMaybe<Array<Scalars['String']['input']>>;
+  _in?: InputMaybe<Array<Array<Scalars['String']['input']>>>;
+  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _lt?: InputMaybe<Array<Scalars['String']['input']>>;
+  _lte?: InputMaybe<Array<Scalars['String']['input']>>;
+  _neq?: InputMaybe<Array<Scalars['String']['input']>>;
+  _nin?: InputMaybe<Array<Array<Scalars['String']['input']>>>;
 };
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
@@ -691,6 +722,1037 @@ export enum Cursor_Ordering {
   Desc = 'DESC'
 }
 
+export type Jsonb_Cast_Exp = {
+  String?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'. */
+export type Jsonb_Comparison_Exp = {
+  _cast?: InputMaybe<Jsonb_Cast_Exp>;
+  /** is the column contained in the given json value */
+  _contained_in?: InputMaybe<Scalars['jsonb']['input']>;
+  /** does the column contain the given json value at the top level */
+  _contains?: InputMaybe<Scalars['jsonb']['input']>;
+  _eq?: InputMaybe<Scalars['jsonb']['input']>;
+  _gt?: InputMaybe<Scalars['jsonb']['input']>;
+  _gte?: InputMaybe<Scalars['jsonb']['input']>;
+  /** does the string exist as a top-level key in the column */
+  _has_key?: InputMaybe<Scalars['String']['input']>;
+  /** do all of these strings exist as top-level keys in the column */
+  _has_keys_all?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** do any of these strings exist as top-level keys in the column */
+  _has_keys_any?: InputMaybe<Array<Scalars['String']['input']>>;
+  _in?: InputMaybe<Array<Scalars['jsonb']['input']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _lt?: InputMaybe<Scalars['jsonb']['input']>;
+  _lte?: InputMaybe<Scalars['jsonb']['input']>;
+  _neq?: InputMaybe<Scalars['jsonb']['input']>;
+  _nin?: InputMaybe<Array<Scalars['jsonb']['input']>>;
+};
+
+/** message */
+export type Message = {
+  __typename?: 'message';
+  content?: Maybe<Scalars['String']['output']>;
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  feedback?: Maybe<Message_Feedback_Enum>;
+  id: Scalars['uuid']['output'];
+  role: Message_Role_Enum;
+  session_id?: Maybe<Scalars['uuid']['output']>;
+  status?: Maybe<Message_Status_Enum>;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+};
+
+/** aggregated selection of "message" */
+export type Message_Aggregate = {
+  __typename?: 'message_aggregate';
+  aggregate?: Maybe<Message_Aggregate_Fields>;
+  nodes: Array<Message>;
+};
+
+/** aggregate fields of "message" */
+export type Message_Aggregate_Fields = {
+  __typename?: 'message_aggregate_fields';
+  count: Scalars['Int']['output'];
+  max?: Maybe<Message_Max_Fields>;
+  min?: Maybe<Message_Min_Fields>;
+};
+
+
+/** aggregate fields of "message" */
+export type Message_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Message_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** Boolean expression to filter rows from the table "message". All fields are combined with a logical 'AND'. */
+export type Message_Bool_Exp = {
+  _and?: InputMaybe<Array<Message_Bool_Exp>>;
+  _not?: InputMaybe<Message_Bool_Exp>;
+  _or?: InputMaybe<Array<Message_Bool_Exp>>;
+  content?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  feedback?: InputMaybe<Message_Feedback_Enum_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  role?: InputMaybe<Message_Role_Enum_Comparison_Exp>;
+  session_id?: InputMaybe<Uuid_Comparison_Exp>;
+  status?: InputMaybe<Message_Status_Enum_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "message" */
+export enum Message_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  MessagePkey = 'message_pkey'
+}
+
+/** message_feedback */
+export type Message_Feedback = {
+  __typename?: 'message_feedback';
+  comment: Scalars['String']['output'];
+  value: Scalars['String']['output'];
+};
+
+/** aggregated selection of "message_feedback" */
+export type Message_Feedback_Aggregate = {
+  __typename?: 'message_feedback_aggregate';
+  aggregate?: Maybe<Message_Feedback_Aggregate_Fields>;
+  nodes: Array<Message_Feedback>;
+};
+
+/** aggregate fields of "message_feedback" */
+export type Message_Feedback_Aggregate_Fields = {
+  __typename?: 'message_feedback_aggregate_fields';
+  count: Scalars['Int']['output'];
+  max?: Maybe<Message_Feedback_Max_Fields>;
+  min?: Maybe<Message_Feedback_Min_Fields>;
+};
+
+
+/** aggregate fields of "message_feedback" */
+export type Message_Feedback_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Message_Feedback_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** Boolean expression to filter rows from the table "message_feedback". All fields are combined with a logical 'AND'. */
+export type Message_Feedback_Bool_Exp = {
+  _and?: InputMaybe<Array<Message_Feedback_Bool_Exp>>;
+  _not?: InputMaybe<Message_Feedback_Bool_Exp>;
+  _or?: InputMaybe<Array<Message_Feedback_Bool_Exp>>;
+  comment?: InputMaybe<String_Comparison_Exp>;
+  value?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "message_feedback" */
+export enum Message_Feedback_Constraint {
+  /** unique or primary key constraint on columns "value" */
+  MessageFeedbackPkey = 'message_feedback_pkey'
+}
+
+export enum Message_Feedback_Enum {
+  /** dislike */
+  Dislike = 'dislike',
+  /** like */
+  Like = 'like'
+}
+
+/** Boolean expression to compare columns of type "message_feedback_enum". All fields are combined with logical 'AND'. */
+export type Message_Feedback_Enum_Comparison_Exp = {
+  _eq?: InputMaybe<Message_Feedback_Enum>;
+  _in?: InputMaybe<Array<Message_Feedback_Enum>>;
+  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _neq?: InputMaybe<Message_Feedback_Enum>;
+  _nin?: InputMaybe<Array<Message_Feedback_Enum>>;
+};
+
+/** input type for inserting data into table "message_feedback" */
+export type Message_Feedback_Insert_Input = {
+  comment?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregate max on columns */
+export type Message_Feedback_Max_Fields = {
+  __typename?: 'message_feedback_max_fields';
+  comment?: Maybe<Scalars['String']['output']>;
+  value?: Maybe<Scalars['String']['output']>;
+};
+
+/** aggregate min on columns */
+export type Message_Feedback_Min_Fields = {
+  __typename?: 'message_feedback_min_fields';
+  comment?: Maybe<Scalars['String']['output']>;
+  value?: Maybe<Scalars['String']['output']>;
+};
+
+/** response of any mutation on the table "message_feedback" */
+export type Message_Feedback_Mutation_Response = {
+  __typename?: 'message_feedback_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int']['output'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Message_Feedback>;
+};
+
+/** on_conflict condition type for table "message_feedback" */
+export type Message_Feedback_On_Conflict = {
+  constraint: Message_Feedback_Constraint;
+  update_columns?: Array<Message_Feedback_Update_Column>;
+  where?: InputMaybe<Message_Feedback_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "message_feedback". */
+export type Message_Feedback_Order_By = {
+  comment?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: message_feedback */
+export type Message_Feedback_Pk_Columns_Input = {
+  value: Scalars['String']['input'];
+};
+
+/** select columns of table "message_feedback" */
+export enum Message_Feedback_Select_Column {
+  /** column name */
+  Comment = 'comment',
+  /** column name */
+  Value = 'value'
+}
+
+/** input type for updating data in table "message_feedback" */
+export type Message_Feedback_Set_Input = {
+  comment?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Streaming cursor of the table "message_feedback" */
+export type Message_Feedback_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Message_Feedback_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Message_Feedback_Stream_Cursor_Value_Input = {
+  comment?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** update columns of table "message_feedback" */
+export enum Message_Feedback_Update_Column {
+  /** column name */
+  Comment = 'comment',
+  /** column name */
+  Value = 'value'
+}
+
+export type Message_Feedback_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Message_Feedback_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Message_Feedback_Bool_Exp;
+};
+
+/** input type for inserting data into table "message" */
+export type Message_Insert_Input = {
+  content?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  feedback?: InputMaybe<Message_Feedback_Enum>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  role?: InputMaybe<Message_Role_Enum>;
+  session_id?: InputMaybe<Scalars['uuid']['input']>;
+  status?: InputMaybe<Message_Status_Enum>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+};
+
+/** aggregate max on columns */
+export type Message_Max_Fields = {
+  __typename?: 'message_max_fields';
+  content?: Maybe<Scalars['String']['output']>;
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  id?: Maybe<Scalars['uuid']['output']>;
+  session_id?: Maybe<Scalars['uuid']['output']>;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+};
+
+/** aggregate min on columns */
+export type Message_Min_Fields = {
+  __typename?: 'message_min_fields';
+  content?: Maybe<Scalars['String']['output']>;
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  id?: Maybe<Scalars['uuid']['output']>;
+  session_id?: Maybe<Scalars['uuid']['output']>;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+};
+
+/** response of any mutation on the table "message" */
+export type Message_Mutation_Response = {
+  __typename?: 'message_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int']['output'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Message>;
+};
+
+/** on_conflict condition type for table "message" */
+export type Message_On_Conflict = {
+  constraint: Message_Constraint;
+  update_columns?: Array<Message_Update_Column>;
+  where?: InputMaybe<Message_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "message". */
+export type Message_Order_By = {
+  content?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  feedback?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  role?: InputMaybe<Order_By>;
+  session_id?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: message */
+export type Message_Pk_Columns_Input = {
+  id: Scalars['uuid']['input'];
+};
+
+/** message_role */
+export type Message_Role = {
+  __typename?: 'message_role';
+  comment: Scalars['String']['output'];
+  value: Scalars['String']['output'];
+};
+
+/** aggregated selection of "message_role" */
+export type Message_Role_Aggregate = {
+  __typename?: 'message_role_aggregate';
+  aggregate?: Maybe<Message_Role_Aggregate_Fields>;
+  nodes: Array<Message_Role>;
+};
+
+/** aggregate fields of "message_role" */
+export type Message_Role_Aggregate_Fields = {
+  __typename?: 'message_role_aggregate_fields';
+  count: Scalars['Int']['output'];
+  max?: Maybe<Message_Role_Max_Fields>;
+  min?: Maybe<Message_Role_Min_Fields>;
+};
+
+
+/** aggregate fields of "message_role" */
+export type Message_Role_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Message_Role_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** Boolean expression to filter rows from the table "message_role". All fields are combined with a logical 'AND'. */
+export type Message_Role_Bool_Exp = {
+  _and?: InputMaybe<Array<Message_Role_Bool_Exp>>;
+  _not?: InputMaybe<Message_Role_Bool_Exp>;
+  _or?: InputMaybe<Array<Message_Role_Bool_Exp>>;
+  comment?: InputMaybe<String_Comparison_Exp>;
+  value?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "message_role" */
+export enum Message_Role_Constraint {
+  /** unique or primary key constraint on columns "value" */
+  MessageRolePkey = 'message_role_pkey'
+}
+
+export enum Message_Role_Enum {
+  /** assistant */
+  Assistant = 'assistant',
+  /** system */
+  System = 'system',
+  /** user */
+  User = 'user'
+}
+
+/** Boolean expression to compare columns of type "message_role_enum". All fields are combined with logical 'AND'. */
+export type Message_Role_Enum_Comparison_Exp = {
+  _eq?: InputMaybe<Message_Role_Enum>;
+  _in?: InputMaybe<Array<Message_Role_Enum>>;
+  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _neq?: InputMaybe<Message_Role_Enum>;
+  _nin?: InputMaybe<Array<Message_Role_Enum>>;
+};
+
+/** input type for inserting data into table "message_role" */
+export type Message_Role_Insert_Input = {
+  comment?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregate max on columns */
+export type Message_Role_Max_Fields = {
+  __typename?: 'message_role_max_fields';
+  comment?: Maybe<Scalars['String']['output']>;
+  value?: Maybe<Scalars['String']['output']>;
+};
+
+/** aggregate min on columns */
+export type Message_Role_Min_Fields = {
+  __typename?: 'message_role_min_fields';
+  comment?: Maybe<Scalars['String']['output']>;
+  value?: Maybe<Scalars['String']['output']>;
+};
+
+/** response of any mutation on the table "message_role" */
+export type Message_Role_Mutation_Response = {
+  __typename?: 'message_role_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int']['output'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Message_Role>;
+};
+
+/** on_conflict condition type for table "message_role" */
+export type Message_Role_On_Conflict = {
+  constraint: Message_Role_Constraint;
+  update_columns?: Array<Message_Role_Update_Column>;
+  where?: InputMaybe<Message_Role_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "message_role". */
+export type Message_Role_Order_By = {
+  comment?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: message_role */
+export type Message_Role_Pk_Columns_Input = {
+  value: Scalars['String']['input'];
+};
+
+/** select columns of table "message_role" */
+export enum Message_Role_Select_Column {
+  /** column name */
+  Comment = 'comment',
+  /** column name */
+  Value = 'value'
+}
+
+/** input type for updating data in table "message_role" */
+export type Message_Role_Set_Input = {
+  comment?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Streaming cursor of the table "message_role" */
+export type Message_Role_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Message_Role_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Message_Role_Stream_Cursor_Value_Input = {
+  comment?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** update columns of table "message_role" */
+export enum Message_Role_Update_Column {
+  /** column name */
+  Comment = 'comment',
+  /** column name */
+  Value = 'value'
+}
+
+export type Message_Role_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Message_Role_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Message_Role_Bool_Exp;
+};
+
+/** select columns of table "message" */
+export enum Message_Select_Column {
+  /** column name */
+  Content = 'content',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Feedback = 'feedback',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Role = 'role',
+  /** column name */
+  SessionId = 'session_id',
+  /** column name */
+  Status = 'status',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "message" */
+export type Message_Set_Input = {
+  content?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  feedback?: InputMaybe<Message_Feedback_Enum>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  role?: InputMaybe<Message_Role_Enum>;
+  session_id?: InputMaybe<Scalars['uuid']['input']>;
+  status?: InputMaybe<Message_Status_Enum>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+};
+
+/** message_status */
+export type Message_Status = {
+  __typename?: 'message_status';
+  comment: Scalars['String']['output'];
+  value: Scalars['String']['output'];
+};
+
+/** aggregated selection of "message_status" */
+export type Message_Status_Aggregate = {
+  __typename?: 'message_status_aggregate';
+  aggregate?: Maybe<Message_Status_Aggregate_Fields>;
+  nodes: Array<Message_Status>;
+};
+
+/** aggregate fields of "message_status" */
+export type Message_Status_Aggregate_Fields = {
+  __typename?: 'message_status_aggregate_fields';
+  count: Scalars['Int']['output'];
+  max?: Maybe<Message_Status_Max_Fields>;
+  min?: Maybe<Message_Status_Min_Fields>;
+};
+
+
+/** aggregate fields of "message_status" */
+export type Message_Status_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Message_Status_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** Boolean expression to filter rows from the table "message_status". All fields are combined with a logical 'AND'. */
+export type Message_Status_Bool_Exp = {
+  _and?: InputMaybe<Array<Message_Status_Bool_Exp>>;
+  _not?: InputMaybe<Message_Status_Bool_Exp>;
+  _or?: InputMaybe<Array<Message_Status_Bool_Exp>>;
+  comment?: InputMaybe<String_Comparison_Exp>;
+  value?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "message_status" */
+export enum Message_Status_Constraint {
+  /** unique or primary key constraint on columns "value" */
+  MessageStatusPkey = 'message_status_pkey'
+}
+
+export enum Message_Status_Enum {
+  /** failed */
+  Failed = 'failed',
+  /** success */
+  Success = 'success'
+}
+
+/** Boolean expression to compare columns of type "message_status_enum". All fields are combined with logical 'AND'. */
+export type Message_Status_Enum_Comparison_Exp = {
+  _eq?: InputMaybe<Message_Status_Enum>;
+  _in?: InputMaybe<Array<Message_Status_Enum>>;
+  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _neq?: InputMaybe<Message_Status_Enum>;
+  _nin?: InputMaybe<Array<Message_Status_Enum>>;
+};
+
+/** input type for inserting data into table "message_status" */
+export type Message_Status_Insert_Input = {
+  comment?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregate max on columns */
+export type Message_Status_Max_Fields = {
+  __typename?: 'message_status_max_fields';
+  comment?: Maybe<Scalars['String']['output']>;
+  value?: Maybe<Scalars['String']['output']>;
+};
+
+/** aggregate min on columns */
+export type Message_Status_Min_Fields = {
+  __typename?: 'message_status_min_fields';
+  comment?: Maybe<Scalars['String']['output']>;
+  value?: Maybe<Scalars['String']['output']>;
+};
+
+/** response of any mutation on the table "message_status" */
+export type Message_Status_Mutation_Response = {
+  __typename?: 'message_status_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int']['output'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Message_Status>;
+};
+
+/** on_conflict condition type for table "message_status" */
+export type Message_Status_On_Conflict = {
+  constraint: Message_Status_Constraint;
+  update_columns?: Array<Message_Status_Update_Column>;
+  where?: InputMaybe<Message_Status_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "message_status". */
+export type Message_Status_Order_By = {
+  comment?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: message_status */
+export type Message_Status_Pk_Columns_Input = {
+  value: Scalars['String']['input'];
+};
+
+/** select columns of table "message_status" */
+export enum Message_Status_Select_Column {
+  /** column name */
+  Comment = 'comment',
+  /** column name */
+  Value = 'value'
+}
+
+/** input type for updating data in table "message_status" */
+export type Message_Status_Set_Input = {
+  comment?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Streaming cursor of the table "message_status" */
+export type Message_Status_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Message_Status_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Message_Status_Stream_Cursor_Value_Input = {
+  comment?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** update columns of table "message_status" */
+export enum Message_Status_Update_Column {
+  /** column name */
+  Comment = 'comment',
+  /** column name */
+  Value = 'value'
+}
+
+export type Message_Status_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Message_Status_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Message_Status_Bool_Exp;
+};
+
+/** Streaming cursor of the table "message" */
+export type Message_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Message_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Message_Stream_Cursor_Value_Input = {
+  content?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  feedback?: InputMaybe<Message_Feedback_Enum>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  role?: InputMaybe<Message_Role_Enum>;
+  session_id?: InputMaybe<Scalars['uuid']['input']>;
+  status?: InputMaybe<Message_Status_Enum>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+};
+
+/** update columns of table "message" */
+export enum Message_Update_Column {
+  /** column name */
+  Content = 'content',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Feedback = 'feedback',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Role = 'role',
+  /** column name */
+  SessionId = 'session_id',
+  /** column name */
+  Status = 'status',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+export type Message_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Message_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Message_Bool_Exp;
+};
+
+/** multimodal_data */
+export type Multimodal_Data = {
+  __typename?: 'multimodal_data';
+  bucket?: Maybe<Scalars['String']['output']>;
+  content?: Maybe<Scalars['String']['output']>;
+  end_time?: Maybe<Scalars['Int']['output']>;
+  file_key?: Maybe<Scalars['String']['output']>;
+  id: Scalars['uuid']['output'];
+  is_chunk?: Maybe<Scalars['Boolean']['output']>;
+  metadata?: Maybe<Scalars['jsonb']['output']>;
+  start_time?: Maybe<Scalars['Int']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  topic?: Maybe<Array<Scalars['String']['output']>>;
+  type: Scalars['String']['output'];
+};
+
+
+/** multimodal_data */
+export type Multimodal_DataMetadataArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregated selection of "multimodal_data" */
+export type Multimodal_Data_Aggregate = {
+  __typename?: 'multimodal_data_aggregate';
+  aggregate?: Maybe<Multimodal_Data_Aggregate_Fields>;
+  nodes: Array<Multimodal_Data>;
+};
+
+/** aggregate fields of "multimodal_data" */
+export type Multimodal_Data_Aggregate_Fields = {
+  __typename?: 'multimodal_data_aggregate_fields';
+  avg?: Maybe<Multimodal_Data_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Multimodal_Data_Max_Fields>;
+  min?: Maybe<Multimodal_Data_Min_Fields>;
+  stddev?: Maybe<Multimodal_Data_Stddev_Fields>;
+  stddev_pop?: Maybe<Multimodal_Data_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Multimodal_Data_Stddev_Samp_Fields>;
+  sum?: Maybe<Multimodal_Data_Sum_Fields>;
+  var_pop?: Maybe<Multimodal_Data_Var_Pop_Fields>;
+  var_samp?: Maybe<Multimodal_Data_Var_Samp_Fields>;
+  variance?: Maybe<Multimodal_Data_Variance_Fields>;
+};
+
+
+/** aggregate fields of "multimodal_data" */
+export type Multimodal_Data_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Multimodal_Data_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Multimodal_Data_Append_Input = {
+  metadata?: InputMaybe<Scalars['jsonb']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Multimodal_Data_Avg_Fields = {
+  __typename?: 'multimodal_data_avg_fields';
+  end_time?: Maybe<Scalars['Float']['output']>;
+  start_time?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "multimodal_data". All fields are combined with a logical 'AND'. */
+export type Multimodal_Data_Bool_Exp = {
+  _and?: InputMaybe<Array<Multimodal_Data_Bool_Exp>>;
+  _not?: InputMaybe<Multimodal_Data_Bool_Exp>;
+  _or?: InputMaybe<Array<Multimodal_Data_Bool_Exp>>;
+  bucket?: InputMaybe<String_Comparison_Exp>;
+  content?: InputMaybe<String_Comparison_Exp>;
+  end_time?: InputMaybe<Int_Comparison_Exp>;
+  file_key?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  is_chunk?: InputMaybe<Boolean_Comparison_Exp>;
+  metadata?: InputMaybe<Jsonb_Comparison_Exp>;
+  start_time?: InputMaybe<Int_Comparison_Exp>;
+  title?: InputMaybe<String_Comparison_Exp>;
+  topic?: InputMaybe<String_Array_Comparison_Exp>;
+  type?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "multimodal_data" */
+export enum Multimodal_Data_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  MultimodalDataPkey = 'multimodal_data_pkey'
+}
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Multimodal_Data_Delete_At_Path_Input = {
+  metadata?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Multimodal_Data_Delete_Elem_Input = {
+  metadata?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Multimodal_Data_Delete_Key_Input = {
+  metadata?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** input type for incrementing numeric columns in table "multimodal_data" */
+export type Multimodal_Data_Inc_Input = {
+  end_time?: InputMaybe<Scalars['Int']['input']>;
+  start_time?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** input type for inserting data into table "multimodal_data" */
+export type Multimodal_Data_Insert_Input = {
+  bucket?: InputMaybe<Scalars['String']['input']>;
+  content?: InputMaybe<Scalars['String']['input']>;
+  end_time?: InputMaybe<Scalars['Int']['input']>;
+  file_key?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  is_chunk?: InputMaybe<Scalars['Boolean']['input']>;
+  metadata?: InputMaybe<Scalars['jsonb']['input']>;
+  start_time?: InputMaybe<Scalars['Int']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  topic?: InputMaybe<Array<Scalars['String']['input']>>;
+  type?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregate max on columns */
+export type Multimodal_Data_Max_Fields = {
+  __typename?: 'multimodal_data_max_fields';
+  bucket?: Maybe<Scalars['String']['output']>;
+  content?: Maybe<Scalars['String']['output']>;
+  end_time?: Maybe<Scalars['Int']['output']>;
+  file_key?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['uuid']['output']>;
+  start_time?: Maybe<Scalars['Int']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  topic?: Maybe<Array<Scalars['String']['output']>>;
+  type?: Maybe<Scalars['String']['output']>;
+};
+
+/** aggregate min on columns */
+export type Multimodal_Data_Min_Fields = {
+  __typename?: 'multimodal_data_min_fields';
+  bucket?: Maybe<Scalars['String']['output']>;
+  content?: Maybe<Scalars['String']['output']>;
+  end_time?: Maybe<Scalars['Int']['output']>;
+  file_key?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['uuid']['output']>;
+  start_time?: Maybe<Scalars['Int']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  topic?: Maybe<Array<Scalars['String']['output']>>;
+  type?: Maybe<Scalars['String']['output']>;
+};
+
+/** response of any mutation on the table "multimodal_data" */
+export type Multimodal_Data_Mutation_Response = {
+  __typename?: 'multimodal_data_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int']['output'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Multimodal_Data>;
+};
+
+/** on_conflict condition type for table "multimodal_data" */
+export type Multimodal_Data_On_Conflict = {
+  constraint: Multimodal_Data_Constraint;
+  update_columns?: Array<Multimodal_Data_Update_Column>;
+  where?: InputMaybe<Multimodal_Data_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "multimodal_data". */
+export type Multimodal_Data_Order_By = {
+  bucket?: InputMaybe<Order_By>;
+  content?: InputMaybe<Order_By>;
+  end_time?: InputMaybe<Order_By>;
+  file_key?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  is_chunk?: InputMaybe<Order_By>;
+  metadata?: InputMaybe<Order_By>;
+  start_time?: InputMaybe<Order_By>;
+  title?: InputMaybe<Order_By>;
+  topic?: InputMaybe<Order_By>;
+  type?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: multimodal_data */
+export type Multimodal_Data_Pk_Columns_Input = {
+  id: Scalars['uuid']['input'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Multimodal_Data_Prepend_Input = {
+  metadata?: InputMaybe<Scalars['jsonb']['input']>;
+};
+
+/** select columns of table "multimodal_data" */
+export enum Multimodal_Data_Select_Column {
+  /** column name */
+  Bucket = 'bucket',
+  /** column name */
+  Content = 'content',
+  /** column name */
+  EndTime = 'end_time',
+  /** column name */
+  FileKey = 'file_key',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IsChunk = 'is_chunk',
+  /** column name */
+  Metadata = 'metadata',
+  /** column name */
+  StartTime = 'start_time',
+  /** column name */
+  Title = 'title',
+  /** column name */
+  Topic = 'topic',
+  /** column name */
+  Type = 'type'
+}
+
+/** input type for updating data in table "multimodal_data" */
+export type Multimodal_Data_Set_Input = {
+  bucket?: InputMaybe<Scalars['String']['input']>;
+  content?: InputMaybe<Scalars['String']['input']>;
+  end_time?: InputMaybe<Scalars['Int']['input']>;
+  file_key?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  is_chunk?: InputMaybe<Scalars['Boolean']['input']>;
+  metadata?: InputMaybe<Scalars['jsonb']['input']>;
+  start_time?: InputMaybe<Scalars['Int']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  topic?: InputMaybe<Array<Scalars['String']['input']>>;
+  type?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregate stddev on columns */
+export type Multimodal_Data_Stddev_Fields = {
+  __typename?: 'multimodal_data_stddev_fields';
+  end_time?: Maybe<Scalars['Float']['output']>;
+  start_time?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Multimodal_Data_Stddev_Pop_Fields = {
+  __typename?: 'multimodal_data_stddev_pop_fields';
+  end_time?: Maybe<Scalars['Float']['output']>;
+  start_time?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Multimodal_Data_Stddev_Samp_Fields = {
+  __typename?: 'multimodal_data_stddev_samp_fields';
+  end_time?: Maybe<Scalars['Float']['output']>;
+  start_time?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "multimodal_data" */
+export type Multimodal_Data_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Multimodal_Data_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Multimodal_Data_Stream_Cursor_Value_Input = {
+  bucket?: InputMaybe<Scalars['String']['input']>;
+  content?: InputMaybe<Scalars['String']['input']>;
+  end_time?: InputMaybe<Scalars['Int']['input']>;
+  file_key?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  is_chunk?: InputMaybe<Scalars['Boolean']['input']>;
+  metadata?: InputMaybe<Scalars['jsonb']['input']>;
+  start_time?: InputMaybe<Scalars['Int']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  topic?: InputMaybe<Array<Scalars['String']['input']>>;
+  type?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Multimodal_Data_Sum_Fields = {
+  __typename?: 'multimodal_data_sum_fields';
+  end_time?: Maybe<Scalars['Int']['output']>;
+  start_time?: Maybe<Scalars['Int']['output']>;
+};
+
+/** update columns of table "multimodal_data" */
+export enum Multimodal_Data_Update_Column {
+  /** column name */
+  Bucket = 'bucket',
+  /** column name */
+  Content = 'content',
+  /** column name */
+  EndTime = 'end_time',
+  /** column name */
+  FileKey = 'file_key',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IsChunk = 'is_chunk',
+  /** column name */
+  Metadata = 'metadata',
+  /** column name */
+  StartTime = 'start_time',
+  /** column name */
+  Title = 'title',
+  /** column name */
+  Topic = 'topic',
+  /** column name */
+  Type = 'type'
+}
+
+export type Multimodal_Data_Updates = {
+  /** append existing jsonb value of filtered columns with new jsonb value */
+  _append?: InputMaybe<Multimodal_Data_Append_Input>;
+  /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+  _delete_at_path?: InputMaybe<Multimodal_Data_Delete_At_Path_Input>;
+  /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+  _delete_elem?: InputMaybe<Multimodal_Data_Delete_Elem_Input>;
+  /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+  _delete_key?: InputMaybe<Multimodal_Data_Delete_Key_Input>;
+  /** increments the numeric columns with given value of the filtered values */
+  _inc?: InputMaybe<Multimodal_Data_Inc_Input>;
+  /** prepend existing jsonb value of filtered columns with new jsonb value */
+  _prepend?: InputMaybe<Multimodal_Data_Prepend_Input>;
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Multimodal_Data_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Multimodal_Data_Bool_Exp;
+};
+
+/** aggregate var_pop on columns */
+export type Multimodal_Data_Var_Pop_Fields = {
+  __typename?: 'multimodal_data_var_pop_fields';
+  end_time?: Maybe<Scalars['Float']['output']>;
+  start_time?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Multimodal_Data_Var_Samp_Fields = {
+  __typename?: 'multimodal_data_var_samp_fields';
+  end_time?: Maybe<Scalars['Float']['output']>;
+  start_time?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Multimodal_Data_Variance_Fields = {
+  __typename?: 'multimodal_data_variance_fields';
+  end_time?: Maybe<Scalars['Float']['output']>;
+  start_time?: Maybe<Scalars['Float']['output']>;
+};
+
 /** mutation root */
 export type Mutation_Root = {
   __typename?: 'mutation_root';
@@ -702,6 +1764,26 @@ export type Mutation_Root = {
   delete_agent_type?: Maybe<Agent_Type_Mutation_Response>;
   /** delete single row from the table: "agent_type" */
   delete_agent_type_by_pk?: Maybe<Agent_Type>;
+  /** delete data from the table: "message" */
+  delete_message?: Maybe<Message_Mutation_Response>;
+  /** delete single row from the table: "message" */
+  delete_message_by_pk?: Maybe<Message>;
+  /** delete data from the table: "message_feedback" */
+  delete_message_feedback?: Maybe<Message_Feedback_Mutation_Response>;
+  /** delete single row from the table: "message_feedback" */
+  delete_message_feedback_by_pk?: Maybe<Message_Feedback>;
+  /** delete data from the table: "message_role" */
+  delete_message_role?: Maybe<Message_Role_Mutation_Response>;
+  /** delete single row from the table: "message_role" */
+  delete_message_role_by_pk?: Maybe<Message_Role>;
+  /** delete data from the table: "message_status" */
+  delete_message_status?: Maybe<Message_Status_Mutation_Response>;
+  /** delete single row from the table: "message_status" */
+  delete_message_status_by_pk?: Maybe<Message_Status>;
+  /** delete data from the table: "multimodal_data" */
+  delete_multimodal_data?: Maybe<Multimodal_Data_Mutation_Response>;
+  /** delete single row from the table: "multimodal_data" */
+  delete_multimodal_data_by_pk?: Maybe<Multimodal_Data>;
   /** delete data from the table: "topic_history" */
   delete_topic_history?: Maybe<Topic_History_Mutation_Response>;
   /** delete single row from the table: "topic_history" */
@@ -714,6 +1796,26 @@ export type Mutation_Root = {
   insert_agent_type?: Maybe<Agent_Type_Mutation_Response>;
   /** insert a single row into the table: "agent_type" */
   insert_agent_type_one?: Maybe<Agent_Type>;
+  /** insert data into the table: "message" */
+  insert_message?: Maybe<Message_Mutation_Response>;
+  /** insert data into the table: "message_feedback" */
+  insert_message_feedback?: Maybe<Message_Feedback_Mutation_Response>;
+  /** insert a single row into the table: "message_feedback" */
+  insert_message_feedback_one?: Maybe<Message_Feedback>;
+  /** insert a single row into the table: "message" */
+  insert_message_one?: Maybe<Message>;
+  /** insert data into the table: "message_role" */
+  insert_message_role?: Maybe<Message_Role_Mutation_Response>;
+  /** insert a single row into the table: "message_role" */
+  insert_message_role_one?: Maybe<Message_Role>;
+  /** insert data into the table: "message_status" */
+  insert_message_status?: Maybe<Message_Status_Mutation_Response>;
+  /** insert a single row into the table: "message_status" */
+  insert_message_status_one?: Maybe<Message_Status>;
+  /** insert data into the table: "multimodal_data" */
+  insert_multimodal_data?: Maybe<Multimodal_Data_Mutation_Response>;
+  /** insert a single row into the table: "multimodal_data" */
+  insert_multimodal_data_one?: Maybe<Multimodal_Data>;
   /** insert data into the table: "topic_history" */
   insert_topic_history?: Maybe<Topic_History_Mutation_Response>;
   /** insert a single row into the table: "topic_history" */
@@ -730,6 +1832,36 @@ export type Mutation_Root = {
   update_agent_type_by_pk?: Maybe<Agent_Type>;
   /** update multiples rows of table: "agent_type" */
   update_agent_type_many?: Maybe<Array<Maybe<Agent_Type_Mutation_Response>>>;
+  /** update data of the table: "message" */
+  update_message?: Maybe<Message_Mutation_Response>;
+  /** update single row of the table: "message" */
+  update_message_by_pk?: Maybe<Message>;
+  /** update data of the table: "message_feedback" */
+  update_message_feedback?: Maybe<Message_Feedback_Mutation_Response>;
+  /** update single row of the table: "message_feedback" */
+  update_message_feedback_by_pk?: Maybe<Message_Feedback>;
+  /** update multiples rows of table: "message_feedback" */
+  update_message_feedback_many?: Maybe<Array<Maybe<Message_Feedback_Mutation_Response>>>;
+  /** update multiples rows of table: "message" */
+  update_message_many?: Maybe<Array<Maybe<Message_Mutation_Response>>>;
+  /** update data of the table: "message_role" */
+  update_message_role?: Maybe<Message_Role_Mutation_Response>;
+  /** update single row of the table: "message_role" */
+  update_message_role_by_pk?: Maybe<Message_Role>;
+  /** update multiples rows of table: "message_role" */
+  update_message_role_many?: Maybe<Array<Maybe<Message_Role_Mutation_Response>>>;
+  /** update data of the table: "message_status" */
+  update_message_status?: Maybe<Message_Status_Mutation_Response>;
+  /** update single row of the table: "message_status" */
+  update_message_status_by_pk?: Maybe<Message_Status>;
+  /** update multiples rows of table: "message_status" */
+  update_message_status_many?: Maybe<Array<Maybe<Message_Status_Mutation_Response>>>;
+  /** update data of the table: "multimodal_data" */
+  update_multimodal_data?: Maybe<Multimodal_Data_Mutation_Response>;
+  /** update single row of the table: "multimodal_data" */
+  update_multimodal_data_by_pk?: Maybe<Multimodal_Data>;
+  /** update multiples rows of table: "multimodal_data" */
+  update_multimodal_data_many?: Maybe<Array<Maybe<Multimodal_Data_Mutation_Response>>>;
   /** update data of the table: "topic_history" */
   update_topic_history?: Maybe<Topic_History_Mutation_Response>;
   /** update single row of the table: "topic_history" */
@@ -760,6 +1892,66 @@ export type Mutation_RootDelete_Agent_TypeArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Agent_Type_By_PkArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_MessageArgs = {
+  where: Message_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Message_By_PkArgs = {
+  id: Scalars['uuid']['input'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Message_FeedbackArgs = {
+  where: Message_Feedback_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Message_Feedback_By_PkArgs = {
+  value: Scalars['String']['input'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Message_RoleArgs = {
+  where: Message_Role_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Message_Role_By_PkArgs = {
+  value: Scalars['String']['input'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Message_StatusArgs = {
+  where: Message_Status_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Message_Status_By_PkArgs = {
+  value: Scalars['String']['input'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Multimodal_DataArgs = {
+  where: Multimodal_Data_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Multimodal_Data_By_PkArgs = {
+  id: Scalars['uuid']['input'];
 };
 
 
@@ -800,6 +1992,76 @@ export type Mutation_RootInsert_Agent_TypeArgs = {
 export type Mutation_RootInsert_Agent_Type_OneArgs = {
   object: Agent_Type_Insert_Input;
   on_conflict?: InputMaybe<Agent_Type_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_MessageArgs = {
+  objects: Array<Message_Insert_Input>;
+  on_conflict?: InputMaybe<Message_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Message_FeedbackArgs = {
+  objects: Array<Message_Feedback_Insert_Input>;
+  on_conflict?: InputMaybe<Message_Feedback_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Message_Feedback_OneArgs = {
+  object: Message_Feedback_Insert_Input;
+  on_conflict?: InputMaybe<Message_Feedback_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Message_OneArgs = {
+  object: Message_Insert_Input;
+  on_conflict?: InputMaybe<Message_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Message_RoleArgs = {
+  objects: Array<Message_Role_Insert_Input>;
+  on_conflict?: InputMaybe<Message_Role_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Message_Role_OneArgs = {
+  object: Message_Role_Insert_Input;
+  on_conflict?: InputMaybe<Message_Role_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Message_StatusArgs = {
+  objects: Array<Message_Status_Insert_Input>;
+  on_conflict?: InputMaybe<Message_Status_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Message_Status_OneArgs = {
+  object: Message_Status_Insert_Input;
+  on_conflict?: InputMaybe<Message_Status_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Multimodal_DataArgs = {
+  objects: Array<Multimodal_Data_Insert_Input>;
+  on_conflict?: InputMaybe<Multimodal_Data_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Multimodal_Data_OneArgs = {
+  object: Multimodal_Data_Insert_Input;
+  on_conflict?: InputMaybe<Multimodal_Data_On_Conflict>;
 };
 
 
@@ -862,6 +2124,118 @@ export type Mutation_RootUpdate_Agent_Type_ManyArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdate_MessageArgs = {
+  _set?: InputMaybe<Message_Set_Input>;
+  where: Message_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Message_By_PkArgs = {
+  _set?: InputMaybe<Message_Set_Input>;
+  pk_columns: Message_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Message_FeedbackArgs = {
+  _set?: InputMaybe<Message_Feedback_Set_Input>;
+  where: Message_Feedback_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Message_Feedback_By_PkArgs = {
+  _set?: InputMaybe<Message_Feedback_Set_Input>;
+  pk_columns: Message_Feedback_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Message_Feedback_ManyArgs = {
+  updates: Array<Message_Feedback_Updates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Message_ManyArgs = {
+  updates: Array<Message_Updates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Message_RoleArgs = {
+  _set?: InputMaybe<Message_Role_Set_Input>;
+  where: Message_Role_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Message_Role_By_PkArgs = {
+  _set?: InputMaybe<Message_Role_Set_Input>;
+  pk_columns: Message_Role_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Message_Role_ManyArgs = {
+  updates: Array<Message_Role_Updates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Message_StatusArgs = {
+  _set?: InputMaybe<Message_Status_Set_Input>;
+  where: Message_Status_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Message_Status_By_PkArgs = {
+  _set?: InputMaybe<Message_Status_Set_Input>;
+  pk_columns: Message_Status_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Message_Status_ManyArgs = {
+  updates: Array<Message_Status_Updates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Multimodal_DataArgs = {
+  _append?: InputMaybe<Multimodal_Data_Append_Input>;
+  _delete_at_path?: InputMaybe<Multimodal_Data_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Multimodal_Data_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Multimodal_Data_Delete_Key_Input>;
+  _inc?: InputMaybe<Multimodal_Data_Inc_Input>;
+  _prepend?: InputMaybe<Multimodal_Data_Prepend_Input>;
+  _set?: InputMaybe<Multimodal_Data_Set_Input>;
+  where: Multimodal_Data_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Multimodal_Data_By_PkArgs = {
+  _append?: InputMaybe<Multimodal_Data_Append_Input>;
+  _delete_at_path?: InputMaybe<Multimodal_Data_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Multimodal_Data_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Multimodal_Data_Delete_Key_Input>;
+  _inc?: InputMaybe<Multimodal_Data_Inc_Input>;
+  _prepend?: InputMaybe<Multimodal_Data_Prepend_Input>;
+  _set?: InputMaybe<Multimodal_Data_Set_Input>;
+  pk_columns: Multimodal_Data_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Multimodal_Data_ManyArgs = {
+  updates: Array<Multimodal_Data_Updates>;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_Topic_HistoryArgs = {
   _inc?: InputMaybe<Topic_History_Inc_Input>;
   _set?: InputMaybe<Topic_History_Set_Input>;
@@ -912,6 +2286,36 @@ export type Query_Root = {
   agent_type_aggregate: Agent_Type_Aggregate;
   /** fetch data from the table: "agent_type" using primary key columns */
   agent_type_by_pk?: Maybe<Agent_Type>;
+  /** fetch data from the table: "message" */
+  message: Array<Message>;
+  /** fetch aggregated fields from the table: "message" */
+  message_aggregate: Message_Aggregate;
+  /** fetch data from the table: "message" using primary key columns */
+  message_by_pk?: Maybe<Message>;
+  /** fetch data from the table: "message_feedback" */
+  message_feedback: Array<Message_Feedback>;
+  /** fetch aggregated fields from the table: "message_feedback" */
+  message_feedback_aggregate: Message_Feedback_Aggregate;
+  /** fetch data from the table: "message_feedback" using primary key columns */
+  message_feedback_by_pk?: Maybe<Message_Feedback>;
+  /** fetch data from the table: "message_role" */
+  message_role: Array<Message_Role>;
+  /** fetch aggregated fields from the table: "message_role" */
+  message_role_aggregate: Message_Role_Aggregate;
+  /** fetch data from the table: "message_role" using primary key columns */
+  message_role_by_pk?: Maybe<Message_Role>;
+  /** fetch data from the table: "message_status" */
+  message_status: Array<Message_Status>;
+  /** fetch aggregated fields from the table: "message_status" */
+  message_status_aggregate: Message_Status_Aggregate;
+  /** fetch data from the table: "message_status" using primary key columns */
+  message_status_by_pk?: Maybe<Message_Status>;
+  /** fetch data from the table: "multimodal_data" */
+  multimodal_data: Array<Multimodal_Data>;
+  /** fetch aggregated fields from the table: "multimodal_data" */
+  multimodal_data_aggregate: Multimodal_Data_Aggregate;
+  /** fetch data from the table: "multimodal_data" using primary key columns */
+  multimodal_data_by_pk?: Maybe<Multimodal_Data>;
   /** fetch data from the table: "topic_history" */
   topic_history: Array<Topic_History>;
   /** fetch aggregated fields from the table: "topic_history" */
@@ -967,6 +2371,121 @@ export type Query_RootAgent_Type_By_PkArgs = {
 };
 
 
+export type Query_RootMessageArgs = {
+  distinct_on?: InputMaybe<Array<Message_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Message_Order_By>>;
+  where?: InputMaybe<Message_Bool_Exp>;
+};
+
+
+export type Query_RootMessage_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Message_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Message_Order_By>>;
+  where?: InputMaybe<Message_Bool_Exp>;
+};
+
+
+export type Query_RootMessage_By_PkArgs = {
+  id: Scalars['uuid']['input'];
+};
+
+
+export type Query_RootMessage_FeedbackArgs = {
+  distinct_on?: InputMaybe<Array<Message_Feedback_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Message_Feedback_Order_By>>;
+  where?: InputMaybe<Message_Feedback_Bool_Exp>;
+};
+
+
+export type Query_RootMessage_Feedback_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Message_Feedback_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Message_Feedback_Order_By>>;
+  where?: InputMaybe<Message_Feedback_Bool_Exp>;
+};
+
+
+export type Query_RootMessage_Feedback_By_PkArgs = {
+  value: Scalars['String']['input'];
+};
+
+
+export type Query_RootMessage_RoleArgs = {
+  distinct_on?: InputMaybe<Array<Message_Role_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Message_Role_Order_By>>;
+  where?: InputMaybe<Message_Role_Bool_Exp>;
+};
+
+
+export type Query_RootMessage_Role_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Message_Role_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Message_Role_Order_By>>;
+  where?: InputMaybe<Message_Role_Bool_Exp>;
+};
+
+
+export type Query_RootMessage_Role_By_PkArgs = {
+  value: Scalars['String']['input'];
+};
+
+
+export type Query_RootMessage_StatusArgs = {
+  distinct_on?: InputMaybe<Array<Message_Status_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Message_Status_Order_By>>;
+  where?: InputMaybe<Message_Status_Bool_Exp>;
+};
+
+
+export type Query_RootMessage_Status_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Message_Status_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Message_Status_Order_By>>;
+  where?: InputMaybe<Message_Status_Bool_Exp>;
+};
+
+
+export type Query_RootMessage_Status_By_PkArgs = {
+  value: Scalars['String']['input'];
+};
+
+
+export type Query_RootMultimodal_DataArgs = {
+  distinct_on?: InputMaybe<Array<Multimodal_Data_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Multimodal_Data_Order_By>>;
+  where?: InputMaybe<Multimodal_Data_Bool_Exp>;
+};
+
+
+export type Query_RootMultimodal_Data_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Multimodal_Data_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Multimodal_Data_Order_By>>;
+  where?: InputMaybe<Multimodal_Data_Bool_Exp>;
+};
+
+
+export type Query_RootMultimodal_Data_By_PkArgs = {
+  id: Scalars['uuid']['input'];
+};
+
+
 export type Query_RootTopic_HistoryArgs = {
   distinct_on?: InputMaybe<Array<Topic_History_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -1007,6 +2526,46 @@ export type Subscription_Root = {
   agent_type_by_pk?: Maybe<Agent_Type>;
   /** fetch data from the table in a streaming manner: "agent_type" */
   agent_type_stream: Array<Agent_Type>;
+  /** fetch data from the table: "message" */
+  message: Array<Message>;
+  /** fetch aggregated fields from the table: "message" */
+  message_aggregate: Message_Aggregate;
+  /** fetch data from the table: "message" using primary key columns */
+  message_by_pk?: Maybe<Message>;
+  /** fetch data from the table: "message_feedback" */
+  message_feedback: Array<Message_Feedback>;
+  /** fetch aggregated fields from the table: "message_feedback" */
+  message_feedback_aggregate: Message_Feedback_Aggregate;
+  /** fetch data from the table: "message_feedback" using primary key columns */
+  message_feedback_by_pk?: Maybe<Message_Feedback>;
+  /** fetch data from the table in a streaming manner: "message_feedback" */
+  message_feedback_stream: Array<Message_Feedback>;
+  /** fetch data from the table: "message_role" */
+  message_role: Array<Message_Role>;
+  /** fetch aggregated fields from the table: "message_role" */
+  message_role_aggregate: Message_Role_Aggregate;
+  /** fetch data from the table: "message_role" using primary key columns */
+  message_role_by_pk?: Maybe<Message_Role>;
+  /** fetch data from the table in a streaming manner: "message_role" */
+  message_role_stream: Array<Message_Role>;
+  /** fetch data from the table: "message_status" */
+  message_status: Array<Message_Status>;
+  /** fetch aggregated fields from the table: "message_status" */
+  message_status_aggregate: Message_Status_Aggregate;
+  /** fetch data from the table: "message_status" using primary key columns */
+  message_status_by_pk?: Maybe<Message_Status>;
+  /** fetch data from the table in a streaming manner: "message_status" */
+  message_status_stream: Array<Message_Status>;
+  /** fetch data from the table in a streaming manner: "message" */
+  message_stream: Array<Message>;
+  /** fetch data from the table: "multimodal_data" */
+  multimodal_data: Array<Multimodal_Data>;
+  /** fetch aggregated fields from the table: "multimodal_data" */
+  multimodal_data_aggregate: Multimodal_Data_Aggregate;
+  /** fetch data from the table: "multimodal_data" using primary key columns */
+  multimodal_data_by_pk?: Maybe<Multimodal_Data>;
+  /** fetch data from the table in a streaming manner: "multimodal_data" */
+  multimodal_data_stream: Array<Multimodal_Data>;
   /** fetch data from the table: "topic_history" */
   topic_history: Array<Topic_History>;
   /** fetch aggregated fields from the table: "topic_history" */
@@ -1075,6 +2634,156 @@ export type Subscription_RootAgent_Type_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Agent_Type_Stream_Cursor_Input>>;
   where?: InputMaybe<Agent_Type_Bool_Exp>;
+};
+
+
+export type Subscription_RootMessageArgs = {
+  distinct_on?: InputMaybe<Array<Message_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Message_Order_By>>;
+  where?: InputMaybe<Message_Bool_Exp>;
+};
+
+
+export type Subscription_RootMessage_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Message_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Message_Order_By>>;
+  where?: InputMaybe<Message_Bool_Exp>;
+};
+
+
+export type Subscription_RootMessage_By_PkArgs = {
+  id: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootMessage_FeedbackArgs = {
+  distinct_on?: InputMaybe<Array<Message_Feedback_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Message_Feedback_Order_By>>;
+  where?: InputMaybe<Message_Feedback_Bool_Exp>;
+};
+
+
+export type Subscription_RootMessage_Feedback_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Message_Feedback_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Message_Feedback_Order_By>>;
+  where?: InputMaybe<Message_Feedback_Bool_Exp>;
+};
+
+
+export type Subscription_RootMessage_Feedback_By_PkArgs = {
+  value: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootMessage_Feedback_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Message_Feedback_Stream_Cursor_Input>>;
+  where?: InputMaybe<Message_Feedback_Bool_Exp>;
+};
+
+
+export type Subscription_RootMessage_RoleArgs = {
+  distinct_on?: InputMaybe<Array<Message_Role_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Message_Role_Order_By>>;
+  where?: InputMaybe<Message_Role_Bool_Exp>;
+};
+
+
+export type Subscription_RootMessage_Role_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Message_Role_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Message_Role_Order_By>>;
+  where?: InputMaybe<Message_Role_Bool_Exp>;
+};
+
+
+export type Subscription_RootMessage_Role_By_PkArgs = {
+  value: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootMessage_Role_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Message_Role_Stream_Cursor_Input>>;
+  where?: InputMaybe<Message_Role_Bool_Exp>;
+};
+
+
+export type Subscription_RootMessage_StatusArgs = {
+  distinct_on?: InputMaybe<Array<Message_Status_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Message_Status_Order_By>>;
+  where?: InputMaybe<Message_Status_Bool_Exp>;
+};
+
+
+export type Subscription_RootMessage_Status_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Message_Status_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Message_Status_Order_By>>;
+  where?: InputMaybe<Message_Status_Bool_Exp>;
+};
+
+
+export type Subscription_RootMessage_Status_By_PkArgs = {
+  value: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootMessage_Status_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Message_Status_Stream_Cursor_Input>>;
+  where?: InputMaybe<Message_Status_Bool_Exp>;
+};
+
+
+export type Subscription_RootMessage_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Message_Stream_Cursor_Input>>;
+  where?: InputMaybe<Message_Bool_Exp>;
+};
+
+
+export type Subscription_RootMultimodal_DataArgs = {
+  distinct_on?: InputMaybe<Array<Multimodal_Data_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Multimodal_Data_Order_By>>;
+  where?: InputMaybe<Multimodal_Data_Bool_Exp>;
+};
+
+
+export type Subscription_RootMultimodal_Data_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Multimodal_Data_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Multimodal_Data_Order_By>>;
+  where?: InputMaybe<Multimodal_Data_Bool_Exp>;
+};
+
+
+export type Subscription_RootMultimodal_Data_By_PkArgs = {
+  id: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootMultimodal_Data_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Multimodal_Data_Stream_Cursor_Input>>;
+  where?: InputMaybe<Multimodal_Data_Bool_Exp>;
 };
 
 
@@ -1408,6 +3117,14 @@ export type AgentByIdQueryVariables = Exact<{
 
 export type AgentByIdQuery = { __typename?: 'query_root', agent_by_pk?: { __typename?: 'agent', id: number, name: string, description?: string | null, avatar?: string | null } | null };
 
+export type GetMessageListSubscriptionVariables = Exact<{
+  session_id?: InputMaybe<Scalars['uuid']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type GetMessageListSubscription = { __typename?: 'subscription_root', message: Array<{ __typename?: 'message', id: any, role: Message_Role_Enum, feedback?: Message_Feedback_Enum | null, created_at?: any | null, content?: string | null, status?: Message_Status_Enum | null, updated_at?: any | null }> };
+
 
 export const AddNewTopicMutationDocument = gql`
     mutation AddNewTopicMutation($title: String, $user_id: String, $agent_id: Int) {
@@ -1589,3 +3306,40 @@ export type AgentByIdQueryHookResult = ReturnType<typeof useAgentByIdQuery>;
 export type AgentByIdLazyQueryHookResult = ReturnType<typeof useAgentByIdLazyQuery>;
 export type AgentByIdSuspenseQueryHookResult = ReturnType<typeof useAgentByIdSuspenseQuery>;
 export type AgentByIdQueryResult = Apollo.QueryResult<AgentByIdQuery, AgentByIdQueryVariables>;
+export const GetMessageListDocument = gql`
+    subscription GetMessageList($session_id: uuid, $limit: Int = 10) {
+  message(where: {session_id: {_eq: $session_id}}, limit: $limit) {
+    id
+    role
+    feedback
+    created_at
+    content
+    status
+    updated_at
+  }
+}
+    `;
+
+/**
+ * __useGetMessageListSubscription__
+ *
+ * To run a query within a React component, call `useGetMessageListSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useGetMessageListSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMessageListSubscription({
+ *   variables: {
+ *      session_id: // value for 'session_id'
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useGetMessageListSubscription(baseOptions?: Apollo.SubscriptionHookOptions<GetMessageListSubscription, GetMessageListSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<GetMessageListSubscription, GetMessageListSubscriptionVariables>(GetMessageListDocument, options);
+      }
+export type GetMessageListSubscriptionHookResult = ReturnType<typeof useGetMessageListSubscription>;
+export type GetMessageListSubscriptionResult = Apollo.SubscriptionResult<GetMessageListSubscription>;

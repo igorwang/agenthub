@@ -1,6 +1,14 @@
 import React from "react";
+import { AppDispatch } from "@/lib/store";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectSelectedChatId,
+  selectSelectedSessionId,
+} from "@/lib/features/chatListSlice";
+import { useSession } from "next-auth/react";
 
 import MessageCard from "./message-card";
+import { useGetMessageListSubscription } from "@/graphql/generated/types";
 
 export const assistantMessages = [
   <div key="1">
@@ -69,6 +77,33 @@ export const userMessages = [
 ];
 
 export default function MessageWindow() {
+  const dispatch: AppDispatch = useDispatch();
+
+  const selectedChatId = useSelector(selectSelectedChatId);
+  const selectedSessionId = useSelector(selectSelectedSessionId);
+
+  const session = useSession();
+  const user_id = session.data?.user?.id;
+  const agent_id = selectedChatId;
+
+  // const { data, loading, error } = useGetMessageListSubscription({
+  //   variables: {
+  //     session_id: selectedSessionId,
+  //     limit: 10,
+  //   },
+  // });
+  if (selectedSessionId) {
+    const { data, loading, error } = useGetMessageListSubscription({
+      variables: {
+        session_id: selectedSessionId, // value for 'session_id'
+        limit: 10, // value for 'limit'
+      },
+    });
+    console.log("session_id", selectedSessionId);
+    console.log("message data: ", data);
+    console.log(error);
+  }
+
   const messages = [
     {
       role: "user",
@@ -126,7 +161,6 @@ export default function MessageWindow() {
 
   return (
     <div className="flex flex-1 flex-grow flex-col gap-4 px-1 ">
-    
       {messages.map(({ role, message }, index) => (
         <MessageCard
           key={index}
