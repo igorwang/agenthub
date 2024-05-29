@@ -6,6 +6,11 @@ import { Icon } from "@iconify/react";
 import { cn } from "@/cn";
 
 import PromptInput from "./prompt-input";
+import {
+  UploadFile,
+  UploadFileProps,
+} from "@/components/Conversation/upload-file";
+import { url } from "inspector";
 
 export default function PromptInputWithFaq() {
   const ideas = [
@@ -39,7 +44,8 @@ export default function PromptInputWithFaq() {
     },
   ];
 
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<UploadFileProps[]>([]);
+
   const [prompt, setPrompt] = useState<string>("");
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -55,20 +61,60 @@ export default function PromptInputWithFaq() {
   ) => {
     const file = event.target.files?.[0];
     if (file) {
-      console.log("Selected file:", file.name);
       try {
         const res = await fetch(
           `/api/file/presigned_url?fileName=${file.name}&fileType=${file.type}&location=chat`
         );
         const { url } = await res.json();
         console.log(url);
+        const newFileKey = files.length + 1;
+        const newFile: UploadFileProps = {
+          key: newFileKey,
+          file: file,
+          fileName: file.name,
+          isLoading: true,
+          url: url,
+        };
+        setFiles((prevFiles) => [...prevFiles, newFile]);
+
+        const uploadResponse = await fetch(url, {
+          method: "PUT",
+          body: file,
+          headers: {
+            "Content-Type": file.type,
+          },
+        });
+        
+        if (!uploadResponse.ok) {
+          throw new Error("Failed to upload file");
+        }
+
+        setFiles((prevFiles) =>
+          prevFiles.map((file) =>
+            file.key === newFileKey ? { ...file, isLoading: false } : file
+          )
+        );
       } catch (error) {
         console.error("Error:", error);
       }
-      // 在这里可以进一步处理文件，例如上传到服务器
-      // 执行上传流程
     }
   };
+
+  const removeFileHanlder = (index: number) => {
+    setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+  };
+
+  const uploadFileListElement = files.map((item, index) => (
+    <UploadFile
+      key={index}
+      file={item.file}
+      fileName={item.fileName}
+      isLoading={item.isLoading}
+      className={item.className}
+      url={item.url}
+      removeFileHandler={removeFileHanlder}
+    />
+  ));
 
   return (
     <div className="flex flex-col gap-4 p-2 items-center">
@@ -92,8 +138,15 @@ export default function PromptInputWithFaq() {
       </ScrollShadow>
       {/* <div className="overflow-hidden text-nowrap text-ellipsis whitespace-nowrap border border-blue-500 p-2">
   Create a blog post about NextUI Create a blog post about NextUI Create a blog post about NextUI Create a blog post about NextUI Create a blog post about NextUI Create a blog post about NextUI Create a blog post about NextUI Create a blog post about NextUI Create a blog post about NextUI Create a blog post about NextUI
-</div> */}
+          </div> */}
       <form className="flex flex-col w-full items-start rounded-medium bg-default-100 transition-colors hover:bg-default-200/70">
+        <ScrollShadow
+          className="flex flex-row flex-nowrap gap-2 overflow-auto w-full"
+          orientation="horizontal"
+        >
+          {uploadFileListElement}
+        </ScrollShadow>
+
         <PromptInput
           classNames={{
             inputWrapper: "!bg-transparent shadow-none",

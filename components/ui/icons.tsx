@@ -126,3 +126,97 @@ export const PlusIcon = (props: IconSvgProps) => (
     />
   </svg>
 );
+
+export const DocumentIcon: React.FC<IconSvgProps> = ({
+  size = 24, // Default size to 24
+  width,
+  height,
+  ...props
+}) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={width || size}
+      height={height || size}
+      viewBox="0 0 20 24"
+      {...props}
+    >
+      <path
+        fill="currentColor"
+        d="M19.638 8.945c0-.228-.07-.439-.19-.613l.002.004a1.516 1.516 0 0 0-.06-.08l-.005-.006a1.03 1.03 0 0 0-.063-.069l-.01-.01l-.028-.029L11.462.321a.83.83 0 0 0-.07-.063l-.022-.02l-.054-.04l-.027-.019a1.787 1.787 0 0 0-.058-.035l-.025-.015a1.205 1.205 0 0 0-.081-.039l-.034-.014l-.054-.02l-.039-.012l-.061-.016l-.031-.007a1.357 1.357 0 0 0-.092-.014H1.092C.492.007.005.491.001 1.09v21.818c0 .603.489 1.091 1.091 1.091h17.454c.603 0 1.091-.489 1.091-1.091V8.973zM11.781 3.72l4.13 4.135h-4.13zM2.182 21.818V2.181h7.42v6.767c0 .603.489 1.091 1.091 1.091h6.767v11.779z"
+      />
+      <path
+        fill="currentColor"
+        d="M13.454 17.454H6.15a1.091 1.091 0 0 0 0 2.182h.032h-.002h7.304a1.091 1.091 0 0 0 0-2.182h-.032zm0-4.363H6.15a1.091 1.091 0 0 0 0 2.182h.032h-.002h7.304a1.091 1.091 0 0 0 0-2.182h-.032z"
+      />
+    </svg>
+  );
+};
+export const VideoIcon: React.FC<IconSvgProps> = ({
+  size = 24,
+  width,
+  height,
+  ...props
+}) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size || width}
+      height={size || height}
+      viewBox="0 0 1536 1792"
+      {...props}
+    >
+      <path
+        fill="currentColor"
+        d="M1468 380q28 28 48 76t20 88v1152q0 40-28 68t-68 28H96q-40 0-68-28t-28-68V96q0-40 28-68T96 0h896q40 0 88 20t76 48zm-444-244v376h376q-10-29-22-41l-313-313q-12-12-41-22m384 1528V640H992q-40 0-68-28t-28-68V128H128v1536zM768 768q52 0 90 38t38 90v384q0 52-38 90t-90 38H384q-52 0-90-38t-38-90V896q0-52 38-90t90-38zm492 2q20 8 20 30v576q0 22-20 30q-8 2-12 2q-14 0-23-9l-265-266v-90l265-266q9-9 23-9q4 0 12 2"
+      />
+    </svg>
+  );
+};
+
+export const DefaultFileIcon: React.FC<IconSvgProps> = ({
+  size = 32, // Default size to 24
+  width,
+  height,
+  ...props
+}) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={width || size}
+      height={height || size}
+      viewBox="0 0 16 16"
+      {...props}
+    >
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="m13.71 4.29l-3-3L10 1H4L3 2v12l1 1h9l1-1V5zM13 14H4V2h5v4h4zm-3-9V2l3 3z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+};
+
+export const DeleteIcon: React.FC<IconSvgProps> = ({
+  size = 24, // Default size to 24
+  width,
+  height,
+  ...props
+}) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={width || size}
+      height={height || size}
+      viewBox="0 0 40 40"
+      fill="currentColor"
+      {...props}
+    >
+      <path
+        fill="currentColor"
+        d="M21.499 19.994L32.755 8.727a1.064 1.064 0 0 0-.001-1.502c-.398-.396-1.099-.398-1.501.002L20 18.494L8.743 7.224c-.4-.395-1.101-.393-1.499.002a1.05 1.05 0 0 0-.309.751c0 .284.11.55.309.747L18.5 19.993L7.245 31.263a1.064 1.064 0 0 0 .003 1.503c.193.191.466.301.748.301h.006c.283-.001.556-.112.745-.305L20 21.495l11.257 11.27c.199.198.465.308.747.308a1.058 1.058 0 0 0 1.061-1.061c0-.283-.11-.55-.31-.747z"
+      />{" "}
+    </svg>
+  );
+};
