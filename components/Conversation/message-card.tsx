@@ -134,14 +134,14 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       <div className="flex w-full flex-col gap-2 ml-14">
         <div
           className={cn(
-            "relative w-full rounded-medium px-4 py-2 text-default-600",
+            "relative w-full rounded-medium px-4 py-2 text-default-800",
             failedMessageClassName,
             messageClassName
           )}
         >
           <div
             ref={messageRef}
-            className={"px-1 text-small flex justify-end"}
+            className={"px-1 text-medium flex justify-end"}
           >
             {hasFailed ? failedMessage : message}
           </div>
@@ -158,7 +158,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
             messageClassName
           )}
         >
-          <div ref={messageRef} className={"px-1 text-small min-h-8"}>
+          <div ref={messageRef} className={"px-1 text-medium min-h-8"}>
             {hasFailed ? failedMessage : message}
           </div>
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { AppDispatch } from "@/lib/store";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -8,23 +8,26 @@ import {
 import { useSession } from "next-auth/react";
 
 import MessageCard from "./message-card";
-import { useGetMessageListSubscription } from "@/graphql/generated/types";
+import {
+  useGetMessageListSubscription,
+  GetMessageListSubscription,
+} from "@/graphql/generated/types";
 import { Avatar } from "@nextui-org/react";
 import FeatureCards from "@/components/Conversation/feature-cards";
 
 export const assistantMessages = [
   <div key="1">
-    <p className="mb-5">
-      Certainly! Here&apos;s a summary of five creative ways to use your
-      Certainly! Here&apos;s a summary of five creative ways to use your
-      Certainly! Here&apos;s a summary of five creative ways to use your
-      Certainly! Here&apos;s a summary of five creative ways to use your
-      Certainly! Here&apos;s a summary of five creative ways to use your
-      Certainly! Here&apos;s a summary of five creative ways to use your
-      Certainly! Here&apos;s a summary of five creative ways to use your
-      Certainly! Here&apos;s a summary of five creative ways to use your
-      kids&apos; art:
-    </p>
+    {/* <p className="mb-5"> */}
+    Certainly! Here&apos;s a summary of five creative ways to use your
+    Certainly! Here&apos;s a summary of five creative ways to use your
+    Certainly! Here&apos;s a summary of five creative ways to use your
+    Certainly! Here&apos;s a summary of five creative ways to use your
+    Certainly! Here&apos;s a summary of five creative ways to use your
+    Certainly! Here&apos;s a summary of five creative ways to use your
+    Certainly! Here&apos;s a summary of five creative ways to use your
+    Certainly! Here&apos;s a summary of five creative ways to use your
+    kids&apos; art:
+    {/* </p> */}
     {/* <ol className="space-y-2">
       <li>
         <strong>Create Art Books:</strong> Turn scanned artwork into custom
@@ -85,6 +88,14 @@ export const userMessages = [
   "I didn't like the suggestions. Can you give me some more?",
 ];
 
+type MessageType = {
+  id: string;
+  role: string;
+  message?: string | null;
+  feedback?: string | null;
+  status?: string | null;
+};
+
 export default function MessageWindow() {
   const dispatch: AppDispatch = useDispatch();
 
@@ -94,6 +105,7 @@ export default function MessageWindow() {
   const session = useSession();
   const user_id = session.data?.user?.id;
   const agent_id = selectedChatId;
+  const [messages, setMessages] = useState<MessageType[]>([]);
 
   const { data, loading, error } = useGetMessageListSubscription({
     variables: {
@@ -103,24 +115,38 @@ export default function MessageWindow() {
     skip: !selectedSessionId, // Skip the query if session_id is not provided
   });
 
-  const messages = [
-    {
-      role: "user",
-      message: userMessages[0],
-    },
-    {
-      role: "assistant",
-      message: assistantMessages[0],
-    },
-    {
-      role: "assistant",
-      message: assistantMessages[0],
-    },
-    {
-      role: "assistant",
-      message: assistantMessages[0],
-    },
-  ];
+  useEffect(() => {
+    if (data && data.message) {
+      setMessages(
+        data.message.map((item) => ({
+          id: item.id,
+          role: item.role,
+          message: item.content,
+          status: item.status,
+          feedback: item.feedback,
+        }))
+      );
+    }
+  }, [data]);
+
+  // const messages = [
+  //   {
+  //     role: "user",
+  //     message: userMessages[0],
+  //   },
+  //   {
+  //     role: "assistant",
+  //     message: assistantMessages[0],
+  //   },
+  //   {
+  //     role: "assistant",
+  //     message: assistantMessages[0],
+  //   },
+  //   {
+  //     role: "assistant",
+  //     message: assistantMessages[0],
+  //   },
+  // ];
 
   const featureContent = (
     <div className="flex h-full flex-col justify-center">

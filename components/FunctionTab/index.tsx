@@ -73,7 +73,7 @@ export const FunctionTab = () => {
   };
 
   return (
-    <div className="flex flex-col w-full  items-center pt-2">
+    <div className="flex flex-col w-full items-center pt-2">
       <Tabs aria-label="Options" variant="light" className="flex flex-col">
         <Tab
           key="topic"
