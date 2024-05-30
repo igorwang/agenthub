@@ -7,6 +7,7 @@ declare module "next-auth" {
     access_token?: string;
     email?: string;
     groups?: string[];
+    avatar: string = "https://api.dicebear.com/8.x/adventurer-neutral/svg?seed=Jasmine";
   }
 
   interface Session {

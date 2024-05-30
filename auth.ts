@@ -94,7 +94,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     session: ({ session, token }) => {
       if (token.uid) {
-      session.user.id = token.uid;
+        session.user.id = token.uid;
+        session.user.avatar =
+          token.picture ||
+          "https://api.dicebear.com/8.x/adventurer-neutral/svg?seed=Jasmine";
       }
       session.access_token = token.access_token as string;
       return session;

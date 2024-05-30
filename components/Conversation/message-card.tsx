@@ -9,6 +9,7 @@ import { cn } from "@/cn";
 export type MessageCardProps = React.HTMLAttributes<HTMLDivElement> & {
   avatar?: string;
   showFeedback?: boolean;
+  isUser?: boolean;
   message?: React.ReactNode;
   currentAttempt?: number;
   status?: "success" | "failed";
@@ -28,6 +29,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       showFeedback,
       attempts = 1,
       currentAttempt = 1,
+      isUser,
       status,
       onMessageCopy,
       onAttemptChange,
@@ -108,38 +110,61 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       [onAttemptFeedback]
     );
 
-    return (
-      <div {...props} ref={ref} className={cn("flex gap-3", className)}>
-        <div className="relative flex-none">
-          <Badge
-            isOneChar
-            color="danger"
-            content={
-              <Icon
-                className="text-background"
-                icon="gravity-ui:circle-exclamation-fill"
-              />
-            }
-            isInvisible={!hasFailed}
-            placement="bottom-right"
-            shape="circle"
-          >
-            <Avatar src={avatar} />
-          </Badge>
-        </div>
-        <div className="flex w-full flex-col gap-4">
+    const avatarBadgeContent = (
+      <div className="relative flex-shrink">
+        <Badge
+          isOneChar
+          color="danger"
+          content={
+            <Icon
+              className="text-background"
+              icon="gravity-ui:circle-exclamation-fill"
+            />
+          }
+          isInvisible={!hasFailed}
+          placement="bottom-right"
+          shape="circle"
+        >
+          <Avatar src={avatar} />
+        </Badge>
+      </div>
+    );
+
+    const userMessageContent = (
+      <div className="flex w-full flex-col gap-2 ml-14">
+        <div
+          className={cn(
+            "relative w-full rounded-medium px-4 py-2 text-default-600",
+            failedMessageClassName,
+            messageClassName
+          )}
+        >
           <div
-            className={cn(
-              "relative w-full rounded-medium bg-content2 px-4 py-3 text-default-600",
-              failedMessageClassName,
-              messageClassName
-            )}
+            ref={messageRef}
+            className={"px-1 text-small flex justify-end"}
           >
-            <div ref={messageRef} className={"pr-20 text-small"}>
-              {hasFailed ? failedMessage : message}
-            </div>
+            {hasFailed ? failedMessage : message}
+          </div>
+        </div>
+      </div>
+    );
+
+    const messageContent = (
+      <div className="flex w-full flex-col gap-4 mr-14">
+        <div
+          className={cn(
+            "relative w-full rounded-medium bg-content2 px-4 py-1 text-default-600",
+            failedMessageClassName,
+            messageClassName
+          )}
+        >
+          <div ref={messageRef} className={"px-1 text-small min-h-8"}>
+            {hasFailed ? failedMessage : message}
+          </div>
+
+          <div className="flex flex-row justify-between items-center">
             {showFeedback && !hasFailed && (
-              <div className="absolute right-2 top-2 flex rounded-full bg-content2 shadow-small">
+              <div className="flex ">
                 <Button
                   isIconOnly
                   radius="full"
@@ -231,79 +256,95 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
               </div>
             )}
           </div>
-          {showFeedback && attempts > 1 && (
-            <div className="flex items-center justify-between rounded-medium border-small border-default-100 px-4 py-3 shadow-small">
-              <p className="text-small text-default-600">
-                Was this response better or worse?
-              </p>
-              <div className="flex gap-1">
-                <Tooltip content="Better">
-                  <Button
-                    isIconOnly
-                    radius="full"
-                    size="sm"
-                    variant="light"
-                    onPress={() => handleAttemptFeedback("like")}
-                  >
-                    {attemptFeedback === "like" ? (
-                      <Icon
-                        className="text-lg text-primary"
-                        icon="gravity-ui:thumbs-up-fill"
-                      />
-                    ) : (
-                      <Icon
-                        className="text-lg text-default-600"
-                        icon="gravity-ui:thumbs-up"
-                      />
-                    )}
-                  </Button>
-                </Tooltip>
-                <Tooltip content="Worse">
-                  <Button
-                    isIconOnly
-                    radius="full"
-                    size="sm"
-                    variant="light"
-                    onPress={() => handleAttemptFeedback("dislike")}
-                  >
-                    {attemptFeedback === "dislike" ? (
-                      <Icon
-                        className="text-lg text-default-600"
-                        icon="gravity-ui:thumbs-down-fill"
-                      />
-                    ) : (
-                      <Icon
-                        className="text-lg text-default-600"
-                        icon="gravity-ui:thumbs-down"
-                      />
-                    )}
-                  </Button>
-                </Tooltip>
-                <Tooltip content="Same">
-                  <Button
-                    isIconOnly
-                    radius="full"
-                    size="sm"
-                    variant="light"
-                    onPress={() => handleAttemptFeedback("same")}
-                  >
-                    {attemptFeedback === "same" ? (
-                      <Icon
-                        className="text-lg text-danger"
-                        icon="gravity-ui:face-sad"
-                      />
-                    ) : (
-                      <Icon
-                        className="text-lg text-default-600"
-                        icon="gravity-ui:face-sad"
-                      />
-                    )}
-                  </Button>
-                </Tooltip>
-              </div>
-            </div>
-          )}
         </div>
+        {/* {showFeedback && attempts > 1 && (
+          <div className="flex items-center justify-between rounded-medium border-small border-default-100 px-4 py-3 shadow-small">
+            <p className="text-small text-default-600">
+              Was this response better or worse?
+            </p>
+            <div className="flex gap-1">
+              <Tooltip content="Better">
+                <Button
+                  isIconOnly
+                  radius="full"
+                  size="sm"
+                  variant="light"
+                  onPress={() => handleAttemptFeedback("like")}
+                >
+                  {attemptFeedback === "like" ? (
+                    <Icon
+                      className="text-lg text-primary"
+                      icon="gravity-ui:thumbs-up-fill"
+                    />
+                  ) : (
+                    <Icon
+                      className="text-lg text-default-600"
+                      icon="gravity-ui:thumbs-up"
+                    />
+                  )}
+                </Button>
+              </Tooltip>
+              <Tooltip content="Worse">
+                <Button
+                  isIconOnly
+                  radius="full"
+                  size="sm"
+                  variant="light"
+                  onPress={() => handleAttemptFeedback("dislike")}
+                >
+                  {attemptFeedback === "dislike" ? (
+                    <Icon
+                      className="text-lg text-default-600"
+                      icon="gravity-ui:thumbs-down-fill"
+                    />
+                  ) : (
+                    <Icon
+                      className="text-lg text-default-600"
+                      icon="gravity-ui:thumbs-down"
+                    />
+                  )}
+                </Button>
+              </Tooltip>
+              <Tooltip content="Same">
+                <Button
+                  isIconOnly
+                  radius="full"
+                  size="sm"
+                  variant="light"
+                  onPress={() => handleAttemptFeedback("same")}
+                >
+                  {attemptFeedback === "same" ? (
+                    <Icon
+                      className="text-lg text-danger"
+                      icon="gravity-ui:face-sad"
+                    />
+                  ) : (
+                    <Icon
+                      className="text-lg text-default-600"
+                      icon="gravity-ui:face-sad"
+                    />
+                  )}
+                </Button>
+              </Tooltip>
+            </div>
+          </div>
+        )} */}
+      </div>
+    );
+
+    return (
+      <div {...props} ref={ref} className={cn(" flex gap-3 ", className)}>
+        {isUser ? (
+          <>
+            {userMessageContent}
+            {avatarBadgeContent}
+          </>
+        ) : (
+          <>
+            {avatarBadgeContent}
+            {messageContent}
+          </>
+        )}
       </div>
     );
   }

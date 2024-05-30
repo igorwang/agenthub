@@ -84,7 +84,6 @@ export const Conversation: React.FC<ConversationProps> = ({
         <div className="flex flex-grow flex-col pt-2 ">
           <ScrollShadow className="flex flex-grow flex-col gap-6 pb-8 ">
             <MessageWindow />
-            <MessageWindow />
           </ScrollShadow>
           <div className="flex flex-col">
             <PromptInputWithFaq></PromptInputWithFaq>

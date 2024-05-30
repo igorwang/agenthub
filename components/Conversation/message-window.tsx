@@ -9,14 +9,23 @@ import { useSession } from "next-auth/react";
 
 import MessageCard from "./message-card";
 import { useGetMessageListSubscription } from "@/graphql/generated/types";
+import { Avatar } from "@nextui-org/react";
+import FeatureCards from "@/components/Conversation/feature-cards";
 
 export const assistantMessages = [
   <div key="1">
-    <p className="mb-3">
+    <p className="mb-5">
+      Certainly! Here&apos;s a summary of five creative ways to use your
+      Certainly! Here&apos;s a summary of five creative ways to use your
+      Certainly! Here&apos;s a summary of five creative ways to use your
+      Certainly! Here&apos;s a summary of five creative ways to use your
+      Certainly! Here&apos;s a summary of five creative ways to use your
+      Certainly! Here&apos;s a summary of five creative ways to use your
+      Certainly! Here&apos;s a summary of five creative ways to use your
       Certainly! Here&apos;s a summary of five creative ways to use your
       kids&apos; art:
     </p>
-    <ol className="space-y-2">
+    {/* <ol className="space-y-2">
       <li>
         <strong>Create Art Books:</strong> Turn scanned artwork into custom
         photo books.
@@ -37,7 +46,7 @@ export const assistantMessages = [
         <strong>Use as Gift Wrap:</strong> Repurpose art as unique wrapping
         paper for presents.
       </li>
-    </ol>
+    </ol> */}
   </div>,
   <div key="2">
     <p className="mb-3">
@@ -86,23 +95,13 @@ export default function MessageWindow() {
   const user_id = session.data?.user?.id;
   const agent_id = selectedChatId;
 
-  // const { data, loading, error } = useGetMessageListSubscription({
-  //   variables: {
-  //     session_id: selectedSessionId,
-  //     limit: 10,
-  //   },
-  // });
-  if (selectedSessionId) {
-    const { data, loading, error } = useGetMessageListSubscription({
-      variables: {
-        session_id: selectedSessionId, // value for 'session_id'
-        limit: 10, // value for 'limit'
-      },
-    });
-    console.log("session_id", selectedSessionId);
-    console.log("message data: ", data);
-    console.log(error);
-  }
+  const { data, loading, error } = useGetMessageListSubscription({
+    variables: {
+      session_id: selectedSessionId || "", // Provide a default value
+      limit: 10,
+    },
+    skip: !selectedSessionId, // Skip the query if session_id is not provided
+  });
 
   const messages = [
     {
@@ -114,53 +113,33 @@ export default function MessageWindow() {
       message: assistantMessages[0],
     },
     {
-      role: "user",
-      message: userMessages[1],
+      role: "assistant",
+      message: assistantMessages[0],
     },
     {
       role: "assistant",
-      message: assistantMessages[1],
+      message: assistantMessages[0],
     },
-    {
-      role: "assistant",
-      message: assistantMessages[1],
-    },
-    {
-      role: "assistant",
-      message: assistantMessages[1],
-    },
-    {
-      role: "assistant",
-      message: assistantMessages[1],
-    },
-    {
-      role: "assistant",
-      message: assistantMessages[1],
-    },
-    // {
-    //   role: "assistant",
-    //   message: assistantMessages[1],
-    // },
-    // {
-    //   role: "assistant",
-    //   message: assistantMessages[1],
-    // },
-    // {
-    //   role: "assistant",
-    //   message: assistantMessages[1],
-    // },
-    // {
-    //   role: "assistant",
-    //   message: assistantMessages[1],
-    // },
-    // {
-    //   role: "assistant",
-    //   message: assistantMessages[1],
-    // },
   ];
 
+  const featureContent = (
+    <div className="flex h-full flex-col justify-center">
+      <div className="flex w-full flex-col items-center justify-center gap-10">
+        <Avatar
+          size="lg"
+          src="https://nextuipro.nyc3.cdn.digitaloceanspaces.com/components-images/avatar_ai.png"
+        />
+        <h1 className="text-xl font-medium text-default-700">
+          How can I help you today?
+        </h1>
+        <FeatureCards />
+      </div>
+    </div>
+  );
   return (
-    <div className="flex flex-1 flex-grow flex-col gap-4 px-1 ">
+    <div className="flex flex-1 flex-grow flex-col px-1 gap-1 ">
+      {messages.length === 0 && featureContent}
+
       {messages.map(({ role, message }, index) => (
         <MessageCard
           key={index}
@@ -172,6 +151,7 @@ export default function MessageWindow() {
           }
           currentAttempt={index === 1 ? 2 : 1}
           message={message}
+          isUser={role === "user"}
           messageClassName={
             role === "user" ? "bg-content3 text-content3-foreground" : ""
           }
