@@ -83,10 +83,6 @@ export const assistantMessages = [
   </div>,
 ];
 
-export const userMessages = [
-  "What are 5 creative things I could do with my kids' art? I don't want to throw them away, but it's also so much clutter.",
-  "I didn't like the suggestions. Can you give me some more?",
-];
 
 type MessageType = {
   id: string;
@@ -143,6 +139,7 @@ export default function MessageWindow() {
       </div>
     </div>
   );
+  
   return (
     <div className="flex flex-1 flex-grow flex-col px-1 gap-1  ">
       {messages.length === 0 && featureContent}

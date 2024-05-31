@@ -12,7 +12,10 @@ import {
 } from "@/components/Conversation/upload-file";
 import { AppDispatch } from "@/lib/store";
 import { useDispatch, useSelector } from "react-redux";
-import { selectSelectedChatId, selectSelectedSessionId } from "@/lib/features/chatListSlice";
+import {
+  selectSelectedChatId,
+  selectSelectedSessionId,
+} from "@/lib/features/chatListSlice";
 import { useSession } from "next-auth/react";
 
 export default function PromptInputWithFaq() {
@@ -56,7 +59,6 @@ export default function PromptInputWithFaq() {
       description: "be polite and friendly",
     },
   ];
-
 
   const [files, setFiles] = useState<UploadFileProps[]>([]);
 
@@ -119,7 +121,7 @@ export default function PromptInputWithFaq() {
   };
 
   const sendMessageHanlder = () => {
-
+    
   };
 
   const uploadFileListElement = files.map((item, index) => (

@@ -68,6 +68,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   const defaultSelectedKey = data?.topic_history[0]?.id;
 
   const handleSelect = (sId: string) => {
+    console.log(sId)
     dispatch(selectSession(sId));
   };
 

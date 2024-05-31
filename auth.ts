@@ -103,6 +103,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
   },
+  cookies: {
+    pkceCodeVerifier: {
+      name: "next-auth.pkce.code_verifier",
+      options: {
+        httpOnly: true,
+        sameSite: "none",
+        path: "/",
+        secure: true,
+      },
+    },
+  },
   secret: process.env.NEXTAUTH_SECRET,
   // pages: {
   //   signIn: "/auth/login",

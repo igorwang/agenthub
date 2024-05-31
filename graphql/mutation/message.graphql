@@ -1,0 +1,19 @@
+mutation CreateMessageAndUpdateTopicHistory(
+  $content: String
+  $session_id: uuid = ""
+  $role: message_role_enum = user
+) {
+  insert_message(
+    objects: { content: $content, session_id: $session_id, role: $role }
+  ) {
+    returning {
+      id
+    }
+  }
+  update_topic_history_by_pk(
+    pk_columns: { id: $session_id }
+    _set: { updated_at: "now()" }
+  ) {
+    updated_at
+  }
+}
