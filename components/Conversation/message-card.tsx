@@ -147,7 +147,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       <div className="flex w-full flex-col gap-2 ml-14">
         <div
           className={cn(
-            "relative w-full rounded-medium px-4 py-2 text-default-800 overflow-auto ",
+            "relative w-full rounded-medium px-4 py-2 text-default-800 ",
             failedMessageClassName,
             messageClassName
           )}
@@ -155,12 +155,9 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
           <div ref={messageRef} className={"px-1 text-medium flex justify-end"}>
             {hasFailed ? failedMessage : message}
           </div>
-          <ScrollShadow
-            orientation="horizontal"
-            className="flex flex-1 justify-start max-w-[400px]"
-          >
-            {files && files.map((item) => <UploadFile {...item} />)}
-          </ScrollShadow>
+          <div className="flex flex-row flex-wrap w-full ">
+            {files && files.map((item) => <UploadFile className="flex shrink" {...item} />)}
+          </div>
         </div>
       </div>
     );
