@@ -86,7 +86,7 @@ export const FunctionTab = () => {
           }
         >
           <Button
-            className="flex w-full bg-slate-100 "
+            className="flex w-full bg-white max-h-16 hover:bg-slate-100"
             endContent={<PlusIcon />}
             onClick={() => handleAddTopic({ agent_id, user_id })}
             disabled={!user_id}
