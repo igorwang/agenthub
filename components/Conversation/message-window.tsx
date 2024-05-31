@@ -129,25 +129,6 @@ export default function MessageWindow() {
     }
   }, [data]);
 
-  // const messages = [
-  //   {
-  //     role: "user",
-  //     message: userMessages[0],
-  //   },
-  //   {
-  //     role: "assistant",
-  //     message: assistantMessages[0],
-  //   },
-  //   {
-  //     role: "assistant",
-  //     message: assistantMessages[0],
-  //   },
-  //   {
-  //     role: "assistant",
-  //     message: assistantMessages[0],
-  //   },
-  // ];
-
   const featureContent = (
     <div className="flex h-full flex-col justify-center">
       <div className="flex w-full flex-col items-center justify-center gap-10">
@@ -163,7 +144,7 @@ export default function MessageWindow() {
     </div>
   );
   return (
-    <div className="flex flex-1 flex-grow flex-col px-1 gap-1 ">
+    <div className="flex flex-1 flex-grow flex-col px-1 gap-1  ">
       {messages.length === 0 && featureContent}
 
       {messages.map(({ role, message }, index) => (

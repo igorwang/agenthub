@@ -1,4 +1,5 @@
 "use client";
+
 import { ChatList } from "@/components/AgentHub/chat-list";
 import {
   DiscussionIcon,
@@ -23,7 +24,7 @@ import {
   ScrollShadow,
 } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 interface TopicHistoryProps {
@@ -32,17 +33,9 @@ interface TopicHistoryProps {
 
 export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   const dispatch: AppDispatch = useDispatch();
-
   const selectedSessionId = useSelector(selectSelectedSessionId);
-
   const { data: sessionData, status } = useSession();
-
   const user_id = sessionData?.user?.id;
-
-  if (!status) {
-    return <div></div>;
-  }
-
   const { data, loading, error } = useGetTopicHistoriesQuery({
     variables: {
       agent_id: agent_id,
@@ -50,6 +43,17 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
       //  limit: 100
     },
   });
+
+  useEffect(() => {
+    if (data && data.topic_history && data.topic_history.length > 0) {
+      dispatch(selectSession(data.topic_history[0].id));
+    }
+  }, [data, dispatch]);
+
+  
+  if (!status) {
+    return <div></div>;
+  }
 
   if (loading) {
     return <div>加载中...</div>;
@@ -60,6 +64,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
     title: item.title,
     agent_id: item.agent_id,
   }));
+
   const defaultSelectedKey = data?.topic_history[0]?.id;
 
   const handleSelect = (sId: string) => {
