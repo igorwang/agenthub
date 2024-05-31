@@ -104,6 +104,7 @@ export type Agent = {
   description?: Maybe<Scalars['String']['output']>;
   id: Scalars['Int']['output'];
   name: Scalars['String']['output'];
+  system_prompt_id?: Maybe<Scalars['Int']['output']>;
   type_id?: Maybe<Scalars['Int']['output']>;
   updated_at: Scalars['timestamptz']['output'];
 };
@@ -175,12 +176,14 @@ export type Agent_Arr_Rel_Insert_Input = {
 export type Agent_Avg_Fields = {
   __typename?: 'agent_avg_fields';
   id?: Maybe<Scalars['Float']['output']>;
+  system_prompt_id?: Maybe<Scalars['Float']['output']>;
   type_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by avg() on columns of table "agent" */
 export type Agent_Avg_Order_By = {
   id?: InputMaybe<Order_By>;
+  system_prompt_id?: InputMaybe<Order_By>;
   type_id?: InputMaybe<Order_By>;
 };
 
@@ -194,6 +197,7 @@ export type Agent_Bool_Exp = {
   description?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
+  system_prompt_id?: InputMaybe<Int_Comparison_Exp>;
   type_id?: InputMaybe<Int_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
@@ -207,6 +211,7 @@ export enum Agent_Constraint {
 /** input type for incrementing numeric columns in table "agent" */
 export type Agent_Inc_Input = {
   id?: InputMaybe<Scalars['Int']['input']>;
+  system_prompt_id?: InputMaybe<Scalars['Int']['input']>;
   type_id?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -217,6 +222,7 @@ export type Agent_Insert_Input = {
   description?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['Int']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  system_prompt_id?: InputMaybe<Scalars['Int']['input']>;
   type_id?: InputMaybe<Scalars['Int']['input']>;
   updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
 };
@@ -229,6 +235,7 @@ export type Agent_Max_Fields = {
   description?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['Int']['output']>;
   name?: Maybe<Scalars['String']['output']>;
+  system_prompt_id?: Maybe<Scalars['Int']['output']>;
   type_id?: Maybe<Scalars['Int']['output']>;
   updated_at?: Maybe<Scalars['timestamptz']['output']>;
 };
@@ -240,6 +247,7 @@ export type Agent_Max_Order_By = {
   description?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
+  system_prompt_id?: InputMaybe<Order_By>;
   type_id?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
@@ -252,6 +260,7 @@ export type Agent_Min_Fields = {
   description?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['Int']['output']>;
   name?: Maybe<Scalars['String']['output']>;
+  system_prompt_id?: Maybe<Scalars['Int']['output']>;
   type_id?: Maybe<Scalars['Int']['output']>;
   updated_at?: Maybe<Scalars['timestamptz']['output']>;
 };
@@ -263,6 +272,7 @@ export type Agent_Min_Order_By = {
   description?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
+  system_prompt_id?: InputMaybe<Order_By>;
   type_id?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
@@ -290,6 +300,7 @@ export type Agent_Order_By = {
   description?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
+  system_prompt_id?: InputMaybe<Order_By>;
   type_id?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
@@ -312,6 +323,8 @@ export enum Agent_Select_Column {
   /** column name */
   Name = 'name',
   /** column name */
+  SystemPromptId = 'system_prompt_id',
+  /** column name */
   TypeId = 'type_id',
   /** column name */
   UpdatedAt = 'updated_at'
@@ -324,6 +337,7 @@ export type Agent_Set_Input = {
   description?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['Int']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  system_prompt_id?: InputMaybe<Scalars['Int']['input']>;
   type_id?: InputMaybe<Scalars['Int']['input']>;
   updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
 };
@@ -332,12 +346,14 @@ export type Agent_Set_Input = {
 export type Agent_Stddev_Fields = {
   __typename?: 'agent_stddev_fields';
   id?: Maybe<Scalars['Float']['output']>;
+  system_prompt_id?: Maybe<Scalars['Float']['output']>;
   type_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev() on columns of table "agent" */
 export type Agent_Stddev_Order_By = {
   id?: InputMaybe<Order_By>;
+  system_prompt_id?: InputMaybe<Order_By>;
   type_id?: InputMaybe<Order_By>;
 };
 
@@ -345,12 +361,14 @@ export type Agent_Stddev_Order_By = {
 export type Agent_Stddev_Pop_Fields = {
   __typename?: 'agent_stddev_pop_fields';
   id?: Maybe<Scalars['Float']['output']>;
+  system_prompt_id?: Maybe<Scalars['Float']['output']>;
   type_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev_pop() on columns of table "agent" */
 export type Agent_Stddev_Pop_Order_By = {
   id?: InputMaybe<Order_By>;
+  system_prompt_id?: InputMaybe<Order_By>;
   type_id?: InputMaybe<Order_By>;
 };
 
@@ -358,12 +376,14 @@ export type Agent_Stddev_Pop_Order_By = {
 export type Agent_Stddev_Samp_Fields = {
   __typename?: 'agent_stddev_samp_fields';
   id?: Maybe<Scalars['Float']['output']>;
+  system_prompt_id?: Maybe<Scalars['Float']['output']>;
   type_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev_samp() on columns of table "agent" */
 export type Agent_Stddev_Samp_Order_By = {
   id?: InputMaybe<Order_By>;
+  system_prompt_id?: InputMaybe<Order_By>;
   type_id?: InputMaybe<Order_By>;
 };
 
@@ -382,6 +402,7 @@ export type Agent_Stream_Cursor_Value_Input = {
   description?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['Int']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  system_prompt_id?: InputMaybe<Scalars['Int']['input']>;
   type_id?: InputMaybe<Scalars['Int']['input']>;
   updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
 };
@@ -390,12 +411,14 @@ export type Agent_Stream_Cursor_Value_Input = {
 export type Agent_Sum_Fields = {
   __typename?: 'agent_sum_fields';
   id?: Maybe<Scalars['Int']['output']>;
+  system_prompt_id?: Maybe<Scalars['Int']['output']>;
   type_id?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by sum() on columns of table "agent" */
 export type Agent_Sum_Order_By = {
   id?: InputMaybe<Order_By>;
+  system_prompt_id?: InputMaybe<Order_By>;
   type_id?: InputMaybe<Order_By>;
 };
 
@@ -661,6 +684,8 @@ export enum Agent_Update_Column {
   /** column name */
   Name = 'name',
   /** column name */
+  SystemPromptId = 'system_prompt_id',
+  /** column name */
   TypeId = 'type_id',
   /** column name */
   UpdatedAt = 'updated_at'
@@ -679,12 +704,14 @@ export type Agent_Updates = {
 export type Agent_Var_Pop_Fields = {
   __typename?: 'agent_var_pop_fields';
   id?: Maybe<Scalars['Float']['output']>;
+  system_prompt_id?: Maybe<Scalars['Float']['output']>;
   type_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by var_pop() on columns of table "agent" */
 export type Agent_Var_Pop_Order_By = {
   id?: InputMaybe<Order_By>;
+  system_prompt_id?: InputMaybe<Order_By>;
   type_id?: InputMaybe<Order_By>;
 };
 
@@ -692,12 +719,14 @@ export type Agent_Var_Pop_Order_By = {
 export type Agent_Var_Samp_Fields = {
   __typename?: 'agent_var_samp_fields';
   id?: Maybe<Scalars['Float']['output']>;
+  system_prompt_id?: Maybe<Scalars['Float']['output']>;
   type_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by var_samp() on columns of table "agent" */
 export type Agent_Var_Samp_Order_By = {
   id?: InputMaybe<Order_By>;
+  system_prompt_id?: InputMaybe<Order_By>;
   type_id?: InputMaybe<Order_By>;
 };
 
@@ -705,12 +734,14 @@ export type Agent_Var_Samp_Order_By = {
 export type Agent_Variance_Fields = {
   __typename?: 'agent_variance_fields';
   id?: Maybe<Scalars['Float']['output']>;
+  system_prompt_id?: Maybe<Scalars['Float']['output']>;
   type_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by variance() on columns of table "agent" */
 export type Agent_Variance_Order_By = {
   id?: InputMaybe<Order_By>;
+  system_prompt_id?: InputMaybe<Order_By>;
   type_id?: InputMaybe<Order_By>;
 };
 
@@ -753,6 +784,7 @@ export type Jsonb_Comparison_Exp = {
 /** message */
 export type Message = {
   __typename?: 'message';
+  attachments?: Maybe<Scalars['jsonb']['output']>;
   content?: Maybe<Scalars['String']['output']>;
   created_at?: Maybe<Scalars['timestamptz']['output']>;
   feedback?: Maybe<Message_Feedback_Enum>;
@@ -761,6 +793,12 @@ export type Message = {
   session_id?: Maybe<Scalars['uuid']['output']>;
   status?: Maybe<Message_Status_Enum>;
   updated_at?: Maybe<Scalars['timestamptz']['output']>;
+};
+
+
+/** message */
+export type MessageAttachmentsArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** aggregated selection of "message" */
@@ -785,11 +823,17 @@ export type Message_Aggregate_FieldsCountArgs = {
   distinct?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Message_Append_Input = {
+  attachments?: InputMaybe<Scalars['jsonb']['input']>;
+};
+
 /** Boolean expression to filter rows from the table "message". All fields are combined with a logical 'AND'. */
 export type Message_Bool_Exp = {
   _and?: InputMaybe<Array<Message_Bool_Exp>>;
   _not?: InputMaybe<Message_Bool_Exp>;
   _or?: InputMaybe<Array<Message_Bool_Exp>>;
+  attachments?: InputMaybe<Jsonb_Comparison_Exp>;
   content?: InputMaybe<String_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   feedback?: InputMaybe<Message_Feedback_Enum_Comparison_Exp>;
@@ -805,6 +849,21 @@ export enum Message_Constraint {
   /** unique or primary key constraint on columns "id" */
   MessagePkey = 'message_pkey'
 }
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Message_Delete_At_Path_Input = {
+  attachments?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Message_Delete_Elem_Input = {
+  attachments?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Message_Delete_Key_Input = {
+  attachments?: InputMaybe<Scalars['String']['input']>;
+};
 
 /** message_feedback */
 export type Message_Feedback = {
@@ -958,6 +1017,7 @@ export type Message_Feedback_Updates = {
 
 /** input type for inserting data into table "message" */
 export type Message_Insert_Input = {
+  attachments?: InputMaybe<Scalars['jsonb']['input']>;
   content?: InputMaybe<Scalars['String']['input']>;
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   feedback?: InputMaybe<Message_Feedback_Enum>;
@@ -1006,6 +1066,7 @@ export type Message_On_Conflict = {
 
 /** Ordering options when selecting data from "message". */
 export type Message_Order_By = {
+  attachments?: InputMaybe<Order_By>;
   content?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   feedback?: InputMaybe<Order_By>;
@@ -1019,6 +1080,11 @@ export type Message_Order_By = {
 /** primary key columns input for table: message */
 export type Message_Pk_Columns_Input = {
   id: Scalars['uuid']['input'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Message_Prepend_Input = {
+  attachments?: InputMaybe<Scalars['jsonb']['input']>;
 };
 
 /** message_role */
@@ -1176,6 +1242,8 @@ export type Message_Role_Updates = {
 /** select columns of table "message" */
 export enum Message_Select_Column {
   /** column name */
+  Attachments = 'attachments',
+  /** column name */
   Content = 'content',
   /** column name */
   CreatedAt = 'created_at',
@@ -1195,6 +1263,7 @@ export enum Message_Select_Column {
 
 /** input type for updating data in table "message" */
 export type Message_Set_Input = {
+  attachments?: InputMaybe<Scalars['jsonb']['input']>;
   content?: InputMaybe<Scalars['String']['input']>;
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   feedback?: InputMaybe<Message_Feedback_Enum>;
@@ -1365,6 +1434,7 @@ export type Message_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Message_Stream_Cursor_Value_Input = {
+  attachments?: InputMaybe<Scalars['jsonb']['input']>;
   content?: InputMaybe<Scalars['String']['input']>;
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   feedback?: InputMaybe<Message_Feedback_Enum>;
@@ -1377,6 +1447,8 @@ export type Message_Stream_Cursor_Value_Input = {
 
 /** update columns of table "message" */
 export enum Message_Update_Column {
+  /** column name */
+  Attachments = 'attachments',
   /** column name */
   Content = 'content',
   /** column name */
@@ -1396,6 +1468,16 @@ export enum Message_Update_Column {
 }
 
 export type Message_Updates = {
+  /** append existing jsonb value of filtered columns with new jsonb value */
+  _append?: InputMaybe<Message_Append_Input>;
+  /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+  _delete_at_path?: InputMaybe<Message_Delete_At_Path_Input>;
+  /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+  _delete_elem?: InputMaybe<Message_Delete_Elem_Input>;
+  /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+  _delete_key?: InputMaybe<Message_Delete_Key_Input>;
+  /** prepend existing jsonb value of filtered columns with new jsonb value */
+  _prepend?: InputMaybe<Message_Prepend_Input>;
   /** sets the columns of the filtered rows to the given values */
   _set?: InputMaybe<Message_Set_Input>;
   /** filter the rows which have to be updated */
@@ -1784,6 +1866,10 @@ export type Mutation_Root = {
   delete_multimodal_data?: Maybe<Multimodal_Data_Mutation_Response>;
   /** delete single row from the table: "multimodal_data" */
   delete_multimodal_data_by_pk?: Maybe<Multimodal_Data>;
+  /** delete data from the table: "prompt_hub" */
+  delete_prompt_hub?: Maybe<Prompt_Hub_Mutation_Response>;
+  /** delete single row from the table: "prompt_hub" */
+  delete_prompt_hub_by_pk?: Maybe<Prompt_Hub>;
   /** delete data from the table: "topic_history" */
   delete_topic_history?: Maybe<Topic_History_Mutation_Response>;
   /** delete single row from the table: "topic_history" */
@@ -1816,6 +1902,10 @@ export type Mutation_Root = {
   insert_multimodal_data?: Maybe<Multimodal_Data_Mutation_Response>;
   /** insert a single row into the table: "multimodal_data" */
   insert_multimodal_data_one?: Maybe<Multimodal_Data>;
+  /** insert data into the table: "prompt_hub" */
+  insert_prompt_hub?: Maybe<Prompt_Hub_Mutation_Response>;
+  /** insert a single row into the table: "prompt_hub" */
+  insert_prompt_hub_one?: Maybe<Prompt_Hub>;
   /** insert data into the table: "topic_history" */
   insert_topic_history?: Maybe<Topic_History_Mutation_Response>;
   /** insert a single row into the table: "topic_history" */
@@ -1862,6 +1952,12 @@ export type Mutation_Root = {
   update_multimodal_data_by_pk?: Maybe<Multimodal_Data>;
   /** update multiples rows of table: "multimodal_data" */
   update_multimodal_data_many?: Maybe<Array<Maybe<Multimodal_Data_Mutation_Response>>>;
+  /** update data of the table: "prompt_hub" */
+  update_prompt_hub?: Maybe<Prompt_Hub_Mutation_Response>;
+  /** update single row of the table: "prompt_hub" */
+  update_prompt_hub_by_pk?: Maybe<Prompt_Hub>;
+  /** update multiples rows of table: "prompt_hub" */
+  update_prompt_hub_many?: Maybe<Array<Maybe<Prompt_Hub_Mutation_Response>>>;
   /** update data of the table: "topic_history" */
   update_topic_history?: Maybe<Topic_History_Mutation_Response>;
   /** update single row of the table: "topic_history" */
@@ -1952,6 +2048,18 @@ export type Mutation_RootDelete_Multimodal_DataArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Multimodal_Data_By_PkArgs = {
   id: Scalars['uuid']['input'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Prompt_HubArgs = {
+  where: Prompt_Hub_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Prompt_Hub_By_PkArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
@@ -2066,6 +2174,20 @@ export type Mutation_RootInsert_Multimodal_Data_OneArgs = {
 
 
 /** mutation root */
+export type Mutation_RootInsert_Prompt_HubArgs = {
+  objects: Array<Prompt_Hub_Insert_Input>;
+  on_conflict?: InputMaybe<Prompt_Hub_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Prompt_Hub_OneArgs = {
+  object: Prompt_Hub_Insert_Input;
+  on_conflict?: InputMaybe<Prompt_Hub_On_Conflict>;
+};
+
+
+/** mutation root */
 export type Mutation_RootInsert_Topic_HistoryArgs = {
   objects: Array<Topic_History_Insert_Input>;
   on_conflict?: InputMaybe<Topic_History_On_Conflict>;
@@ -2125,6 +2247,11 @@ export type Mutation_RootUpdate_Agent_Type_ManyArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_MessageArgs = {
+  _append?: InputMaybe<Message_Append_Input>;
+  _delete_at_path?: InputMaybe<Message_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Message_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Message_Delete_Key_Input>;
+  _prepend?: InputMaybe<Message_Prepend_Input>;
   _set?: InputMaybe<Message_Set_Input>;
   where: Message_Bool_Exp;
 };
@@ -2132,6 +2259,11 @@ export type Mutation_RootUpdate_MessageArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_Message_By_PkArgs = {
+  _append?: InputMaybe<Message_Append_Input>;
+  _delete_at_path?: InputMaybe<Message_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Message_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Message_Delete_Key_Input>;
+  _prepend?: InputMaybe<Message_Prepend_Input>;
   _set?: InputMaybe<Message_Set_Input>;
   pk_columns: Message_Pk_Columns_Input;
 };
@@ -2236,6 +2368,38 @@ export type Mutation_RootUpdate_Multimodal_Data_ManyArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdate_Prompt_HubArgs = {
+  _append?: InputMaybe<Prompt_Hub_Append_Input>;
+  _delete_at_path?: InputMaybe<Prompt_Hub_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Prompt_Hub_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Prompt_Hub_Delete_Key_Input>;
+  _inc?: InputMaybe<Prompt_Hub_Inc_Input>;
+  _prepend?: InputMaybe<Prompt_Hub_Prepend_Input>;
+  _set?: InputMaybe<Prompt_Hub_Set_Input>;
+  where: Prompt_Hub_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Prompt_Hub_By_PkArgs = {
+  _append?: InputMaybe<Prompt_Hub_Append_Input>;
+  _delete_at_path?: InputMaybe<Prompt_Hub_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Prompt_Hub_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Prompt_Hub_Delete_Key_Input>;
+  _inc?: InputMaybe<Prompt_Hub_Inc_Input>;
+  _prepend?: InputMaybe<Prompt_Hub_Prepend_Input>;
+  _set?: InputMaybe<Prompt_Hub_Set_Input>;
+  pk_columns: Prompt_Hub_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Prompt_Hub_ManyArgs = {
+  updates: Array<Prompt_Hub_Updates>;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_Topic_HistoryArgs = {
   _inc?: InputMaybe<Topic_History_Inc_Input>;
   _set?: InputMaybe<Topic_History_Set_Input>;
@@ -2271,6 +2435,266 @@ export enum Order_By {
   /** in descending order, nulls last */
   DescNullsLast = 'desc_nulls_last'
 }
+
+/** prompt hub */
+export type Prompt_Hub = {
+  __typename?: 'prompt_hub';
+  created_at: Scalars['timestamptz']['output'];
+  id: Scalars['Int']['output'];
+  template: Scalars['jsonb']['output'];
+  updated_at: Scalars['timestamptz']['output'];
+};
+
+
+/** prompt hub */
+export type Prompt_HubTemplateArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregated selection of "prompt_hub" */
+export type Prompt_Hub_Aggregate = {
+  __typename?: 'prompt_hub_aggregate';
+  aggregate?: Maybe<Prompt_Hub_Aggregate_Fields>;
+  nodes: Array<Prompt_Hub>;
+};
+
+/** aggregate fields of "prompt_hub" */
+export type Prompt_Hub_Aggregate_Fields = {
+  __typename?: 'prompt_hub_aggregate_fields';
+  avg?: Maybe<Prompt_Hub_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Prompt_Hub_Max_Fields>;
+  min?: Maybe<Prompt_Hub_Min_Fields>;
+  stddev?: Maybe<Prompt_Hub_Stddev_Fields>;
+  stddev_pop?: Maybe<Prompt_Hub_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Prompt_Hub_Stddev_Samp_Fields>;
+  sum?: Maybe<Prompt_Hub_Sum_Fields>;
+  var_pop?: Maybe<Prompt_Hub_Var_Pop_Fields>;
+  var_samp?: Maybe<Prompt_Hub_Var_Samp_Fields>;
+  variance?: Maybe<Prompt_Hub_Variance_Fields>;
+};
+
+
+/** aggregate fields of "prompt_hub" */
+export type Prompt_Hub_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Prompt_Hub_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Prompt_Hub_Append_Input = {
+  template?: InputMaybe<Scalars['jsonb']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Prompt_Hub_Avg_Fields = {
+  __typename?: 'prompt_hub_avg_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "prompt_hub". All fields are combined with a logical 'AND'. */
+export type Prompt_Hub_Bool_Exp = {
+  _and?: InputMaybe<Array<Prompt_Hub_Bool_Exp>>;
+  _not?: InputMaybe<Prompt_Hub_Bool_Exp>;
+  _or?: InputMaybe<Array<Prompt_Hub_Bool_Exp>>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  id?: InputMaybe<Int_Comparison_Exp>;
+  template?: InputMaybe<Jsonb_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "prompt_hub" */
+export enum Prompt_Hub_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  PromptHubPkey = 'prompt_hub_pkey'
+}
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Prompt_Hub_Delete_At_Path_Input = {
+  template?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Prompt_Hub_Delete_Elem_Input = {
+  template?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Prompt_Hub_Delete_Key_Input = {
+  template?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** input type for incrementing numeric columns in table "prompt_hub" */
+export type Prompt_Hub_Inc_Input = {
+  id?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** input type for inserting data into table "prompt_hub" */
+export type Prompt_Hub_Insert_Input = {
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  id?: InputMaybe<Scalars['Int']['input']>;
+  template?: InputMaybe<Scalars['jsonb']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+};
+
+/** aggregate max on columns */
+export type Prompt_Hub_Max_Fields = {
+  __typename?: 'prompt_hub_max_fields';
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  id?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+};
+
+/** aggregate min on columns */
+export type Prompt_Hub_Min_Fields = {
+  __typename?: 'prompt_hub_min_fields';
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  id?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+};
+
+/** response of any mutation on the table "prompt_hub" */
+export type Prompt_Hub_Mutation_Response = {
+  __typename?: 'prompt_hub_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int']['output'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Prompt_Hub>;
+};
+
+/** on_conflict condition type for table "prompt_hub" */
+export type Prompt_Hub_On_Conflict = {
+  constraint: Prompt_Hub_Constraint;
+  update_columns?: Array<Prompt_Hub_Update_Column>;
+  where?: InputMaybe<Prompt_Hub_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "prompt_hub". */
+export type Prompt_Hub_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  template?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: prompt_hub */
+export type Prompt_Hub_Pk_Columns_Input = {
+  id: Scalars['Int']['input'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Prompt_Hub_Prepend_Input = {
+  template?: InputMaybe<Scalars['jsonb']['input']>;
+};
+
+/** select columns of table "prompt_hub" */
+export enum Prompt_Hub_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Template = 'template',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "prompt_hub" */
+export type Prompt_Hub_Set_Input = {
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  id?: InputMaybe<Scalars['Int']['input']>;
+  template?: InputMaybe<Scalars['jsonb']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+};
+
+/** aggregate stddev on columns */
+export type Prompt_Hub_Stddev_Fields = {
+  __typename?: 'prompt_hub_stddev_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Prompt_Hub_Stddev_Pop_Fields = {
+  __typename?: 'prompt_hub_stddev_pop_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Prompt_Hub_Stddev_Samp_Fields = {
+  __typename?: 'prompt_hub_stddev_samp_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "prompt_hub" */
+export type Prompt_Hub_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Prompt_Hub_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Prompt_Hub_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  id?: InputMaybe<Scalars['Int']['input']>;
+  template?: InputMaybe<Scalars['jsonb']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Prompt_Hub_Sum_Fields = {
+  __typename?: 'prompt_hub_sum_fields';
+  id?: Maybe<Scalars['Int']['output']>;
+};
+
+/** update columns of table "prompt_hub" */
+export enum Prompt_Hub_Update_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Template = 'template',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+export type Prompt_Hub_Updates = {
+  /** append existing jsonb value of filtered columns with new jsonb value */
+  _append?: InputMaybe<Prompt_Hub_Append_Input>;
+  /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+  _delete_at_path?: InputMaybe<Prompt_Hub_Delete_At_Path_Input>;
+  /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+  _delete_elem?: InputMaybe<Prompt_Hub_Delete_Elem_Input>;
+  /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+  _delete_key?: InputMaybe<Prompt_Hub_Delete_Key_Input>;
+  /** increments the numeric columns with given value of the filtered values */
+  _inc?: InputMaybe<Prompt_Hub_Inc_Input>;
+  /** prepend existing jsonb value of filtered columns with new jsonb value */
+  _prepend?: InputMaybe<Prompt_Hub_Prepend_Input>;
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Prompt_Hub_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Prompt_Hub_Bool_Exp;
+};
+
+/** aggregate var_pop on columns */
+export type Prompt_Hub_Var_Pop_Fields = {
+  __typename?: 'prompt_hub_var_pop_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Prompt_Hub_Var_Samp_Fields = {
+  __typename?: 'prompt_hub_var_samp_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Prompt_Hub_Variance_Fields = {
+  __typename?: 'prompt_hub_variance_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
 
 export type Query_Root = {
   __typename?: 'query_root';
@@ -2316,6 +2740,12 @@ export type Query_Root = {
   multimodal_data_aggregate: Multimodal_Data_Aggregate;
   /** fetch data from the table: "multimodal_data" using primary key columns */
   multimodal_data_by_pk?: Maybe<Multimodal_Data>;
+  /** fetch data from the table: "prompt_hub" */
+  prompt_hub: Array<Prompt_Hub>;
+  /** fetch aggregated fields from the table: "prompt_hub" */
+  prompt_hub_aggregate: Prompt_Hub_Aggregate;
+  /** fetch data from the table: "prompt_hub" using primary key columns */
+  prompt_hub_by_pk?: Maybe<Prompt_Hub>;
   /** fetch data from the table: "topic_history" */
   topic_history: Array<Topic_History>;
   /** fetch aggregated fields from the table: "topic_history" */
@@ -2486,6 +2916,29 @@ export type Query_RootMultimodal_Data_By_PkArgs = {
 };
 
 
+export type Query_RootPrompt_HubArgs = {
+  distinct_on?: InputMaybe<Array<Prompt_Hub_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Prompt_Hub_Order_By>>;
+  where?: InputMaybe<Prompt_Hub_Bool_Exp>;
+};
+
+
+export type Query_RootPrompt_Hub_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Prompt_Hub_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Prompt_Hub_Order_By>>;
+  where?: InputMaybe<Prompt_Hub_Bool_Exp>;
+};
+
+
+export type Query_RootPrompt_Hub_By_PkArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type Query_RootTopic_HistoryArgs = {
   distinct_on?: InputMaybe<Array<Topic_History_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -2566,6 +3019,14 @@ export type Subscription_Root = {
   multimodal_data_by_pk?: Maybe<Multimodal_Data>;
   /** fetch data from the table in a streaming manner: "multimodal_data" */
   multimodal_data_stream: Array<Multimodal_Data>;
+  /** fetch data from the table: "prompt_hub" */
+  prompt_hub: Array<Prompt_Hub>;
+  /** fetch aggregated fields from the table: "prompt_hub" */
+  prompt_hub_aggregate: Prompt_Hub_Aggregate;
+  /** fetch data from the table: "prompt_hub" using primary key columns */
+  prompt_hub_by_pk?: Maybe<Prompt_Hub>;
+  /** fetch data from the table in a streaming manner: "prompt_hub" */
+  prompt_hub_stream: Array<Prompt_Hub>;
   /** fetch data from the table: "topic_history" */
   topic_history: Array<Topic_History>;
   /** fetch aggregated fields from the table: "topic_history" */
@@ -2784,6 +3245,36 @@ export type Subscription_RootMultimodal_Data_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Multimodal_Data_Stream_Cursor_Input>>;
   where?: InputMaybe<Multimodal_Data_Bool_Exp>;
+};
+
+
+export type Subscription_RootPrompt_HubArgs = {
+  distinct_on?: InputMaybe<Array<Prompt_Hub_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Prompt_Hub_Order_By>>;
+  where?: InputMaybe<Prompt_Hub_Bool_Exp>;
+};
+
+
+export type Subscription_RootPrompt_Hub_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Prompt_Hub_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Prompt_Hub_Order_By>>;
+  where?: InputMaybe<Prompt_Hub_Bool_Exp>;
+};
+
+
+export type Subscription_RootPrompt_Hub_By_PkArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type Subscription_RootPrompt_Hub_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Prompt_Hub_Stream_Cursor_Input>>;
+  where?: InputMaybe<Prompt_Hub_Bool_Exp>;
 };
 
 
@@ -3105,6 +3596,16 @@ export type GetTopicHistoriesQueryVariables = Exact<{
 
 export type GetTopicHistoriesQuery = { __typename?: 'query_root', topic_history: Array<{ __typename?: 'topic_history', id: any, title: string, updated_at: any, user_id: string, created_at: any, agent_id: number }> };
 
+export type CreateMessageAndUpdateTopicHistoryMutationVariables = Exact<{
+  content?: InputMaybe<Scalars['String']['input']>;
+  session_id?: InputMaybe<Scalars['uuid']['input']>;
+  role?: InputMaybe<Message_Role_Enum>;
+  attachments?: InputMaybe<Scalars['jsonb']['input']>;
+}>;
+
+
+export type CreateMessageAndUpdateTopicHistoryMutation = { __typename?: 'mutation_root', insert_message?: { __typename?: 'message_mutation_response', returning: Array<{ __typename?: 'message', id: any }> } | null, update_topic_history_by_pk?: { __typename?: 'topic_history', updated_at: any } | null };
+
 export type GetAgentListByTypeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -3123,7 +3624,7 @@ export type GetMessageListSubscriptionVariables = Exact<{
 }>;
 
 
-export type GetMessageListSubscription = { __typename?: 'subscription_root', message: Array<{ __typename?: 'message', id: any, role: Message_Role_Enum, feedback?: Message_Feedback_Enum | null, created_at?: any | null, content?: string | null, status?: Message_Status_Enum | null, updated_at?: any | null }> };
+export type GetMessageListSubscription = { __typename?: 'subscription_root', message: Array<{ __typename?: 'message', id: any, role: Message_Role_Enum, feedback?: Message_Feedback_Enum | null, created_at?: any | null, content?: string | null, status?: Message_Status_Enum | null, updated_at?: any | null, attachments?: any | null }> };
 
 
 export const AddNewTopicMutationDocument = gql`
@@ -3217,6 +3718,52 @@ export type GetTopicHistoriesQueryHookResult = ReturnType<typeof useGetTopicHist
 export type GetTopicHistoriesLazyQueryHookResult = ReturnType<typeof useGetTopicHistoriesLazyQuery>;
 export type GetTopicHistoriesSuspenseQueryHookResult = ReturnType<typeof useGetTopicHistoriesSuspenseQuery>;
 export type GetTopicHistoriesQueryResult = Apollo.QueryResult<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>;
+export const CreateMessageAndUpdateTopicHistoryDocument = gql`
+    mutation CreateMessageAndUpdateTopicHistory($content: String, $session_id: uuid = "", $role: message_role_enum = user, $attachments: jsonb = null) {
+  insert_message(
+    objects: {content: $content, session_id: $session_id, role: $role, attachments: $attachments}
+  ) {
+    returning {
+      id
+    }
+  }
+  update_topic_history_by_pk(
+    pk_columns: {id: $session_id}
+    _set: {updated_at: "now()"}
+  ) {
+    updated_at
+  }
+}
+    `;
+export type CreateMessageAndUpdateTopicHistoryMutationFn = Apollo.MutationFunction<CreateMessageAndUpdateTopicHistoryMutation, CreateMessageAndUpdateTopicHistoryMutationVariables>;
+
+/**
+ * __useCreateMessageAndUpdateTopicHistoryMutation__
+ *
+ * To run a mutation, you first call `useCreateMessageAndUpdateTopicHistoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMessageAndUpdateTopicHistoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMessageAndUpdateTopicHistoryMutation, { data, loading, error }] = useCreateMessageAndUpdateTopicHistoryMutation({
+ *   variables: {
+ *      content: // value for 'content'
+ *      session_id: // value for 'session_id'
+ *      role: // value for 'role'
+ *      attachments: // value for 'attachments'
+ *   },
+ * });
+ */
+export function useCreateMessageAndUpdateTopicHistoryMutation(baseOptions?: Apollo.MutationHookOptions<CreateMessageAndUpdateTopicHistoryMutation, CreateMessageAndUpdateTopicHistoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateMessageAndUpdateTopicHistoryMutation, CreateMessageAndUpdateTopicHistoryMutationVariables>(CreateMessageAndUpdateTopicHistoryDocument, options);
+      }
+export type CreateMessageAndUpdateTopicHistoryMutationHookResult = ReturnType<typeof useCreateMessageAndUpdateTopicHistoryMutation>;
+export type CreateMessageAndUpdateTopicHistoryMutationResult = Apollo.MutationResult<CreateMessageAndUpdateTopicHistoryMutation>;
+export type CreateMessageAndUpdateTopicHistoryMutationOptions = Apollo.BaseMutationOptions<CreateMessageAndUpdateTopicHistoryMutation, CreateMessageAndUpdateTopicHistoryMutationVariables>;
 export const GetAgentListByTypeDocument = gql`
     query GetAgentListByType {
   agent_type(where: {agents: {id: {_is_null: false}}}) {
@@ -3307,7 +3854,7 @@ export type AgentByIdLazyQueryHookResult = ReturnType<typeof useAgentByIdLazyQue
 export type AgentByIdSuspenseQueryHookResult = ReturnType<typeof useAgentByIdSuspenseQuery>;
 export type AgentByIdQueryResult = Apollo.QueryResult<AgentByIdQuery, AgentByIdQueryVariables>;
 export const GetMessageListDocument = gql`
-    subscription GetMessageList($session_id: uuid, $limit: Int = 10) {
+    subscription GetMessageList($session_id: uuid, $limit: Int = 100) {
   message(where: {session_id: {_eq: $session_id}}, limit: $limit) {
     id
     role
@@ -3316,6 +3863,7 @@ export const GetMessageListDocument = gql`
     content
     status
     updated_at
+    attachments
   }
 }
     `;

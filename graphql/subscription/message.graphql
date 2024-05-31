@@ -1,5 +1,5 @@
-subscription GetMessageList($session_id: uuid , $limit: Int = 10) {
-  message(where: {session_id: {_eq: $session_id}}, limit: $limit) {
+subscription GetMessageList($session_id: uuid, $limit: Int = 100) {
+  message(where: { session_id: { _eq: $session_id } }, limit: $limit) {
     id
     role
     feedback
@@ -7,5 +7,6 @@ subscription GetMessageList($session_id: uuid , $limit: Int = 10) {
     content
     status
     updated_at
+    attachments
   }
 }

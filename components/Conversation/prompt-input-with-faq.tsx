@@ -17,12 +17,24 @@ import {
   selectSelectedSessionId,
 } from "@/lib/features/chatListSlice";
 import { useSession } from "next-auth/react";
+import {
+  CreateMessageAndUpdateTopicHistoryDocument,
+  Message_Role_Enum,
+  useCreateMessageAndUpdateTopicHistoryMutation,
+} from "@/graphql/generated/types";
 
 export default function PromptInputWithFaq() {
   const dispatch: AppDispatch = useDispatch();
 
   const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
+
+  const [files, setFiles] = useState<UploadFileProps[]>([]);
+
+  const [prompt, setPrompt] = useState<string>("");
+
+  const [createMessageAndUpdateTopicHistoryMutation, { data, loading, error }] =
+    useCreateMessageAndUpdateTopicHistoryMutation();
 
   const session = useSession();
   const user_id = session.data?.user?.id;
@@ -60,10 +72,6 @@ export default function PromptInputWithFaq() {
     },
   ];
 
-  const [files, setFiles] = useState<UploadFileProps[]>([]);
-
-  const [prompt, setPrompt] = useState<string>("");
-
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileButtonClick = () => {
@@ -81,7 +89,7 @@ export default function PromptInputWithFaq() {
         const res = await fetch(
           `/api/file/presigned_url?fileName=${file.name}&fileType=${file.type}&location=chat`
         );
-        const { url } = await res.json();
+        const { url, bucket, fileKey } = await res.json();
         console.log(url);
         const newFileKey = files.length + 1;
         const newFile: UploadFileProps = {
@@ -89,7 +97,9 @@ export default function PromptInputWithFaq() {
           file: file,
           fileName: file.name,
           isLoading: true,
-          url: url,
+          // url: url,
+          bucket: bucket,
+          fileKey: fileKey,
         };
         setFiles((prevFiles) => [...prevFiles, newFile]);
 
@@ -121,7 +131,24 @@ export default function PromptInputWithFaq() {
   };
 
   const sendMessageHanlder = () => {
-    
+    const attachments = files.map((item) => ({
+      // key: item.key,
+      fileName: item.fileName,
+      bucket: item.bucket,
+      fileKey: item.fileKey,
+    }));
+    createMessageAndUpdateTopicHistoryMutation({
+      variables: {
+        content: prompt,
+        session_id: selectedSessionId,
+        role: Message_Role_Enum.User,
+        attachments: attachments,
+      },
+    });
+    if (data) {
+      setPrompt("");
+      setFiles([]);
+    }
   };
 
   const uploadFileListElement = files.map((item, index) => (
@@ -169,6 +196,7 @@ export default function PromptInputWithFaq() {
             innerWrapper: "relative",
             input: "pt-1 pl-2 pb-6 !pr-10 text-medium",
           }}
+          placeholder='向"智能助理"发消息'
           endContent={
             <div className="flex items-end gap-2">
               <Tooltip showArrow content="发送消息">

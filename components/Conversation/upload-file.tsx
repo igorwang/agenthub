@@ -12,6 +12,8 @@ export type UploadFileProps = React.HTMLAttributes<HTMLDivElement> & {
   key: number;
   file?: File;
   url?: string;
+  bucket?: string;
+  fileKey?: string;
   isLoading?: boolean;
   fileName?: string;
   className?: string;
@@ -23,7 +25,7 @@ export const UploadFile = React.forwardRef<HTMLDivElement, UploadFileProps>(
     {
       key = 0,
       className = "",
-      fileName = "test1231231231sdfsdf2312312312312.11",
+      fileName = "",
       isLoading = false,
       removeFileHandler,
     },
@@ -66,7 +68,7 @@ export const UploadFile = React.forwardRef<HTMLDivElement, UploadFileProps>(
     return (
       <div
         className={clsx(
-          "relative flex items-center justify-start  w-48 p-2 ml-2 mt-2 bg-white rounded-md group overflow-visible",
+          "relative flex items-center justify-start  w-48 p-2 ml-2 mt-2 bg-white rounded-md group overflow-auto",
           className
         )}
       >
@@ -84,7 +86,7 @@ export const UploadFile = React.forwardRef<HTMLDivElement, UploadFileProps>(
         )}
         {iconElement}
         {fileName && (
-          <span className="ml-2 w-full text-nowrap text-ellipsis overflow-auto ">
+          <span className="ml-2 w-full text-nowrap text-ellipsis overflow-hidden ">
             {fileName}
           </span>
         )}

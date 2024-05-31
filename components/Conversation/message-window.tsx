@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { AppDispatch } from "@/lib/store";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -11,8 +11,9 @@ import MessageCard from "./message-card";
 import {
   useGetMessageListSubscription,
   GetMessageListSubscription,
+  Message_Update_Column,
 } from "@/graphql/generated/types";
-import { Avatar } from "@nextui-org/react";
+import { Avatar, ScrollShadow } from "@nextui-org/react";
 import FeatureCards from "@/components/Conversation/feature-cards";
 
 export const assistantMessages = [
@@ -83,13 +84,13 @@ export const assistantMessages = [
   </div>,
 ];
 
-
 type MessageType = {
   id: string;
   role: string;
   message?: string | null;
   feedback?: string | null;
   status?: string | null;
+  files?: any;
 };
 
 export default function MessageWindow() {
@@ -97,21 +98,24 @@ export default function MessageWindow() {
 
   const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
+  const [messages, setMessages] = useState<MessageType[]>([]);
 
   const session = useSession();
   const user_id = session.data?.user?.id;
   const agent_id = selectedChatId;
-  const [messages, setMessages] = useState<MessageType[]>([]);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const { data, loading, error } = useGetMessageListSubscription({
     variables: {
       session_id: selectedSessionId || "", // Provide a default value
-      limit: 10,
+      limit: 50,
     },
     skip: !selectedSessionId, // Skip the query if session_id is not provided
   });
 
   useEffect(() => {
+    console.log(data?.message);
+    console.log(selectedSessionId);
     if (data && data.message) {
       setMessages(
         data.message.map((item) => ({
@@ -120,10 +124,23 @@ export default function MessageWindow() {
           message: item.content,
           status: item.status,
           feedback: item.feedback,
+          files:
+            item.attachments?.map(
+              (attachment: { fileName: string }, index: number) => ({
+                key: index,
+                fileName: attachment.fileName,
+              })
+            ) || [],
         }))
       );
     }
   }, [data]);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   const featureContent = (
     <div className="flex h-full flex-col justify-center">
@@ -139,29 +156,34 @@ export default function MessageWindow() {
       </div>
     </div>
   );
-  
   return (
-    <div className="flex flex-1 flex-grow flex-col px-1 gap-1  ">
-      {messages.length === 0 && featureContent}
+    <ScrollShadow
+      ref={scrollRef}
+      className="flex flex-grow flex-col gap-6 pb-8"
+    >
+      <div className="flex flex-1 flex-grow flex-col px-1 gap-1  ">
+        {messages.length === 0 && featureContent}
 
-      {messages.map(({ role, message }, index) => (
-        <MessageCard
-          key={index}
-          attempts={index === 1 ? 2 : 1}
-          avatar={
-            role === "assistant"
-              ? "https://nextuipro.nyc3.cdn.digitaloceanspaces.com/components-images/avatar_ai.png"
-              : "https://d2u8k2ocievbld.cloudfront.net/memojis/male/6.png"
-          }
-          currentAttempt={index === 1 ? 2 : 1}
-          message={message}
-          isUser={role === "user"}
-          messageClassName={
-            role === "user" ? "bg-content3 text-content3-foreground" : ""
-          }
-          showFeedback={role === "assistant"}
-        />
-      ))}
-    </div>
+        {messages.map(({ role, message, files }, index) => (
+          <MessageCard
+            key={index}
+            attempts={index === 1 ? 2 : 1}
+            avatar={
+              role === "assistant"
+                ? "https://nextuipro.nyc3.cdn.digitaloceanspaces.com/components-images/avatar_ai.png"
+                : "https://d2u8k2ocievbld.cloudfront.net/memojis/male/6.png"
+            }
+            currentAttempt={index === 1 ? 2 : 1}
+            message={message}
+            isUser={role === "user"}
+            messageClassName={
+              role === "user" ? "bg-content3 text-content3-foreground" : ""
+            }
+            showFeedback={role === "assistant"}
+            files={files}
+          />
+        ))}
+      </div>
+    </ScrollShadow>
   );
 }

@@ -77,9 +77,8 @@ export const Conversation: React.FC<ConversationProps> = ({
       {headerElement}
       <div className="flex flex-row flex-grow w-full overflow-auto ">
         <div className="flex flex-grow flex-col pt-2 ">
-          <ScrollShadow className="flex flex-grow flex-col gap-6 pb-8 ">
+          
             <MessageWindow />
-          </ScrollShadow>
           <div className="flex flex-col">
             <PromptInputWithFaq></PromptInputWithFaq>
             <p className="px-2 text-tiny text-default-400">

@@ -1,16 +1,28 @@
 "use client";
 import React from "react";
 
-import { Avatar, Badge, Button, Link, Tooltip } from "@nextui-org/react";
+import {
+  Avatar,
+  Badge,
+  Button,
+  Link,
+  ScrollShadow,
+  Tooltip,
+} from "@nextui-org/react";
 import { useClipboard } from "@nextui-org/use-clipboard";
 import { Icon } from "@iconify/react";
 import { cn } from "@/cn";
+import {
+  UploadFile,
+  UploadFileProps,
+} from "@/components/Conversation/upload-file";
 
 export type MessageCardProps = React.HTMLAttributes<HTMLDivElement> & {
   avatar?: string;
   showFeedback?: boolean;
   isUser?: boolean;
   message?: React.ReactNode;
+  files?: UploadFileProps[];
   currentAttempt?: number;
   status?: "success" | "failed";
   attempts?: number;
@@ -31,6 +43,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       currentAttempt = 1,
       isUser,
       status,
+      files,
       onMessageCopy,
       onAttemptChange,
       onFeedback,
@@ -134,17 +147,20 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       <div className="flex w-full flex-col gap-2 ml-14">
         <div
           className={cn(
-            "relative w-full rounded-medium px-4 py-2 text-default-800",
+            "relative w-full rounded-medium px-4 py-2 text-default-800 overflow-auto ",
             failedMessageClassName,
             messageClassName
           )}
         >
-          <div
-            ref={messageRef}
-            className={"px-1 text-medium flex justify-end"}
-          >
+          <div ref={messageRef} className={"px-1 text-medium flex justify-end"}>
             {hasFailed ? failedMessage : message}
           </div>
+          <ScrollShadow
+            orientation="horizontal"
+            className="flex flex-1 justify-start max-w-[400px]"
+          >
+            {files && files.map((item) => <UploadFile {...item} />)}
+          </ScrollShadow>
         </div>
       </div>
     );
