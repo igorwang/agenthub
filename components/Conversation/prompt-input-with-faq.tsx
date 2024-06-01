@@ -84,20 +84,21 @@ export default function PromptInputWithFaq() {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
+
     if (file) {
       try {
         const res = await fetch(
           `/api/file/presigned_url?fileName=${file.name}&fileType=${file.type}&location=chat`
         );
-        const { url, bucket, fileKey } = await res.json();
-        console.log(url);
+        const { url, bucket, fileKey, previewUrl } = await res.json();
+
         const newFileKey = files.length + 1;
         const newFile: UploadFileProps = {
           key: newFileKey,
           file: file,
           fileName: file.name,
           isLoading: true,
-          // url: url,
+          url: previewUrl,
           bucket: bucket,
           fileKey: fileKey,
         };
@@ -124,6 +125,7 @@ export default function PromptInputWithFaq() {
         console.error("Error:", error);
       }
     }
+    event.target.value = "";
   };
 
   const removeFileHanlder = (index: number) => {
@@ -185,7 +187,7 @@ export default function PromptInputWithFaq() {
       </ScrollShadow>
       <form className="flex flex-col w-full items-start rounded-medium bg-default-100 transition-colors hover:bg-default-200/70">
         <ScrollShadow
-          className="flex flex-row flex-nowrap gap-2 overflow-auto w-full"
+          className="flex flex-row flex-nowrap gap-2 w-full"
           orientation="horizontal"
         >
           {uploadFileListElement}

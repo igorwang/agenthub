@@ -53,12 +53,18 @@ export async function GET(req: NextRequest) {
   };
 
   try {
-    const presignedUrl = await s3Client.getSignedUrlPromise(
+    const presignedPutUrl = await s3Client.getSignedUrlPromise(
       "putObject",
       params
     );
+    const presignedGetUrl = await s3Client.getSignedUrlPromise("getObject", {
+      Bucket: bucket,
+      Key: s3Key,
+      Expires: 2 * 60 * 60,
+    });
     return NextResponse.json({
-      url: presignedUrl,
+      url: presignedPutUrl,
+      previewUrl: presignedGetUrl,
       bucket: bucket,
       fileKey: s3Key,
     });

@@ -4,7 +4,7 @@ import {
   DefaultFileIcon,
   DeleteIcon,
 } from "@/components/ui/icons";
-import { Button, CircularProgress } from "@nextui-org/react";
+import { Button, CircularProgress, Image } from "@nextui-org/react";
 import clsx from "clsx";
 import React from "react";
 
@@ -26,19 +26,31 @@ export const UploadFile = React.forwardRef<HTMLDivElement, UploadFileProps>(
       key = 0,
       className = "",
       fileName = "",
+      url,
       isLoading = false,
       removeFileHandler,
     },
     ref
   ) => {
     const extension = fileName.split(".").pop()?.toLowerCase();
+
+    const isImage = (extension: string) => {
+      const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "webp"];
+      return imageExtensions.includes(extension.toLowerCase());
+    };
+
+    const showImage = extension && isImage(extension) && url;
+
     const getIconElement = (fileName: string) => {
       switch (extension) {
         case "jpg":
         case "jpeg":
         case "png":
-          // return <img src="/path/to/image/icon.png" alt="image icon" />;
-          return <DefaultFileIcon />;
+          return url && !isLoading ? (
+            <Image width={100} src={url} />
+          ) : (
+            <DefaultFileIcon />
+          );
         case "pdf":
           return <DocumentIcon />;
         case "doc":
@@ -61,14 +73,10 @@ export const UploadFile = React.forwardRef<HTMLDivElement, UploadFileProps>(
       getIconElement(fileName)
     );
 
-    const handleClick = () => {
-      console.log("delete");
-    };
-
     return (
       <div
         className={clsx(
-          "relative flex flex-none items-center justify-start  w-48 p-2 ml-2 mt-2 bg-white rounded-md group overflow-auto",
+          "relative flex flex-none items-center justify-start  max-w-48 p-2 ml-2 mt-2 bg-white rounded-md group",
           className
         )}
       >
@@ -85,7 +93,7 @@ export const UploadFile = React.forwardRef<HTMLDivElement, UploadFileProps>(
           />
         )}
         {iconElement}
-        {fileName && (
+        {fileName && !showImage &&(
           <span className="flex flex-1 ml-2 max-w-full text-nowrap text-ellipsis overflow-auto ">
             {fileName}
           </span>
