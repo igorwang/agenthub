@@ -34,7 +34,6 @@ export async function GET(req: NextRequest) {
     );
   }
   const bucket = location;
-
   // object name
   const ext = path.extname(fileName);
   const uuidFileName = `${uuid()}${ext}`;

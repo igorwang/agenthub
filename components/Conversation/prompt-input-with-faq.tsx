@@ -147,10 +147,9 @@ export default function PromptInputWithFaq() {
         attachments: attachments,
       },
     });
-    if (data) {
-      setPrompt("");
-      setFiles([]);
-    }
+
+    setPrompt("");
+    setFiles([]);
   };
 
   const uploadFileListElement = files.map((item, index) => (
