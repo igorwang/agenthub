@@ -18,25 +18,22 @@ export type BotDTO = {
 };
 
 export type ConversationProps = {
-  bot: BotDTO;
   className?: string;
   scrollShadowClassname?: string;
 };
 
 export const Conversation: React.FC<ConversationProps> = ({
-  bot,
   className,
   scrollShadowClassname,
 }) => {
   const agent_id = useSelector(selectSelectedChatId);
-  console.log(agent_id);
 
   const { data, loading, error } = useAgentByIdQuery({
     variables: {
       id: agent_id,
     },
+    skip: !agent_id
   });
-  console.log(data);
 
   const agent = {
     id: data?.agent_by_pk?.id,

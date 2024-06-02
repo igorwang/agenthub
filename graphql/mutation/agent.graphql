@@ -1,6 +1,6 @@
 mutation AddNewTopicMutation(
   $title: String
-  $user_id: String
+  $user_id: uuid
   $agent_id: uuid
 ) {
   insert_topic_history_one(

@@ -16,7 +16,7 @@ export default function ChatPage() {
     <div className="flex flex-row h-full w-full">
       <StoreProvider>
         <ChatHub></ChatHub>
-        <Conversation bot={bot}></Conversation>
+        <Conversation></Conversation>
       </StoreProvider>
     </div>
   );

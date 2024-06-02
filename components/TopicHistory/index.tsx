@@ -28,20 +28,24 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 interface TopicHistoryProps {
-  agent_id?: number;
+  agent_id?: string;
 }
 
 export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   const dispatch: AppDispatch = useDispatch();
   const selectedSessionId = useSelector(selectSelectedSessionId);
   const { data: sessionData, status } = useSession();
-  const user_id = sessionData?.user?.id;
+  const userId = sessionData?.user?.id;
+
+  console.log("TopicHistory")
+  console.log(userId)
   const { data, loading, error } = useGetTopicHistoriesQuery({
     variables: {
       agent_id: agent_id,
-      user_id: user_id,
+      user_id: userId || "",
       //  limit: 100
     },
+    skip: !agent_id || !userId,
   });
 
   useEffect(() => {
@@ -50,7 +54,6 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
     }
   }, [data, dispatch]);
 
-  
   if (!status) {
     return <div></div>;
   }
@@ -68,7 +71,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   const defaultSelectedKey = data?.topic_history[0]?.id;
 
   const handleSelect = (sId: string) => {
-    console.log(sId)
+    console.log(sId);
     dispatch(selectSession(sId));
   };
 

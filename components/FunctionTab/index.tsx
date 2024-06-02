@@ -44,7 +44,6 @@ export const FunctionTab = () => {
   });
 
   const handleAddTopic = async ({ agent_id, user_id }: AddTopicParams) => {
-    console.log("handleAddTopic");
     try {
       const { data, errors } = await addNewTopicMutation({
         variables: {
@@ -64,7 +63,7 @@ export const FunctionTab = () => {
         refetchTopicHistories();
       }
     } catch (error) {
-      //   console.error("Error adding topic:", error);
+      console.error("Error adding topic:", error);
       toast.success("系统错误请稍后重试", {
         duration: 1000,
         position: "bottom-left",

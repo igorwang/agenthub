@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useId, useState } from "react";
 
 import {
   Listbox,
@@ -31,13 +31,22 @@ import {
 } from "@/lib/features/chatListSlice";
 import { useGetAgentListByTypeQuery } from "@/graphql/generated/types";
 import { group } from "console";
+import { useSession } from "next-auth/react";
 
 export const ChatList: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const chatList = useSelector(selectChatList);
   const selectedChatId = useSelector(selectSelectedChatId);
 
-  const { data, loading, error } = useGetAgentListByTypeQuery();
+  const { data: sessionData, status } = useSession();
+  const userId = sessionData?.user?.id;
+
+  const { data, loading, error } = useGetAgentListByTypeQuery({
+    variables: {
+      user_id: userId,
+    },
+    skip: !userId,
+  });
 
   useEffect(() => {
     if (data) {
@@ -53,7 +62,6 @@ export const ChatList: React.FC = () => {
           })),
         })
       );
-
       const defaultSelectedChatId = data.agent_type[0].agents[0].id;
       if (defaultSelectedChatId) {
         dispatch(selectChat(defaultSelectedChatId));
@@ -61,7 +69,7 @@ export const ChatList: React.FC = () => {
 
       dispatch(setChatList(groupedChatList));
       // Initialize open states
-      const initialOpenStates: Record<number, boolean> = {};
+      const initialOpenStates: Record<string, boolean> = {};
       groupedChatList.forEach((group) => {
         initialOpenStates[group.id] = true;
       });
@@ -84,7 +92,7 @@ export const ChatList: React.FC = () => {
     }));
   };
 
-  const handleSelectChat = (selectId: number) => {
+  const handleSelectChat = (selectId: string) => {
     dispatch(selectChat(selectId));
   };
 

@@ -8,7 +8,7 @@ import jwt from "jsonwebtoken";
 import { HasuraAdapter } from "@auth/hasura-adapter";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  adapter: HasuraAdapter ({
+  adapter: HasuraAdapter({
     endpoint: process.env.HASURA_ENDPOINT ?? "",
     adminSecret: process.env.HASURA_ADMIN_SECRET ?? "",
   }),
@@ -73,7 +73,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         console.log("User logged in:", user);
         console.log("User profile:", profile);
-
         const payload = {
           "https://hasura.io/jwt/claims": {
             "x-hasura-user-id": user.id,
@@ -91,7 +90,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }
         );
         if (profile?.sub) {
-          token.uid = profile.sub;
+          token.uid = user.id;
         }
         token.access_token = accessToken;
       }
