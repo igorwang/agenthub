@@ -1,5 +1,5 @@
 export type ChatDTO = {
-  id: number;
+  id: string;
   name: string;
   description?: string | null | undefined;
   avatar?: string | null | undefined; 

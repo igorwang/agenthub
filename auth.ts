@@ -5,8 +5,13 @@ import Authentik from "next-auth/providers/authentik";
 import { use } from "react";
 import { getToken } from "next-auth/jwt";
 import jwt from "jsonwebtoken";
+import { HasuraAdapter } from "@auth/hasura-adapter";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  adapter: HasuraAdapter ({
+    endpoint: process.env.HASURA_ENDPOINT ?? "",
+    adminSecret: process.env.HASURA_ADMIN_SECRET ?? "",
+  }),
   providers: [
     // Credentials({
     //   name: "Credentials",

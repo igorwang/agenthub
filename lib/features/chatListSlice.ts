@@ -4,7 +4,7 @@ import { RootState } from "../store";
 
 interface ChatListState {
   chatList: GroupedChatListDTO[];
-  selectedChatId: number | null;
+  selectedChatId: string | null;
   selectedSessionId: string | null;
 }
 
@@ -32,7 +32,7 @@ const chatListSlice = createSlice({
         state.selectedChatId = null;
       }
     },
-    selectChat: (state, action: PayloadAction<number>) => {
+    selectChat: (state, action: PayloadAction<string>) => {
       state.selectedChatId = action.payload;
     },
     selectSession: (state, action: PayloadAction<string>) => {
@@ -44,7 +44,7 @@ export const { setChatList, selectChat, selectSession } = chatListSlice.actions;
 
 export const selectChatList = (state: RootState): GroupedChatListDTO[] =>
   state.chatList.chatList;
-export const selectSelectedChatId = (state: RootState): number | null =>
+export const selectSelectedChatId = (state: RootState): string | null =>
   state.chatList.selectedChatId;
 export const selectSelectedSessionId = (state: RootState): string | null =>
   state.chatList.selectedSessionId;

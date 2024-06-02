@@ -102,11 +102,35 @@ export type Agent = {
   avatar?: Maybe<Scalars['String']['output']>;
   created_at: Scalars['timestamptz']['output'];
   description?: Maybe<Scalars['String']['output']>;
-  id: Scalars['Int']['output'];
+  id: Scalars['uuid']['output'];
+  /** An array relationship */
+  kbs: Array<R_Agent_Kb>;
+  /** An aggregate relationship */
+  kbs_aggregate: R_Agent_Kb_Aggregate;
   name: Scalars['String']['output'];
   system_prompt_id?: Maybe<Scalars['Int']['output']>;
   type_id?: Maybe<Scalars['Int']['output']>;
   updated_at: Scalars['timestamptz']['output'];
+};
+
+
+/** AI Agent */
+export type AgentKbsArgs = {
+  distinct_on?: InputMaybe<Array<R_Agent_Kb_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<R_Agent_Kb_Order_By>>;
+  where?: InputMaybe<R_Agent_Kb_Bool_Exp>;
+};
+
+
+/** AI Agent */
+export type AgentKbs_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<R_Agent_Kb_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<R_Agent_Kb_Order_By>>;
+  where?: InputMaybe<R_Agent_Kb_Bool_Exp>;
 };
 
 /** aggregated selection of "agent" */
@@ -175,14 +199,12 @@ export type Agent_Arr_Rel_Insert_Input = {
 /** aggregate avg on columns */
 export type Agent_Avg_Fields = {
   __typename?: 'agent_avg_fields';
-  id?: Maybe<Scalars['Float']['output']>;
   system_prompt_id?: Maybe<Scalars['Float']['output']>;
   type_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by avg() on columns of table "agent" */
 export type Agent_Avg_Order_By = {
-  id?: InputMaybe<Order_By>;
   system_prompt_id?: InputMaybe<Order_By>;
   type_id?: InputMaybe<Order_By>;
 };
@@ -195,7 +217,9 @@ export type Agent_Bool_Exp = {
   avatar?: InputMaybe<String_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   description?: InputMaybe<String_Comparison_Exp>;
-  id?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  kbs?: InputMaybe<R_Agent_Kb_Bool_Exp>;
+  kbs_aggregate?: InputMaybe<R_Agent_Kb_Aggregate_Bool_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
   system_prompt_id?: InputMaybe<Int_Comparison_Exp>;
   type_id?: InputMaybe<Int_Comparison_Exp>;
@@ -210,7 +234,6 @@ export enum Agent_Constraint {
 
 /** input type for incrementing numeric columns in table "agent" */
 export type Agent_Inc_Input = {
-  id?: InputMaybe<Scalars['Int']['input']>;
   system_prompt_id?: InputMaybe<Scalars['Int']['input']>;
   type_id?: InputMaybe<Scalars['Int']['input']>;
 };
@@ -220,7 +243,8 @@ export type Agent_Insert_Input = {
   avatar?: InputMaybe<Scalars['String']['input']>;
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  kbs?: InputMaybe<R_Agent_Kb_Arr_Rel_Insert_Input>;
   name?: InputMaybe<Scalars['String']['input']>;
   system_prompt_id?: InputMaybe<Scalars['Int']['input']>;
   type_id?: InputMaybe<Scalars['Int']['input']>;
@@ -233,7 +257,7 @@ export type Agent_Max_Fields = {
   avatar?: Maybe<Scalars['String']['output']>;
   created_at?: Maybe<Scalars['timestamptz']['output']>;
   description?: Maybe<Scalars['String']['output']>;
-  id?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['uuid']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   system_prompt_id?: Maybe<Scalars['Int']['output']>;
   type_id?: Maybe<Scalars['Int']['output']>;
@@ -258,7 +282,7 @@ export type Agent_Min_Fields = {
   avatar?: Maybe<Scalars['String']['output']>;
   created_at?: Maybe<Scalars['timestamptz']['output']>;
   description?: Maybe<Scalars['String']['output']>;
-  id?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['uuid']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   system_prompt_id?: Maybe<Scalars['Int']['output']>;
   type_id?: Maybe<Scalars['Int']['output']>;
@@ -299,6 +323,7 @@ export type Agent_Order_By = {
   created_at?: InputMaybe<Order_By>;
   description?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  kbs_aggregate?: InputMaybe<R_Agent_Kb_Aggregate_Order_By>;
   name?: InputMaybe<Order_By>;
   system_prompt_id?: InputMaybe<Order_By>;
   type_id?: InputMaybe<Order_By>;
@@ -307,7 +332,7 @@ export type Agent_Order_By = {
 
 /** primary key columns input for table: agent */
 export type Agent_Pk_Columns_Input = {
-  id: Scalars['Int']['input'];
+  id: Scalars['uuid']['input'];
 };
 
 /** select columns of table "agent" */
@@ -335,7 +360,7 @@ export type Agent_Set_Input = {
   avatar?: InputMaybe<Scalars['String']['input']>;
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   system_prompt_id?: InputMaybe<Scalars['Int']['input']>;
   type_id?: InputMaybe<Scalars['Int']['input']>;
@@ -345,14 +370,12 @@ export type Agent_Set_Input = {
 /** aggregate stddev on columns */
 export type Agent_Stddev_Fields = {
   __typename?: 'agent_stddev_fields';
-  id?: Maybe<Scalars['Float']['output']>;
   system_prompt_id?: Maybe<Scalars['Float']['output']>;
   type_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev() on columns of table "agent" */
 export type Agent_Stddev_Order_By = {
-  id?: InputMaybe<Order_By>;
   system_prompt_id?: InputMaybe<Order_By>;
   type_id?: InputMaybe<Order_By>;
 };
@@ -360,14 +383,12 @@ export type Agent_Stddev_Order_By = {
 /** aggregate stddev_pop on columns */
 export type Agent_Stddev_Pop_Fields = {
   __typename?: 'agent_stddev_pop_fields';
-  id?: Maybe<Scalars['Float']['output']>;
   system_prompt_id?: Maybe<Scalars['Float']['output']>;
   type_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev_pop() on columns of table "agent" */
 export type Agent_Stddev_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
   system_prompt_id?: InputMaybe<Order_By>;
   type_id?: InputMaybe<Order_By>;
 };
@@ -375,14 +396,12 @@ export type Agent_Stddev_Pop_Order_By = {
 /** aggregate stddev_samp on columns */
 export type Agent_Stddev_Samp_Fields = {
   __typename?: 'agent_stddev_samp_fields';
-  id?: Maybe<Scalars['Float']['output']>;
   system_prompt_id?: Maybe<Scalars['Float']['output']>;
   type_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev_samp() on columns of table "agent" */
 export type Agent_Stddev_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
   system_prompt_id?: InputMaybe<Order_By>;
   type_id?: InputMaybe<Order_By>;
 };
@@ -400,7 +419,7 @@ export type Agent_Stream_Cursor_Value_Input = {
   avatar?: InputMaybe<Scalars['String']['input']>;
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   system_prompt_id?: InputMaybe<Scalars['Int']['input']>;
   type_id?: InputMaybe<Scalars['Int']['input']>;
@@ -410,14 +429,12 @@ export type Agent_Stream_Cursor_Value_Input = {
 /** aggregate sum on columns */
 export type Agent_Sum_Fields = {
   __typename?: 'agent_sum_fields';
-  id?: Maybe<Scalars['Int']['output']>;
   system_prompt_id?: Maybe<Scalars['Int']['output']>;
   type_id?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by sum() on columns of table "agent" */
 export type Agent_Sum_Order_By = {
-  id?: InputMaybe<Order_By>;
   system_prompt_id?: InputMaybe<Order_By>;
   type_id?: InputMaybe<Order_By>;
 };
@@ -703,14 +720,12 @@ export type Agent_Updates = {
 /** aggregate var_pop on columns */
 export type Agent_Var_Pop_Fields = {
   __typename?: 'agent_var_pop_fields';
-  id?: Maybe<Scalars['Float']['output']>;
   system_prompt_id?: Maybe<Scalars['Float']['output']>;
   type_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by var_pop() on columns of table "agent" */
 export type Agent_Var_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
   system_prompt_id?: InputMaybe<Order_By>;
   type_id?: InputMaybe<Order_By>;
 };
@@ -718,14 +733,12 @@ export type Agent_Var_Pop_Order_By = {
 /** aggregate var_samp on columns */
 export type Agent_Var_Samp_Fields = {
   __typename?: 'agent_var_samp_fields';
-  id?: Maybe<Scalars['Float']['output']>;
   system_prompt_id?: Maybe<Scalars['Float']['output']>;
   type_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by var_samp() on columns of table "agent" */
 export type Agent_Var_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
   system_prompt_id?: InputMaybe<Order_By>;
   type_id?: InputMaybe<Order_By>;
 };
@@ -733,14 +746,12 @@ export type Agent_Var_Samp_Order_By = {
 /** aggregate variance on columns */
 export type Agent_Variance_Fields = {
   __typename?: 'agent_variance_fields';
-  id?: Maybe<Scalars['Float']['output']>;
   system_prompt_id?: Maybe<Scalars['Float']['output']>;
   type_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by variance() on columns of table "agent" */
 export type Agent_Variance_Order_By = {
-  id?: InputMaybe<Order_By>;
   system_prompt_id?: InputMaybe<Order_By>;
   type_id?: InputMaybe<Order_By>;
 };
@@ -779,6 +790,368 @@ export type Jsonb_Comparison_Exp = {
   _lte?: InputMaybe<Scalars['jsonb']['input']>;
   _neq?: InputMaybe<Scalars['jsonb']['input']>;
   _nin?: InputMaybe<Array<Scalars['jsonb']['input']>>;
+};
+
+/** knowledge_base */
+export type Knowledge_Base = {
+  __typename?: 'knowledge_base';
+  /** An array relationship */
+  agents: Array<R_Agent_Kb>;
+  /** An aggregate relationship */
+  agents_aggregate: R_Agent_Kb_Aggregate;
+  base_type: Knowledge_Base_Type_Enum;
+  created_at: Scalars['timestamptz']['output'];
+  description: Scalars['String']['output'];
+  id: Scalars['uuid']['output'];
+  name: Scalars['String']['output'];
+  updated_at: Scalars['timestamptz']['output'];
+};
+
+
+/** knowledge_base */
+export type Knowledge_BaseAgentsArgs = {
+  distinct_on?: InputMaybe<Array<R_Agent_Kb_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<R_Agent_Kb_Order_By>>;
+  where?: InputMaybe<R_Agent_Kb_Bool_Exp>;
+};
+
+
+/** knowledge_base */
+export type Knowledge_BaseAgents_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<R_Agent_Kb_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<R_Agent_Kb_Order_By>>;
+  where?: InputMaybe<R_Agent_Kb_Bool_Exp>;
+};
+
+/** aggregated selection of "knowledge_base" */
+export type Knowledge_Base_Aggregate = {
+  __typename?: 'knowledge_base_aggregate';
+  aggregate?: Maybe<Knowledge_Base_Aggregate_Fields>;
+  nodes: Array<Knowledge_Base>;
+};
+
+/** aggregate fields of "knowledge_base" */
+export type Knowledge_Base_Aggregate_Fields = {
+  __typename?: 'knowledge_base_aggregate_fields';
+  count: Scalars['Int']['output'];
+  max?: Maybe<Knowledge_Base_Max_Fields>;
+  min?: Maybe<Knowledge_Base_Min_Fields>;
+};
+
+
+/** aggregate fields of "knowledge_base" */
+export type Knowledge_Base_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Knowledge_Base_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** Boolean expression to filter rows from the table "knowledge_base". All fields are combined with a logical 'AND'. */
+export type Knowledge_Base_Bool_Exp = {
+  _and?: InputMaybe<Array<Knowledge_Base_Bool_Exp>>;
+  _not?: InputMaybe<Knowledge_Base_Bool_Exp>;
+  _or?: InputMaybe<Array<Knowledge_Base_Bool_Exp>>;
+  agents?: InputMaybe<R_Agent_Kb_Bool_Exp>;
+  agents_aggregate?: InputMaybe<R_Agent_Kb_Aggregate_Bool_Exp>;
+  base_type?: InputMaybe<Knowledge_Base_Type_Enum_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  description?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  name?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "knowledge_base" */
+export enum Knowledge_Base_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  KnowledgeBasePkey = 'knowledge_base_pkey'
+}
+
+/** input type for inserting data into table "knowledge_base" */
+export type Knowledge_Base_Insert_Input = {
+  agents?: InputMaybe<R_Agent_Kb_Arr_Rel_Insert_Input>;
+  base_type?: InputMaybe<Knowledge_Base_Type_Enum>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+};
+
+/** aggregate max on columns */
+export type Knowledge_Base_Max_Fields = {
+  __typename?: 'knowledge_base_max_fields';
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['uuid']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+};
+
+/** aggregate min on columns */
+export type Knowledge_Base_Min_Fields = {
+  __typename?: 'knowledge_base_min_fields';
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['uuid']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+};
+
+/** response of any mutation on the table "knowledge_base" */
+export type Knowledge_Base_Mutation_Response = {
+  __typename?: 'knowledge_base_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int']['output'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Knowledge_Base>;
+};
+
+/** on_conflict condition type for table "knowledge_base" */
+export type Knowledge_Base_On_Conflict = {
+  constraint: Knowledge_Base_Constraint;
+  update_columns?: Array<Knowledge_Base_Update_Column>;
+  where?: InputMaybe<Knowledge_Base_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "knowledge_base". */
+export type Knowledge_Base_Order_By = {
+  agents_aggregate?: InputMaybe<R_Agent_Kb_Aggregate_Order_By>;
+  base_type?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  description?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: knowledge_base */
+export type Knowledge_Base_Pk_Columns_Input = {
+  id: Scalars['uuid']['input'];
+};
+
+/** select columns of table "knowledge_base" */
+export enum Knowledge_Base_Select_Column {
+  /** column name */
+  BaseType = 'base_type',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Description = 'description',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "knowledge_base" */
+export type Knowledge_Base_Set_Input = {
+  base_type?: InputMaybe<Knowledge_Base_Type_Enum>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+};
+
+/** Streaming cursor of the table "knowledge_base" */
+export type Knowledge_Base_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Knowledge_Base_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Knowledge_Base_Stream_Cursor_Value_Input = {
+  base_type?: InputMaybe<Knowledge_Base_Type_Enum>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['uuid']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+};
+
+/** knowledge_base_type */
+export type Knowledge_Base_Type = {
+  __typename?: 'knowledge_base_type';
+  comment: Scalars['String']['output'];
+  value: Scalars['String']['output'];
+};
+
+/** aggregated selection of "knowledge_base_type" */
+export type Knowledge_Base_Type_Aggregate = {
+  __typename?: 'knowledge_base_type_aggregate';
+  aggregate?: Maybe<Knowledge_Base_Type_Aggregate_Fields>;
+  nodes: Array<Knowledge_Base_Type>;
+};
+
+/** aggregate fields of "knowledge_base_type" */
+export type Knowledge_Base_Type_Aggregate_Fields = {
+  __typename?: 'knowledge_base_type_aggregate_fields';
+  count: Scalars['Int']['output'];
+  max?: Maybe<Knowledge_Base_Type_Max_Fields>;
+  min?: Maybe<Knowledge_Base_Type_Min_Fields>;
+};
+
+
+/** aggregate fields of "knowledge_base_type" */
+export type Knowledge_Base_Type_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Knowledge_Base_Type_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** Boolean expression to filter rows from the table "knowledge_base_type". All fields are combined with a logical 'AND'. */
+export type Knowledge_Base_Type_Bool_Exp = {
+  _and?: InputMaybe<Array<Knowledge_Base_Type_Bool_Exp>>;
+  _not?: InputMaybe<Knowledge_Base_Type_Bool_Exp>;
+  _or?: InputMaybe<Array<Knowledge_Base_Type_Bool_Exp>>;
+  comment?: InputMaybe<String_Comparison_Exp>;
+  value?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "knowledge_base_type" */
+export enum Knowledge_Base_Type_Constraint {
+  /** unique or primary key constraint on columns "value" */
+  KnowledgeBaseTypePkey = 'knowledge_base_type_pkey'
+}
+
+export enum Knowledge_Base_Type_Enum {
+  /** 助理专属知识库 */
+  Agent = 'AGENT',
+  /** 个人知识库 */
+  Personal = 'PERSONAL',
+  /** 专业知识库 */
+  Professional = 'PROFESSIONAL',
+  /** 用户助手知识库 */
+  UserAgent = 'USER_AGENT'
+}
+
+/** Boolean expression to compare columns of type "knowledge_base_type_enum". All fields are combined with logical 'AND'. */
+export type Knowledge_Base_Type_Enum_Comparison_Exp = {
+  _eq?: InputMaybe<Knowledge_Base_Type_Enum>;
+  _in?: InputMaybe<Array<Knowledge_Base_Type_Enum>>;
+  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _neq?: InputMaybe<Knowledge_Base_Type_Enum>;
+  _nin?: InputMaybe<Array<Knowledge_Base_Type_Enum>>;
+};
+
+/** input type for inserting data into table "knowledge_base_type" */
+export type Knowledge_Base_Type_Insert_Input = {
+  comment?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregate max on columns */
+export type Knowledge_Base_Type_Max_Fields = {
+  __typename?: 'knowledge_base_type_max_fields';
+  comment?: Maybe<Scalars['String']['output']>;
+  value?: Maybe<Scalars['String']['output']>;
+};
+
+/** aggregate min on columns */
+export type Knowledge_Base_Type_Min_Fields = {
+  __typename?: 'knowledge_base_type_min_fields';
+  comment?: Maybe<Scalars['String']['output']>;
+  value?: Maybe<Scalars['String']['output']>;
+};
+
+/** response of any mutation on the table "knowledge_base_type" */
+export type Knowledge_Base_Type_Mutation_Response = {
+  __typename?: 'knowledge_base_type_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int']['output'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Knowledge_Base_Type>;
+};
+
+/** on_conflict condition type for table "knowledge_base_type" */
+export type Knowledge_Base_Type_On_Conflict = {
+  constraint: Knowledge_Base_Type_Constraint;
+  update_columns?: Array<Knowledge_Base_Type_Update_Column>;
+  where?: InputMaybe<Knowledge_Base_Type_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "knowledge_base_type". */
+export type Knowledge_Base_Type_Order_By = {
+  comment?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: knowledge_base_type */
+export type Knowledge_Base_Type_Pk_Columns_Input = {
+  value: Scalars['String']['input'];
+};
+
+/** select columns of table "knowledge_base_type" */
+export enum Knowledge_Base_Type_Select_Column {
+  /** column name */
+  Comment = 'comment',
+  /** column name */
+  Value = 'value'
+}
+
+/** input type for updating data in table "knowledge_base_type" */
+export type Knowledge_Base_Type_Set_Input = {
+  comment?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Streaming cursor of the table "knowledge_base_type" */
+export type Knowledge_Base_Type_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Knowledge_Base_Type_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Knowledge_Base_Type_Stream_Cursor_Value_Input = {
+  comment?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** update columns of table "knowledge_base_type" */
+export enum Knowledge_Base_Type_Update_Column {
+  /** column name */
+  Comment = 'comment',
+  /** column name */
+  Value = 'value'
+}
+
+export type Knowledge_Base_Type_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Knowledge_Base_Type_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Knowledge_Base_Type_Bool_Exp;
+};
+
+/** update columns of table "knowledge_base" */
+export enum Knowledge_Base_Update_Column {
+  /** column name */
+  BaseType = 'base_type',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Description = 'description',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+export type Knowledge_Base_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Knowledge_Base_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Knowledge_Base_Bool_Exp;
 };
 
 /** message */
@@ -1846,6 +2219,14 @@ export type Mutation_Root = {
   delete_agent_type?: Maybe<Agent_Type_Mutation_Response>;
   /** delete single row from the table: "agent_type" */
   delete_agent_type_by_pk?: Maybe<Agent_Type>;
+  /** delete data from the table: "knowledge_base" */
+  delete_knowledge_base?: Maybe<Knowledge_Base_Mutation_Response>;
+  /** delete single row from the table: "knowledge_base" */
+  delete_knowledge_base_by_pk?: Maybe<Knowledge_Base>;
+  /** delete data from the table: "knowledge_base_type" */
+  delete_knowledge_base_type?: Maybe<Knowledge_Base_Type_Mutation_Response>;
+  /** delete single row from the table: "knowledge_base_type" */
+  delete_knowledge_base_type_by_pk?: Maybe<Knowledge_Base_Type>;
   /** delete data from the table: "message" */
   delete_message?: Maybe<Message_Mutation_Response>;
   /** delete single row from the table: "message" */
@@ -1870,6 +2251,10 @@ export type Mutation_Root = {
   delete_prompt_hub?: Maybe<Prompt_Hub_Mutation_Response>;
   /** delete single row from the table: "prompt_hub" */
   delete_prompt_hub_by_pk?: Maybe<Prompt_Hub>;
+  /** delete data from the table: "r_agent_kb" */
+  delete_r_agent_kb?: Maybe<R_Agent_Kb_Mutation_Response>;
+  /** delete single row from the table: "r_agent_kb" */
+  delete_r_agent_kb_by_pk?: Maybe<R_Agent_Kb>;
   /** delete data from the table: "topic_history" */
   delete_topic_history?: Maybe<Topic_History_Mutation_Response>;
   /** delete single row from the table: "topic_history" */
@@ -1882,6 +2267,14 @@ export type Mutation_Root = {
   insert_agent_type?: Maybe<Agent_Type_Mutation_Response>;
   /** insert a single row into the table: "agent_type" */
   insert_agent_type_one?: Maybe<Agent_Type>;
+  /** insert data into the table: "knowledge_base" */
+  insert_knowledge_base?: Maybe<Knowledge_Base_Mutation_Response>;
+  /** insert a single row into the table: "knowledge_base" */
+  insert_knowledge_base_one?: Maybe<Knowledge_Base>;
+  /** insert data into the table: "knowledge_base_type" */
+  insert_knowledge_base_type?: Maybe<Knowledge_Base_Type_Mutation_Response>;
+  /** insert a single row into the table: "knowledge_base_type" */
+  insert_knowledge_base_type_one?: Maybe<Knowledge_Base_Type>;
   /** insert data into the table: "message" */
   insert_message?: Maybe<Message_Mutation_Response>;
   /** insert data into the table: "message_feedback" */
@@ -1906,6 +2299,10 @@ export type Mutation_Root = {
   insert_prompt_hub?: Maybe<Prompt_Hub_Mutation_Response>;
   /** insert a single row into the table: "prompt_hub" */
   insert_prompt_hub_one?: Maybe<Prompt_Hub>;
+  /** insert data into the table: "r_agent_kb" */
+  insert_r_agent_kb?: Maybe<R_Agent_Kb_Mutation_Response>;
+  /** insert a single row into the table: "r_agent_kb" */
+  insert_r_agent_kb_one?: Maybe<R_Agent_Kb>;
   /** insert data into the table: "topic_history" */
   insert_topic_history?: Maybe<Topic_History_Mutation_Response>;
   /** insert a single row into the table: "topic_history" */
@@ -1922,6 +2319,18 @@ export type Mutation_Root = {
   update_agent_type_by_pk?: Maybe<Agent_Type>;
   /** update multiples rows of table: "agent_type" */
   update_agent_type_many?: Maybe<Array<Maybe<Agent_Type_Mutation_Response>>>;
+  /** update data of the table: "knowledge_base" */
+  update_knowledge_base?: Maybe<Knowledge_Base_Mutation_Response>;
+  /** update single row of the table: "knowledge_base" */
+  update_knowledge_base_by_pk?: Maybe<Knowledge_Base>;
+  /** update multiples rows of table: "knowledge_base" */
+  update_knowledge_base_many?: Maybe<Array<Maybe<Knowledge_Base_Mutation_Response>>>;
+  /** update data of the table: "knowledge_base_type" */
+  update_knowledge_base_type?: Maybe<Knowledge_Base_Type_Mutation_Response>;
+  /** update single row of the table: "knowledge_base_type" */
+  update_knowledge_base_type_by_pk?: Maybe<Knowledge_Base_Type>;
+  /** update multiples rows of table: "knowledge_base_type" */
+  update_knowledge_base_type_many?: Maybe<Array<Maybe<Knowledge_Base_Type_Mutation_Response>>>;
   /** update data of the table: "message" */
   update_message?: Maybe<Message_Mutation_Response>;
   /** update single row of the table: "message" */
@@ -1958,6 +2367,12 @@ export type Mutation_Root = {
   update_prompt_hub_by_pk?: Maybe<Prompt_Hub>;
   /** update multiples rows of table: "prompt_hub" */
   update_prompt_hub_many?: Maybe<Array<Maybe<Prompt_Hub_Mutation_Response>>>;
+  /** update data of the table: "r_agent_kb" */
+  update_r_agent_kb?: Maybe<R_Agent_Kb_Mutation_Response>;
+  /** update single row of the table: "r_agent_kb" */
+  update_r_agent_kb_by_pk?: Maybe<R_Agent_Kb>;
+  /** update multiples rows of table: "r_agent_kb" */
+  update_r_agent_kb_many?: Maybe<Array<Maybe<R_Agent_Kb_Mutation_Response>>>;
   /** update data of the table: "topic_history" */
   update_topic_history?: Maybe<Topic_History_Mutation_Response>;
   /** update single row of the table: "topic_history" */
@@ -1975,7 +2390,7 @@ export type Mutation_RootDelete_AgentArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_Agent_By_PkArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['uuid']['input'];
 };
 
 
@@ -1988,6 +2403,30 @@ export type Mutation_RootDelete_Agent_TypeArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Agent_Type_By_PkArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Knowledge_BaseArgs = {
+  where: Knowledge_Base_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Knowledge_Base_By_PkArgs = {
+  id: Scalars['uuid']['input'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Knowledge_Base_TypeArgs = {
+  where: Knowledge_Base_Type_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Knowledge_Base_Type_By_PkArgs = {
+  value: Scalars['String']['input'];
 };
 
 
@@ -2064,6 +2503,18 @@ export type Mutation_RootDelete_Prompt_Hub_By_PkArgs = {
 
 
 /** mutation root */
+export type Mutation_RootDelete_R_Agent_KbArgs = {
+  where: R_Agent_Kb_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_R_Agent_Kb_By_PkArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+/** mutation root */
 export type Mutation_RootDelete_Topic_HistoryArgs = {
   where: Topic_History_Bool_Exp;
 };
@@ -2100,6 +2551,34 @@ export type Mutation_RootInsert_Agent_TypeArgs = {
 export type Mutation_RootInsert_Agent_Type_OneArgs = {
   object: Agent_Type_Insert_Input;
   on_conflict?: InputMaybe<Agent_Type_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Knowledge_BaseArgs = {
+  objects: Array<Knowledge_Base_Insert_Input>;
+  on_conflict?: InputMaybe<Knowledge_Base_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Knowledge_Base_OneArgs = {
+  object: Knowledge_Base_Insert_Input;
+  on_conflict?: InputMaybe<Knowledge_Base_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Knowledge_Base_TypeArgs = {
+  objects: Array<Knowledge_Base_Type_Insert_Input>;
+  on_conflict?: InputMaybe<Knowledge_Base_Type_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Knowledge_Base_Type_OneArgs = {
+  object: Knowledge_Base_Type_Insert_Input;
+  on_conflict?: InputMaybe<Knowledge_Base_Type_On_Conflict>;
 };
 
 
@@ -2188,6 +2667,20 @@ export type Mutation_RootInsert_Prompt_Hub_OneArgs = {
 
 
 /** mutation root */
+export type Mutation_RootInsert_R_Agent_KbArgs = {
+  objects: Array<R_Agent_Kb_Insert_Input>;
+  on_conflict?: InputMaybe<R_Agent_Kb_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_R_Agent_Kb_OneArgs = {
+  object: R_Agent_Kb_Insert_Input;
+  on_conflict?: InputMaybe<R_Agent_Kb_On_Conflict>;
+};
+
+
+/** mutation root */
 export type Mutation_RootInsert_Topic_HistoryArgs = {
   objects: Array<Topic_History_Insert_Input>;
   on_conflict?: InputMaybe<Topic_History_On_Conflict>;
@@ -2242,6 +2735,46 @@ export type Mutation_RootUpdate_Agent_Type_By_PkArgs = {
 /** mutation root */
 export type Mutation_RootUpdate_Agent_Type_ManyArgs = {
   updates: Array<Agent_Type_Updates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Knowledge_BaseArgs = {
+  _set?: InputMaybe<Knowledge_Base_Set_Input>;
+  where: Knowledge_Base_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Knowledge_Base_By_PkArgs = {
+  _set?: InputMaybe<Knowledge_Base_Set_Input>;
+  pk_columns: Knowledge_Base_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Knowledge_Base_ManyArgs = {
+  updates: Array<Knowledge_Base_Updates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Knowledge_Base_TypeArgs = {
+  _set?: InputMaybe<Knowledge_Base_Type_Set_Input>;
+  where: Knowledge_Base_Type_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Knowledge_Base_Type_By_PkArgs = {
+  _set?: InputMaybe<Knowledge_Base_Type_Set_Input>;
+  pk_columns: Knowledge_Base_Type_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Knowledge_Base_Type_ManyArgs = {
+  updates: Array<Knowledge_Base_Type_Updates>;
 };
 
 
@@ -2400,8 +2933,29 @@ export type Mutation_RootUpdate_Prompt_Hub_ManyArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdate_R_Agent_KbArgs = {
+  _inc?: InputMaybe<R_Agent_Kb_Inc_Input>;
+  _set?: InputMaybe<R_Agent_Kb_Set_Input>;
+  where: R_Agent_Kb_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_R_Agent_Kb_By_PkArgs = {
+  _inc?: InputMaybe<R_Agent_Kb_Inc_Input>;
+  _set?: InputMaybe<R_Agent_Kb_Set_Input>;
+  pk_columns: R_Agent_Kb_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_R_Agent_Kb_ManyArgs = {
+  updates: Array<R_Agent_Kb_Updates>;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_Topic_HistoryArgs = {
-  _inc?: InputMaybe<Topic_History_Inc_Input>;
   _set?: InputMaybe<Topic_History_Set_Input>;
   where: Topic_History_Bool_Exp;
 };
@@ -2409,7 +2963,6 @@ export type Mutation_RootUpdate_Topic_HistoryArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_Topic_History_By_PkArgs = {
-  _inc?: InputMaybe<Topic_History_Inc_Input>;
   _set?: InputMaybe<Topic_History_Set_Input>;
   pk_columns: Topic_History_Pk_Columns_Input;
 };
@@ -2710,6 +3263,18 @@ export type Query_Root = {
   agent_type_aggregate: Agent_Type_Aggregate;
   /** fetch data from the table: "agent_type" using primary key columns */
   agent_type_by_pk?: Maybe<Agent_Type>;
+  /** fetch data from the table: "knowledge_base" */
+  knowledge_base: Array<Knowledge_Base>;
+  /** fetch aggregated fields from the table: "knowledge_base" */
+  knowledge_base_aggregate: Knowledge_Base_Aggregate;
+  /** fetch data from the table: "knowledge_base" using primary key columns */
+  knowledge_base_by_pk?: Maybe<Knowledge_Base>;
+  /** fetch data from the table: "knowledge_base_type" */
+  knowledge_base_type: Array<Knowledge_Base_Type>;
+  /** fetch aggregated fields from the table: "knowledge_base_type" */
+  knowledge_base_type_aggregate: Knowledge_Base_Type_Aggregate;
+  /** fetch data from the table: "knowledge_base_type" using primary key columns */
+  knowledge_base_type_by_pk?: Maybe<Knowledge_Base_Type>;
   /** fetch data from the table: "message" */
   message: Array<Message>;
   /** fetch aggregated fields from the table: "message" */
@@ -2746,6 +3311,12 @@ export type Query_Root = {
   prompt_hub_aggregate: Prompt_Hub_Aggregate;
   /** fetch data from the table: "prompt_hub" using primary key columns */
   prompt_hub_by_pk?: Maybe<Prompt_Hub>;
+  /** fetch data from the table: "r_agent_kb" */
+  r_agent_kb: Array<R_Agent_Kb>;
+  /** fetch aggregated fields from the table: "r_agent_kb" */
+  r_agent_kb_aggregate: R_Agent_Kb_Aggregate;
+  /** fetch data from the table: "r_agent_kb" using primary key columns */
+  r_agent_kb_by_pk?: Maybe<R_Agent_Kb>;
   /** fetch data from the table: "topic_history" */
   topic_history: Array<Topic_History>;
   /** fetch aggregated fields from the table: "topic_history" */
@@ -2774,7 +3345,7 @@ export type Query_RootAgent_AggregateArgs = {
 
 
 export type Query_RootAgent_By_PkArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['uuid']['input'];
 };
 
 
@@ -2798,6 +3369,52 @@ export type Query_RootAgent_Type_AggregateArgs = {
 
 export type Query_RootAgent_Type_By_PkArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type Query_RootKnowledge_BaseArgs = {
+  distinct_on?: InputMaybe<Array<Knowledge_Base_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Knowledge_Base_Order_By>>;
+  where?: InputMaybe<Knowledge_Base_Bool_Exp>;
+};
+
+
+export type Query_RootKnowledge_Base_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Knowledge_Base_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Knowledge_Base_Order_By>>;
+  where?: InputMaybe<Knowledge_Base_Bool_Exp>;
+};
+
+
+export type Query_RootKnowledge_Base_By_PkArgs = {
+  id: Scalars['uuid']['input'];
+};
+
+
+export type Query_RootKnowledge_Base_TypeArgs = {
+  distinct_on?: InputMaybe<Array<Knowledge_Base_Type_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Knowledge_Base_Type_Order_By>>;
+  where?: InputMaybe<Knowledge_Base_Type_Bool_Exp>;
+};
+
+
+export type Query_RootKnowledge_Base_Type_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Knowledge_Base_Type_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Knowledge_Base_Type_Order_By>>;
+  where?: InputMaybe<Knowledge_Base_Type_Bool_Exp>;
+};
+
+
+export type Query_RootKnowledge_Base_Type_By_PkArgs = {
+  value: Scalars['String']['input'];
 };
 
 
@@ -2939,6 +3556,29 @@ export type Query_RootPrompt_Hub_By_PkArgs = {
 };
 
 
+export type Query_RootR_Agent_KbArgs = {
+  distinct_on?: InputMaybe<Array<R_Agent_Kb_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<R_Agent_Kb_Order_By>>;
+  where?: InputMaybe<R_Agent_Kb_Bool_Exp>;
+};
+
+
+export type Query_RootR_Agent_Kb_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<R_Agent_Kb_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<R_Agent_Kb_Order_By>>;
+  where?: InputMaybe<R_Agent_Kb_Bool_Exp>;
+};
+
+
+export type Query_RootR_Agent_Kb_By_PkArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type Query_RootTopic_HistoryArgs = {
   distinct_on?: InputMaybe<Array<Topic_History_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -2961,6 +3601,332 @@ export type Query_RootTopic_History_By_PkArgs = {
   id: Scalars['uuid']['input'];
 };
 
+/** agent knowledge_bases */
+export type R_Agent_Kb = {
+  __typename?: 'r_agent_kb';
+  agent_id: Scalars['uuid']['output'];
+  created_at: Scalars['timestamptz']['output'];
+  id: Scalars['Int']['output'];
+  kb_id: Scalars['uuid']['output'];
+  updated_at: Scalars['timestamptz']['output'];
+};
+
+/** aggregated selection of "r_agent_kb" */
+export type R_Agent_Kb_Aggregate = {
+  __typename?: 'r_agent_kb_aggregate';
+  aggregate?: Maybe<R_Agent_Kb_Aggregate_Fields>;
+  nodes: Array<R_Agent_Kb>;
+};
+
+export type R_Agent_Kb_Aggregate_Bool_Exp = {
+  count?: InputMaybe<R_Agent_Kb_Aggregate_Bool_Exp_Count>;
+};
+
+export type R_Agent_Kb_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<R_Agent_Kb_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<R_Agent_Kb_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
+/** aggregate fields of "r_agent_kb" */
+export type R_Agent_Kb_Aggregate_Fields = {
+  __typename?: 'r_agent_kb_aggregate_fields';
+  avg?: Maybe<R_Agent_Kb_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<R_Agent_Kb_Max_Fields>;
+  min?: Maybe<R_Agent_Kb_Min_Fields>;
+  stddev?: Maybe<R_Agent_Kb_Stddev_Fields>;
+  stddev_pop?: Maybe<R_Agent_Kb_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<R_Agent_Kb_Stddev_Samp_Fields>;
+  sum?: Maybe<R_Agent_Kb_Sum_Fields>;
+  var_pop?: Maybe<R_Agent_Kb_Var_Pop_Fields>;
+  var_samp?: Maybe<R_Agent_Kb_Var_Samp_Fields>;
+  variance?: Maybe<R_Agent_Kb_Variance_Fields>;
+};
+
+
+/** aggregate fields of "r_agent_kb" */
+export type R_Agent_Kb_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<R_Agent_Kb_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** order by aggregate values of table "r_agent_kb" */
+export type R_Agent_Kb_Aggregate_Order_By = {
+  avg?: InputMaybe<R_Agent_Kb_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<R_Agent_Kb_Max_Order_By>;
+  min?: InputMaybe<R_Agent_Kb_Min_Order_By>;
+  stddev?: InputMaybe<R_Agent_Kb_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<R_Agent_Kb_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<R_Agent_Kb_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<R_Agent_Kb_Sum_Order_By>;
+  var_pop?: InputMaybe<R_Agent_Kb_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<R_Agent_Kb_Var_Samp_Order_By>;
+  variance?: InputMaybe<R_Agent_Kb_Variance_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "r_agent_kb" */
+export type R_Agent_Kb_Arr_Rel_Insert_Input = {
+  data: Array<R_Agent_Kb_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<R_Agent_Kb_On_Conflict>;
+};
+
+/** aggregate avg on columns */
+export type R_Agent_Kb_Avg_Fields = {
+  __typename?: 'r_agent_kb_avg_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by avg() on columns of table "r_agent_kb" */
+export type R_Agent_Kb_Avg_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "r_agent_kb". All fields are combined with a logical 'AND'. */
+export type R_Agent_Kb_Bool_Exp = {
+  _and?: InputMaybe<Array<R_Agent_Kb_Bool_Exp>>;
+  _not?: InputMaybe<R_Agent_Kb_Bool_Exp>;
+  _or?: InputMaybe<Array<R_Agent_Kb_Bool_Exp>>;
+  agent_id?: InputMaybe<Uuid_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  id?: InputMaybe<Int_Comparison_Exp>;
+  kb_id?: InputMaybe<Uuid_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "r_agent_kb" */
+export enum R_Agent_Kb_Constraint {
+  /** unique or primary key constraint on columns "agent_id", "kb_id" */
+  RAgentKbAgentIdKbIdKey = 'r_agent_kb_agent_id_kb_id_key',
+  /** unique or primary key constraint on columns "id" */
+  RAgentKbPkey = 'r_agent_kb_pkey'
+}
+
+/** input type for incrementing numeric columns in table "r_agent_kb" */
+export type R_Agent_Kb_Inc_Input = {
+  id?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** input type for inserting data into table "r_agent_kb" */
+export type R_Agent_Kb_Insert_Input = {
+  agent_id?: InputMaybe<Scalars['uuid']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  id?: InputMaybe<Scalars['Int']['input']>;
+  kb_id?: InputMaybe<Scalars['uuid']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+};
+
+/** aggregate max on columns */
+export type R_Agent_Kb_Max_Fields = {
+  __typename?: 'r_agent_kb_max_fields';
+  agent_id?: Maybe<Scalars['uuid']['output']>;
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  id?: Maybe<Scalars['Int']['output']>;
+  kb_id?: Maybe<Scalars['uuid']['output']>;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+};
+
+/** order by max() on columns of table "r_agent_kb" */
+export type R_Agent_Kb_Max_Order_By = {
+  agent_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  kb_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type R_Agent_Kb_Min_Fields = {
+  __typename?: 'r_agent_kb_min_fields';
+  agent_id?: Maybe<Scalars['uuid']['output']>;
+  created_at?: Maybe<Scalars['timestamptz']['output']>;
+  id?: Maybe<Scalars['Int']['output']>;
+  kb_id?: Maybe<Scalars['uuid']['output']>;
+  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+};
+
+/** order by min() on columns of table "r_agent_kb" */
+export type R_Agent_Kb_Min_Order_By = {
+  agent_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  kb_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** response of any mutation on the table "r_agent_kb" */
+export type R_Agent_Kb_Mutation_Response = {
+  __typename?: 'r_agent_kb_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int']['output'];
+  /** data from the rows affected by the mutation */
+  returning: Array<R_Agent_Kb>;
+};
+
+/** on_conflict condition type for table "r_agent_kb" */
+export type R_Agent_Kb_On_Conflict = {
+  constraint: R_Agent_Kb_Constraint;
+  update_columns?: Array<R_Agent_Kb_Update_Column>;
+  where?: InputMaybe<R_Agent_Kb_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "r_agent_kb". */
+export type R_Agent_Kb_Order_By = {
+  agent_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  kb_id?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: r_agent_kb */
+export type R_Agent_Kb_Pk_Columns_Input = {
+  id: Scalars['Int']['input'];
+};
+
+/** select columns of table "r_agent_kb" */
+export enum R_Agent_Kb_Select_Column {
+  /** column name */
+  AgentId = 'agent_id',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  KbId = 'kb_id',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "r_agent_kb" */
+export type R_Agent_Kb_Set_Input = {
+  agent_id?: InputMaybe<Scalars['uuid']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  id?: InputMaybe<Scalars['Int']['input']>;
+  kb_id?: InputMaybe<Scalars['uuid']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+};
+
+/** aggregate stddev on columns */
+export type R_Agent_Kb_Stddev_Fields = {
+  __typename?: 'r_agent_kb_stddev_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev() on columns of table "r_agent_kb" */
+export type R_Agent_Kb_Stddev_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type R_Agent_Kb_Stddev_Pop_Fields = {
+  __typename?: 'r_agent_kb_stddev_pop_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev_pop() on columns of table "r_agent_kb" */
+export type R_Agent_Kb_Stddev_Pop_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type R_Agent_Kb_Stddev_Samp_Fields = {
+  __typename?: 'r_agent_kb_stddev_samp_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev_samp() on columns of table "r_agent_kb" */
+export type R_Agent_Kb_Stddev_Samp_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** Streaming cursor of the table "r_agent_kb" */
+export type R_Agent_Kb_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: R_Agent_Kb_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type R_Agent_Kb_Stream_Cursor_Value_Input = {
+  agent_id?: InputMaybe<Scalars['uuid']['input']>;
+  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  id?: InputMaybe<Scalars['Int']['input']>;
+  kb_id?: InputMaybe<Scalars['uuid']['input']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+};
+
+/** aggregate sum on columns */
+export type R_Agent_Kb_Sum_Fields = {
+  __typename?: 'r_agent_kb_sum_fields';
+  id?: Maybe<Scalars['Int']['output']>;
+};
+
+/** order by sum() on columns of table "r_agent_kb" */
+export type R_Agent_Kb_Sum_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** update columns of table "r_agent_kb" */
+export enum R_Agent_Kb_Update_Column {
+  /** column name */
+  AgentId = 'agent_id',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  KbId = 'kb_id',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+export type R_Agent_Kb_Updates = {
+  /** increments the numeric columns with given value of the filtered values */
+  _inc?: InputMaybe<R_Agent_Kb_Inc_Input>;
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<R_Agent_Kb_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: R_Agent_Kb_Bool_Exp;
+};
+
+/** aggregate var_pop on columns */
+export type R_Agent_Kb_Var_Pop_Fields = {
+  __typename?: 'r_agent_kb_var_pop_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by var_pop() on columns of table "r_agent_kb" */
+export type R_Agent_Kb_Var_Pop_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type R_Agent_Kb_Var_Samp_Fields = {
+  __typename?: 'r_agent_kb_var_samp_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by var_samp() on columns of table "r_agent_kb" */
+export type R_Agent_Kb_Var_Samp_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type R_Agent_Kb_Variance_Fields = {
+  __typename?: 'r_agent_kb_variance_fields';
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by variance() on columns of table "r_agent_kb" */
+export type R_Agent_Kb_Variance_Order_By = {
+  id?: InputMaybe<Order_By>;
+};
+
 export type Subscription_Root = {
   __typename?: 'subscription_root';
   /** fetch data from the table: "agent" */
@@ -2979,6 +3945,22 @@ export type Subscription_Root = {
   agent_type_by_pk?: Maybe<Agent_Type>;
   /** fetch data from the table in a streaming manner: "agent_type" */
   agent_type_stream: Array<Agent_Type>;
+  /** fetch data from the table: "knowledge_base" */
+  knowledge_base: Array<Knowledge_Base>;
+  /** fetch aggregated fields from the table: "knowledge_base" */
+  knowledge_base_aggregate: Knowledge_Base_Aggregate;
+  /** fetch data from the table: "knowledge_base" using primary key columns */
+  knowledge_base_by_pk?: Maybe<Knowledge_Base>;
+  /** fetch data from the table in a streaming manner: "knowledge_base" */
+  knowledge_base_stream: Array<Knowledge_Base>;
+  /** fetch data from the table: "knowledge_base_type" */
+  knowledge_base_type: Array<Knowledge_Base_Type>;
+  /** fetch aggregated fields from the table: "knowledge_base_type" */
+  knowledge_base_type_aggregate: Knowledge_Base_Type_Aggregate;
+  /** fetch data from the table: "knowledge_base_type" using primary key columns */
+  knowledge_base_type_by_pk?: Maybe<Knowledge_Base_Type>;
+  /** fetch data from the table in a streaming manner: "knowledge_base_type" */
+  knowledge_base_type_stream: Array<Knowledge_Base_Type>;
   /** fetch data from the table: "message" */
   message: Array<Message>;
   /** fetch aggregated fields from the table: "message" */
@@ -3027,6 +4009,14 @@ export type Subscription_Root = {
   prompt_hub_by_pk?: Maybe<Prompt_Hub>;
   /** fetch data from the table in a streaming manner: "prompt_hub" */
   prompt_hub_stream: Array<Prompt_Hub>;
+  /** fetch data from the table: "r_agent_kb" */
+  r_agent_kb: Array<R_Agent_Kb>;
+  /** fetch aggregated fields from the table: "r_agent_kb" */
+  r_agent_kb_aggregate: R_Agent_Kb_Aggregate;
+  /** fetch data from the table: "r_agent_kb" using primary key columns */
+  r_agent_kb_by_pk?: Maybe<R_Agent_Kb>;
+  /** fetch data from the table in a streaming manner: "r_agent_kb" */
+  r_agent_kb_stream: Array<R_Agent_Kb>;
   /** fetch data from the table: "topic_history" */
   topic_history: Array<Topic_History>;
   /** fetch aggregated fields from the table: "topic_history" */
@@ -3057,7 +4047,7 @@ export type Subscription_RootAgent_AggregateArgs = {
 
 
 export type Subscription_RootAgent_By_PkArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['uuid']['input'];
 };
 
 
@@ -3095,6 +4085,66 @@ export type Subscription_RootAgent_Type_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Agent_Type_Stream_Cursor_Input>>;
   where?: InputMaybe<Agent_Type_Bool_Exp>;
+};
+
+
+export type Subscription_RootKnowledge_BaseArgs = {
+  distinct_on?: InputMaybe<Array<Knowledge_Base_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Knowledge_Base_Order_By>>;
+  where?: InputMaybe<Knowledge_Base_Bool_Exp>;
+};
+
+
+export type Subscription_RootKnowledge_Base_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Knowledge_Base_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Knowledge_Base_Order_By>>;
+  where?: InputMaybe<Knowledge_Base_Bool_Exp>;
+};
+
+
+export type Subscription_RootKnowledge_Base_By_PkArgs = {
+  id: Scalars['uuid']['input'];
+};
+
+
+export type Subscription_RootKnowledge_Base_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Knowledge_Base_Stream_Cursor_Input>>;
+  where?: InputMaybe<Knowledge_Base_Bool_Exp>;
+};
+
+
+export type Subscription_RootKnowledge_Base_TypeArgs = {
+  distinct_on?: InputMaybe<Array<Knowledge_Base_Type_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Knowledge_Base_Type_Order_By>>;
+  where?: InputMaybe<Knowledge_Base_Type_Bool_Exp>;
+};
+
+
+export type Subscription_RootKnowledge_Base_Type_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Knowledge_Base_Type_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Knowledge_Base_Type_Order_By>>;
+  where?: InputMaybe<Knowledge_Base_Type_Bool_Exp>;
+};
+
+
+export type Subscription_RootKnowledge_Base_Type_By_PkArgs = {
+  value: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootKnowledge_Base_Type_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Knowledge_Base_Type_Stream_Cursor_Input>>;
+  where?: InputMaybe<Knowledge_Base_Type_Bool_Exp>;
 };
 
 
@@ -3278,6 +4328,36 @@ export type Subscription_RootPrompt_Hub_StreamArgs = {
 };
 
 
+export type Subscription_RootR_Agent_KbArgs = {
+  distinct_on?: InputMaybe<Array<R_Agent_Kb_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<R_Agent_Kb_Order_By>>;
+  where?: InputMaybe<R_Agent_Kb_Bool_Exp>;
+};
+
+
+export type Subscription_RootR_Agent_Kb_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<R_Agent_Kb_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<R_Agent_Kb_Order_By>>;
+  where?: InputMaybe<R_Agent_Kb_Bool_Exp>;
+};
+
+
+export type Subscription_RootR_Agent_Kb_By_PkArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type Subscription_RootR_Agent_Kb_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<R_Agent_Kb_Stream_Cursor_Input>>;
+  where?: InputMaybe<R_Agent_Kb_Bool_Exp>;
+};
+
+
 export type Subscription_RootTopic_HistoryArgs = {
   distinct_on?: InputMaybe<Array<Topic_History_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -3323,7 +4403,7 @@ export type Timestamptz_Comparison_Exp = {
 /** topic_history */
 export type Topic_History = {
   __typename?: 'topic_history';
-  agent_id: Scalars['Int']['output'];
+  agent_id?: Maybe<Scalars['uuid']['output']>;
   created_at: Scalars['timestamptz']['output'];
   id: Scalars['uuid']['output'];
   title: Scalars['String']['output'];
@@ -3341,17 +4421,9 @@ export type Topic_History_Aggregate = {
 /** aggregate fields of "topic_history" */
 export type Topic_History_Aggregate_Fields = {
   __typename?: 'topic_history_aggregate_fields';
-  avg?: Maybe<Topic_History_Avg_Fields>;
   count: Scalars['Int']['output'];
   max?: Maybe<Topic_History_Max_Fields>;
   min?: Maybe<Topic_History_Min_Fields>;
-  stddev?: Maybe<Topic_History_Stddev_Fields>;
-  stddev_pop?: Maybe<Topic_History_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Topic_History_Stddev_Samp_Fields>;
-  sum?: Maybe<Topic_History_Sum_Fields>;
-  var_pop?: Maybe<Topic_History_Var_Pop_Fields>;
-  var_samp?: Maybe<Topic_History_Var_Samp_Fields>;
-  variance?: Maybe<Topic_History_Variance_Fields>;
 };
 
 
@@ -3361,18 +4433,12 @@ export type Topic_History_Aggregate_FieldsCountArgs = {
   distinct?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-/** aggregate avg on columns */
-export type Topic_History_Avg_Fields = {
-  __typename?: 'topic_history_avg_fields';
-  agent_id?: Maybe<Scalars['Float']['output']>;
-};
-
 /** Boolean expression to filter rows from the table "topic_history". All fields are combined with a logical 'AND'. */
 export type Topic_History_Bool_Exp = {
   _and?: InputMaybe<Array<Topic_History_Bool_Exp>>;
   _not?: InputMaybe<Topic_History_Bool_Exp>;
   _or?: InputMaybe<Array<Topic_History_Bool_Exp>>;
-  agent_id?: InputMaybe<Int_Comparison_Exp>;
+  agent_id?: InputMaybe<Uuid_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   title?: InputMaybe<String_Comparison_Exp>;
@@ -3386,14 +4452,9 @@ export enum Topic_History_Constraint {
   TopicHistoryPkey = 'topic_history_pkey'
 }
 
-/** input type for incrementing numeric columns in table "topic_history" */
-export type Topic_History_Inc_Input = {
-  agent_id?: InputMaybe<Scalars['Int']['input']>;
-};
-
 /** input type for inserting data into table "topic_history" */
 export type Topic_History_Insert_Input = {
-  agent_id?: InputMaybe<Scalars['Int']['input']>;
+  agent_id?: InputMaybe<Scalars['uuid']['input']>;
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
@@ -3404,7 +4465,7 @@ export type Topic_History_Insert_Input = {
 /** aggregate max on columns */
 export type Topic_History_Max_Fields = {
   __typename?: 'topic_history_max_fields';
-  agent_id?: Maybe<Scalars['Int']['output']>;
+  agent_id?: Maybe<Scalars['uuid']['output']>;
   created_at?: Maybe<Scalars['timestamptz']['output']>;
   id?: Maybe<Scalars['uuid']['output']>;
   title?: Maybe<Scalars['String']['output']>;
@@ -3415,7 +4476,7 @@ export type Topic_History_Max_Fields = {
 /** aggregate min on columns */
 export type Topic_History_Min_Fields = {
   __typename?: 'topic_history_min_fields';
-  agent_id?: Maybe<Scalars['Int']['output']>;
+  agent_id?: Maybe<Scalars['uuid']['output']>;
   created_at?: Maybe<Scalars['timestamptz']['output']>;
   id?: Maybe<Scalars['uuid']['output']>;
   title?: Maybe<Scalars['String']['output']>;
@@ -3472,30 +4533,12 @@ export enum Topic_History_Select_Column {
 
 /** input type for updating data in table "topic_history" */
 export type Topic_History_Set_Input = {
-  agent_id?: InputMaybe<Scalars['Int']['input']>;
+  agent_id?: InputMaybe<Scalars['uuid']['input']>;
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
   user_id?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** aggregate stddev on columns */
-export type Topic_History_Stddev_Fields = {
-  __typename?: 'topic_history_stddev_fields';
-  agent_id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Topic_History_Stddev_Pop_Fields = {
-  __typename?: 'topic_history_stddev_pop_fields';
-  agent_id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Topic_History_Stddev_Samp_Fields = {
-  __typename?: 'topic_history_stddev_samp_fields';
-  agent_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** Streaming cursor of the table "topic_history" */
@@ -3508,18 +4551,12 @@ export type Topic_History_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Topic_History_Stream_Cursor_Value_Input = {
-  agent_id?: InputMaybe<Scalars['Int']['input']>;
+  agent_id?: InputMaybe<Scalars['uuid']['input']>;
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
   user_id?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** aggregate sum on columns */
-export type Topic_History_Sum_Fields = {
-  __typename?: 'topic_history_sum_fields';
-  agent_id?: Maybe<Scalars['Int']['output']>;
 };
 
 /** update columns of table "topic_history" */
@@ -3539,30 +4576,10 @@ export enum Topic_History_Update_Column {
 }
 
 export type Topic_History_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<Topic_History_Inc_Input>;
   /** sets the columns of the filtered rows to the given values */
   _set?: InputMaybe<Topic_History_Set_Input>;
   /** filter the rows which have to be updated */
   where: Topic_History_Bool_Exp;
-};
-
-/** aggregate var_pop on columns */
-export type Topic_History_Var_Pop_Fields = {
-  __typename?: 'topic_history_var_pop_fields';
-  agent_id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate var_samp on columns */
-export type Topic_History_Var_Samp_Fields = {
-  __typename?: 'topic_history_var_samp_fields';
-  agent_id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate variance on columns */
-export type Topic_History_Variance_Fields = {
-  __typename?: 'topic_history_variance_fields';
-  agent_id?: Maybe<Scalars['Float']['output']>;
 };
 
 /** Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'. */
@@ -3581,20 +4598,11 @@ export type Uuid_Comparison_Exp = {
 export type AddNewTopicMutationMutationVariables = Exact<{
   title?: InputMaybe<Scalars['String']['input']>;
   user_id?: InputMaybe<Scalars['String']['input']>;
-  agent_id?: InputMaybe<Scalars['Int']['input']>;
+  agent_id?: InputMaybe<Scalars['uuid']['input']>;
 }>;
 
 
-export type AddNewTopicMutationMutation = { __typename?: 'mutation_root', insert_topic_history_one?: { __typename?: 'topic_history', id: any, title: string, agent_id: number, user_id: string } | null };
-
-export type GetTopicHistoriesQueryVariables = Exact<{
-  agent_id?: InputMaybe<Scalars['Int']['input']>;
-  user_id?: InputMaybe<Scalars['String']['input']>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-}>;
-
-
-export type GetTopicHistoriesQuery = { __typename?: 'query_root', topic_history: Array<{ __typename?: 'topic_history', id: any, title: string, updated_at: any, user_id: string, created_at: any, agent_id: number }> };
+export type AddNewTopicMutationMutation = { __typename?: 'mutation_root', insert_topic_history_one?: { __typename?: 'topic_history', id: any, title: string, agent_id?: any | null, user_id: string } | null };
 
 export type CreateMessageAndUpdateTopicHistoryMutationVariables = Exact<{
   content?: InputMaybe<Scalars['String']['input']>;
@@ -3609,14 +4617,23 @@ export type CreateMessageAndUpdateTopicHistoryMutation = { __typename?: 'mutatio
 export type GetAgentListByTypeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAgentListByTypeQuery = { __typename?: 'query_root', agent_type: Array<{ __typename?: 'agent_type', id: number, name: string, agents: Array<{ __typename?: 'agent', id: number, name: string, description?: string | null, avatar?: string | null }> }> };
+export type GetAgentListByTypeQuery = { __typename?: 'query_root', agent_type: Array<{ __typename?: 'agent_type', id: number, name: string, agents: Array<{ __typename?: 'agent', id: any, name: string, description?: string | null, avatar?: string | null }> }> };
 
 export type AgentByIdQueryVariables = Exact<{
-  id?: InputMaybe<Scalars['Int']['input']>;
+  id: Scalars['uuid']['input'];
 }>;
 
 
-export type AgentByIdQuery = { __typename?: 'query_root', agent_by_pk?: { __typename?: 'agent', id: number, name: string, description?: string | null, avatar?: string | null } | null };
+export type AgentByIdQuery = { __typename?: 'query_root', agent_by_pk?: { __typename?: 'agent', id: any, name: string, description?: string | null, avatar?: string | null } | null };
+
+export type GetTopicHistoriesQueryVariables = Exact<{
+  agent_id: Scalars['uuid']['input'];
+  user_id: Scalars['String']['input'];
+  limit?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type GetTopicHistoriesQuery = { __typename?: 'query_root', topic_history: Array<{ __typename?: 'topic_history', id: any, title: string, updated_at: any, user_id: string, created_at: any, agent_id?: any | null }> };
 
 export type GetMessageListSubscriptionVariables = Exact<{
   session_id?: InputMaybe<Scalars['uuid']['input']>;
@@ -3628,7 +4645,7 @@ export type GetMessageListSubscription = { __typename?: 'subscription_root', mes
 
 
 export const AddNewTopicMutationDocument = gql`
-    mutation AddNewTopicMutation($title: String, $user_id: String, $agent_id: Int) {
+    mutation AddNewTopicMutation($title: String, $user_id: String, $agent_id: uuid) {
   insert_topic_history_one(
     object: {title: $title, user_id: $user_id, agent_id: $agent_id}
   ) {
@@ -3667,57 +4684,6 @@ export function useAddNewTopicMutationMutation(baseOptions?: Apollo.MutationHook
 export type AddNewTopicMutationMutationHookResult = ReturnType<typeof useAddNewTopicMutationMutation>;
 export type AddNewTopicMutationMutationResult = Apollo.MutationResult<AddNewTopicMutationMutation>;
 export type AddNewTopicMutationMutationOptions = Apollo.BaseMutationOptions<AddNewTopicMutationMutation, AddNewTopicMutationMutationVariables>;
-export const GetTopicHistoriesDocument = gql`
-    query GetTopicHistories($agent_id: Int = 10, $user_id: String = "", $limit: Int = 100) {
-  topic_history(
-    where: {agent_id: {_eq: $agent_id}, user_id: {_eq: $user_id}}
-    order_by: {updated_at: desc_nulls_last}
-    limit: $limit
-  ) {
-    id
-    title
-    updated_at
-    user_id
-    created_at
-    agent_id
-  }
-}
-    `;
-
-/**
- * __useGetTopicHistoriesQuery__
- *
- * To run a query within a React component, call `useGetTopicHistoriesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetTopicHistoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetTopicHistoriesQuery({
- *   variables: {
- *      agent_id: // value for 'agent_id'
- *      user_id: // value for 'user_id'
- *      limit: // value for 'limit'
- *   },
- * });
- */
-export function useGetTopicHistoriesQuery(baseOptions?: Apollo.QueryHookOptions<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>(GetTopicHistoriesDocument, options);
-      }
-export function useGetTopicHistoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>(GetTopicHistoriesDocument, options);
-        }
-export function useGetTopicHistoriesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>(GetTopicHistoriesDocument, options);
-        }
-export type GetTopicHistoriesQueryHookResult = ReturnType<typeof useGetTopicHistoriesQuery>;
-export type GetTopicHistoriesLazyQueryHookResult = ReturnType<typeof useGetTopicHistoriesLazyQuery>;
-export type GetTopicHistoriesSuspenseQueryHookResult = ReturnType<typeof useGetTopicHistoriesSuspenseQuery>;
-export type GetTopicHistoriesQueryResult = Apollo.QueryResult<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>;
 export const CreateMessageAndUpdateTopicHistoryDocument = gql`
     mutation CreateMessageAndUpdateTopicHistory($content: String, $session_id: uuid = "", $role: message_role_enum = user, $attachments: jsonb = null) {
   insert_message(
@@ -3811,7 +4777,7 @@ export type GetAgentListByTypeLazyQueryHookResult = ReturnType<typeof useGetAgen
 export type GetAgentListByTypeSuspenseQueryHookResult = ReturnType<typeof useGetAgentListByTypeSuspenseQuery>;
 export type GetAgentListByTypeQueryResult = Apollo.QueryResult<GetAgentListByTypeQuery, GetAgentListByTypeQueryVariables>;
 export const AgentByIdDocument = gql`
-    query AgentByID($id: Int = 10) {
+    query AgentByID($id: uuid!) {
   agent_by_pk(id: $id) {
     id
     name
@@ -3837,7 +4803,7 @@ export const AgentByIdDocument = gql`
  *   },
  * });
  */
-export function useAgentByIdQuery(baseOptions?: Apollo.QueryHookOptions<AgentByIdQuery, AgentByIdQueryVariables>) {
+export function useAgentByIdQuery(baseOptions: Apollo.QueryHookOptions<AgentByIdQuery, AgentByIdQueryVariables> & ({ variables: AgentByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<AgentByIdQuery, AgentByIdQueryVariables>(AgentByIdDocument, options);
       }
@@ -3853,6 +4819,57 @@ export type AgentByIdQueryHookResult = ReturnType<typeof useAgentByIdQuery>;
 export type AgentByIdLazyQueryHookResult = ReturnType<typeof useAgentByIdLazyQuery>;
 export type AgentByIdSuspenseQueryHookResult = ReturnType<typeof useAgentByIdSuspenseQuery>;
 export type AgentByIdQueryResult = Apollo.QueryResult<AgentByIdQuery, AgentByIdQueryVariables>;
+export const GetTopicHistoriesDocument = gql`
+    query GetTopicHistories($agent_id: uuid!, $user_id: String!, $limit: Int = 100) {
+  topic_history(
+    where: {agent_id: {_eq: $agent_id}, user_id: {_eq: $user_id}}
+    order_by: {updated_at: desc_nulls_last}
+    limit: $limit
+  ) {
+    id
+    title
+    updated_at
+    user_id
+    created_at
+    agent_id
+  }
+}
+    `;
+
+/**
+ * __useGetTopicHistoriesQuery__
+ *
+ * To run a query within a React component, call `useGetTopicHistoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTopicHistoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTopicHistoriesQuery({
+ *   variables: {
+ *      agent_id: // value for 'agent_id'
+ *      user_id: // value for 'user_id'
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useGetTopicHistoriesQuery(baseOptions: Apollo.QueryHookOptions<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables> & ({ variables: GetTopicHistoriesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>(GetTopicHistoriesDocument, options);
+      }
+export function useGetTopicHistoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>(GetTopicHistoriesDocument, options);
+        }
+export function useGetTopicHistoriesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>(GetTopicHistoriesDocument, options);
+        }
+export type GetTopicHistoriesQueryHookResult = ReturnType<typeof useGetTopicHistoriesQuery>;
+export type GetTopicHistoriesLazyQueryHookResult = ReturnType<typeof useGetTopicHistoriesLazyQuery>;
+export type GetTopicHistoriesSuspenseQueryHookResult = ReturnType<typeof useGetTopicHistoriesSuspenseQuery>;
+export type GetTopicHistoriesQueryResult = Apollo.QueryResult<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>;
 export const GetMessageListDocument = gql`
     subscription GetMessageList($session_id: uuid, $limit: Int = 100) {
   message(where: {session_id: {_eq: $session_id}}, limit: $limit) {

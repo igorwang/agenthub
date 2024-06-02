@@ -1,4 +1,8 @@
-mutation AddNewTopicMutation($title: String, $user_id: String, $agent_id: Int) {
+mutation AddNewTopicMutation(
+  $title: String
+  $user_id: String
+  $agent_id: uuid
+) {
   insert_topic_history_one(
     object: { title: $title, user_id: $user_id, agent_id: $agent_id }
   ) {
@@ -6,24 +10,5 @@ mutation AddNewTopicMutation($title: String, $user_id: String, $agent_id: Int) {
     title
     agent_id
     user_id
-  }
-}
-
-query GetTopicHistories(
-  $agent_id: Int = 10
-  $user_id: String = ""
-  $limit: Int = 100
-) {
-  topic_history(
-    where: { agent_id: { _eq: $agent_id }, user_id: { _eq: $user_id } }
-    order_by: { updated_at: desc_nulls_last }
-    limit: $limit
-  ) {
-    id
-    title
-    updated_at
-    user_id
-    created_at
-    agent_id
   }
 }
