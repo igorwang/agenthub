@@ -24,6 +24,7 @@ import {
   ScrollShadow,
 } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -37,8 +38,10 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   const { data: sessionData, status } = useSession();
   const userId = sessionData?.user?.id;
 
-  console.log("TopicHistory")
-  console.log(userId)
+  const router = useRouter();
+
+  console.log("TopicHistory");
+  console.log(userId);
   const { data, loading, error } = useGetTopicHistoriesQuery({
     variables: {
       agent_id: agent_id,
@@ -50,7 +53,9 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
 
   useEffect(() => {
     if (data && data.topic_history && data.topic_history.length > 0) {
-      dispatch(selectSession(data.topic_history[0].id));
+      const session_id = data.topic_history[0].id;
+      dispatch(selectSession(session_id));
+      router.push(`/chat/${agent_id}?session_id=${session_id}`);
     }
   }, [data, dispatch]);
 
@@ -71,8 +76,8 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   const defaultSelectedKey = data?.topic_history[0]?.id;
 
   const handleSelect = (sId: string) => {
-    console.log(sId);
     dispatch(selectSession(sId));
+    router.push(`/chat/${agent_id}?session_id=${sId}`);
   };
 
   const dropdownContent = (

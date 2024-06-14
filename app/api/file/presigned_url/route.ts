@@ -49,6 +49,7 @@ export async function GET(req: NextRequest) {
     ContentType: fileType,
     Metadata: {
       fileName: fileName,
+      creatorId: userId,
     },
   };
 
