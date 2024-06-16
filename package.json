@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+
     "lint": "next lint",
     "generate-client": "dotenv -e .env.local -- sh -c 'openapi-ts --input $API_URL --output ./app/api/chat --client axios'",
     "generate-graphql": "dotenv -e .env.local -- sh -c 'graphql-codegen'"

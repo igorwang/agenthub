@@ -7,8 +7,8 @@ import { match as matchLocale } from "@formatjs/intl-localematcher";
 
 const protectedRoutes = ["/chat"]; // Add any other protected routes here
 
-const locales = ["en-US", "zh-TW", "zh-CN"];
-const defaultLocale = "en-US";
+const locales = ["en", "tw", "zh"];
+const defaultLocale = "en";
 
 function getLocale(request: NextRequest) {
   const negotiator = new Negotiator({
@@ -24,11 +24,10 @@ export default async function middleware(request: NextRequest) {
   const session = await auth();
 
   const locale = getLocale(request);
-  console.log(`locale:${locale}`);
+  console.log(`locale: ${locale}`);
 
   const { pathname, origin } = request.nextUrl;
 
-  // Exclude certain paths from the locale check and redirection
   const excludePaths = ["/_next", "/static", "/api", "/favicon.ico"];
 
   const shouldExclude = excludePaths.some((path) => pathname.startsWith(path));
@@ -37,6 +36,10 @@ export default async function middleware(request: NextRequest) {
     const pathnameHasLocale = locales.some(
       (loc) => pathname.startsWith(`/${loc}/`) || pathname === `/${loc}`
     );
+
+    console.log("Pathname:", pathname);
+    console.log("Locales:", locales);
+    console.log("Pathname has locale:", pathnameHasLocale);
 
     if (!pathnameHasLocale) {
       // Redirect if there is no locale
@@ -50,8 +53,8 @@ export default async function middleware(request: NextRequest) {
   );
 
   if (!session && isProtectedRoute) {
-    signIn;
     return NextResponse.redirect(`${origin}/auth/login`);
   }
+
   return NextResponse.next();
 }

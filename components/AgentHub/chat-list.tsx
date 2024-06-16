@@ -32,13 +32,15 @@ import {
 import { useGetAgentListByTypeQuery } from "@/graphql/generated/types";
 import { group } from "console";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export const ChatList: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const chatList = useSelector(selectChatList);
   const selectedChatId = useSelector(selectSelectedChatId);
   const router = useRouter();
+
+  const pathname = usePathname();
 
   const { data: sessionData, status } = useSession();
   const userId = sessionData?.user?.id;
@@ -67,7 +69,7 @@ export const ChatList: React.FC = () => {
       const defaultSelectedChatId = data.agent_type[0].agents[0].id;
       if (defaultSelectedChatId) {
         dispatch(selectChat(defaultSelectedChatId));
-        router.push(`/chat/${defaultSelectedChatId}`);
+        router.push(`${pathname}/${defaultSelectedChatId}`);
       }
 
       dispatch(setChatList(groupedChatList));
@@ -97,7 +99,7 @@ export const ChatList: React.FC = () => {
 
   const handleSelectChat = (selectId: string) => {
     dispatch(selectChat(selectId));
-    router.push(`/chat/{selectId}`);
+    router.push(`${pathname}/{selectId}`);
   };
 
   const chatListContent = chatList.map((group) => (
