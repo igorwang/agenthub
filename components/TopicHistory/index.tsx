@@ -24,7 +24,7 @@ import {
   ScrollShadow,
 } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -40,6 +40,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
 
   const router = useRouter();
   const pathname = usePathname();
+  const { id: chatId } = useParams();
 
   const { data, loading, error } = useGetTopicHistoriesQuery({
     variables: {
@@ -54,7 +55,9 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
     if (data && data.topic_history && data.topic_history.length > 0) {
       const session_id = data.topic_history[0].id;
       dispatch(selectSession(session_id));
-      router.push(`${pathname}?session_id=${session_id}`);
+      if (chatId && chatId != 'default') {
+        router.push(`${pathname}?session_id=${session_id}`);
+      }
     }
   }, [data, dispatch]);
 
