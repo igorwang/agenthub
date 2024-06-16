@@ -95,10 +95,10 @@ export const Conversation: React.FC<ConversationProps> = ({
   return (
     <div className="flex flex-col h-full w-full">
       {headerElement}
-      <div className="flex flex-row flex-grow w-full overflow-auto ">
+      <div className="flex flex-row flex-grow w-full">
         <div className="flex flex-grow flex-col pt-2 ">
           <MessageWindow />
-          <div className="flex flex-col">
+          <div className="flex flex-col w-full">
             <PromptInputWithFaq></PromptInputWithFaq>
             <p className="px-2 text-tiny text-default-400">
               AI也可能会犯错。请核查重要信息。
@@ -106,9 +106,7 @@ export const Conversation: React.FC<ConversationProps> = ({
           </div>
         </div>
         <div className="hidden md:flex w-80 max-w-100 m-2 border-2 rounded-lg">
-          {/* <ScrollShadow className="flex flex-grow flex-col gap-6 pb-8 "> */}
           <FunctionTab></FunctionTab>
-          {/* </ScrollShadow> */}
         </div>
       </div>
     </div>

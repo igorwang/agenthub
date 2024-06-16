@@ -19,6 +19,8 @@ import SideBar from "@/components/Sidebar";
 import { AcmeLogo } from "@/components/ui/icons";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "sonner";
+import PromptInputWithFaq from "@/components/Conversation/prompt-input-with-faq";
+import StoreProvider from "@/app/StoreProvider";
 
 export const viewport: Viewport = {
   themeColor: [
@@ -44,9 +46,11 @@ export default function ChatLayout({
         <SessionProvider>
           <Providers themeProps={{ attribute: "class", defaultTheme: "white" }}>
             <div className="flex flex-row h-dvh w-dvw">
-              <SideBar></SideBar>
-              {children}
-              <Toaster />
+              <StoreProvider>
+                <SideBar></SideBar>
+                {children}
+                <Toaster />
+              </StoreProvider>
             </div>
           </Providers>
         </SessionProvider>

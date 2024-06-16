@@ -165,17 +165,17 @@ export default function PromptInputWithFaq() {
   ));
 
   return (
-    <div className="flex flex-col gap-4 p-2 items-center">
-      <ScrollShadow
+    <div className="flex flex-col w-full max-w-full p-2 gap-4 items-center ">
+      {/* <ScrollShadow
         hideScrollBar
-        className="flex flex-nowrap gap-2 overflow-auto w-0 h-0 lg:h-full lg:w-auto md:max-w-screen-lg "
+        className="flex flex-nowrap gap-2 overflow-auto"
         orientation="horizontal"
       >
-        <div className="flex gap-2">
+        <div className=" gap-2">
           {ideas.map(({ title, description }, index) => (
             <Button
               key={index}
-              className="flex h-14 flex-col items-start gap-0 over"
+              className="flex h-14 flex-col items-start gap-0 w-full"
               variant="flat"
             >
               <p>{title}</p>
@@ -183,7 +183,7 @@ export default function PromptInputWithFaq() {
             </Button>
           ))}
         </div>
-      </ScrollShadow>
+      </ScrollShadow> */}
       <form className="flex flex-col w-full items-start rounded-medium bg-default-100 transition-colors hover:bg-default-200/70">
         <ScrollShadow
           className="flex flex-row flex-nowrap gap-2 w-full"
@@ -228,7 +228,7 @@ export default function PromptInputWithFaq() {
           variant="flat"
           onValueChange={setPrompt}
         />
-        <div className="flex  items-center justify-between  gap-2 overflow-scroll px-4 pb-4">
+        <div className="flex items-center justify-between  gap-2 overflow-scroll px-4 pb-4">
           <div className="flex gap-1 md:gap-3">
             <input
               type="file"
