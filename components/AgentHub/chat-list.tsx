@@ -41,6 +41,9 @@ export const ChatList: React.FC = () => {
   const router = useRouter();
 
   const pathname = usePathname();
+  const pathParts = pathname.split("/");
+  const chatIndex = pathParts.findIndex((part) => part === "chat");
+  const pathPrefix = pathParts.slice(0, chatIndex + 1).join("/");
 
   const { data: sessionData, status } = useSession();
   const userId = sessionData?.user?.id;
@@ -69,7 +72,7 @@ export const ChatList: React.FC = () => {
       const defaultSelectedChatId = data.agent_type[0].agents[0].id;
       if (defaultSelectedChatId) {
         dispatch(selectChat(defaultSelectedChatId));
-        router.push(`${pathname}/${defaultSelectedChatId}`);
+        router.push(`${pathPrefix}/${defaultSelectedChatId}`);
       }
 
       dispatch(setChatList(groupedChatList));
@@ -99,7 +102,7 @@ export const ChatList: React.FC = () => {
 
   const handleSelectChat = (selectId: string) => {
     dispatch(selectChat(selectId));
-    router.push(`${pathname}/{selectId}`);
+    router.push(`${pathPrefix}/${selectId}`);
   };
 
   const chatListContent = chatList.map((group) => (
