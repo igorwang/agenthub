@@ -43,17 +43,16 @@ export default function ChatLayout({
           fontSans.variable
         )}
       >
-        <SessionProvider>
-          <Providers themeProps={{ attribute: "class", defaultTheme: "white" }}>
-            <div className="flex flex-row h-dvh w-dvw">
-              <StoreProvider>
-                <SideBar></SideBar>
+        <Providers themeProps={{ attribute: "class", defaultTheme: "white" }}>
+          <StoreProvider>
+            <SessionProvider>
+              <div className="h-dvh w-dvw">
                 {children}
                 <Toaster />
-              </StoreProvider>
-            </div>
-          </Providers>
-        </SessionProvider>
+              </div>
+            </SessionProvider>
+          </StoreProvider>
+        </Providers>
       </body>
     </html>
   );

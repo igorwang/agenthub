@@ -1,5 +1,6 @@
 import StoreProvider from "@/app/StoreProvider";
 import ChatHub from "@/components/AgentHub";
+import SideBar from "@/components/Sidebar";
 
 export default function AgentLayout({
   children, // will be a page or nested layout
@@ -7,11 +8,14 @@ export default function AgentLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-row h-full w-full max-w-full">
-      {/* <StoreProvider> */}
+    <div className="h-full w-full max-w-full">
+      <div className="flex flex-row h-full">
+        <SideBar />
+        {/* <div className="flex flex-row max-w-full overflow-auto"> */}
         <ChatHub></ChatHub>
         {children}
-      {/* </StoreProvider> */}
+        {/* </div> */}
+      </div>
     </div>
   );
 }

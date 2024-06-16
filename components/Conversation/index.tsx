@@ -93,12 +93,12 @@ export const Conversation: React.FC<ConversationProps> = ({
   );
 
   return (
-    <div className="flex flex-col h-full w-full">
+    <div className="flex flex-col h-full w-full max-w-full overflow-auto">
       {headerElement}
-      <div className="flex flex-row flex-grow w-full">
-        <div className="flex flex-grow flex-col pt-2 ">
+      <div className="flex flex-row flex-grow max-w-full overflow-auto">
+        <div className="flex flex-grow flex-col pt-2 max-w-full overflow-auto">
           <MessageWindow />
-          <div className="flex flex-col w-full">
+          <div className="flex flex-col w-full max-w-full overflow-auto">
             <PromptInputWithFaq></PromptInputWithFaq>
             <p className="px-2 text-tiny text-default-400">
               AI也可能会犯错。请核查重要信息。
