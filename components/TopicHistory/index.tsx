@@ -55,9 +55,6 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
     if (data && data.topic_history && data.topic_history.length > 0) {
       const session_id = data.topic_history[0].id;
       dispatch(selectSession(session_id));
-      if (chatId && chatId != "default") {
-        router.push(`${pathname}?session_id=${session_id}`);
-      }
     }
   }, [data, dispatch]);
 
