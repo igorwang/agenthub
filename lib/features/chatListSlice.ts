@@ -26,11 +26,11 @@ const chatListSlice = createSlice({
   reducers: {
     setChatList: (state, action: PayloadAction<GroupedChatListDTO[]>) => {
       state.chatList = action.payload;
-      if (action.payload.length > 0 && action.payload[0].agents.length > 0) {
-        state.selectedChatId = action.payload[0].agents[0].id;
-      } else {
-        state.selectedChatId = null;
-      }
+      // if (action.payload.length > 0 && action.payload[0].agents.length > 0) {
+      //   state.selectedChatId = action.payload[0].agents[0].id;
+      // } else {
+      //   state.selectedChatId = null;
+      // }
     },
     selectChat: (state, action: PayloadAction<string>) => {
       state.selectedChatId = action.payload;

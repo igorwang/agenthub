@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React from "react";
 
 import { Spacer } from "@nextui-org/react";
@@ -20,9 +20,7 @@ import {
 import { useQuery } from "@apollo/client";
 import { GetAgentListByTypeQuery } from "../../graphql/generated/types";
 
-
 const ChatHub = () => {
- 
   return (
     <div className="hidden sm:flex h-full min-w-40  flex-col border-r-1">
       <div className="text-3xl font-semibold leading-7 text-default-foreground px-2 pt-4">

@@ -1,7 +1,14 @@
 "use client";
 
 import { cn } from "@/cn";
-import { Avatar, ScrollShadow, Tab, Tabs, Tooltip } from "@nextui-org/react";
+import {
+  Avatar,
+  Button,
+  ScrollShadow,
+  Tab,
+  Tabs,
+  Tooltip,
+} from "@nextui-org/react";
 import React from "react";
 import MessageWindow from "./message-window";
 import PromptInputWithFaq from "./prompt-input-with-faq";
@@ -9,6 +16,8 @@ import { selectSelectedChatId } from "@/lib/features/chatListSlice";
 import { useSelector } from "react-redux";
 import { useAgentByIdQuery } from "@/graphql/generated/types";
 import { FunctionTab } from "@/components/FunctionTab";
+import { ConfigIcon } from "@/components/ui/icons";
+import { usePathname, useRouter } from "next/navigation";
 
 export type BotDTO = {
   id: number;
@@ -28,11 +37,14 @@ export const Conversation: React.FC<ConversationProps> = ({
 }) => {
   const agent_id = useSelector(selectSelectedChatId);
 
+  const router = useRouter();
+  const pathname = usePathname();
+
   const { data, loading, error } = useAgentByIdQuery({
     variables: {
       id: agent_id,
     },
-    skip: !agent_id
+    skip: !agent_id,
   });
 
   const agent = {
@@ -42,6 +54,9 @@ export const Conversation: React.FC<ConversationProps> = ({
     avatar: data?.agent_by_pk?.avatar,
   };
 
+  const handleConfigCilck = () => {
+    router.push(`${pathname}/settings`);
+  };
   // const{data} = use
   const headerElement = (
     <div className="relative flex flex-wrap items-center justify-center gap-2 border-b-small border-divider py-1 px-2 sm:justify-between">
@@ -53,7 +68,15 @@ export const Conversation: React.FC<ConversationProps> = ({
           src={agent.avatar || ""}
         />
         <div className="pl-2">
-          <p className="text-3xl font-medium">{agent.name}</p>
+          <div className="flex flex-row items-center ">
+            <p className="text-3xl font-medium pr-2">{agent.name}</p>
+            <Button
+              isIconOnly={true}
+              startContent={<ConfigIcon />}
+              variant="light"
+              onClick={handleConfigCilck}
+            ></Button>
+          </div>
           <Tooltip content={agent.description}>
             <p className="text-sm font-light overflow-hidden text-nowrap text-ellipsis max-w-sm">
               {agent.description}
@@ -74,8 +97,7 @@ export const Conversation: React.FC<ConversationProps> = ({
       {headerElement}
       <div className="flex flex-row flex-grow w-full overflow-auto ">
         <div className="flex flex-grow flex-col pt-2 ">
-          
-            <MessageWindow />
+          <MessageWindow />
           <div className="flex flex-col">
             <PromptInputWithFaq></PromptInputWithFaq>
             <p className="px-2 text-tiny text-default-400">
@@ -85,7 +107,7 @@ export const Conversation: React.FC<ConversationProps> = ({
         </div>
         <div className="hidden md:flex w-80 max-w-100 m-2 border-2 rounded-lg">
           {/* <ScrollShadow className="flex flex-grow flex-col gap-6 pb-8 "> */}
-            <FunctionTab></FunctionTab>
+          <FunctionTab></FunctionTab>
           {/* </ScrollShadow> */}
         </div>
       </div>

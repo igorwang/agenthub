@@ -32,18 +32,18 @@ import {
 import { useGetAgentListByTypeQuery } from "@/graphql/generated/types";
 import { group } from "console";
 import { useSession } from "next-auth/react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useParams } from "next/navigation";
 
 export const ChatList: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const chatList = useSelector(selectChatList);
   const selectedChatId = useSelector(selectSelectedChatId);
-  const router = useRouter();
 
+  const router = useRouter();
+  const params = useParams();
   const pathname = usePathname();
-  const pathParts = pathname.split("/");
-  const chatIndex = pathParts.findIndex((part) => part === "chat");
-  const pathPrefix = pathParts.slice(0, chatIndex + 1).join("/");
+
+  const { id: chatId } = params;
 
   const { data: sessionData, status } = useSession();
   const userId = sessionData?.user?.id;
@@ -69,13 +69,15 @@ export const ChatList: React.FC = () => {
           })),
         })
       );
-      const defaultSelectedChatId = data.agent_type[0].agents[0].id;
-      if (defaultSelectedChatId) {
-        dispatch(selectChat(defaultSelectedChatId));
-        router.push(`${pathPrefix}/${defaultSelectedChatId}`);
-      }
 
       dispatch(setChatList(groupedChatList));
+      const defaultSelectedChatId = data.agent_type[0].agents[0].id;
+
+      if (chatId && chatId != "default") {
+        dispatch(selectChat(chatId.toString()));
+      } else {
+        dispatch(selectChat(defaultSelectedChatId));
+      }
       // Initialize open states
       const initialOpenStates: Record<string, boolean> = {};
       groupedChatList.forEach((group) => {
@@ -101,8 +103,9 @@ export const ChatList: React.FC = () => {
   };
 
   const handleSelectChat = (selectId: string) => {
+    const newPathname = pathname.replace(chatId.toString(), selectId);
     dispatch(selectChat(selectId));
-    router.push(`${pathPrefix}/${selectId}`);
+    router.push(newPathname);
   };
 
   const chatListContent = chatList.map((group) => (
