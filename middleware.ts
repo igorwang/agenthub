@@ -48,8 +48,18 @@ export default async function middleware(request: NextRequest) {
     }
   }
 
+  // Remove locale from pathname before checking protected routes
+  const pathnameWithoutLocale = locales.reduce((path, loc) => {
+    if (path.startsWith(`/${loc}/`)) {
+      return path.replace(`/${loc}`, "");
+    } else if (path === `/${loc}`) {
+      return "/";
+    }
+    return path;
+  }, pathname);
+
   const isProtectedRoute = protectedRoutes.some((route) =>
-    pathname.startsWith(route)
+    pathnameWithoutLocale.startsWith(route)
   );
 
   if (!session && isProtectedRoute) {
