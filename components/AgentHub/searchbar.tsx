@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
 import { Icon } from "@iconify/react";
 import { Input } from "@nextui-org/input";
+import React from "react";
 
 export interface SearchBarProps {
   placeholder?: string;

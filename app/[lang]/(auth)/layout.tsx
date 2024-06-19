@@ -1,10 +1,10 @@
-import "@/styles/globals.css";
-import { Metadata, Viewport } from "next";
-import { siteConfig } from "@/config/site";
-import { fontSans } from "@/config/fonts";
 import { Providers } from "@/app/providers";
+import { fontSans } from "@/config/fonts";
+import { siteConfig } from "@/config/site";
+import "@/styles/globals.css";
 import { Link } from "@nextui-org/link";
 import clsx from "clsx";
+import { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {
   title: {
@@ -35,7 +35,7 @@ export default function AuthLayout({
       <body
         className={clsx(
           "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
+          fontSans.variable,
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>

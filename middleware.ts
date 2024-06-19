@@ -1,9 +1,8 @@
 // At the same level as pages or app
-import { auth, signIn } from "./auth";
-import React from "react";
-import { NextRequest, NextResponse } from "next/server";
-import Negotiator from "negotiator";
 import { match as matchLocale } from "@formatjs/intl-localematcher";
+import Negotiator from "negotiator";
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "./auth";
 
 const protectedRoutes = ["/chat"]; // Add any other protected routes here
 
@@ -24,7 +23,6 @@ export default async function middleware(request: NextRequest) {
   const session = await auth();
 
   const locale = getLocale(request);
-  console.log(`locale: ${locale}`);
 
   const { pathname, origin } = request.nextUrl;
 
@@ -34,12 +32,8 @@ export default async function middleware(request: NextRequest) {
 
   if (!shouldExclude) {
     const pathnameHasLocale = locales.some(
-      (loc) => pathname.startsWith(`/${loc}/`) || pathname === `/${loc}`
+      (loc) => pathname.startsWith(`/${loc}/`) || pathname === `/${loc}`,
     );
-
-    console.log("Pathname:", pathname);
-    console.log("Locales:", locales);
-    console.log("Pathname has locale:", pathnameHasLocale);
 
     if (!pathnameHasLocale) {
       // Redirect if there is no locale
@@ -59,7 +53,7 @@ export default async function middleware(request: NextRequest) {
   }, pathname);
 
   const isProtectedRoute = protectedRoutes.some((route) =>
-    pathnameWithoutLocale.startsWith(route)
+    pathnameWithoutLocale.startsWith(route),
   );
 
   if (!session && isProtectedRoute) {

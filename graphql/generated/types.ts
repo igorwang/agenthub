@@ -1,125 +1,156 @@
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
+import * as Apollo from "@apollo/client";
+import { gql } from "@apollo/client";
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
-export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type Exact<T extends { [key: string]: unknown }> = {
+  [K in keyof T]: T[K];
+};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]?: Maybe<T[SubKey]>;
+};
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]: Maybe<T[SubKey]>;
+};
+export type MakeEmpty<
+  T extends { [key: string]: unknown },
+  K extends keyof T,
+> = { [_ in K]?: never };
+export type Incremental<T> =
+  | T
+  | {
+      [P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never;
+    };
 const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string; }
-  String: { input: string; output: string; }
-  Boolean: { input: boolean; output: boolean; }
-  Int: { input: number; output: number; }
-  Float: { input: number; output: number; }
-  jsonb: { input: any; output: any; }
-  timestamptz: { input: any; output: any; }
-  uuid: { input: any; output: any; }
+  ID: { input: string; output: string };
+  String: { input: string; output: string };
+  Boolean: { input: boolean; output: boolean };
+  Int: { input: number; output: number };
+  Float: { input: number; output: number };
+  jsonb: { input: any; output: any };
+  numeric: { input: any; output: any };
+  timestamptz: { input: any; output: any };
+  uuid: { input: any; output: any };
 };
 
 /** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
 export type Boolean_Comparison_Exp = {
-  _eq?: InputMaybe<Scalars['Boolean']['input']>;
-  _gt?: InputMaybe<Scalars['Boolean']['input']>;
-  _gte?: InputMaybe<Scalars['Boolean']['input']>;
-  _in?: InputMaybe<Array<Scalars['Boolean']['input']>>;
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
-  _lt?: InputMaybe<Scalars['Boolean']['input']>;
-  _lte?: InputMaybe<Scalars['Boolean']['input']>;
-  _neq?: InputMaybe<Scalars['Boolean']['input']>;
-  _nin?: InputMaybe<Array<Scalars['Boolean']['input']>>;
+  _eq?: InputMaybe<Scalars["Boolean"]["input"]>;
+  _gt?: InputMaybe<Scalars["Boolean"]["input"]>;
+  _gte?: InputMaybe<Scalars["Boolean"]["input"]>;
+  _in?: InputMaybe<Array<Scalars["Boolean"]["input"]>>;
+  _is_null?: InputMaybe<Scalars["Boolean"]["input"]>;
+  _lt?: InputMaybe<Scalars["Boolean"]["input"]>;
+  _lte?: InputMaybe<Scalars["Boolean"]["input"]>;
+  _neq?: InputMaybe<Scalars["Boolean"]["input"]>;
+  _nin?: InputMaybe<Array<Scalars["Boolean"]["input"]>>;
+};
+
+/** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
+export type Int_Array_Comparison_Exp = {
+  /** is the array contained in the given array value */
+  _contained_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  /** does the array contain the given value */
+  _contains?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  _eq?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  _gt?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  _gte?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  _in?: InputMaybe<Array<Array<Scalars["Int"]["input"]>>>;
+  _is_null?: InputMaybe<Scalars["Boolean"]["input"]>;
+  _lt?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  _lte?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  _neq?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  _nin?: InputMaybe<Array<Array<Scalars["Int"]["input"]>>>;
 };
 
 /** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 export type Int_Comparison_Exp = {
-  _eq?: InputMaybe<Scalars['Int']['input']>;
-  _gt?: InputMaybe<Scalars['Int']['input']>;
-  _gte?: InputMaybe<Scalars['Int']['input']>;
-  _in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
-  _lt?: InputMaybe<Scalars['Int']['input']>;
-  _lte?: InputMaybe<Scalars['Int']['input']>;
-  _neq?: InputMaybe<Scalars['Int']['input']>;
-  _nin?: InputMaybe<Array<Scalars['Int']['input']>>;
+  _eq?: InputMaybe<Scalars["Int"]["input"]>;
+  _gt?: InputMaybe<Scalars["Int"]["input"]>;
+  _gte?: InputMaybe<Scalars["Int"]["input"]>;
+  _in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  _is_null?: InputMaybe<Scalars["Boolean"]["input"]>;
+  _lt?: InputMaybe<Scalars["Int"]["input"]>;
+  _lte?: InputMaybe<Scalars["Int"]["input"]>;
+  _neq?: InputMaybe<Scalars["Int"]["input"]>;
+  _nin?: InputMaybe<Array<Scalars["Int"]["input"]>>;
 };
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
 export type String_Array_Comparison_Exp = {
   /** is the array contained in the given array value */
-  _contained_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  _contained_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
   /** does the array contain the given value */
-  _contains?: InputMaybe<Array<Scalars['String']['input']>>;
-  _eq?: InputMaybe<Array<Scalars['String']['input']>>;
-  _gt?: InputMaybe<Array<Scalars['String']['input']>>;
-  _gte?: InputMaybe<Array<Scalars['String']['input']>>;
-  _in?: InputMaybe<Array<Array<Scalars['String']['input']>>>;
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
-  _lt?: InputMaybe<Array<Scalars['String']['input']>>;
-  _lte?: InputMaybe<Array<Scalars['String']['input']>>;
-  _neq?: InputMaybe<Array<Scalars['String']['input']>>;
-  _nin?: InputMaybe<Array<Array<Scalars['String']['input']>>>;
+  _contains?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  _eq?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  _gt?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  _gte?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  _in?: InputMaybe<Array<Array<Scalars["String"]["input"]>>>;
+  _is_null?: InputMaybe<Scalars["Boolean"]["input"]>;
+  _lt?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  _lte?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  _neq?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  _nin?: InputMaybe<Array<Array<Scalars["String"]["input"]>>>;
 };
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
 export type String_Comparison_Exp = {
-  _eq?: InputMaybe<Scalars['String']['input']>;
-  _gt?: InputMaybe<Scalars['String']['input']>;
-  _gte?: InputMaybe<Scalars['String']['input']>;
+  _eq?: InputMaybe<Scalars["String"]["input"]>;
+  _gt?: InputMaybe<Scalars["String"]["input"]>;
+  _gte?: InputMaybe<Scalars["String"]["input"]>;
   /** does the column match the given case-insensitive pattern */
-  _ilike?: InputMaybe<Scalars['String']['input']>;
-  _in?: InputMaybe<Array<Scalars['String']['input']>>;
+  _ilike?: InputMaybe<Scalars["String"]["input"]>;
+  _in?: InputMaybe<Array<Scalars["String"]["input"]>>;
   /** does the column match the given POSIX regular expression, case insensitive */
-  _iregex?: InputMaybe<Scalars['String']['input']>;
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _iregex?: InputMaybe<Scalars["String"]["input"]>;
+  _is_null?: InputMaybe<Scalars["Boolean"]["input"]>;
   /** does the column match the given pattern */
-  _like?: InputMaybe<Scalars['String']['input']>;
-  _lt?: InputMaybe<Scalars['String']['input']>;
-  _lte?: InputMaybe<Scalars['String']['input']>;
-  _neq?: InputMaybe<Scalars['String']['input']>;
+  _like?: InputMaybe<Scalars["String"]["input"]>;
+  _lt?: InputMaybe<Scalars["String"]["input"]>;
+  _lte?: InputMaybe<Scalars["String"]["input"]>;
+  _neq?: InputMaybe<Scalars["String"]["input"]>;
   /** does the column NOT match the given case-insensitive pattern */
-  _nilike?: InputMaybe<Scalars['String']['input']>;
-  _nin?: InputMaybe<Array<Scalars['String']['input']>>;
+  _nilike?: InputMaybe<Scalars["String"]["input"]>;
+  _nin?: InputMaybe<Array<Scalars["String"]["input"]>>;
   /** does the column NOT match the given POSIX regular expression, case insensitive */
-  _niregex?: InputMaybe<Scalars['String']['input']>;
+  _niregex?: InputMaybe<Scalars["String"]["input"]>;
   /** does the column NOT match the given pattern */
-  _nlike?: InputMaybe<Scalars['String']['input']>;
+  _nlike?: InputMaybe<Scalars["String"]["input"]>;
   /** does the column NOT match the given POSIX regular expression, case sensitive */
-  _nregex?: InputMaybe<Scalars['String']['input']>;
+  _nregex?: InputMaybe<Scalars["String"]["input"]>;
   /** does the column NOT match the given SQL regular expression */
-  _nsimilar?: InputMaybe<Scalars['String']['input']>;
+  _nsimilar?: InputMaybe<Scalars["String"]["input"]>;
   /** does the column match the given POSIX regular expression, case sensitive */
-  _regex?: InputMaybe<Scalars['String']['input']>;
+  _regex?: InputMaybe<Scalars["String"]["input"]>;
   /** does the column match the given SQL regular expression */
-  _similar?: InputMaybe<Scalars['String']['input']>;
+  _similar?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** columns and relationships of "accounts" */
 export type Accounts = {
-  __typename?: 'accounts';
-  access_token?: Maybe<Scalars['String']['output']>;
-  expires_at?: Maybe<Scalars['Int']['output']>;
-  id: Scalars['uuid']['output'];
-  id_token?: Maybe<Scalars['String']['output']>;
-  provider: Scalars['String']['output'];
-  providerAccountId: Scalars['String']['output'];
+  __typename?: "accounts";
+  access_token?: Maybe<Scalars["String"]["output"]>;
+  expires_at?: Maybe<Scalars["Int"]["output"]>;
+  id: Scalars["uuid"]["output"];
+  id_token?: Maybe<Scalars["String"]["output"]>;
+  provider: Scalars["String"]["output"];
+  providerAccountId: Scalars["String"]["output"];
   /** An object relationship */
   provider_type: Provider_Type;
-  refresh_token?: Maybe<Scalars['String']['output']>;
-  scope?: Maybe<Scalars['String']['output']>;
-  session_state?: Maybe<Scalars['String']['output']>;
-  token_type?: Maybe<Scalars['String']['output']>;
-  type: Scalars['String']['output'];
+  refresh_token?: Maybe<Scalars["String"]["output"]>;
+  scope?: Maybe<Scalars["String"]["output"]>;
+  session_state?: Maybe<Scalars["String"]["output"]>;
+  token_type?: Maybe<Scalars["String"]["output"]>;
+  type: Scalars["String"]["output"];
   /** An object relationship */
   user: Users;
-  userId: Scalars['uuid']['output'];
+  userId: Scalars["uuid"]["output"];
 };
 
 /** aggregated selection of "accounts" */
 export type Accounts_Aggregate = {
-  __typename?: 'accounts_aggregate';
+  __typename?: "accounts_aggregate";
   aggregate?: Maybe<Accounts_Aggregate_Fields>;
   nodes: Array<Accounts>;
 };
@@ -130,16 +161,16 @@ export type Accounts_Aggregate_Bool_Exp = {
 
 export type Accounts_Aggregate_Bool_Exp_Count = {
   arguments?: InputMaybe<Array<Accounts_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
   filter?: InputMaybe<Accounts_Bool_Exp>;
   predicate: Int_Comparison_Exp;
 };
 
 /** aggregate fields of "accounts" */
 export type Accounts_Aggregate_Fields = {
-  __typename?: 'accounts_aggregate_fields';
+  __typename?: "accounts_aggregate_fields";
   avg?: Maybe<Accounts_Avg_Fields>;
-  count: Scalars['Int']['output'];
+  count: Scalars["Int"]["output"];
   max?: Maybe<Accounts_Max_Fields>;
   min?: Maybe<Accounts_Min_Fields>;
   stddev?: Maybe<Accounts_Stddev_Fields>;
@@ -151,11 +182,10 @@ export type Accounts_Aggregate_Fields = {
   variance?: Maybe<Accounts_Variance_Fields>;
 };
 
-
 /** aggregate fields of "accounts" */
 export type Accounts_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Accounts_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 /** order by aggregate values of table "accounts" */
@@ -182,8 +212,8 @@ export type Accounts_Arr_Rel_Insert_Input = {
 
 /** aggregate avg on columns */
 export type Accounts_Avg_Fields = {
-  __typename?: 'accounts_avg_fields';
-  expires_at?: Maybe<Scalars['Float']['output']>;
+  __typename?: "accounts_avg_fields";
+  expires_at?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by avg() on columns of table "accounts" */
@@ -215,47 +245,47 @@ export type Accounts_Bool_Exp = {
 /** unique or primary key constraints on table "accounts" */
 export enum Accounts_Constraint {
   /** unique or primary key constraint on columns "id" */
-  AccountsPkey = 'accounts_pkey'
+  AccountsPkey = "accounts_pkey",
 }
 
 /** input type for incrementing numeric columns in table "accounts" */
 export type Accounts_Inc_Input = {
-  expires_at?: InputMaybe<Scalars['Int']['input']>;
+  expires_at?: InputMaybe<Scalars["Int"]["input"]>;
 };
 
 /** input type for inserting data into table "accounts" */
 export type Accounts_Insert_Input = {
-  access_token?: InputMaybe<Scalars['String']['input']>;
-  expires_at?: InputMaybe<Scalars['Int']['input']>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
-  id_token?: InputMaybe<Scalars['String']['input']>;
-  provider?: InputMaybe<Scalars['String']['input']>;
-  providerAccountId?: InputMaybe<Scalars['String']['input']>;
+  access_token?: InputMaybe<Scalars["String"]["input"]>;
+  expires_at?: InputMaybe<Scalars["Int"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  id_token?: InputMaybe<Scalars["String"]["input"]>;
+  provider?: InputMaybe<Scalars["String"]["input"]>;
+  providerAccountId?: InputMaybe<Scalars["String"]["input"]>;
   provider_type?: InputMaybe<Provider_Type_Obj_Rel_Insert_Input>;
-  refresh_token?: InputMaybe<Scalars['String']['input']>;
-  scope?: InputMaybe<Scalars['String']['input']>;
-  session_state?: InputMaybe<Scalars['String']['input']>;
-  token_type?: InputMaybe<Scalars['String']['input']>;
-  type?: InputMaybe<Scalars['String']['input']>;
+  refresh_token?: InputMaybe<Scalars["String"]["input"]>;
+  scope?: InputMaybe<Scalars["String"]["input"]>;
+  session_state?: InputMaybe<Scalars["String"]["input"]>;
+  token_type?: InputMaybe<Scalars["String"]["input"]>;
+  type?: InputMaybe<Scalars["String"]["input"]>;
   user?: InputMaybe<Users_Obj_Rel_Insert_Input>;
-  userId?: InputMaybe<Scalars['uuid']['input']>;
+  userId?: InputMaybe<Scalars["uuid"]["input"]>;
 };
 
 /** aggregate max on columns */
 export type Accounts_Max_Fields = {
-  __typename?: 'accounts_max_fields';
-  access_token?: Maybe<Scalars['String']['output']>;
-  expires_at?: Maybe<Scalars['Int']['output']>;
-  id?: Maybe<Scalars['uuid']['output']>;
-  id_token?: Maybe<Scalars['String']['output']>;
-  provider?: Maybe<Scalars['String']['output']>;
-  providerAccountId?: Maybe<Scalars['String']['output']>;
-  refresh_token?: Maybe<Scalars['String']['output']>;
-  scope?: Maybe<Scalars['String']['output']>;
-  session_state?: Maybe<Scalars['String']['output']>;
-  token_type?: Maybe<Scalars['String']['output']>;
-  type?: Maybe<Scalars['String']['output']>;
-  userId?: Maybe<Scalars['uuid']['output']>;
+  __typename?: "accounts_max_fields";
+  access_token?: Maybe<Scalars["String"]["output"]>;
+  expires_at?: Maybe<Scalars["Int"]["output"]>;
+  id?: Maybe<Scalars["uuid"]["output"]>;
+  id_token?: Maybe<Scalars["String"]["output"]>;
+  provider?: Maybe<Scalars["String"]["output"]>;
+  providerAccountId?: Maybe<Scalars["String"]["output"]>;
+  refresh_token?: Maybe<Scalars["String"]["output"]>;
+  scope?: Maybe<Scalars["String"]["output"]>;
+  session_state?: Maybe<Scalars["String"]["output"]>;
+  token_type?: Maybe<Scalars["String"]["output"]>;
+  type?: Maybe<Scalars["String"]["output"]>;
+  userId?: Maybe<Scalars["uuid"]["output"]>;
 };
 
 /** order by max() on columns of table "accounts" */
@@ -276,19 +306,19 @@ export type Accounts_Max_Order_By = {
 
 /** aggregate min on columns */
 export type Accounts_Min_Fields = {
-  __typename?: 'accounts_min_fields';
-  access_token?: Maybe<Scalars['String']['output']>;
-  expires_at?: Maybe<Scalars['Int']['output']>;
-  id?: Maybe<Scalars['uuid']['output']>;
-  id_token?: Maybe<Scalars['String']['output']>;
-  provider?: Maybe<Scalars['String']['output']>;
-  providerAccountId?: Maybe<Scalars['String']['output']>;
-  refresh_token?: Maybe<Scalars['String']['output']>;
-  scope?: Maybe<Scalars['String']['output']>;
-  session_state?: Maybe<Scalars['String']['output']>;
-  token_type?: Maybe<Scalars['String']['output']>;
-  type?: Maybe<Scalars['String']['output']>;
-  userId?: Maybe<Scalars['uuid']['output']>;
+  __typename?: "accounts_min_fields";
+  access_token?: Maybe<Scalars["String"]["output"]>;
+  expires_at?: Maybe<Scalars["Int"]["output"]>;
+  id?: Maybe<Scalars["uuid"]["output"]>;
+  id_token?: Maybe<Scalars["String"]["output"]>;
+  provider?: Maybe<Scalars["String"]["output"]>;
+  providerAccountId?: Maybe<Scalars["String"]["output"]>;
+  refresh_token?: Maybe<Scalars["String"]["output"]>;
+  scope?: Maybe<Scalars["String"]["output"]>;
+  session_state?: Maybe<Scalars["String"]["output"]>;
+  token_type?: Maybe<Scalars["String"]["output"]>;
+  type?: Maybe<Scalars["String"]["output"]>;
+  userId?: Maybe<Scalars["uuid"]["output"]>;
 };
 
 /** order by min() on columns of table "accounts" */
@@ -309,9 +339,9 @@ export type Accounts_Min_Order_By = {
 
 /** response of any mutation on the table "accounts" */
 export type Accounts_Mutation_Response = {
-  __typename?: 'accounts_mutation_response';
+  __typename?: "accounts_mutation_response";
   /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
+  affected_rows: Scalars["Int"]["output"];
   /** data from the rows affected by the mutation */
   returning: Array<Accounts>;
 };
@@ -343,57 +373,57 @@ export type Accounts_Order_By = {
 
 /** primary key columns input for table: accounts */
 export type Accounts_Pk_Columns_Input = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
 
 /** select columns of table "accounts" */
 export enum Accounts_Select_Column {
   /** column name */
-  AccessToken = 'access_token',
+  AccessToken = "access_token",
   /** column name */
-  ExpiresAt = 'expires_at',
+  ExpiresAt = "expires_at",
   /** column name */
-  Id = 'id',
+  Id = "id",
   /** column name */
-  IdToken = 'id_token',
+  IdToken = "id_token",
   /** column name */
-  Provider = 'provider',
+  Provider = "provider",
   /** column name */
-  ProviderAccountId = 'providerAccountId',
+  ProviderAccountId = "providerAccountId",
   /** column name */
-  RefreshToken = 'refresh_token',
+  RefreshToken = "refresh_token",
   /** column name */
-  Scope = 'scope',
+  Scope = "scope",
   /** column name */
-  SessionState = 'session_state',
+  SessionState = "session_state",
   /** column name */
-  TokenType = 'token_type',
+  TokenType = "token_type",
   /** column name */
-  Type = 'type',
+  Type = "type",
   /** column name */
-  UserId = 'userId'
+  UserId = "userId",
 }
 
 /** input type for updating data in table "accounts" */
 export type Accounts_Set_Input = {
-  access_token?: InputMaybe<Scalars['String']['input']>;
-  expires_at?: InputMaybe<Scalars['Int']['input']>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
-  id_token?: InputMaybe<Scalars['String']['input']>;
-  provider?: InputMaybe<Scalars['String']['input']>;
-  providerAccountId?: InputMaybe<Scalars['String']['input']>;
-  refresh_token?: InputMaybe<Scalars['String']['input']>;
-  scope?: InputMaybe<Scalars['String']['input']>;
-  session_state?: InputMaybe<Scalars['String']['input']>;
-  token_type?: InputMaybe<Scalars['String']['input']>;
-  type?: InputMaybe<Scalars['String']['input']>;
-  userId?: InputMaybe<Scalars['uuid']['input']>;
+  access_token?: InputMaybe<Scalars["String"]["input"]>;
+  expires_at?: InputMaybe<Scalars["Int"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  id_token?: InputMaybe<Scalars["String"]["input"]>;
+  provider?: InputMaybe<Scalars["String"]["input"]>;
+  providerAccountId?: InputMaybe<Scalars["String"]["input"]>;
+  refresh_token?: InputMaybe<Scalars["String"]["input"]>;
+  scope?: InputMaybe<Scalars["String"]["input"]>;
+  session_state?: InputMaybe<Scalars["String"]["input"]>;
+  token_type?: InputMaybe<Scalars["String"]["input"]>;
+  type?: InputMaybe<Scalars["String"]["input"]>;
+  userId?: InputMaybe<Scalars["uuid"]["input"]>;
 };
 
 /** aggregate stddev on columns */
 export type Accounts_Stddev_Fields = {
-  __typename?: 'accounts_stddev_fields';
-  expires_at?: Maybe<Scalars['Float']['output']>;
+  __typename?: "accounts_stddev_fields";
+  expires_at?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by stddev() on columns of table "accounts" */
@@ -403,8 +433,8 @@ export type Accounts_Stddev_Order_By = {
 
 /** aggregate stddev_pop on columns */
 export type Accounts_Stddev_Pop_Fields = {
-  __typename?: 'accounts_stddev_pop_fields';
-  expires_at?: Maybe<Scalars['Float']['output']>;
+  __typename?: "accounts_stddev_pop_fields";
+  expires_at?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by stddev_pop() on columns of table "accounts" */
@@ -414,8 +444,8 @@ export type Accounts_Stddev_Pop_Order_By = {
 
 /** aggregate stddev_samp on columns */
 export type Accounts_Stddev_Samp_Fields = {
-  __typename?: 'accounts_stddev_samp_fields';
-  expires_at?: Maybe<Scalars['Float']['output']>;
+  __typename?: "accounts_stddev_samp_fields";
+  expires_at?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by stddev_samp() on columns of table "accounts" */
@@ -433,24 +463,24 @@ export type Accounts_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Accounts_Stream_Cursor_Value_Input = {
-  access_token?: InputMaybe<Scalars['String']['input']>;
-  expires_at?: InputMaybe<Scalars['Int']['input']>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
-  id_token?: InputMaybe<Scalars['String']['input']>;
-  provider?: InputMaybe<Scalars['String']['input']>;
-  providerAccountId?: InputMaybe<Scalars['String']['input']>;
-  refresh_token?: InputMaybe<Scalars['String']['input']>;
-  scope?: InputMaybe<Scalars['String']['input']>;
-  session_state?: InputMaybe<Scalars['String']['input']>;
-  token_type?: InputMaybe<Scalars['String']['input']>;
-  type?: InputMaybe<Scalars['String']['input']>;
-  userId?: InputMaybe<Scalars['uuid']['input']>;
+  access_token?: InputMaybe<Scalars["String"]["input"]>;
+  expires_at?: InputMaybe<Scalars["Int"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  id_token?: InputMaybe<Scalars["String"]["input"]>;
+  provider?: InputMaybe<Scalars["String"]["input"]>;
+  providerAccountId?: InputMaybe<Scalars["String"]["input"]>;
+  refresh_token?: InputMaybe<Scalars["String"]["input"]>;
+  scope?: InputMaybe<Scalars["String"]["input"]>;
+  session_state?: InputMaybe<Scalars["String"]["input"]>;
+  token_type?: InputMaybe<Scalars["String"]["input"]>;
+  type?: InputMaybe<Scalars["String"]["input"]>;
+  userId?: InputMaybe<Scalars["uuid"]["input"]>;
 };
 
 /** aggregate sum on columns */
 export type Accounts_Sum_Fields = {
-  __typename?: 'accounts_sum_fields';
-  expires_at?: Maybe<Scalars['Int']['output']>;
+  __typename?: "accounts_sum_fields";
+  expires_at?: Maybe<Scalars["Int"]["output"]>;
 };
 
 /** order by sum() on columns of table "accounts" */
@@ -461,29 +491,29 @@ export type Accounts_Sum_Order_By = {
 /** update columns of table "accounts" */
 export enum Accounts_Update_Column {
   /** column name */
-  AccessToken = 'access_token',
+  AccessToken = "access_token",
   /** column name */
-  ExpiresAt = 'expires_at',
+  ExpiresAt = "expires_at",
   /** column name */
-  Id = 'id',
+  Id = "id",
   /** column name */
-  IdToken = 'id_token',
+  IdToken = "id_token",
   /** column name */
-  Provider = 'provider',
+  Provider = "provider",
   /** column name */
-  ProviderAccountId = 'providerAccountId',
+  ProviderAccountId = "providerAccountId",
   /** column name */
-  RefreshToken = 'refresh_token',
+  RefreshToken = "refresh_token",
   /** column name */
-  Scope = 'scope',
+  Scope = "scope",
   /** column name */
-  SessionState = 'session_state',
+  SessionState = "session_state",
   /** column name */
-  TokenType = 'token_type',
+  TokenType = "token_type",
   /** column name */
-  Type = 'type',
+  Type = "type",
   /** column name */
-  UserId = 'userId'
+  UserId = "userId",
 }
 
 export type Accounts_Updates = {
@@ -497,8 +527,8 @@ export type Accounts_Updates = {
 
 /** aggregate var_pop on columns */
 export type Accounts_Var_Pop_Fields = {
-  __typename?: 'accounts_var_pop_fields';
-  expires_at?: Maybe<Scalars['Float']['output']>;
+  __typename?: "accounts_var_pop_fields";
+  expires_at?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by var_pop() on columns of table "accounts" */
@@ -508,8 +538,8 @@ export type Accounts_Var_Pop_Order_By = {
 
 /** aggregate var_samp on columns */
 export type Accounts_Var_Samp_Fields = {
-  __typename?: 'accounts_var_samp_fields';
-  expires_at?: Maybe<Scalars['Float']['output']>;
+  __typename?: "accounts_var_samp_fields";
+  expires_at?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by var_samp() on columns of table "accounts" */
@@ -519,8 +549,8 @@ export type Accounts_Var_Samp_Order_By = {
 
 /** aggregate variance on columns */
 export type Accounts_Variance_Fields = {
-  __typename?: 'accounts_variance_fields';
-  expires_at?: Maybe<Scalars['Float']['output']>;
+  __typename?: "accounts_variance_fields";
+  expires_at?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by variance() on columns of table "accounts" */
@@ -530,68 +560,65 @@ export type Accounts_Variance_Order_By = {
 
 /** AI Agent */
 export type Agent = {
-  __typename?: 'agent';
-  avatar?: Maybe<Scalars['String']['output']>;
-  created_at: Scalars['timestamptz']['output'];
-  description?: Maybe<Scalars['String']['output']>;
-  id: Scalars['uuid']['output'];
+  __typename?: "agent";
+  avatar?: Maybe<Scalars["String"]["output"]>;
+  created_at: Scalars["timestamptz"]["output"];
+  creator_id?: Maybe<Scalars["uuid"]["output"]>;
+  description?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["uuid"]["output"];
   /** An array relationship */
   kbs: Array<R_Agent_Kb>;
   /** An aggregate relationship */
   kbs_aggregate: R_Agent_Kb_Aggregate;
-  name: Scalars['String']['output'];
-  system_prompt_id?: Maybe<Scalars['Int']['output']>;
-  type_id?: Maybe<Scalars['Int']['output']>;
-  updated_at: Scalars['timestamptz']['output'];
+  name: Scalars["String"]["output"];
+  system_prompt_id?: Maybe<Scalars["Int"]["output"]>;
+  type_id?: Maybe<Scalars["Int"]["output"]>;
+  updated_at: Scalars["timestamptz"]["output"];
   /** An array relationship */
   users: Array<R_Agent_User>;
   /** An aggregate relationship */
   users_aggregate: R_Agent_User_Aggregate;
 };
 
-
 /** AI Agent */
 export type AgentKbsArgs = {
   distinct_on?: InputMaybe<Array<R_Agent_Kb_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<R_Agent_Kb_Order_By>>;
   where?: InputMaybe<R_Agent_Kb_Bool_Exp>;
 };
-
 
 /** AI Agent */
 export type AgentKbs_AggregateArgs = {
   distinct_on?: InputMaybe<Array<R_Agent_Kb_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<R_Agent_Kb_Order_By>>;
   where?: InputMaybe<R_Agent_Kb_Bool_Exp>;
 };
 
-
 /** AI Agent */
 export type AgentUsersArgs = {
   distinct_on?: InputMaybe<Array<R_Agent_User_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<R_Agent_User_Order_By>>;
   where?: InputMaybe<R_Agent_User_Bool_Exp>;
 };
 
-
 /** AI Agent */
 export type AgentUsers_AggregateArgs = {
   distinct_on?: InputMaybe<Array<R_Agent_User_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<R_Agent_User_Order_By>>;
   where?: InputMaybe<R_Agent_User_Bool_Exp>;
 };
 
 /** aggregated selection of "agent" */
 export type Agent_Aggregate = {
-  __typename?: 'agent_aggregate';
+  __typename?: "agent_aggregate";
   aggregate?: Maybe<Agent_Aggregate_Fields>;
   nodes: Array<Agent>;
 };
@@ -602,16 +629,16 @@ export type Agent_Aggregate_Bool_Exp = {
 
 export type Agent_Aggregate_Bool_Exp_Count = {
   arguments?: InputMaybe<Array<Agent_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
   filter?: InputMaybe<Agent_Bool_Exp>;
   predicate: Int_Comparison_Exp;
 };
 
 /** aggregate fields of "agent" */
 export type Agent_Aggregate_Fields = {
-  __typename?: 'agent_aggregate_fields';
+  __typename?: "agent_aggregate_fields";
   avg?: Maybe<Agent_Avg_Fields>;
-  count: Scalars['Int']['output'];
+  count: Scalars["Int"]["output"];
   max?: Maybe<Agent_Max_Fields>;
   min?: Maybe<Agent_Min_Fields>;
   stddev?: Maybe<Agent_Stddev_Fields>;
@@ -623,11 +650,10 @@ export type Agent_Aggregate_Fields = {
   variance?: Maybe<Agent_Variance_Fields>;
 };
 
-
 /** aggregate fields of "agent" */
 export type Agent_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Agent_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 /** order by aggregate values of table "agent" */
@@ -654,9 +680,9 @@ export type Agent_Arr_Rel_Insert_Input = {
 
 /** aggregate avg on columns */
 export type Agent_Avg_Fields = {
-  __typename?: 'agent_avg_fields';
-  system_prompt_id?: Maybe<Scalars['Float']['output']>;
-  type_id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "agent_avg_fields";
+  system_prompt_id?: Maybe<Scalars["Float"]["output"]>;
+  type_id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by avg() on columns of table "agent" */
@@ -672,6 +698,7 @@ export type Agent_Bool_Exp = {
   _or?: InputMaybe<Array<Agent_Bool_Exp>>;
   avatar?: InputMaybe<String_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  creator_id?: InputMaybe<Uuid_Comparison_Exp>;
   description?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   kbs?: InputMaybe<R_Agent_Kb_Bool_Exp>;
@@ -687,46 +714,49 @@ export type Agent_Bool_Exp = {
 /** unique or primary key constraints on table "agent" */
 export enum Agent_Constraint {
   /** unique or primary key constraint on columns "id" */
-  AgentPkey = 'agent_pkey'
+  AgentPkey = "agent_pkey",
 }
 
 /** input type for incrementing numeric columns in table "agent" */
 export type Agent_Inc_Input = {
-  system_prompt_id?: InputMaybe<Scalars['Int']['input']>;
-  type_id?: InputMaybe<Scalars['Int']['input']>;
+  system_prompt_id?: InputMaybe<Scalars["Int"]["input"]>;
+  type_id?: InputMaybe<Scalars["Int"]["input"]>;
 };
 
 /** input type for inserting data into table "agent" */
 export type Agent_Insert_Input = {
-  avatar?: InputMaybe<Scalars['String']['input']>;
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
+  avatar?: InputMaybe<Scalars["String"]["input"]>;
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  creator_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
   kbs?: InputMaybe<R_Agent_Kb_Arr_Rel_Insert_Input>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  system_prompt_id?: InputMaybe<Scalars['Int']['input']>;
-  type_id?: InputMaybe<Scalars['Int']['input']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  system_prompt_id?: InputMaybe<Scalars["Int"]["input"]>;
+  type_id?: InputMaybe<Scalars["Int"]["input"]>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
   users?: InputMaybe<R_Agent_User_Arr_Rel_Insert_Input>;
 };
 
 /** aggregate max on columns */
 export type Agent_Max_Fields = {
-  __typename?: 'agent_max_fields';
-  avatar?: Maybe<Scalars['String']['output']>;
-  created_at?: Maybe<Scalars['timestamptz']['output']>;
-  description?: Maybe<Scalars['String']['output']>;
-  id?: Maybe<Scalars['uuid']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
-  system_prompt_id?: Maybe<Scalars['Int']['output']>;
-  type_id?: Maybe<Scalars['Int']['output']>;
-  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+  __typename?: "agent_max_fields";
+  avatar?: Maybe<Scalars["String"]["output"]>;
+  created_at?: Maybe<Scalars["timestamptz"]["output"]>;
+  creator_id?: Maybe<Scalars["uuid"]["output"]>;
+  description?: Maybe<Scalars["String"]["output"]>;
+  id?: Maybe<Scalars["uuid"]["output"]>;
+  name?: Maybe<Scalars["String"]["output"]>;
+  system_prompt_id?: Maybe<Scalars["Int"]["output"]>;
+  type_id?: Maybe<Scalars["Int"]["output"]>;
+  updated_at?: Maybe<Scalars["timestamptz"]["output"]>;
 };
 
 /** order by max() on columns of table "agent" */
 export type Agent_Max_Order_By = {
   avatar?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  creator_id?: InputMaybe<Order_By>;
   description?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
@@ -737,21 +767,23 @@ export type Agent_Max_Order_By = {
 
 /** aggregate min on columns */
 export type Agent_Min_Fields = {
-  __typename?: 'agent_min_fields';
-  avatar?: Maybe<Scalars['String']['output']>;
-  created_at?: Maybe<Scalars['timestamptz']['output']>;
-  description?: Maybe<Scalars['String']['output']>;
-  id?: Maybe<Scalars['uuid']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
-  system_prompt_id?: Maybe<Scalars['Int']['output']>;
-  type_id?: Maybe<Scalars['Int']['output']>;
-  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+  __typename?: "agent_min_fields";
+  avatar?: Maybe<Scalars["String"]["output"]>;
+  created_at?: Maybe<Scalars["timestamptz"]["output"]>;
+  creator_id?: Maybe<Scalars["uuid"]["output"]>;
+  description?: Maybe<Scalars["String"]["output"]>;
+  id?: Maybe<Scalars["uuid"]["output"]>;
+  name?: Maybe<Scalars["String"]["output"]>;
+  system_prompt_id?: Maybe<Scalars["Int"]["output"]>;
+  type_id?: Maybe<Scalars["Int"]["output"]>;
+  updated_at?: Maybe<Scalars["timestamptz"]["output"]>;
 };
 
 /** order by min() on columns of table "agent" */
 export type Agent_Min_Order_By = {
   avatar?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  creator_id?: InputMaybe<Order_By>;
   description?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
@@ -762,9 +794,9 @@ export type Agent_Min_Order_By = {
 
 /** response of any mutation on the table "agent" */
 export type Agent_Mutation_Response = {
-  __typename?: 'agent_mutation_response';
+  __typename?: "agent_mutation_response";
   /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
+  affected_rows: Scalars["Int"]["output"];
   /** data from the rows affected by the mutation */
   returning: Array<Agent>;
 };
@@ -780,6 +812,7 @@ export type Agent_On_Conflict = {
 export type Agent_Order_By = {
   avatar?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  creator_id?: InputMaybe<Order_By>;
   description?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   kbs_aggregate?: InputMaybe<R_Agent_Kb_Aggregate_Order_By>;
@@ -792,46 +825,49 @@ export type Agent_Order_By = {
 
 /** primary key columns input for table: agent */
 export type Agent_Pk_Columns_Input = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
 
 /** select columns of table "agent" */
 export enum Agent_Select_Column {
   /** column name */
-  Avatar = 'avatar',
+  Avatar = "avatar",
   /** column name */
-  CreatedAt = 'created_at',
+  CreatedAt = "created_at",
   /** column name */
-  Description = 'description',
+  CreatorId = "creator_id",
   /** column name */
-  Id = 'id',
+  Description = "description",
   /** column name */
-  Name = 'name',
+  Id = "id",
   /** column name */
-  SystemPromptId = 'system_prompt_id',
+  Name = "name",
   /** column name */
-  TypeId = 'type_id',
+  SystemPromptId = "system_prompt_id",
   /** column name */
-  UpdatedAt = 'updated_at'
+  TypeId = "type_id",
+  /** column name */
+  UpdatedAt = "updated_at",
 }
 
 /** input type for updating data in table "agent" */
 export type Agent_Set_Input = {
-  avatar?: InputMaybe<Scalars['String']['input']>;
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  system_prompt_id?: InputMaybe<Scalars['Int']['input']>;
-  type_id?: InputMaybe<Scalars['Int']['input']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  avatar?: InputMaybe<Scalars["String"]["input"]>;
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  creator_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  system_prompt_id?: InputMaybe<Scalars["Int"]["input"]>;
+  type_id?: InputMaybe<Scalars["Int"]["input"]>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
 };
 
 /** aggregate stddev on columns */
 export type Agent_Stddev_Fields = {
-  __typename?: 'agent_stddev_fields';
-  system_prompt_id?: Maybe<Scalars['Float']['output']>;
-  type_id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "agent_stddev_fields";
+  system_prompt_id?: Maybe<Scalars["Float"]["output"]>;
+  type_id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by stddev() on columns of table "agent" */
@@ -842,9 +878,9 @@ export type Agent_Stddev_Order_By = {
 
 /** aggregate stddev_pop on columns */
 export type Agent_Stddev_Pop_Fields = {
-  __typename?: 'agent_stddev_pop_fields';
-  system_prompt_id?: Maybe<Scalars['Float']['output']>;
-  type_id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "agent_stddev_pop_fields";
+  system_prompt_id?: Maybe<Scalars["Float"]["output"]>;
+  type_id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by stddev_pop() on columns of table "agent" */
@@ -855,9 +891,9 @@ export type Agent_Stddev_Pop_Order_By = {
 
 /** aggregate stddev_samp on columns */
 export type Agent_Stddev_Samp_Fields = {
-  __typename?: 'agent_stddev_samp_fields';
-  system_prompt_id?: Maybe<Scalars['Float']['output']>;
-  type_id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "agent_stddev_samp_fields";
+  system_prompt_id?: Maybe<Scalars["Float"]["output"]>;
+  type_id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by stddev_samp() on columns of table "agent" */
@@ -876,21 +912,22 @@ export type Agent_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Agent_Stream_Cursor_Value_Input = {
-  avatar?: InputMaybe<Scalars['String']['input']>;
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  system_prompt_id?: InputMaybe<Scalars['Int']['input']>;
-  type_id?: InputMaybe<Scalars['Int']['input']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  avatar?: InputMaybe<Scalars["String"]["input"]>;
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  creator_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  system_prompt_id?: InputMaybe<Scalars["Int"]["input"]>;
+  type_id?: InputMaybe<Scalars["Int"]["input"]>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
 };
 
 /** aggregate sum on columns */
 export type Agent_Sum_Fields = {
-  __typename?: 'agent_sum_fields';
-  system_prompt_id?: Maybe<Scalars['Int']['output']>;
-  type_id?: Maybe<Scalars['Int']['output']>;
+  __typename?: "agent_sum_fields";
+  system_prompt_id?: Maybe<Scalars["Int"]["output"]>;
+  type_id?: Maybe<Scalars["Int"]["output"]>;
 };
 
 /** order by sum() on columns of table "agent" */
@@ -901,49 +938,47 @@ export type Agent_Sum_Order_By = {
 
 /** Type of agent */
 export type Agent_Type = {
-  __typename?: 'agent_type';
+  __typename?: "agent_type";
   /** An array relationship */
   agents: Array<Agent>;
   /** An aggregate relationship */
   agents_aggregate: Agent_Aggregate;
-  created_at: Scalars['timestamptz']['output'];
-  id: Scalars['Int']['output'];
-  name: Scalars['String']['output'];
-  updated_at: Scalars['timestamptz']['output'];
+  created_at: Scalars["timestamptz"]["output"];
+  id: Scalars["Int"]["output"];
+  name: Scalars["String"]["output"];
+  updated_at: Scalars["timestamptz"]["output"];
 };
-
 
 /** Type of agent */
 export type Agent_TypeAgentsArgs = {
   distinct_on?: InputMaybe<Array<Agent_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Agent_Order_By>>;
   where?: InputMaybe<Agent_Bool_Exp>;
 };
 
-
 /** Type of agent */
 export type Agent_TypeAgents_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Agent_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Agent_Order_By>>;
   where?: InputMaybe<Agent_Bool_Exp>;
 };
 
 /** aggregated selection of "agent_type" */
 export type Agent_Type_Aggregate = {
-  __typename?: 'agent_type_aggregate';
+  __typename?: "agent_type_aggregate";
   aggregate?: Maybe<Agent_Type_Aggregate_Fields>;
   nodes: Array<Agent_Type>;
 };
 
 /** aggregate fields of "agent_type" */
 export type Agent_Type_Aggregate_Fields = {
-  __typename?: 'agent_type_aggregate_fields';
+  __typename?: "agent_type_aggregate_fields";
   avg?: Maybe<Agent_Type_Avg_Fields>;
-  count: Scalars['Int']['output'];
+  count: Scalars["Int"]["output"];
   max?: Maybe<Agent_Type_Max_Fields>;
   min?: Maybe<Agent_Type_Min_Fields>;
   stddev?: Maybe<Agent_Type_Stddev_Fields>;
@@ -955,17 +990,16 @@ export type Agent_Type_Aggregate_Fields = {
   variance?: Maybe<Agent_Type_Variance_Fields>;
 };
 
-
 /** aggregate fields of "agent_type" */
 export type Agent_Type_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Agent_Type_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 /** aggregate avg on columns */
 export type Agent_Type_Avg_Fields = {
-  __typename?: 'agent_type_avg_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "agent_type_avg_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** Boolean expression to filter rows from the table "agent_type". All fields are combined with a logical 'AND'. */
@@ -984,46 +1018,46 @@ export type Agent_Type_Bool_Exp = {
 /** unique or primary key constraints on table "agent_type" */
 export enum Agent_Type_Constraint {
   /** unique or primary key constraint on columns "id" */
-  AgentTypePkey = 'agent_type_pkey'
+  AgentTypePkey = "agent_type_pkey",
 }
 
 /** input type for incrementing numeric columns in table "agent_type" */
 export type Agent_Type_Inc_Input = {
-  id?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars["Int"]["input"]>;
 };
 
 /** input type for inserting data into table "agent_type" */
 export type Agent_Type_Insert_Input = {
   agents?: InputMaybe<Agent_Arr_Rel_Insert_Input>;
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  id?: InputMaybe<Scalars['Int']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  id?: InputMaybe<Scalars["Int"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
 };
 
 /** aggregate max on columns */
 export type Agent_Type_Max_Fields = {
-  __typename?: 'agent_type_max_fields';
-  created_at?: Maybe<Scalars['timestamptz']['output']>;
-  id?: Maybe<Scalars['Int']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
-  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+  __typename?: "agent_type_max_fields";
+  created_at?: Maybe<Scalars["timestamptz"]["output"]>;
+  id?: Maybe<Scalars["Int"]["output"]>;
+  name?: Maybe<Scalars["String"]["output"]>;
+  updated_at?: Maybe<Scalars["timestamptz"]["output"]>;
 };
 
 /** aggregate min on columns */
 export type Agent_Type_Min_Fields = {
-  __typename?: 'agent_type_min_fields';
-  created_at?: Maybe<Scalars['timestamptz']['output']>;
-  id?: Maybe<Scalars['Int']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
-  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+  __typename?: "agent_type_min_fields";
+  created_at?: Maybe<Scalars["timestamptz"]["output"]>;
+  id?: Maybe<Scalars["Int"]["output"]>;
+  name?: Maybe<Scalars["String"]["output"]>;
+  updated_at?: Maybe<Scalars["timestamptz"]["output"]>;
 };
 
 /** response of any mutation on the table "agent_type" */
 export type Agent_Type_Mutation_Response = {
-  __typename?: 'agent_type_mutation_response';
+  __typename?: "agent_type_mutation_response";
   /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
+  affected_rows: Scalars["Int"]["output"];
   /** data from the rows affected by the mutation */
   returning: Array<Agent_Type>;
 };
@@ -1046,45 +1080,45 @@ export type Agent_Type_Order_By = {
 
 /** primary key columns input for table: agent_type */
 export type Agent_Type_Pk_Columns_Input = {
-  id: Scalars['Int']['input'];
+  id: Scalars["Int"]["input"];
 };
 
 /** select columns of table "agent_type" */
 export enum Agent_Type_Select_Column {
   /** column name */
-  CreatedAt = 'created_at',
+  CreatedAt = "created_at",
   /** column name */
-  Id = 'id',
+  Id = "id",
   /** column name */
-  Name = 'name',
+  Name = "name",
   /** column name */
-  UpdatedAt = 'updated_at'
+  UpdatedAt = "updated_at",
 }
 
 /** input type for updating data in table "agent_type" */
 export type Agent_Type_Set_Input = {
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  id?: InputMaybe<Scalars['Int']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  id?: InputMaybe<Scalars["Int"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
 };
 
 /** aggregate stddev on columns */
 export type Agent_Type_Stddev_Fields = {
-  __typename?: 'agent_type_stddev_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "agent_type_stddev_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** aggregate stddev_pop on columns */
 export type Agent_Type_Stddev_Pop_Fields = {
-  __typename?: 'agent_type_stddev_pop_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "agent_type_stddev_pop_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** aggregate stddev_samp on columns */
 export type Agent_Type_Stddev_Samp_Fields = {
-  __typename?: 'agent_type_stddev_samp_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "agent_type_stddev_samp_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** Streaming cursor of the table "agent_type" */
@@ -1097,28 +1131,28 @@ export type Agent_Type_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Agent_Type_Stream_Cursor_Value_Input = {
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  id?: InputMaybe<Scalars['Int']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  id?: InputMaybe<Scalars["Int"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
 };
 
 /** aggregate sum on columns */
 export type Agent_Type_Sum_Fields = {
-  __typename?: 'agent_type_sum_fields';
-  id?: Maybe<Scalars['Int']['output']>;
+  __typename?: "agent_type_sum_fields";
+  id?: Maybe<Scalars["Int"]["output"]>;
 };
 
 /** update columns of table "agent_type" */
 export enum Agent_Type_Update_Column {
   /** column name */
-  CreatedAt = 'created_at',
+  CreatedAt = "created_at",
   /** column name */
-  Id = 'id',
+  Id = "id",
   /** column name */
-  Name = 'name',
+  Name = "name",
   /** column name */
-  UpdatedAt = 'updated_at'
+  UpdatedAt = "updated_at",
 }
 
 export type Agent_Type_Updates = {
@@ -1132,40 +1166,42 @@ export type Agent_Type_Updates = {
 
 /** aggregate var_pop on columns */
 export type Agent_Type_Var_Pop_Fields = {
-  __typename?: 'agent_type_var_pop_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "agent_type_var_pop_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** aggregate var_samp on columns */
 export type Agent_Type_Var_Samp_Fields = {
-  __typename?: 'agent_type_var_samp_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "agent_type_var_samp_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** aggregate variance on columns */
 export type Agent_Type_Variance_Fields = {
-  __typename?: 'agent_type_variance_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "agent_type_variance_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** update columns of table "agent" */
 export enum Agent_Update_Column {
   /** column name */
-  Avatar = 'avatar',
+  Avatar = "avatar",
   /** column name */
-  CreatedAt = 'created_at',
+  CreatedAt = "created_at",
   /** column name */
-  Description = 'description',
+  CreatorId = "creator_id",
   /** column name */
-  Id = 'id',
+  Description = "description",
   /** column name */
-  Name = 'name',
+  Id = "id",
   /** column name */
-  SystemPromptId = 'system_prompt_id',
+  Name = "name",
   /** column name */
-  TypeId = 'type_id',
+  SystemPromptId = "system_prompt_id",
   /** column name */
-  UpdatedAt = 'updated_at'
+  TypeId = "type_id",
+  /** column name */
+  UpdatedAt = "updated_at",
 }
 
 export type Agent_Updates = {
@@ -1179,9 +1215,9 @@ export type Agent_Updates = {
 
 /** aggregate var_pop on columns */
 export type Agent_Var_Pop_Fields = {
-  __typename?: 'agent_var_pop_fields';
-  system_prompt_id?: Maybe<Scalars['Float']['output']>;
-  type_id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "agent_var_pop_fields";
+  system_prompt_id?: Maybe<Scalars["Float"]["output"]>;
+  type_id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by var_pop() on columns of table "agent" */
@@ -1192,9 +1228,9 @@ export type Agent_Var_Pop_Order_By = {
 
 /** aggregate var_samp on columns */
 export type Agent_Var_Samp_Fields = {
-  __typename?: 'agent_var_samp_fields';
-  system_prompt_id?: Maybe<Scalars['Float']['output']>;
-  type_id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "agent_var_samp_fields";
+  system_prompt_id?: Maybe<Scalars["Float"]["output"]>;
+  type_id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by var_samp() on columns of table "agent" */
@@ -1205,9 +1241,9 @@ export type Agent_Var_Samp_Order_By = {
 
 /** aggregate variance on columns */
 export type Agent_Variance_Fields = {
-  __typename?: 'agent_variance_fields';
-  system_prompt_id?: Maybe<Scalars['Float']['output']>;
-  type_id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "agent_variance_fields";
+  system_prompt_id?: Maybe<Scalars["Float"]["output"]>;
+  type_id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by variance() on columns of table "agent" */
@@ -1216,13 +1252,542 @@ export type Agent_Variance_Order_By = {
   type_id?: InputMaybe<Order_By>;
 };
 
+/** columns and relationships of "chunking_strategy" */
+export type Chunking_Strategy = {
+  __typename?: "chunking_strategy";
+  comment: Scalars["String"]["output"];
+  value: Scalars["String"]["output"];
+};
+
+/** aggregated selection of "chunking_strategy" */
+export type Chunking_Strategy_Aggregate = {
+  __typename?: "chunking_strategy_aggregate";
+  aggregate?: Maybe<Chunking_Strategy_Aggregate_Fields>;
+  nodes: Array<Chunking_Strategy>;
+};
+
+/** aggregate fields of "chunking_strategy" */
+export type Chunking_Strategy_Aggregate_Fields = {
+  __typename?: "chunking_strategy_aggregate_fields";
+  count: Scalars["Int"]["output"];
+  max?: Maybe<Chunking_Strategy_Max_Fields>;
+  min?: Maybe<Chunking_Strategy_Min_Fields>;
+};
+
+/** aggregate fields of "chunking_strategy" */
+export type Chunking_Strategy_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Chunking_Strategy_Select_Column>>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+};
+
+/** Boolean expression to filter rows from the table "chunking_strategy". All fields are combined with a logical 'AND'. */
+export type Chunking_Strategy_Bool_Exp = {
+  _and?: InputMaybe<Array<Chunking_Strategy_Bool_Exp>>;
+  _not?: InputMaybe<Chunking_Strategy_Bool_Exp>;
+  _or?: InputMaybe<Array<Chunking_Strategy_Bool_Exp>>;
+  comment?: InputMaybe<String_Comparison_Exp>;
+  value?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "chunking_strategy" */
+export enum Chunking_Strategy_Constraint {
+  /** unique or primary key constraint on columns "value" */
+  ChunkingStrategyPkey = "chunking_strategy_pkey",
+  /** unique or primary key constraint on columns "value" */
+  ChunkingStrategyValueKey = "chunking_strategy_value_key",
+}
+
+export enum Chunking_Strategy_Enum {
+  /** length */
+  Length = "length",
+  /** markdown */
+  Markdown = "markdown",
+  /** page */
+  Page = "page",
+  /** semantic */
+  Semantic = "semantic",
+}
+
+/** Boolean expression to compare columns of type "chunking_strategy_enum". All fields are combined with logical 'AND'. */
+export type Chunking_Strategy_Enum_Comparison_Exp = {
+  _eq?: InputMaybe<Chunking_Strategy_Enum>;
+  _in?: InputMaybe<Array<Chunking_Strategy_Enum>>;
+  _is_null?: InputMaybe<Scalars["Boolean"]["input"]>;
+  _neq?: InputMaybe<Chunking_Strategy_Enum>;
+  _nin?: InputMaybe<Array<Chunking_Strategy_Enum>>;
+};
+
+/** input type for inserting data into table "chunking_strategy" */
+export type Chunking_Strategy_Insert_Input = {
+  comment?: InputMaybe<Scalars["String"]["input"]>;
+  value?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/** aggregate max on columns */
+export type Chunking_Strategy_Max_Fields = {
+  __typename?: "chunking_strategy_max_fields";
+  comment?: Maybe<Scalars["String"]["output"]>;
+  value?: Maybe<Scalars["String"]["output"]>;
+};
+
+/** aggregate min on columns */
+export type Chunking_Strategy_Min_Fields = {
+  __typename?: "chunking_strategy_min_fields";
+  comment?: Maybe<Scalars["String"]["output"]>;
+  value?: Maybe<Scalars["String"]["output"]>;
+};
+
+/** response of any mutation on the table "chunking_strategy" */
+export type Chunking_Strategy_Mutation_Response = {
+  __typename?: "chunking_strategy_mutation_response";
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars["Int"]["output"];
+  /** data from the rows affected by the mutation */
+  returning: Array<Chunking_Strategy>;
+};
+
+/** on_conflict condition type for table "chunking_strategy" */
+export type Chunking_Strategy_On_Conflict = {
+  constraint: Chunking_Strategy_Constraint;
+  update_columns?: Array<Chunking_Strategy_Update_Column>;
+  where?: InputMaybe<Chunking_Strategy_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "chunking_strategy". */
+export type Chunking_Strategy_Order_By = {
+  comment?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: chunking_strategy */
+export type Chunking_Strategy_Pk_Columns_Input = {
+  value: Scalars["String"]["input"];
+};
+
+/** select columns of table "chunking_strategy" */
+export enum Chunking_Strategy_Select_Column {
+  /** column name */
+  Comment = "comment",
+  /** column name */
+  Value = "value",
+}
+
+/** input type for updating data in table "chunking_strategy" */
+export type Chunking_Strategy_Set_Input = {
+  comment?: InputMaybe<Scalars["String"]["input"]>;
+  value?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/** Streaming cursor of the table "chunking_strategy" */
+export type Chunking_Strategy_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Chunking_Strategy_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Chunking_Strategy_Stream_Cursor_Value_Input = {
+  comment?: InputMaybe<Scalars["String"]["input"]>;
+  value?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/** update columns of table "chunking_strategy" */
+export enum Chunking_Strategy_Update_Column {
+  /** column name */
+  Comment = "comment",
+  /** column name */
+  Value = "value",
+}
+
+export type Chunking_Strategy_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Chunking_Strategy_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Chunking_Strategy_Bool_Exp;
+};
+
 /** ordering argument of a cursor */
 export enum Cursor_Ordering {
   /** ascending ordering of the cursor */
-  Asc = 'ASC',
+  Asc = "ASC",
   /** descending ordering of the cursor */
-  Desc = 'DESC'
+  Desc = "DESC",
 }
+
+/** columns and relationships of "files" */
+export type Files = {
+  __typename?: "files";
+  content_type?: Maybe<Scalars["String"]["output"]>;
+  created_at: Scalars["timestamptz"]["output"];
+  creator_id?: Maybe<Scalars["uuid"]["output"]>;
+  ext?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["uuid"]["output"];
+  metadata?: Maybe<Scalars["jsonb"]["output"]>;
+  name: Scalars["String"]["output"];
+  path?: Maybe<Scalars["String"]["output"]>;
+  provider: Scalars["String"]["output"];
+  provider_metadata?: Maybe<Scalars["jsonb"]["output"]>;
+  size?: Maybe<Scalars["numeric"]["output"]>;
+  status?: Maybe<Scalars["String"]["output"]>;
+  updated_at: Scalars["timestamptz"]["output"];
+};
+
+/** columns and relationships of "files" */
+export type FilesMetadataArgs = {
+  path?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/** columns and relationships of "files" */
+export type FilesProvider_MetadataArgs = {
+  path?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/** aggregated selection of "files" */
+export type Files_Aggregate = {
+  __typename?: "files_aggregate";
+  aggregate?: Maybe<Files_Aggregate_Fields>;
+  nodes: Array<Files>;
+};
+
+/** aggregate fields of "files" */
+export type Files_Aggregate_Fields = {
+  __typename?: "files_aggregate_fields";
+  avg?: Maybe<Files_Avg_Fields>;
+  count: Scalars["Int"]["output"];
+  max?: Maybe<Files_Max_Fields>;
+  min?: Maybe<Files_Min_Fields>;
+  stddev?: Maybe<Files_Stddev_Fields>;
+  stddev_pop?: Maybe<Files_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Files_Stddev_Samp_Fields>;
+  sum?: Maybe<Files_Sum_Fields>;
+  var_pop?: Maybe<Files_Var_Pop_Fields>;
+  var_samp?: Maybe<Files_Var_Samp_Fields>;
+  variance?: Maybe<Files_Variance_Fields>;
+};
+
+/** aggregate fields of "files" */
+export type Files_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Files_Select_Column>>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Files_Append_Input = {
+  metadata?: InputMaybe<Scalars["jsonb"]["input"]>;
+  provider_metadata?: InputMaybe<Scalars["jsonb"]["input"]>;
+};
+
+/** aggregate avg on columns */
+export type Files_Avg_Fields = {
+  __typename?: "files_avg_fields";
+  size?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** Boolean expression to filter rows from the table "files". All fields are combined with a logical 'AND'. */
+export type Files_Bool_Exp = {
+  _and?: InputMaybe<Array<Files_Bool_Exp>>;
+  _not?: InputMaybe<Files_Bool_Exp>;
+  _or?: InputMaybe<Array<Files_Bool_Exp>>;
+  content_type?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  creator_id?: InputMaybe<Uuid_Comparison_Exp>;
+  ext?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  metadata?: InputMaybe<Jsonb_Comparison_Exp>;
+  name?: InputMaybe<String_Comparison_Exp>;
+  path?: InputMaybe<String_Comparison_Exp>;
+  provider?: InputMaybe<String_Comparison_Exp>;
+  provider_metadata?: InputMaybe<Jsonb_Comparison_Exp>;
+  size?: InputMaybe<Numeric_Comparison_Exp>;
+  status?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "files" */
+export enum Files_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  FilesPkey = "files_pkey",
+}
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Files_Delete_At_Path_Input = {
+  metadata?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  provider_metadata?: InputMaybe<Array<Scalars["String"]["input"]>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Files_Delete_Elem_Input = {
+  metadata?: InputMaybe<Scalars["Int"]["input"]>;
+  provider_metadata?: InputMaybe<Scalars["Int"]["input"]>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Files_Delete_Key_Input = {
+  metadata?: InputMaybe<Scalars["String"]["input"]>;
+  provider_metadata?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/** input type for incrementing numeric columns in table "files" */
+export type Files_Inc_Input = {
+  size?: InputMaybe<Scalars["numeric"]["input"]>;
+};
+
+/** input type for inserting data into table "files" */
+export type Files_Insert_Input = {
+  content_type?: InputMaybe<Scalars["String"]["input"]>;
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  creator_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  ext?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  metadata?: InputMaybe<Scalars["jsonb"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  path?: InputMaybe<Scalars["String"]["input"]>;
+  provider?: InputMaybe<Scalars["String"]["input"]>;
+  provider_metadata?: InputMaybe<Scalars["jsonb"]["input"]>;
+  size?: InputMaybe<Scalars["numeric"]["input"]>;
+  status?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+};
+
+/** aggregate max on columns */
+export type Files_Max_Fields = {
+  __typename?: "files_max_fields";
+  content_type?: Maybe<Scalars["String"]["output"]>;
+  created_at?: Maybe<Scalars["timestamptz"]["output"]>;
+  creator_id?: Maybe<Scalars["uuid"]["output"]>;
+  ext?: Maybe<Scalars["String"]["output"]>;
+  id?: Maybe<Scalars["uuid"]["output"]>;
+  name?: Maybe<Scalars["String"]["output"]>;
+  path?: Maybe<Scalars["String"]["output"]>;
+  provider?: Maybe<Scalars["String"]["output"]>;
+  size?: Maybe<Scalars["numeric"]["output"]>;
+  status?: Maybe<Scalars["String"]["output"]>;
+  updated_at?: Maybe<Scalars["timestamptz"]["output"]>;
+};
+
+/** aggregate min on columns */
+export type Files_Min_Fields = {
+  __typename?: "files_min_fields";
+  content_type?: Maybe<Scalars["String"]["output"]>;
+  created_at?: Maybe<Scalars["timestamptz"]["output"]>;
+  creator_id?: Maybe<Scalars["uuid"]["output"]>;
+  ext?: Maybe<Scalars["String"]["output"]>;
+  id?: Maybe<Scalars["uuid"]["output"]>;
+  name?: Maybe<Scalars["String"]["output"]>;
+  path?: Maybe<Scalars["String"]["output"]>;
+  provider?: Maybe<Scalars["String"]["output"]>;
+  size?: Maybe<Scalars["numeric"]["output"]>;
+  status?: Maybe<Scalars["String"]["output"]>;
+  updated_at?: Maybe<Scalars["timestamptz"]["output"]>;
+};
+
+/** response of any mutation on the table "files" */
+export type Files_Mutation_Response = {
+  __typename?: "files_mutation_response";
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars["Int"]["output"];
+  /** data from the rows affected by the mutation */
+  returning: Array<Files>;
+};
+
+/** on_conflict condition type for table "files" */
+export type Files_On_Conflict = {
+  constraint: Files_Constraint;
+  update_columns?: Array<Files_Update_Column>;
+  where?: InputMaybe<Files_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "files". */
+export type Files_Order_By = {
+  content_type?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  creator_id?: InputMaybe<Order_By>;
+  ext?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  metadata?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  path?: InputMaybe<Order_By>;
+  provider?: InputMaybe<Order_By>;
+  provider_metadata?: InputMaybe<Order_By>;
+  size?: InputMaybe<Order_By>;
+  status?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: files */
+export type Files_Pk_Columns_Input = {
+  id: Scalars["uuid"]["input"];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Files_Prepend_Input = {
+  metadata?: InputMaybe<Scalars["jsonb"]["input"]>;
+  provider_metadata?: InputMaybe<Scalars["jsonb"]["input"]>;
+};
+
+/** select columns of table "files" */
+export enum Files_Select_Column {
+  /** column name */
+  ContentType = "content_type",
+  /** column name */
+  CreatedAt = "created_at",
+  /** column name */
+  CreatorId = "creator_id",
+  /** column name */
+  Ext = "ext",
+  /** column name */
+  Id = "id",
+  /** column name */
+  Metadata = "metadata",
+  /** column name */
+  Name = "name",
+  /** column name */
+  Path = "path",
+  /** column name */
+  Provider = "provider",
+  /** column name */
+  ProviderMetadata = "provider_metadata",
+  /** column name */
+  Size = "size",
+  /** column name */
+  Status = "status",
+  /** column name */
+  UpdatedAt = "updated_at",
+}
+
+/** input type for updating data in table "files" */
+export type Files_Set_Input = {
+  content_type?: InputMaybe<Scalars["String"]["input"]>;
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  creator_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  ext?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  metadata?: InputMaybe<Scalars["jsonb"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  path?: InputMaybe<Scalars["String"]["input"]>;
+  provider?: InputMaybe<Scalars["String"]["input"]>;
+  provider_metadata?: InputMaybe<Scalars["jsonb"]["input"]>;
+  size?: InputMaybe<Scalars["numeric"]["input"]>;
+  status?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+};
+
+/** aggregate stddev on columns */
+export type Files_Stddev_Fields = {
+  __typename?: "files_stddev_fields";
+  size?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Files_Stddev_Pop_Fields = {
+  __typename?: "files_stddev_pop_fields";
+  size?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Files_Stddev_Samp_Fields = {
+  __typename?: "files_stddev_samp_fields";
+  size?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** Streaming cursor of the table "files" */
+export type Files_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Files_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Files_Stream_Cursor_Value_Input = {
+  content_type?: InputMaybe<Scalars["String"]["input"]>;
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  creator_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  ext?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  metadata?: InputMaybe<Scalars["jsonb"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  path?: InputMaybe<Scalars["String"]["input"]>;
+  provider?: InputMaybe<Scalars["String"]["input"]>;
+  provider_metadata?: InputMaybe<Scalars["jsonb"]["input"]>;
+  size?: InputMaybe<Scalars["numeric"]["input"]>;
+  status?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+};
+
+/** aggregate sum on columns */
+export type Files_Sum_Fields = {
+  __typename?: "files_sum_fields";
+  size?: Maybe<Scalars["numeric"]["output"]>;
+};
+
+/** update columns of table "files" */
+export enum Files_Update_Column {
+  /** column name */
+  ContentType = "content_type",
+  /** column name */
+  CreatedAt = "created_at",
+  /** column name */
+  CreatorId = "creator_id",
+  /** column name */
+  Ext = "ext",
+  /** column name */
+  Id = "id",
+  /** column name */
+  Metadata = "metadata",
+  /** column name */
+  Name = "name",
+  /** column name */
+  Path = "path",
+  /** column name */
+  Provider = "provider",
+  /** column name */
+  ProviderMetadata = "provider_metadata",
+  /** column name */
+  Size = "size",
+  /** column name */
+  Status = "status",
+  /** column name */
+  UpdatedAt = "updated_at",
+}
+
+export type Files_Updates = {
+  /** append existing jsonb value of filtered columns with new jsonb value */
+  _append?: InputMaybe<Files_Append_Input>;
+  /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+  _delete_at_path?: InputMaybe<Files_Delete_At_Path_Input>;
+  /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+  _delete_elem?: InputMaybe<Files_Delete_Elem_Input>;
+  /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+  _delete_key?: InputMaybe<Files_Delete_Key_Input>;
+  /** increments the numeric columns with given value of the filtered values */
+  _inc?: InputMaybe<Files_Inc_Input>;
+  /** prepend existing jsonb value of filtered columns with new jsonb value */
+  _prepend?: InputMaybe<Files_Prepend_Input>;
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Files_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Files_Bool_Exp;
+};
+
+/** aggregate var_pop on columns */
+export type Files_Var_Pop_Fields = {
+  __typename?: "files_var_pop_fields";
+  size?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** aggregate var_samp on columns */
+export type Files_Var_Samp_Fields = {
+  __typename?: "files_var_samp_fields";
+  size?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** aggregate variance on columns */
+export type Files_Variance_Fields = {
+  __typename?: "files_variance_fields";
+  size?: Maybe<Scalars["Float"]["output"]>;
+};
 
 export type Jsonb_Cast_Exp = {
   String?: InputMaybe<String_Comparison_Exp>;
@@ -1232,81 +1797,152 @@ export type Jsonb_Cast_Exp = {
 export type Jsonb_Comparison_Exp = {
   _cast?: InputMaybe<Jsonb_Cast_Exp>;
   /** is the column contained in the given json value */
-  _contained_in?: InputMaybe<Scalars['jsonb']['input']>;
+  _contained_in?: InputMaybe<Scalars["jsonb"]["input"]>;
   /** does the column contain the given json value at the top level */
-  _contains?: InputMaybe<Scalars['jsonb']['input']>;
-  _eq?: InputMaybe<Scalars['jsonb']['input']>;
-  _gt?: InputMaybe<Scalars['jsonb']['input']>;
-  _gte?: InputMaybe<Scalars['jsonb']['input']>;
+  _contains?: InputMaybe<Scalars["jsonb"]["input"]>;
+  _eq?: InputMaybe<Scalars["jsonb"]["input"]>;
+  _gt?: InputMaybe<Scalars["jsonb"]["input"]>;
+  _gte?: InputMaybe<Scalars["jsonb"]["input"]>;
   /** does the string exist as a top-level key in the column */
-  _has_key?: InputMaybe<Scalars['String']['input']>;
+  _has_key?: InputMaybe<Scalars["String"]["input"]>;
   /** do all of these strings exist as top-level keys in the column */
-  _has_keys_all?: InputMaybe<Array<Scalars['String']['input']>>;
+  _has_keys_all?: InputMaybe<Array<Scalars["String"]["input"]>>;
   /** do any of these strings exist as top-level keys in the column */
-  _has_keys_any?: InputMaybe<Array<Scalars['String']['input']>>;
-  _in?: InputMaybe<Array<Scalars['jsonb']['input']>>;
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
-  _lt?: InputMaybe<Scalars['jsonb']['input']>;
-  _lte?: InputMaybe<Scalars['jsonb']['input']>;
-  _neq?: InputMaybe<Scalars['jsonb']['input']>;
-  _nin?: InputMaybe<Array<Scalars['jsonb']['input']>>;
+  _has_keys_any?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  _in?: InputMaybe<Array<Scalars["jsonb"]["input"]>>;
+  _is_null?: InputMaybe<Scalars["Boolean"]["input"]>;
+  _lt?: InputMaybe<Scalars["jsonb"]["input"]>;
+  _lte?: InputMaybe<Scalars["jsonb"]["input"]>;
+  _neq?: InputMaybe<Scalars["jsonb"]["input"]>;
+  _nin?: InputMaybe<Array<Scalars["jsonb"]["input"]>>;
+};
+
+/** columns and relationships of "knowledge" */
+export type Knowledge = {
+  __typename?: "knowledge";
+  id: Scalars["uuid"]["output"];
+  key?: Maybe<Scalars["String"]["output"]>;
+  metadata?: Maybe<Scalars["jsonb"]["output"]>;
+  original_file_url?: Maybe<Scalars["String"]["output"]>;
+  path_history?: Maybe<Array<Scalars["String"]["output"]>>;
+  source_url?: Maybe<Scalars["String"]["output"]>;
+  spider: Scalars["String"]["output"];
+};
+
+/** columns and relationships of "knowledge" */
+export type KnowledgeMetadataArgs = {
+  path?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/** aggregated selection of "knowledge" */
+export type Knowledge_Aggregate = {
+  __typename?: "knowledge_aggregate";
+  aggregate?: Maybe<Knowledge_Aggregate_Fields>;
+  nodes: Array<Knowledge>;
+};
+
+/** aggregate fields of "knowledge" */
+export type Knowledge_Aggregate_Fields = {
+  __typename?: "knowledge_aggregate_fields";
+  count: Scalars["Int"]["output"];
+  max?: Maybe<Knowledge_Max_Fields>;
+  min?: Maybe<Knowledge_Min_Fields>;
+};
+
+/** aggregate fields of "knowledge" */
+export type Knowledge_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Knowledge_Select_Column>>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Knowledge_Append_Input = {
+  metadata?: InputMaybe<Scalars["jsonb"]["input"]>;
 };
 
 /** knowledge_base */
 export type Knowledge_Base = {
-  __typename?: 'knowledge_base';
+  __typename?: "knowledge_base";
+  agent_id?: Maybe<Scalars["uuid"]["output"]>;
   /** An array relationship */
   agents: Array<R_Agent_Kb>;
   /** An aggregate relationship */
   agents_aggregate: R_Agent_Kb_Aggregate;
   base_type: Knowledge_Base_Type_Enum;
-  created_at: Scalars['timestamptz']['output'];
-  description: Scalars['String']['output'];
-  id: Scalars['uuid']['output'];
-  name: Scalars['String']['output'];
-  updated_at: Scalars['timestamptz']['output'];
+  chunking_parameters?: Maybe<Scalars["jsonb"]["output"]>;
+  chunking_strategy?: Maybe<Chunking_Strategy_Enum>;
+  created_at: Scalars["timestamptz"]["output"];
+  creator_id?: Maybe<Scalars["uuid"]["output"]>;
+  description: Scalars["String"]["output"];
+  extraction_prompt_id?: Maybe<Scalars["Int"]["output"]>;
+  id: Scalars["uuid"]["output"];
+  is_extraction?: Maybe<Scalars["Boolean"]["output"]>;
+  model_name?: Maybe<Scalars["String"]["output"]>;
+  name: Scalars["String"]["output"];
+  updated_at: Scalars["timestamptz"]["output"];
 };
-
 
 /** knowledge_base */
 export type Knowledge_BaseAgentsArgs = {
   distinct_on?: InputMaybe<Array<R_Agent_Kb_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<R_Agent_Kb_Order_By>>;
   where?: InputMaybe<R_Agent_Kb_Bool_Exp>;
 };
-
 
 /** knowledge_base */
 export type Knowledge_BaseAgents_AggregateArgs = {
   distinct_on?: InputMaybe<Array<R_Agent_Kb_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<R_Agent_Kb_Order_By>>;
   where?: InputMaybe<R_Agent_Kb_Bool_Exp>;
 };
 
+/** knowledge_base */
+export type Knowledge_BaseChunking_ParametersArgs = {
+  path?: InputMaybe<Scalars["String"]["input"]>;
+};
+
 /** aggregated selection of "knowledge_base" */
 export type Knowledge_Base_Aggregate = {
-  __typename?: 'knowledge_base_aggregate';
+  __typename?: "knowledge_base_aggregate";
   aggregate?: Maybe<Knowledge_Base_Aggregate_Fields>;
   nodes: Array<Knowledge_Base>;
 };
 
 /** aggregate fields of "knowledge_base" */
 export type Knowledge_Base_Aggregate_Fields = {
-  __typename?: 'knowledge_base_aggregate_fields';
-  count: Scalars['Int']['output'];
+  __typename?: "knowledge_base_aggregate_fields";
+  avg?: Maybe<Knowledge_Base_Avg_Fields>;
+  count: Scalars["Int"]["output"];
   max?: Maybe<Knowledge_Base_Max_Fields>;
   min?: Maybe<Knowledge_Base_Min_Fields>;
+  stddev?: Maybe<Knowledge_Base_Stddev_Fields>;
+  stddev_pop?: Maybe<Knowledge_Base_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Knowledge_Base_Stddev_Samp_Fields>;
+  sum?: Maybe<Knowledge_Base_Sum_Fields>;
+  var_pop?: Maybe<Knowledge_Base_Var_Pop_Fields>;
+  var_samp?: Maybe<Knowledge_Base_Var_Samp_Fields>;
+  variance?: Maybe<Knowledge_Base_Variance_Fields>;
 };
-
 
 /** aggregate fields of "knowledge_base" */
 export type Knowledge_Base_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Knowledge_Base_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Knowledge_Base_Append_Input = {
+  chunking_parameters?: InputMaybe<Scalars["jsonb"]["input"]>;
+};
+
+/** aggregate avg on columns */
+export type Knowledge_Base_Avg_Fields = {
+  __typename?: "knowledge_base_avg_fields";
+  extraction_prompt_id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** Boolean expression to filter rows from the table "knowledge_base". All fields are combined with a logical 'AND'. */
@@ -1314,12 +1950,19 @@ export type Knowledge_Base_Bool_Exp = {
   _and?: InputMaybe<Array<Knowledge_Base_Bool_Exp>>;
   _not?: InputMaybe<Knowledge_Base_Bool_Exp>;
   _or?: InputMaybe<Array<Knowledge_Base_Bool_Exp>>;
+  agent_id?: InputMaybe<Uuid_Comparison_Exp>;
   agents?: InputMaybe<R_Agent_Kb_Bool_Exp>;
   agents_aggregate?: InputMaybe<R_Agent_Kb_Aggregate_Bool_Exp>;
   base_type?: InputMaybe<Knowledge_Base_Type_Enum_Comparison_Exp>;
+  chunking_parameters?: InputMaybe<Jsonb_Comparison_Exp>;
+  chunking_strategy?: InputMaybe<Chunking_Strategy_Enum_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  creator_id?: InputMaybe<Uuid_Comparison_Exp>;
   description?: InputMaybe<String_Comparison_Exp>;
+  extraction_prompt_id?: InputMaybe<Int_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
+  is_extraction?: InputMaybe<Boolean_Comparison_Exp>;
+  model_name?: InputMaybe<String_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
@@ -1327,45 +1970,80 @@ export type Knowledge_Base_Bool_Exp = {
 /** unique or primary key constraints on table "knowledge_base" */
 export enum Knowledge_Base_Constraint {
   /** unique or primary key constraint on columns "id" */
-  KnowledgeBasePkey = 'knowledge_base_pkey'
+  KnowledgeBasePkey = "knowledge_base_pkey",
 }
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Knowledge_Base_Delete_At_Path_Input = {
+  chunking_parameters?: InputMaybe<Array<Scalars["String"]["input"]>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Knowledge_Base_Delete_Elem_Input = {
+  chunking_parameters?: InputMaybe<Scalars["Int"]["input"]>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Knowledge_Base_Delete_Key_Input = {
+  chunking_parameters?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/** input type for incrementing numeric columns in table "knowledge_base" */
+export type Knowledge_Base_Inc_Input = {
+  extraction_prompt_id?: InputMaybe<Scalars["Int"]["input"]>;
+};
 
 /** input type for inserting data into table "knowledge_base" */
 export type Knowledge_Base_Insert_Input = {
+  agent_id?: InputMaybe<Scalars["uuid"]["input"]>;
   agents?: InputMaybe<R_Agent_Kb_Arr_Rel_Insert_Input>;
   base_type?: InputMaybe<Knowledge_Base_Type_Enum>;
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  chunking_parameters?: InputMaybe<Scalars["jsonb"]["input"]>;
+  chunking_strategy?: InputMaybe<Chunking_Strategy_Enum>;
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  creator_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  extraction_prompt_id?: InputMaybe<Scalars["Int"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  is_extraction?: InputMaybe<Scalars["Boolean"]["input"]>;
+  model_name?: InputMaybe<Scalars["String"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
 };
 
 /** aggregate max on columns */
 export type Knowledge_Base_Max_Fields = {
-  __typename?: 'knowledge_base_max_fields';
-  created_at?: Maybe<Scalars['timestamptz']['output']>;
-  description?: Maybe<Scalars['String']['output']>;
-  id?: Maybe<Scalars['uuid']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
-  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+  __typename?: "knowledge_base_max_fields";
+  agent_id?: Maybe<Scalars["uuid"]["output"]>;
+  created_at?: Maybe<Scalars["timestamptz"]["output"]>;
+  creator_id?: Maybe<Scalars["uuid"]["output"]>;
+  description?: Maybe<Scalars["String"]["output"]>;
+  extraction_prompt_id?: Maybe<Scalars["Int"]["output"]>;
+  id?: Maybe<Scalars["uuid"]["output"]>;
+  model_name?: Maybe<Scalars["String"]["output"]>;
+  name?: Maybe<Scalars["String"]["output"]>;
+  updated_at?: Maybe<Scalars["timestamptz"]["output"]>;
 };
 
 /** aggregate min on columns */
 export type Knowledge_Base_Min_Fields = {
-  __typename?: 'knowledge_base_min_fields';
-  created_at?: Maybe<Scalars['timestamptz']['output']>;
-  description?: Maybe<Scalars['String']['output']>;
-  id?: Maybe<Scalars['uuid']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
-  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+  __typename?: "knowledge_base_min_fields";
+  agent_id?: Maybe<Scalars["uuid"]["output"]>;
+  created_at?: Maybe<Scalars["timestamptz"]["output"]>;
+  creator_id?: Maybe<Scalars["uuid"]["output"]>;
+  description?: Maybe<Scalars["String"]["output"]>;
+  extraction_prompt_id?: Maybe<Scalars["Int"]["output"]>;
+  id?: Maybe<Scalars["uuid"]["output"]>;
+  model_name?: Maybe<Scalars["String"]["output"]>;
+  name?: Maybe<Scalars["String"]["output"]>;
+  updated_at?: Maybe<Scalars["timestamptz"]["output"]>;
 };
 
 /** response of any mutation on the table "knowledge_base" */
 export type Knowledge_Base_Mutation_Response = {
-  __typename?: 'knowledge_base_mutation_response';
+  __typename?: "knowledge_base_mutation_response";
   /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
+  affected_rows: Scalars["Int"]["output"];
   /** data from the rows affected by the mutation */
   returning: Array<Knowledge_Base>;
 };
@@ -1379,44 +2057,95 @@ export type Knowledge_Base_On_Conflict = {
 
 /** Ordering options when selecting data from "knowledge_base". */
 export type Knowledge_Base_Order_By = {
+  agent_id?: InputMaybe<Order_By>;
   agents_aggregate?: InputMaybe<R_Agent_Kb_Aggregate_Order_By>;
   base_type?: InputMaybe<Order_By>;
+  chunking_parameters?: InputMaybe<Order_By>;
+  chunking_strategy?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  creator_id?: InputMaybe<Order_By>;
   description?: InputMaybe<Order_By>;
+  extraction_prompt_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  is_extraction?: InputMaybe<Order_By>;
+  model_name?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: knowledge_base */
 export type Knowledge_Base_Pk_Columns_Input = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Knowledge_Base_Prepend_Input = {
+  chunking_parameters?: InputMaybe<Scalars["jsonb"]["input"]>;
 };
 
 /** select columns of table "knowledge_base" */
 export enum Knowledge_Base_Select_Column {
   /** column name */
-  BaseType = 'base_type',
+  AgentId = "agent_id",
   /** column name */
-  CreatedAt = 'created_at',
+  BaseType = "base_type",
   /** column name */
-  Description = 'description',
+  ChunkingParameters = "chunking_parameters",
   /** column name */
-  Id = 'id',
+  ChunkingStrategy = "chunking_strategy",
   /** column name */
-  Name = 'name',
+  CreatedAt = "created_at",
   /** column name */
-  UpdatedAt = 'updated_at'
+  CreatorId = "creator_id",
+  /** column name */
+  Description = "description",
+  /** column name */
+  ExtractionPromptId = "extraction_prompt_id",
+  /** column name */
+  Id = "id",
+  /** column name */
+  IsExtraction = "is_extraction",
+  /** column name */
+  ModelName = "model_name",
+  /** column name */
+  Name = "name",
+  /** column name */
+  UpdatedAt = "updated_at",
 }
 
 /** input type for updating data in table "knowledge_base" */
 export type Knowledge_Base_Set_Input = {
+  agent_id?: InputMaybe<Scalars["uuid"]["input"]>;
   base_type?: InputMaybe<Knowledge_Base_Type_Enum>;
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  chunking_parameters?: InputMaybe<Scalars["jsonb"]["input"]>;
+  chunking_strategy?: InputMaybe<Chunking_Strategy_Enum>;
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  creator_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  extraction_prompt_id?: InputMaybe<Scalars["Int"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  is_extraction?: InputMaybe<Scalars["Boolean"]["input"]>;
+  model_name?: InputMaybe<Scalars["String"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+};
+
+/** aggregate stddev on columns */
+export type Knowledge_Base_Stddev_Fields = {
+  __typename?: "knowledge_base_stddev_fields";
+  extraction_prompt_id?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Knowledge_Base_Stddev_Pop_Fields = {
+  __typename?: "knowledge_base_stddev_pop_fields";
+  extraction_prompt_id?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Knowledge_Base_Stddev_Samp_Fields = {
+  __typename?: "knowledge_base_stddev_samp_fields";
+  extraction_prompt_id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** Streaming cursor of the table "knowledge_base" */
@@ -1429,41 +2158,53 @@ export type Knowledge_Base_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Knowledge_Base_Stream_Cursor_Value_Input = {
+  agent_id?: InputMaybe<Scalars["uuid"]["input"]>;
   base_type?: InputMaybe<Knowledge_Base_Type_Enum>;
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  chunking_parameters?: InputMaybe<Scalars["jsonb"]["input"]>;
+  chunking_strategy?: InputMaybe<Chunking_Strategy_Enum>;
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  creator_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  extraction_prompt_id?: InputMaybe<Scalars["Int"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  is_extraction?: InputMaybe<Scalars["Boolean"]["input"]>;
+  model_name?: InputMaybe<Scalars["String"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+};
+
+/** aggregate sum on columns */
+export type Knowledge_Base_Sum_Fields = {
+  __typename?: "knowledge_base_sum_fields";
+  extraction_prompt_id?: Maybe<Scalars["Int"]["output"]>;
 };
 
 /** knowledge_base_type */
 export type Knowledge_Base_Type = {
-  __typename?: 'knowledge_base_type';
-  comment: Scalars['String']['output'];
-  value: Scalars['String']['output'];
+  __typename?: "knowledge_base_type";
+  comment: Scalars["String"]["output"];
+  value: Scalars["String"]["output"];
 };
 
 /** aggregated selection of "knowledge_base_type" */
 export type Knowledge_Base_Type_Aggregate = {
-  __typename?: 'knowledge_base_type_aggregate';
+  __typename?: "knowledge_base_type_aggregate";
   aggregate?: Maybe<Knowledge_Base_Type_Aggregate_Fields>;
   nodes: Array<Knowledge_Base_Type>;
 };
 
 /** aggregate fields of "knowledge_base_type" */
 export type Knowledge_Base_Type_Aggregate_Fields = {
-  __typename?: 'knowledge_base_type_aggregate_fields';
-  count: Scalars['Int']['output'];
+  __typename?: "knowledge_base_type_aggregate_fields";
+  count: Scalars["Int"]["output"];
   max?: Maybe<Knowledge_Base_Type_Max_Fields>;
   min?: Maybe<Knowledge_Base_Type_Min_Fields>;
 };
 
-
 /** aggregate fields of "knowledge_base_type" */
 export type Knowledge_Base_Type_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Knowledge_Base_Type_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 /** Boolean expression to filter rows from the table "knowledge_base_type". All fields are combined with a logical 'AND'. */
@@ -1478,54 +2219,54 @@ export type Knowledge_Base_Type_Bool_Exp = {
 /** unique or primary key constraints on table "knowledge_base_type" */
 export enum Knowledge_Base_Type_Constraint {
   /** unique or primary key constraint on columns "value" */
-  KnowledgeBaseTypePkey = 'knowledge_base_type_pkey'
+  KnowledgeBaseTypePkey = "knowledge_base_type_pkey",
 }
 
 export enum Knowledge_Base_Type_Enum {
   /** 助理专属知识库 */
-  Agent = 'AGENT',
+  Agent = "AGENT",
   /** 个人知识库 */
-  Personal = 'PERSONAL',
+  Personal = "PERSONAL",
   /** 专业知识库 */
-  Professional = 'PROFESSIONAL',
+  Professional = "PROFESSIONAL",
   /** 用户助手知识库 */
-  UserAgent = 'USER_AGENT'
+  UserAgent = "USER_AGENT",
 }
 
 /** Boolean expression to compare columns of type "knowledge_base_type_enum". All fields are combined with logical 'AND'. */
 export type Knowledge_Base_Type_Enum_Comparison_Exp = {
   _eq?: InputMaybe<Knowledge_Base_Type_Enum>;
   _in?: InputMaybe<Array<Knowledge_Base_Type_Enum>>;
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _is_null?: InputMaybe<Scalars["Boolean"]["input"]>;
   _neq?: InputMaybe<Knowledge_Base_Type_Enum>;
   _nin?: InputMaybe<Array<Knowledge_Base_Type_Enum>>;
 };
 
 /** input type for inserting data into table "knowledge_base_type" */
 export type Knowledge_Base_Type_Insert_Input = {
-  comment?: InputMaybe<Scalars['String']['input']>;
-  value?: InputMaybe<Scalars['String']['input']>;
+  comment?: InputMaybe<Scalars["String"]["input"]>;
+  value?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** aggregate max on columns */
 export type Knowledge_Base_Type_Max_Fields = {
-  __typename?: 'knowledge_base_type_max_fields';
-  comment?: Maybe<Scalars['String']['output']>;
-  value?: Maybe<Scalars['String']['output']>;
+  __typename?: "knowledge_base_type_max_fields";
+  comment?: Maybe<Scalars["String"]["output"]>;
+  value?: Maybe<Scalars["String"]["output"]>;
 };
 
 /** aggregate min on columns */
 export type Knowledge_Base_Type_Min_Fields = {
-  __typename?: 'knowledge_base_type_min_fields';
-  comment?: Maybe<Scalars['String']['output']>;
-  value?: Maybe<Scalars['String']['output']>;
+  __typename?: "knowledge_base_type_min_fields";
+  comment?: Maybe<Scalars["String"]["output"]>;
+  value?: Maybe<Scalars["String"]["output"]>;
 };
 
 /** response of any mutation on the table "knowledge_base_type" */
 export type Knowledge_Base_Type_Mutation_Response = {
-  __typename?: 'knowledge_base_type_mutation_response';
+  __typename?: "knowledge_base_type_mutation_response";
   /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
+  affected_rows: Scalars["Int"]["output"];
   /** data from the rows affected by the mutation */
   returning: Array<Knowledge_Base_Type>;
 };
@@ -1545,21 +2286,21 @@ export type Knowledge_Base_Type_Order_By = {
 
 /** primary key columns input for table: knowledge_base_type */
 export type Knowledge_Base_Type_Pk_Columns_Input = {
-  value: Scalars['String']['input'];
+  value: Scalars["String"]["input"];
 };
 
 /** select columns of table "knowledge_base_type" */
 export enum Knowledge_Base_Type_Select_Column {
   /** column name */
-  Comment = 'comment',
+  Comment = "comment",
   /** column name */
-  Value = 'value'
+  Value = "value",
 }
 
 /** input type for updating data in table "knowledge_base_type" */
 export type Knowledge_Base_Type_Set_Input = {
-  comment?: InputMaybe<Scalars['String']['input']>;
-  value?: InputMaybe<Scalars['String']['input']>;
+  comment?: InputMaybe<Scalars["String"]["input"]>;
+  value?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** Streaming cursor of the table "knowledge_base_type" */
@@ -1572,16 +2313,16 @@ export type Knowledge_Base_Type_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Knowledge_Base_Type_Stream_Cursor_Value_Input = {
-  comment?: InputMaybe<Scalars['String']['input']>;
-  value?: InputMaybe<Scalars['String']['input']>;
+  comment?: InputMaybe<Scalars["String"]["input"]>;
+  value?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** update columns of table "knowledge_base_type" */
 export enum Knowledge_Base_Type_Update_Column {
   /** column name */
-  Comment = 'comment',
+  Comment = "comment",
   /** column name */
-  Value = 'value'
+  Value = "value",
 }
 
 export type Knowledge_Base_Type_Updates = {
@@ -1594,71 +2335,301 @@ export type Knowledge_Base_Type_Updates = {
 /** update columns of table "knowledge_base" */
 export enum Knowledge_Base_Update_Column {
   /** column name */
-  BaseType = 'base_type',
+  AgentId = "agent_id",
   /** column name */
-  CreatedAt = 'created_at',
+  BaseType = "base_type",
   /** column name */
-  Description = 'description',
+  ChunkingParameters = "chunking_parameters",
   /** column name */
-  Id = 'id',
+  ChunkingStrategy = "chunking_strategy",
   /** column name */
-  Name = 'name',
+  CreatedAt = "created_at",
   /** column name */
-  UpdatedAt = 'updated_at'
+  CreatorId = "creator_id",
+  /** column name */
+  Description = "description",
+  /** column name */
+  ExtractionPromptId = "extraction_prompt_id",
+  /** column name */
+  Id = "id",
+  /** column name */
+  IsExtraction = "is_extraction",
+  /** column name */
+  ModelName = "model_name",
+  /** column name */
+  Name = "name",
+  /** column name */
+  UpdatedAt = "updated_at",
 }
 
 export type Knowledge_Base_Updates = {
+  /** append existing jsonb value of filtered columns with new jsonb value */
+  _append?: InputMaybe<Knowledge_Base_Append_Input>;
+  /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+  _delete_at_path?: InputMaybe<Knowledge_Base_Delete_At_Path_Input>;
+  /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+  _delete_elem?: InputMaybe<Knowledge_Base_Delete_Elem_Input>;
+  /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+  _delete_key?: InputMaybe<Knowledge_Base_Delete_Key_Input>;
+  /** increments the numeric columns with given value of the filtered values */
+  _inc?: InputMaybe<Knowledge_Base_Inc_Input>;
+  /** prepend existing jsonb value of filtered columns with new jsonb value */
+  _prepend?: InputMaybe<Knowledge_Base_Prepend_Input>;
   /** sets the columns of the filtered rows to the given values */
   _set?: InputMaybe<Knowledge_Base_Set_Input>;
   /** filter the rows which have to be updated */
   where: Knowledge_Base_Bool_Exp;
 };
 
-/** message */
-export type Message = {
-  __typename?: 'message';
-  attachments?: Maybe<Scalars['jsonb']['output']>;
-  content?: Maybe<Scalars['String']['output']>;
-  created_at?: Maybe<Scalars['timestamptz']['output']>;
-  feedback?: Maybe<Message_Feedback_Enum>;
-  id: Scalars['uuid']['output'];
-  role: Message_Role_Enum;
-  session_id?: Maybe<Scalars['uuid']['output']>;
-  status?: Maybe<Message_Status_Enum>;
-  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+/** aggregate var_pop on columns */
+export type Knowledge_Base_Var_Pop_Fields = {
+  __typename?: "knowledge_base_var_pop_fields";
+  extraction_prompt_id?: Maybe<Scalars["Float"]["output"]>;
 };
 
+/** aggregate var_samp on columns */
+export type Knowledge_Base_Var_Samp_Fields = {
+  __typename?: "knowledge_base_var_samp_fields";
+  extraction_prompt_id?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** aggregate variance on columns */
+export type Knowledge_Base_Variance_Fields = {
+  __typename?: "knowledge_base_variance_fields";
+  extraction_prompt_id?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** Boolean expression to filter rows from the table "knowledge". All fields are combined with a logical 'AND'. */
+export type Knowledge_Bool_Exp = {
+  _and?: InputMaybe<Array<Knowledge_Bool_Exp>>;
+  _not?: InputMaybe<Knowledge_Bool_Exp>;
+  _or?: InputMaybe<Array<Knowledge_Bool_Exp>>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  key?: InputMaybe<String_Comparison_Exp>;
+  metadata?: InputMaybe<Jsonb_Comparison_Exp>;
+  original_file_url?: InputMaybe<String_Comparison_Exp>;
+  path_history?: InputMaybe<String_Array_Comparison_Exp>;
+  source_url?: InputMaybe<String_Comparison_Exp>;
+  spider?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "knowledge" */
+export enum Knowledge_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  KnowledgePkey = "knowledge_pkey",
+}
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Knowledge_Delete_At_Path_Input = {
+  metadata?: InputMaybe<Array<Scalars["String"]["input"]>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Knowledge_Delete_Elem_Input = {
+  metadata?: InputMaybe<Scalars["Int"]["input"]>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Knowledge_Delete_Key_Input = {
+  metadata?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/** input type for inserting data into table "knowledge" */
+export type Knowledge_Insert_Input = {
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  key?: InputMaybe<Scalars["String"]["input"]>;
+  metadata?: InputMaybe<Scalars["jsonb"]["input"]>;
+  original_file_url?: InputMaybe<Scalars["String"]["input"]>;
+  path_history?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  source_url?: InputMaybe<Scalars["String"]["input"]>;
+  spider?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/** aggregate max on columns */
+export type Knowledge_Max_Fields = {
+  __typename?: "knowledge_max_fields";
+  id?: Maybe<Scalars["uuid"]["output"]>;
+  key?: Maybe<Scalars["String"]["output"]>;
+  original_file_url?: Maybe<Scalars["String"]["output"]>;
+  path_history?: Maybe<Array<Scalars["String"]["output"]>>;
+  source_url?: Maybe<Scalars["String"]["output"]>;
+  spider?: Maybe<Scalars["String"]["output"]>;
+};
+
+/** aggregate min on columns */
+export type Knowledge_Min_Fields = {
+  __typename?: "knowledge_min_fields";
+  id?: Maybe<Scalars["uuid"]["output"]>;
+  key?: Maybe<Scalars["String"]["output"]>;
+  original_file_url?: Maybe<Scalars["String"]["output"]>;
+  path_history?: Maybe<Array<Scalars["String"]["output"]>>;
+  source_url?: Maybe<Scalars["String"]["output"]>;
+  spider?: Maybe<Scalars["String"]["output"]>;
+};
+
+/** response of any mutation on the table "knowledge" */
+export type Knowledge_Mutation_Response = {
+  __typename?: "knowledge_mutation_response";
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars["Int"]["output"];
+  /** data from the rows affected by the mutation */
+  returning: Array<Knowledge>;
+};
+
+/** on_conflict condition type for table "knowledge" */
+export type Knowledge_On_Conflict = {
+  constraint: Knowledge_Constraint;
+  update_columns?: Array<Knowledge_Update_Column>;
+  where?: InputMaybe<Knowledge_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "knowledge". */
+export type Knowledge_Order_By = {
+  id?: InputMaybe<Order_By>;
+  key?: InputMaybe<Order_By>;
+  metadata?: InputMaybe<Order_By>;
+  original_file_url?: InputMaybe<Order_By>;
+  path_history?: InputMaybe<Order_By>;
+  source_url?: InputMaybe<Order_By>;
+  spider?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: knowledge */
+export type Knowledge_Pk_Columns_Input = {
+  id: Scalars["uuid"]["input"];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Knowledge_Prepend_Input = {
+  metadata?: InputMaybe<Scalars["jsonb"]["input"]>;
+};
+
+/** select columns of table "knowledge" */
+export enum Knowledge_Select_Column {
+  /** column name */
+  Id = "id",
+  /** column name */
+  Key = "key",
+  /** column name */
+  Metadata = "metadata",
+  /** column name */
+  OriginalFileUrl = "original_file_url",
+  /** column name */
+  PathHistory = "path_history",
+  /** column name */
+  SourceUrl = "source_url",
+  /** column name */
+  Spider = "spider",
+}
+
+/** input type for updating data in table "knowledge" */
+export type Knowledge_Set_Input = {
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  key?: InputMaybe<Scalars["String"]["input"]>;
+  metadata?: InputMaybe<Scalars["jsonb"]["input"]>;
+  original_file_url?: InputMaybe<Scalars["String"]["input"]>;
+  path_history?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  source_url?: InputMaybe<Scalars["String"]["input"]>;
+  spider?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/** Streaming cursor of the table "knowledge" */
+export type Knowledge_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Knowledge_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Knowledge_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  key?: InputMaybe<Scalars["String"]["input"]>;
+  metadata?: InputMaybe<Scalars["jsonb"]["input"]>;
+  original_file_url?: InputMaybe<Scalars["String"]["input"]>;
+  path_history?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  source_url?: InputMaybe<Scalars["String"]["input"]>;
+  spider?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/** update columns of table "knowledge" */
+export enum Knowledge_Update_Column {
+  /** column name */
+  Id = "id",
+  /** column name */
+  Key = "key",
+  /** column name */
+  Metadata = "metadata",
+  /** column name */
+  OriginalFileUrl = "original_file_url",
+  /** column name */
+  PathHistory = "path_history",
+  /** column name */
+  SourceUrl = "source_url",
+  /** column name */
+  Spider = "spider",
+}
+
+export type Knowledge_Updates = {
+  /** append existing jsonb value of filtered columns with new jsonb value */
+  _append?: InputMaybe<Knowledge_Append_Input>;
+  /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+  _delete_at_path?: InputMaybe<Knowledge_Delete_At_Path_Input>;
+  /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+  _delete_elem?: InputMaybe<Knowledge_Delete_Elem_Input>;
+  /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+  _delete_key?: InputMaybe<Knowledge_Delete_Key_Input>;
+  /** prepend existing jsonb value of filtered columns with new jsonb value */
+  _prepend?: InputMaybe<Knowledge_Prepend_Input>;
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Knowledge_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Knowledge_Bool_Exp;
+};
+
+/** message */
+export type Message = {
+  __typename?: "message";
+  attachments?: Maybe<Scalars["jsonb"]["output"]>;
+  content?: Maybe<Scalars["String"]["output"]>;
+  created_at?: Maybe<Scalars["timestamptz"]["output"]>;
+  feedback?: Maybe<Message_Feedback_Enum>;
+  id: Scalars["uuid"]["output"];
+  role: Message_Role_Enum;
+  session_id?: Maybe<Scalars["uuid"]["output"]>;
+  status?: Maybe<Message_Status_Enum>;
+  updated_at?: Maybe<Scalars["timestamptz"]["output"]>;
+};
 
 /** message */
 export type MessageAttachmentsArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
+  path?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** aggregated selection of "message" */
 export type Message_Aggregate = {
-  __typename?: 'message_aggregate';
+  __typename?: "message_aggregate";
   aggregate?: Maybe<Message_Aggregate_Fields>;
   nodes: Array<Message>;
 };
 
 /** aggregate fields of "message" */
 export type Message_Aggregate_Fields = {
-  __typename?: 'message_aggregate_fields';
-  count: Scalars['Int']['output'];
+  __typename?: "message_aggregate_fields";
+  count: Scalars["Int"]["output"];
   max?: Maybe<Message_Max_Fields>;
   min?: Maybe<Message_Min_Fields>;
 };
 
-
 /** aggregate fields of "message" */
 export type Message_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Message_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 /** append existing jsonb value of filtered columns with new jsonb value */
 export type Message_Append_Input = {
-  attachments?: InputMaybe<Scalars['jsonb']['input']>;
+  attachments?: InputMaybe<Scalars["jsonb"]["input"]>;
 };
 
 /** Boolean expression to filter rows from the table "message". All fields are combined with a logical 'AND'. */
@@ -1680,51 +2651,50 @@ export type Message_Bool_Exp = {
 /** unique or primary key constraints on table "message" */
 export enum Message_Constraint {
   /** unique or primary key constraint on columns "id" */
-  MessagePkey = 'message_pkey'
+  MessagePkey = "message_pkey",
 }
 
 /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 export type Message_Delete_At_Path_Input = {
-  attachments?: InputMaybe<Array<Scalars['String']['input']>>;
+  attachments?: InputMaybe<Array<Scalars["String"]["input"]>>;
 };
 
 /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
 export type Message_Delete_Elem_Input = {
-  attachments?: InputMaybe<Scalars['Int']['input']>;
+  attachments?: InputMaybe<Scalars["Int"]["input"]>;
 };
 
 /** delete key/value pair or string element. key/value pairs are matched based on their key value */
 export type Message_Delete_Key_Input = {
-  attachments?: InputMaybe<Scalars['String']['input']>;
+  attachments?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** message_feedback */
 export type Message_Feedback = {
-  __typename?: 'message_feedback';
-  comment: Scalars['String']['output'];
-  value: Scalars['String']['output'];
+  __typename?: "message_feedback";
+  comment: Scalars["String"]["output"];
+  value: Scalars["String"]["output"];
 };
 
 /** aggregated selection of "message_feedback" */
 export type Message_Feedback_Aggregate = {
-  __typename?: 'message_feedback_aggregate';
+  __typename?: "message_feedback_aggregate";
   aggregate?: Maybe<Message_Feedback_Aggregate_Fields>;
   nodes: Array<Message_Feedback>;
 };
 
 /** aggregate fields of "message_feedback" */
 export type Message_Feedback_Aggregate_Fields = {
-  __typename?: 'message_feedback_aggregate_fields';
-  count: Scalars['Int']['output'];
+  __typename?: "message_feedback_aggregate_fields";
+  count: Scalars["Int"]["output"];
   max?: Maybe<Message_Feedback_Max_Fields>;
   min?: Maybe<Message_Feedback_Min_Fields>;
 };
 
-
 /** aggregate fields of "message_feedback" */
 export type Message_Feedback_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Message_Feedback_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 /** Boolean expression to filter rows from the table "message_feedback". All fields are combined with a logical 'AND'. */
@@ -1739,50 +2709,50 @@ export type Message_Feedback_Bool_Exp = {
 /** unique or primary key constraints on table "message_feedback" */
 export enum Message_Feedback_Constraint {
   /** unique or primary key constraint on columns "value" */
-  MessageFeedbackPkey = 'message_feedback_pkey'
+  MessageFeedbackPkey = "message_feedback_pkey",
 }
 
 export enum Message_Feedback_Enum {
   /** dislike */
-  Dislike = 'dislike',
+  Dislike = "dislike",
   /** like */
-  Like = 'like'
+  Like = "like",
 }
 
 /** Boolean expression to compare columns of type "message_feedback_enum". All fields are combined with logical 'AND'. */
 export type Message_Feedback_Enum_Comparison_Exp = {
   _eq?: InputMaybe<Message_Feedback_Enum>;
   _in?: InputMaybe<Array<Message_Feedback_Enum>>;
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _is_null?: InputMaybe<Scalars["Boolean"]["input"]>;
   _neq?: InputMaybe<Message_Feedback_Enum>;
   _nin?: InputMaybe<Array<Message_Feedback_Enum>>;
 };
 
 /** input type for inserting data into table "message_feedback" */
 export type Message_Feedback_Insert_Input = {
-  comment?: InputMaybe<Scalars['String']['input']>;
-  value?: InputMaybe<Scalars['String']['input']>;
+  comment?: InputMaybe<Scalars["String"]["input"]>;
+  value?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** aggregate max on columns */
 export type Message_Feedback_Max_Fields = {
-  __typename?: 'message_feedback_max_fields';
-  comment?: Maybe<Scalars['String']['output']>;
-  value?: Maybe<Scalars['String']['output']>;
+  __typename?: "message_feedback_max_fields";
+  comment?: Maybe<Scalars["String"]["output"]>;
+  value?: Maybe<Scalars["String"]["output"]>;
 };
 
 /** aggregate min on columns */
 export type Message_Feedback_Min_Fields = {
-  __typename?: 'message_feedback_min_fields';
-  comment?: Maybe<Scalars['String']['output']>;
-  value?: Maybe<Scalars['String']['output']>;
+  __typename?: "message_feedback_min_fields";
+  comment?: Maybe<Scalars["String"]["output"]>;
+  value?: Maybe<Scalars["String"]["output"]>;
 };
 
 /** response of any mutation on the table "message_feedback" */
 export type Message_Feedback_Mutation_Response = {
-  __typename?: 'message_feedback_mutation_response';
+  __typename?: "message_feedback_mutation_response";
   /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
+  affected_rows: Scalars["Int"]["output"];
   /** data from the rows affected by the mutation */
   returning: Array<Message_Feedback>;
 };
@@ -1802,21 +2772,21 @@ export type Message_Feedback_Order_By = {
 
 /** primary key columns input for table: message_feedback */
 export type Message_Feedback_Pk_Columns_Input = {
-  value: Scalars['String']['input'];
+  value: Scalars["String"]["input"];
 };
 
 /** select columns of table "message_feedback" */
 export enum Message_Feedback_Select_Column {
   /** column name */
-  Comment = 'comment',
+  Comment = "comment",
   /** column name */
-  Value = 'value'
+  Value = "value",
 }
 
 /** input type for updating data in table "message_feedback" */
 export type Message_Feedback_Set_Input = {
-  comment?: InputMaybe<Scalars['String']['input']>;
-  value?: InputMaybe<Scalars['String']['input']>;
+  comment?: InputMaybe<Scalars["String"]["input"]>;
+  value?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** Streaming cursor of the table "message_feedback" */
@@ -1829,16 +2799,16 @@ export type Message_Feedback_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Message_Feedback_Stream_Cursor_Value_Input = {
-  comment?: InputMaybe<Scalars['String']['input']>;
-  value?: InputMaybe<Scalars['String']['input']>;
+  comment?: InputMaybe<Scalars["String"]["input"]>;
+  value?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** update columns of table "message_feedback" */
 export enum Message_Feedback_Update_Column {
   /** column name */
-  Comment = 'comment',
+  Comment = "comment",
   /** column name */
-  Value = 'value'
+  Value = "value",
 }
 
 export type Message_Feedback_Updates = {
@@ -1850,42 +2820,42 @@ export type Message_Feedback_Updates = {
 
 /** input type for inserting data into table "message" */
 export type Message_Insert_Input = {
-  attachments?: InputMaybe<Scalars['jsonb']['input']>;
-  content?: InputMaybe<Scalars['String']['input']>;
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  attachments?: InputMaybe<Scalars["jsonb"]["input"]>;
+  content?: InputMaybe<Scalars["String"]["input"]>;
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
   feedback?: InputMaybe<Message_Feedback_Enum>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
   role?: InputMaybe<Message_Role_Enum>;
-  session_id?: InputMaybe<Scalars['uuid']['input']>;
+  session_id?: InputMaybe<Scalars["uuid"]["input"]>;
   status?: InputMaybe<Message_Status_Enum>;
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
 };
 
 /** aggregate max on columns */
 export type Message_Max_Fields = {
-  __typename?: 'message_max_fields';
-  content?: Maybe<Scalars['String']['output']>;
-  created_at?: Maybe<Scalars['timestamptz']['output']>;
-  id?: Maybe<Scalars['uuid']['output']>;
-  session_id?: Maybe<Scalars['uuid']['output']>;
-  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+  __typename?: "message_max_fields";
+  content?: Maybe<Scalars["String"]["output"]>;
+  created_at?: Maybe<Scalars["timestamptz"]["output"]>;
+  id?: Maybe<Scalars["uuid"]["output"]>;
+  session_id?: Maybe<Scalars["uuid"]["output"]>;
+  updated_at?: Maybe<Scalars["timestamptz"]["output"]>;
 };
 
 /** aggregate min on columns */
 export type Message_Min_Fields = {
-  __typename?: 'message_min_fields';
-  content?: Maybe<Scalars['String']['output']>;
-  created_at?: Maybe<Scalars['timestamptz']['output']>;
-  id?: Maybe<Scalars['uuid']['output']>;
-  session_id?: Maybe<Scalars['uuid']['output']>;
-  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+  __typename?: "message_min_fields";
+  content?: Maybe<Scalars["String"]["output"]>;
+  created_at?: Maybe<Scalars["timestamptz"]["output"]>;
+  id?: Maybe<Scalars["uuid"]["output"]>;
+  session_id?: Maybe<Scalars["uuid"]["output"]>;
+  updated_at?: Maybe<Scalars["timestamptz"]["output"]>;
 };
 
 /** response of any mutation on the table "message" */
 export type Message_Mutation_Response = {
-  __typename?: 'message_mutation_response';
+  __typename?: "message_mutation_response";
   /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
+  affected_rows: Scalars["Int"]["output"];
   /** data from the rows affected by the mutation */
   returning: Array<Message>;
 };
@@ -1912,41 +2882,40 @@ export type Message_Order_By = {
 
 /** primary key columns input for table: message */
 export type Message_Pk_Columns_Input = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
 
 /** prepend existing jsonb value of filtered columns with new jsonb value */
 export type Message_Prepend_Input = {
-  attachments?: InputMaybe<Scalars['jsonb']['input']>;
+  attachments?: InputMaybe<Scalars["jsonb"]["input"]>;
 };
 
 /** message_role */
 export type Message_Role = {
-  __typename?: 'message_role';
-  comment: Scalars['String']['output'];
-  value: Scalars['String']['output'];
+  __typename?: "message_role";
+  comment: Scalars["String"]["output"];
+  value: Scalars["String"]["output"];
 };
 
 /** aggregated selection of "message_role" */
 export type Message_Role_Aggregate = {
-  __typename?: 'message_role_aggregate';
+  __typename?: "message_role_aggregate";
   aggregate?: Maybe<Message_Role_Aggregate_Fields>;
   nodes: Array<Message_Role>;
 };
 
 /** aggregate fields of "message_role" */
 export type Message_Role_Aggregate_Fields = {
-  __typename?: 'message_role_aggregate_fields';
-  count: Scalars['Int']['output'];
+  __typename?: "message_role_aggregate_fields";
+  count: Scalars["Int"]["output"];
   max?: Maybe<Message_Role_Max_Fields>;
   min?: Maybe<Message_Role_Min_Fields>;
 };
 
-
 /** aggregate fields of "message_role" */
 export type Message_Role_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Message_Role_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 /** Boolean expression to filter rows from the table "message_role". All fields are combined with a logical 'AND'. */
@@ -1961,52 +2930,52 @@ export type Message_Role_Bool_Exp = {
 /** unique or primary key constraints on table "message_role" */
 export enum Message_Role_Constraint {
   /** unique or primary key constraint on columns "value" */
-  MessageRolePkey = 'message_role_pkey'
+  MessageRolePkey = "message_role_pkey",
 }
 
 export enum Message_Role_Enum {
   /** assistant */
-  Assistant = 'assistant',
+  Assistant = "assistant",
   /** system */
-  System = 'system',
+  System = "system",
   /** user */
-  User = 'user'
+  User = "user",
 }
 
 /** Boolean expression to compare columns of type "message_role_enum". All fields are combined with logical 'AND'. */
 export type Message_Role_Enum_Comparison_Exp = {
   _eq?: InputMaybe<Message_Role_Enum>;
   _in?: InputMaybe<Array<Message_Role_Enum>>;
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _is_null?: InputMaybe<Scalars["Boolean"]["input"]>;
   _neq?: InputMaybe<Message_Role_Enum>;
   _nin?: InputMaybe<Array<Message_Role_Enum>>;
 };
 
 /** input type for inserting data into table "message_role" */
 export type Message_Role_Insert_Input = {
-  comment?: InputMaybe<Scalars['String']['input']>;
-  value?: InputMaybe<Scalars['String']['input']>;
+  comment?: InputMaybe<Scalars["String"]["input"]>;
+  value?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** aggregate max on columns */
 export type Message_Role_Max_Fields = {
-  __typename?: 'message_role_max_fields';
-  comment?: Maybe<Scalars['String']['output']>;
-  value?: Maybe<Scalars['String']['output']>;
+  __typename?: "message_role_max_fields";
+  comment?: Maybe<Scalars["String"]["output"]>;
+  value?: Maybe<Scalars["String"]["output"]>;
 };
 
 /** aggregate min on columns */
 export type Message_Role_Min_Fields = {
-  __typename?: 'message_role_min_fields';
-  comment?: Maybe<Scalars['String']['output']>;
-  value?: Maybe<Scalars['String']['output']>;
+  __typename?: "message_role_min_fields";
+  comment?: Maybe<Scalars["String"]["output"]>;
+  value?: Maybe<Scalars["String"]["output"]>;
 };
 
 /** response of any mutation on the table "message_role" */
 export type Message_Role_Mutation_Response = {
-  __typename?: 'message_role_mutation_response';
+  __typename?: "message_role_mutation_response";
   /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
+  affected_rows: Scalars["Int"]["output"];
   /** data from the rows affected by the mutation */
   returning: Array<Message_Role>;
 };
@@ -2026,21 +2995,21 @@ export type Message_Role_Order_By = {
 
 /** primary key columns input for table: message_role */
 export type Message_Role_Pk_Columns_Input = {
-  value: Scalars['String']['input'];
+  value: Scalars["String"]["input"];
 };
 
 /** select columns of table "message_role" */
 export enum Message_Role_Select_Column {
   /** column name */
-  Comment = 'comment',
+  Comment = "comment",
   /** column name */
-  Value = 'value'
+  Value = "value",
 }
 
 /** input type for updating data in table "message_role" */
 export type Message_Role_Set_Input = {
-  comment?: InputMaybe<Scalars['String']['input']>;
-  value?: InputMaybe<Scalars['String']['input']>;
+  comment?: InputMaybe<Scalars["String"]["input"]>;
+  value?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** Streaming cursor of the table "message_role" */
@@ -2053,16 +3022,16 @@ export type Message_Role_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Message_Role_Stream_Cursor_Value_Input = {
-  comment?: InputMaybe<Scalars['String']['input']>;
-  value?: InputMaybe<Scalars['String']['input']>;
+  comment?: InputMaybe<Scalars["String"]["input"]>;
+  value?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** update columns of table "message_role" */
 export enum Message_Role_Update_Column {
   /** column name */
-  Comment = 'comment',
+  Comment = "comment",
   /** column name */
-  Value = 'value'
+  Value = "value",
 }
 
 export type Message_Role_Updates = {
@@ -2075,65 +3044,64 @@ export type Message_Role_Updates = {
 /** select columns of table "message" */
 export enum Message_Select_Column {
   /** column name */
-  Attachments = 'attachments',
+  Attachments = "attachments",
   /** column name */
-  Content = 'content',
+  Content = "content",
   /** column name */
-  CreatedAt = 'created_at',
+  CreatedAt = "created_at",
   /** column name */
-  Feedback = 'feedback',
+  Feedback = "feedback",
   /** column name */
-  Id = 'id',
+  Id = "id",
   /** column name */
-  Role = 'role',
+  Role = "role",
   /** column name */
-  SessionId = 'session_id',
+  SessionId = "session_id",
   /** column name */
-  Status = 'status',
+  Status = "status",
   /** column name */
-  UpdatedAt = 'updated_at'
+  UpdatedAt = "updated_at",
 }
 
 /** input type for updating data in table "message" */
 export type Message_Set_Input = {
-  attachments?: InputMaybe<Scalars['jsonb']['input']>;
-  content?: InputMaybe<Scalars['String']['input']>;
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  attachments?: InputMaybe<Scalars["jsonb"]["input"]>;
+  content?: InputMaybe<Scalars["String"]["input"]>;
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
   feedback?: InputMaybe<Message_Feedback_Enum>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
   role?: InputMaybe<Message_Role_Enum>;
-  session_id?: InputMaybe<Scalars['uuid']['input']>;
+  session_id?: InputMaybe<Scalars["uuid"]["input"]>;
   status?: InputMaybe<Message_Status_Enum>;
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
 };
 
 /** message_status */
 export type Message_Status = {
-  __typename?: 'message_status';
-  comment: Scalars['String']['output'];
-  value: Scalars['String']['output'];
+  __typename?: "message_status";
+  comment: Scalars["String"]["output"];
+  value: Scalars["String"]["output"];
 };
 
 /** aggregated selection of "message_status" */
 export type Message_Status_Aggregate = {
-  __typename?: 'message_status_aggregate';
+  __typename?: "message_status_aggregate";
   aggregate?: Maybe<Message_Status_Aggregate_Fields>;
   nodes: Array<Message_Status>;
 };
 
 /** aggregate fields of "message_status" */
 export type Message_Status_Aggregate_Fields = {
-  __typename?: 'message_status_aggregate_fields';
-  count: Scalars['Int']['output'];
+  __typename?: "message_status_aggregate_fields";
+  count: Scalars["Int"]["output"];
   max?: Maybe<Message_Status_Max_Fields>;
   min?: Maybe<Message_Status_Min_Fields>;
 };
 
-
 /** aggregate fields of "message_status" */
 export type Message_Status_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Message_Status_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 /** Boolean expression to filter rows from the table "message_status". All fields are combined with a logical 'AND'. */
@@ -2148,50 +3116,50 @@ export type Message_Status_Bool_Exp = {
 /** unique or primary key constraints on table "message_status" */
 export enum Message_Status_Constraint {
   /** unique or primary key constraint on columns "value" */
-  MessageStatusPkey = 'message_status_pkey'
+  MessageStatusPkey = "message_status_pkey",
 }
 
 export enum Message_Status_Enum {
   /** failed */
-  Failed = 'failed',
+  Failed = "failed",
   /** success */
-  Success = 'success'
+  Success = "success",
 }
 
 /** Boolean expression to compare columns of type "message_status_enum". All fields are combined with logical 'AND'. */
 export type Message_Status_Enum_Comparison_Exp = {
   _eq?: InputMaybe<Message_Status_Enum>;
   _in?: InputMaybe<Array<Message_Status_Enum>>;
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _is_null?: InputMaybe<Scalars["Boolean"]["input"]>;
   _neq?: InputMaybe<Message_Status_Enum>;
   _nin?: InputMaybe<Array<Message_Status_Enum>>;
 };
 
 /** input type for inserting data into table "message_status" */
 export type Message_Status_Insert_Input = {
-  comment?: InputMaybe<Scalars['String']['input']>;
-  value?: InputMaybe<Scalars['String']['input']>;
+  comment?: InputMaybe<Scalars["String"]["input"]>;
+  value?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** aggregate max on columns */
 export type Message_Status_Max_Fields = {
-  __typename?: 'message_status_max_fields';
-  comment?: Maybe<Scalars['String']['output']>;
-  value?: Maybe<Scalars['String']['output']>;
+  __typename?: "message_status_max_fields";
+  comment?: Maybe<Scalars["String"]["output"]>;
+  value?: Maybe<Scalars["String"]["output"]>;
 };
 
 /** aggregate min on columns */
 export type Message_Status_Min_Fields = {
-  __typename?: 'message_status_min_fields';
-  comment?: Maybe<Scalars['String']['output']>;
-  value?: Maybe<Scalars['String']['output']>;
+  __typename?: "message_status_min_fields";
+  comment?: Maybe<Scalars["String"]["output"]>;
+  value?: Maybe<Scalars["String"]["output"]>;
 };
 
 /** response of any mutation on the table "message_status" */
 export type Message_Status_Mutation_Response = {
-  __typename?: 'message_status_mutation_response';
+  __typename?: "message_status_mutation_response";
   /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
+  affected_rows: Scalars["Int"]["output"];
   /** data from the rows affected by the mutation */
   returning: Array<Message_Status>;
 };
@@ -2211,21 +3179,21 @@ export type Message_Status_Order_By = {
 
 /** primary key columns input for table: message_status */
 export type Message_Status_Pk_Columns_Input = {
-  value: Scalars['String']['input'];
+  value: Scalars["String"]["input"];
 };
 
 /** select columns of table "message_status" */
 export enum Message_Status_Select_Column {
   /** column name */
-  Comment = 'comment',
+  Comment = "comment",
   /** column name */
-  Value = 'value'
+  Value = "value",
 }
 
 /** input type for updating data in table "message_status" */
 export type Message_Status_Set_Input = {
-  comment?: InputMaybe<Scalars['String']['input']>;
-  value?: InputMaybe<Scalars['String']['input']>;
+  comment?: InputMaybe<Scalars["String"]["input"]>;
+  value?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** Streaming cursor of the table "message_status" */
@@ -2238,16 +3206,16 @@ export type Message_Status_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Message_Status_Stream_Cursor_Value_Input = {
-  comment?: InputMaybe<Scalars['String']['input']>;
-  value?: InputMaybe<Scalars['String']['input']>;
+  comment?: InputMaybe<Scalars["String"]["input"]>;
+  value?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** update columns of table "message_status" */
 export enum Message_Status_Update_Column {
   /** column name */
-  Comment = 'comment',
+  Comment = "comment",
   /** column name */
-  Value = 'value'
+  Value = "value",
 }
 
 export type Message_Status_Updates = {
@@ -2267,37 +3235,37 @@ export type Message_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Message_Stream_Cursor_Value_Input = {
-  attachments?: InputMaybe<Scalars['jsonb']['input']>;
-  content?: InputMaybe<Scalars['String']['input']>;
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  attachments?: InputMaybe<Scalars["jsonb"]["input"]>;
+  content?: InputMaybe<Scalars["String"]["input"]>;
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
   feedback?: InputMaybe<Message_Feedback_Enum>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
   role?: InputMaybe<Message_Role_Enum>;
-  session_id?: InputMaybe<Scalars['uuid']['input']>;
+  session_id?: InputMaybe<Scalars["uuid"]["input"]>;
   status?: InputMaybe<Message_Status_Enum>;
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
 };
 
 /** update columns of table "message" */
 export enum Message_Update_Column {
   /** column name */
-  Attachments = 'attachments',
+  Attachments = "attachments",
   /** column name */
-  Content = 'content',
+  Content = "content",
   /** column name */
-  CreatedAt = 'created_at',
+  CreatedAt = "created_at",
   /** column name */
-  Feedback = 'feedback',
+  Feedback = "feedback",
   /** column name */
-  Id = 'id',
+  Id = "id",
   /** column name */
-  Role = 'role',
+  Role = "role",
   /** column name */
-  SessionId = 'session_id',
+  SessionId = "session_id",
   /** column name */
-  Status = 'status',
+  Status = "status",
   /** column name */
-  UpdatedAt = 'updated_at'
+  UpdatedAt = "updated_at",
 }
 
 export type Message_Updates = {
@@ -2319,38 +3287,37 @@ export type Message_Updates = {
 
 /** multimodal_data */
 export type Multimodal_Data = {
-  __typename?: 'multimodal_data';
-  bucket?: Maybe<Scalars['String']['output']>;
-  content?: Maybe<Scalars['String']['output']>;
-  end_time?: Maybe<Scalars['Int']['output']>;
-  file_key?: Maybe<Scalars['String']['output']>;
-  id: Scalars['uuid']['output'];
-  is_chunk?: Maybe<Scalars['Boolean']['output']>;
-  metadata?: Maybe<Scalars['jsonb']['output']>;
-  start_time?: Maybe<Scalars['Int']['output']>;
-  title?: Maybe<Scalars['String']['output']>;
-  topic?: Maybe<Array<Scalars['String']['output']>>;
-  type: Scalars['String']['output'];
+  __typename?: "multimodal_data";
+  bucket?: Maybe<Scalars["String"]["output"]>;
+  content?: Maybe<Scalars["String"]["output"]>;
+  end_time?: Maybe<Scalars["Int"]["output"]>;
+  file_key?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["uuid"]["output"];
+  is_chunk?: Maybe<Scalars["Boolean"]["output"]>;
+  metadata?: Maybe<Scalars["jsonb"]["output"]>;
+  start_time?: Maybe<Scalars["Int"]["output"]>;
+  title?: Maybe<Scalars["String"]["output"]>;
+  topic?: Maybe<Array<Scalars["String"]["output"]>>;
+  type: Scalars["String"]["output"];
 };
-
 
 /** multimodal_data */
 export type Multimodal_DataMetadataArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
+  path?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** aggregated selection of "multimodal_data" */
 export type Multimodal_Data_Aggregate = {
-  __typename?: 'multimodal_data_aggregate';
+  __typename?: "multimodal_data_aggregate";
   aggregate?: Maybe<Multimodal_Data_Aggregate_Fields>;
   nodes: Array<Multimodal_Data>;
 };
 
 /** aggregate fields of "multimodal_data" */
 export type Multimodal_Data_Aggregate_Fields = {
-  __typename?: 'multimodal_data_aggregate_fields';
+  __typename?: "multimodal_data_aggregate_fields";
   avg?: Maybe<Multimodal_Data_Avg_Fields>;
-  count: Scalars['Int']['output'];
+  count: Scalars["Int"]["output"];
   max?: Maybe<Multimodal_Data_Max_Fields>;
   min?: Maybe<Multimodal_Data_Min_Fields>;
   stddev?: Maybe<Multimodal_Data_Stddev_Fields>;
@@ -2362,23 +3329,22 @@ export type Multimodal_Data_Aggregate_Fields = {
   variance?: Maybe<Multimodal_Data_Variance_Fields>;
 };
 
-
 /** aggregate fields of "multimodal_data" */
 export type Multimodal_Data_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Multimodal_Data_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 /** append existing jsonb value of filtered columns with new jsonb value */
 export type Multimodal_Data_Append_Input = {
-  metadata?: InputMaybe<Scalars['jsonb']['input']>;
+  metadata?: InputMaybe<Scalars["jsonb"]["input"]>;
 };
 
 /** aggregate avg on columns */
 export type Multimodal_Data_Avg_Fields = {
-  __typename?: 'multimodal_data_avg_fields';
-  end_time?: Maybe<Scalars['Float']['output']>;
-  start_time?: Maybe<Scalars['Float']['output']>;
+  __typename?: "multimodal_data_avg_fields";
+  end_time?: Maybe<Scalars["Float"]["output"]>;
+  start_time?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** Boolean expression to filter rows from the table "multimodal_data". All fields are combined with a logical 'AND'. */
@@ -2402,78 +3368,78 @@ export type Multimodal_Data_Bool_Exp = {
 /** unique or primary key constraints on table "multimodal_data" */
 export enum Multimodal_Data_Constraint {
   /** unique or primary key constraint on columns "id" */
-  MultimodalDataPkey = 'multimodal_data_pkey'
+  MultimodalDataPkey = "multimodal_data_pkey",
 }
 
 /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 export type Multimodal_Data_Delete_At_Path_Input = {
-  metadata?: InputMaybe<Array<Scalars['String']['input']>>;
+  metadata?: InputMaybe<Array<Scalars["String"]["input"]>>;
 };
 
 /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
 export type Multimodal_Data_Delete_Elem_Input = {
-  metadata?: InputMaybe<Scalars['Int']['input']>;
+  metadata?: InputMaybe<Scalars["Int"]["input"]>;
 };
 
 /** delete key/value pair or string element. key/value pairs are matched based on their key value */
 export type Multimodal_Data_Delete_Key_Input = {
-  metadata?: InputMaybe<Scalars['String']['input']>;
+  metadata?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** input type for incrementing numeric columns in table "multimodal_data" */
 export type Multimodal_Data_Inc_Input = {
-  end_time?: InputMaybe<Scalars['Int']['input']>;
-  start_time?: InputMaybe<Scalars['Int']['input']>;
+  end_time?: InputMaybe<Scalars["Int"]["input"]>;
+  start_time?: InputMaybe<Scalars["Int"]["input"]>;
 };
 
 /** input type for inserting data into table "multimodal_data" */
 export type Multimodal_Data_Insert_Input = {
-  bucket?: InputMaybe<Scalars['String']['input']>;
-  content?: InputMaybe<Scalars['String']['input']>;
-  end_time?: InputMaybe<Scalars['Int']['input']>;
-  file_key?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
-  is_chunk?: InputMaybe<Scalars['Boolean']['input']>;
-  metadata?: InputMaybe<Scalars['jsonb']['input']>;
-  start_time?: InputMaybe<Scalars['Int']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  topic?: InputMaybe<Array<Scalars['String']['input']>>;
-  type?: InputMaybe<Scalars['String']['input']>;
+  bucket?: InputMaybe<Scalars["String"]["input"]>;
+  content?: InputMaybe<Scalars["String"]["input"]>;
+  end_time?: InputMaybe<Scalars["Int"]["input"]>;
+  file_key?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  is_chunk?: InputMaybe<Scalars["Boolean"]["input"]>;
+  metadata?: InputMaybe<Scalars["jsonb"]["input"]>;
+  start_time?: InputMaybe<Scalars["Int"]["input"]>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
+  topic?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  type?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** aggregate max on columns */
 export type Multimodal_Data_Max_Fields = {
-  __typename?: 'multimodal_data_max_fields';
-  bucket?: Maybe<Scalars['String']['output']>;
-  content?: Maybe<Scalars['String']['output']>;
-  end_time?: Maybe<Scalars['Int']['output']>;
-  file_key?: Maybe<Scalars['String']['output']>;
-  id?: Maybe<Scalars['uuid']['output']>;
-  start_time?: Maybe<Scalars['Int']['output']>;
-  title?: Maybe<Scalars['String']['output']>;
-  topic?: Maybe<Array<Scalars['String']['output']>>;
-  type?: Maybe<Scalars['String']['output']>;
+  __typename?: "multimodal_data_max_fields";
+  bucket?: Maybe<Scalars["String"]["output"]>;
+  content?: Maybe<Scalars["String"]["output"]>;
+  end_time?: Maybe<Scalars["Int"]["output"]>;
+  file_key?: Maybe<Scalars["String"]["output"]>;
+  id?: Maybe<Scalars["uuid"]["output"]>;
+  start_time?: Maybe<Scalars["Int"]["output"]>;
+  title?: Maybe<Scalars["String"]["output"]>;
+  topic?: Maybe<Array<Scalars["String"]["output"]>>;
+  type?: Maybe<Scalars["String"]["output"]>;
 };
 
 /** aggregate min on columns */
 export type Multimodal_Data_Min_Fields = {
-  __typename?: 'multimodal_data_min_fields';
-  bucket?: Maybe<Scalars['String']['output']>;
-  content?: Maybe<Scalars['String']['output']>;
-  end_time?: Maybe<Scalars['Int']['output']>;
-  file_key?: Maybe<Scalars['String']['output']>;
-  id?: Maybe<Scalars['uuid']['output']>;
-  start_time?: Maybe<Scalars['Int']['output']>;
-  title?: Maybe<Scalars['String']['output']>;
-  topic?: Maybe<Array<Scalars['String']['output']>>;
-  type?: Maybe<Scalars['String']['output']>;
+  __typename?: "multimodal_data_min_fields";
+  bucket?: Maybe<Scalars["String"]["output"]>;
+  content?: Maybe<Scalars["String"]["output"]>;
+  end_time?: Maybe<Scalars["Int"]["output"]>;
+  file_key?: Maybe<Scalars["String"]["output"]>;
+  id?: Maybe<Scalars["uuid"]["output"]>;
+  start_time?: Maybe<Scalars["Int"]["output"]>;
+  title?: Maybe<Scalars["String"]["output"]>;
+  topic?: Maybe<Array<Scalars["String"]["output"]>>;
+  type?: Maybe<Scalars["String"]["output"]>;
 };
 
 /** response of any mutation on the table "multimodal_data" */
 export type Multimodal_Data_Mutation_Response = {
-  __typename?: 'multimodal_data_mutation_response';
+  __typename?: "multimodal_data_mutation_response";
   /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
+  affected_rows: Scalars["Int"]["output"];
   /** data from the rows affected by the mutation */
   returning: Array<Multimodal_Data>;
 };
@@ -2502,74 +3468,74 @@ export type Multimodal_Data_Order_By = {
 
 /** primary key columns input for table: multimodal_data */
 export type Multimodal_Data_Pk_Columns_Input = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
 
 /** prepend existing jsonb value of filtered columns with new jsonb value */
 export type Multimodal_Data_Prepend_Input = {
-  metadata?: InputMaybe<Scalars['jsonb']['input']>;
+  metadata?: InputMaybe<Scalars["jsonb"]["input"]>;
 };
 
 /** select columns of table "multimodal_data" */
 export enum Multimodal_Data_Select_Column {
   /** column name */
-  Bucket = 'bucket',
+  Bucket = "bucket",
   /** column name */
-  Content = 'content',
+  Content = "content",
   /** column name */
-  EndTime = 'end_time',
+  EndTime = "end_time",
   /** column name */
-  FileKey = 'file_key',
+  FileKey = "file_key",
   /** column name */
-  Id = 'id',
+  Id = "id",
   /** column name */
-  IsChunk = 'is_chunk',
+  IsChunk = "is_chunk",
   /** column name */
-  Metadata = 'metadata',
+  Metadata = "metadata",
   /** column name */
-  StartTime = 'start_time',
+  StartTime = "start_time",
   /** column name */
-  Title = 'title',
+  Title = "title",
   /** column name */
-  Topic = 'topic',
+  Topic = "topic",
   /** column name */
-  Type = 'type'
+  Type = "type",
 }
 
 /** input type for updating data in table "multimodal_data" */
 export type Multimodal_Data_Set_Input = {
-  bucket?: InputMaybe<Scalars['String']['input']>;
-  content?: InputMaybe<Scalars['String']['input']>;
-  end_time?: InputMaybe<Scalars['Int']['input']>;
-  file_key?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
-  is_chunk?: InputMaybe<Scalars['Boolean']['input']>;
-  metadata?: InputMaybe<Scalars['jsonb']['input']>;
-  start_time?: InputMaybe<Scalars['Int']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  topic?: InputMaybe<Array<Scalars['String']['input']>>;
-  type?: InputMaybe<Scalars['String']['input']>;
+  bucket?: InputMaybe<Scalars["String"]["input"]>;
+  content?: InputMaybe<Scalars["String"]["input"]>;
+  end_time?: InputMaybe<Scalars["Int"]["input"]>;
+  file_key?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  is_chunk?: InputMaybe<Scalars["Boolean"]["input"]>;
+  metadata?: InputMaybe<Scalars["jsonb"]["input"]>;
+  start_time?: InputMaybe<Scalars["Int"]["input"]>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
+  topic?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  type?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** aggregate stddev on columns */
 export type Multimodal_Data_Stddev_Fields = {
-  __typename?: 'multimodal_data_stddev_fields';
-  end_time?: Maybe<Scalars['Float']['output']>;
-  start_time?: Maybe<Scalars['Float']['output']>;
+  __typename?: "multimodal_data_stddev_fields";
+  end_time?: Maybe<Scalars["Float"]["output"]>;
+  start_time?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** aggregate stddev_pop on columns */
 export type Multimodal_Data_Stddev_Pop_Fields = {
-  __typename?: 'multimodal_data_stddev_pop_fields';
-  end_time?: Maybe<Scalars['Float']['output']>;
-  start_time?: Maybe<Scalars['Float']['output']>;
+  __typename?: "multimodal_data_stddev_pop_fields";
+  end_time?: Maybe<Scalars["Float"]["output"]>;
+  start_time?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** aggregate stddev_samp on columns */
 export type Multimodal_Data_Stddev_Samp_Fields = {
-  __typename?: 'multimodal_data_stddev_samp_fields';
-  end_time?: Maybe<Scalars['Float']['output']>;
-  start_time?: Maybe<Scalars['Float']['output']>;
+  __typename?: "multimodal_data_stddev_samp_fields";
+  end_time?: Maybe<Scalars["Float"]["output"]>;
+  start_time?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** Streaming cursor of the table "multimodal_data" */
@@ -2582,50 +3548,50 @@ export type Multimodal_Data_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Multimodal_Data_Stream_Cursor_Value_Input = {
-  bucket?: InputMaybe<Scalars['String']['input']>;
-  content?: InputMaybe<Scalars['String']['input']>;
-  end_time?: InputMaybe<Scalars['Int']['input']>;
-  file_key?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
-  is_chunk?: InputMaybe<Scalars['Boolean']['input']>;
-  metadata?: InputMaybe<Scalars['jsonb']['input']>;
-  start_time?: InputMaybe<Scalars['Int']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  topic?: InputMaybe<Array<Scalars['String']['input']>>;
-  type?: InputMaybe<Scalars['String']['input']>;
+  bucket?: InputMaybe<Scalars["String"]["input"]>;
+  content?: InputMaybe<Scalars["String"]["input"]>;
+  end_time?: InputMaybe<Scalars["Int"]["input"]>;
+  file_key?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  is_chunk?: InputMaybe<Scalars["Boolean"]["input"]>;
+  metadata?: InputMaybe<Scalars["jsonb"]["input"]>;
+  start_time?: InputMaybe<Scalars["Int"]["input"]>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
+  topic?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  type?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** aggregate sum on columns */
 export type Multimodal_Data_Sum_Fields = {
-  __typename?: 'multimodal_data_sum_fields';
-  end_time?: Maybe<Scalars['Int']['output']>;
-  start_time?: Maybe<Scalars['Int']['output']>;
+  __typename?: "multimodal_data_sum_fields";
+  end_time?: Maybe<Scalars["Int"]["output"]>;
+  start_time?: Maybe<Scalars["Int"]["output"]>;
 };
 
 /** update columns of table "multimodal_data" */
 export enum Multimodal_Data_Update_Column {
   /** column name */
-  Bucket = 'bucket',
+  Bucket = "bucket",
   /** column name */
-  Content = 'content',
+  Content = "content",
   /** column name */
-  EndTime = 'end_time',
+  EndTime = "end_time",
   /** column name */
-  FileKey = 'file_key',
+  FileKey = "file_key",
   /** column name */
-  Id = 'id',
+  Id = "id",
   /** column name */
-  IsChunk = 'is_chunk',
+  IsChunk = "is_chunk",
   /** column name */
-  Metadata = 'metadata',
+  Metadata = "metadata",
   /** column name */
-  StartTime = 'start_time',
+  StartTime = "start_time",
   /** column name */
-  Title = 'title',
+  Title = "title",
   /** column name */
-  Topic = 'topic',
+  Topic = "topic",
   /** column name */
-  Type = 'type'
+  Type = "type",
 }
 
 export type Multimodal_Data_Updates = {
@@ -2649,28 +3615,28 @@ export type Multimodal_Data_Updates = {
 
 /** aggregate var_pop on columns */
 export type Multimodal_Data_Var_Pop_Fields = {
-  __typename?: 'multimodal_data_var_pop_fields';
-  end_time?: Maybe<Scalars['Float']['output']>;
-  start_time?: Maybe<Scalars['Float']['output']>;
+  __typename?: "multimodal_data_var_pop_fields";
+  end_time?: Maybe<Scalars["Float"]["output"]>;
+  start_time?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** aggregate var_samp on columns */
 export type Multimodal_Data_Var_Samp_Fields = {
-  __typename?: 'multimodal_data_var_samp_fields';
-  end_time?: Maybe<Scalars['Float']['output']>;
-  start_time?: Maybe<Scalars['Float']['output']>;
+  __typename?: "multimodal_data_var_samp_fields";
+  end_time?: Maybe<Scalars["Float"]["output"]>;
+  start_time?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** aggregate variance on columns */
 export type Multimodal_Data_Variance_Fields = {
-  __typename?: 'multimodal_data_variance_fields';
-  end_time?: Maybe<Scalars['Float']['output']>;
-  start_time?: Maybe<Scalars['Float']['output']>;
+  __typename?: "multimodal_data_variance_fields";
+  end_time?: Maybe<Scalars["Float"]["output"]>;
+  start_time?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** mutation root */
 export type Mutation_Root = {
-  __typename?: 'mutation_root';
+  __typename?: "mutation_root";
   /** delete data from the table: "accounts" */
   delete_accounts?: Maybe<Accounts_Mutation_Response>;
   /** delete single row from the table: "accounts" */
@@ -2683,6 +3649,16 @@ export type Mutation_Root = {
   delete_agent_type?: Maybe<Agent_Type_Mutation_Response>;
   /** delete single row from the table: "agent_type" */
   delete_agent_type_by_pk?: Maybe<Agent_Type>;
+  /** delete data from the table: "chunking_strategy" */
+  delete_chunking_strategy?: Maybe<Chunking_Strategy_Mutation_Response>;
+  /** delete single row from the table: "chunking_strategy" */
+  delete_chunking_strategy_by_pk?: Maybe<Chunking_Strategy>;
+  /** delete data from the table: "files" */
+  delete_files?: Maybe<Files_Mutation_Response>;
+  /** delete single row from the table: "files" */
+  delete_files_by_pk?: Maybe<Files>;
+  /** delete data from the table: "knowledge" */
+  delete_knowledge?: Maybe<Knowledge_Mutation_Response>;
   /** delete data from the table: "knowledge_base" */
   delete_knowledge_base?: Maybe<Knowledge_Base_Mutation_Response>;
   /** delete single row from the table: "knowledge_base" */
@@ -2691,6 +3667,8 @@ export type Mutation_Root = {
   delete_knowledge_base_type?: Maybe<Knowledge_Base_Type_Mutation_Response>;
   /** delete single row from the table: "knowledge_base_type" */
   delete_knowledge_base_type_by_pk?: Maybe<Knowledge_Base_Type>;
+  /** delete single row from the table: "knowledge" */
+  delete_knowledge_by_pk?: Maybe<Knowledge>;
   /** delete data from the table: "message" */
   delete_message?: Maybe<Message_Mutation_Response>;
   /** delete single row from the table: "message" */
@@ -2715,6 +3693,10 @@ export type Mutation_Root = {
   delete_prompt_hub?: Maybe<Prompt_Hub_Mutation_Response>;
   /** delete single row from the table: "prompt_hub" */
   delete_prompt_hub_by_pk?: Maybe<Prompt_Hub>;
+  /** delete data from the table: "prompt_template" */
+  delete_prompt_template?: Maybe<Prompt_Template_Mutation_Response>;
+  /** delete single row from the table: "prompt_template" */
+  delete_prompt_template_by_pk?: Maybe<Prompt_Template>;
   /** delete data from the table: "provider_type" */
   delete_provider_type?: Maybe<Provider_Type_Mutation_Response>;
   /** delete single row from the table: "provider_type" */
@@ -2727,10 +3709,26 @@ export type Mutation_Root = {
   delete_r_agent_user?: Maybe<R_Agent_User_Mutation_Response>;
   /** delete single row from the table: "r_agent_user" */
   delete_r_agent_user_by_pk?: Maybe<R_Agent_User>;
+  /** delete data from the table: "r_kb_user" */
+  delete_r_kb_user?: Maybe<R_Kb_User_Mutation_Response>;
+  /** delete single row from the table: "r_kb_user" */
+  delete_r_kb_user_by_pk?: Maybe<R_Kb_User>;
+  /** delete data from the table: "role" */
+  delete_role?: Maybe<Role_Mutation_Response>;
+  /** delete single row from the table: "role" */
+  delete_role_by_pk?: Maybe<Role>;
   /** delete data from the table: "sessions" */
   delete_sessions?: Maybe<Sessions_Mutation_Response>;
   /** delete single row from the table: "sessions" */
   delete_sessions_by_pk?: Maybe<Sessions>;
+  /** delete data from the table: "spider" */
+  delete_spider?: Maybe<Spider_Mutation_Response>;
+  /** delete single row from the table: "spider" */
+  delete_spider_by_pk?: Maybe<Spider>;
+  /** delete data from the table: "status" */
+  delete_status?: Maybe<Status_Mutation_Response>;
+  /** delete single row from the table: "status" */
+  delete_status_by_pk?: Maybe<Status>;
   /** delete data from the table: "topic_history" */
   delete_topic_history?: Maybe<Topic_History_Mutation_Response>;
   /** delete single row from the table: "topic_history" */
@@ -2755,6 +3753,16 @@ export type Mutation_Root = {
   insert_agent_type?: Maybe<Agent_Type_Mutation_Response>;
   /** insert a single row into the table: "agent_type" */
   insert_agent_type_one?: Maybe<Agent_Type>;
+  /** insert data into the table: "chunking_strategy" */
+  insert_chunking_strategy?: Maybe<Chunking_Strategy_Mutation_Response>;
+  /** insert a single row into the table: "chunking_strategy" */
+  insert_chunking_strategy_one?: Maybe<Chunking_Strategy>;
+  /** insert data into the table: "files" */
+  insert_files?: Maybe<Files_Mutation_Response>;
+  /** insert a single row into the table: "files" */
+  insert_files_one?: Maybe<Files>;
+  /** insert data into the table: "knowledge" */
+  insert_knowledge?: Maybe<Knowledge_Mutation_Response>;
   /** insert data into the table: "knowledge_base" */
   insert_knowledge_base?: Maybe<Knowledge_Base_Mutation_Response>;
   /** insert a single row into the table: "knowledge_base" */
@@ -2763,6 +3771,8 @@ export type Mutation_Root = {
   insert_knowledge_base_type?: Maybe<Knowledge_Base_Type_Mutation_Response>;
   /** insert a single row into the table: "knowledge_base_type" */
   insert_knowledge_base_type_one?: Maybe<Knowledge_Base_Type>;
+  /** insert a single row into the table: "knowledge" */
+  insert_knowledge_one?: Maybe<Knowledge>;
   /** insert data into the table: "message" */
   insert_message?: Maybe<Message_Mutation_Response>;
   /** insert data into the table: "message_feedback" */
@@ -2787,6 +3797,10 @@ export type Mutation_Root = {
   insert_prompt_hub?: Maybe<Prompt_Hub_Mutation_Response>;
   /** insert a single row into the table: "prompt_hub" */
   insert_prompt_hub_one?: Maybe<Prompt_Hub>;
+  /** insert data into the table: "prompt_template" */
+  insert_prompt_template?: Maybe<Prompt_Template_Mutation_Response>;
+  /** insert a single row into the table: "prompt_template" */
+  insert_prompt_template_one?: Maybe<Prompt_Template>;
   /** insert data into the table: "provider_type" */
   insert_provider_type?: Maybe<Provider_Type_Mutation_Response>;
   /** insert a single row into the table: "provider_type" */
@@ -2799,10 +3813,26 @@ export type Mutation_Root = {
   insert_r_agent_user?: Maybe<R_Agent_User_Mutation_Response>;
   /** insert a single row into the table: "r_agent_user" */
   insert_r_agent_user_one?: Maybe<R_Agent_User>;
+  /** insert data into the table: "r_kb_user" */
+  insert_r_kb_user?: Maybe<R_Kb_User_Mutation_Response>;
+  /** insert a single row into the table: "r_kb_user" */
+  insert_r_kb_user_one?: Maybe<R_Kb_User>;
+  /** insert data into the table: "role" */
+  insert_role?: Maybe<Role_Mutation_Response>;
+  /** insert a single row into the table: "role" */
+  insert_role_one?: Maybe<Role>;
   /** insert data into the table: "sessions" */
   insert_sessions?: Maybe<Sessions_Mutation_Response>;
   /** insert a single row into the table: "sessions" */
   insert_sessions_one?: Maybe<Sessions>;
+  /** insert data into the table: "spider" */
+  insert_spider?: Maybe<Spider_Mutation_Response>;
+  /** insert a single row into the table: "spider" */
+  insert_spider_one?: Maybe<Spider>;
+  /** insert data into the table: "status" */
+  insert_status?: Maybe<Status_Mutation_Response>;
+  /** insert a single row into the table: "status" */
+  insert_status_one?: Maybe<Status>;
   /** insert data into the table: "topic_history" */
   insert_topic_history?: Maybe<Topic_History_Mutation_Response>;
   /** insert a single row into the table: "topic_history" */
@@ -2833,18 +3863,42 @@ export type Mutation_Root = {
   update_agent_type_by_pk?: Maybe<Agent_Type>;
   /** update multiples rows of table: "agent_type" */
   update_agent_type_many?: Maybe<Array<Maybe<Agent_Type_Mutation_Response>>>;
+  /** update data of the table: "chunking_strategy" */
+  update_chunking_strategy?: Maybe<Chunking_Strategy_Mutation_Response>;
+  /** update single row of the table: "chunking_strategy" */
+  update_chunking_strategy_by_pk?: Maybe<Chunking_Strategy>;
+  /** update multiples rows of table: "chunking_strategy" */
+  update_chunking_strategy_many?: Maybe<
+    Array<Maybe<Chunking_Strategy_Mutation_Response>>
+  >;
+  /** update data of the table: "files" */
+  update_files?: Maybe<Files_Mutation_Response>;
+  /** update single row of the table: "files" */
+  update_files_by_pk?: Maybe<Files>;
+  /** update multiples rows of table: "files" */
+  update_files_many?: Maybe<Array<Maybe<Files_Mutation_Response>>>;
+  /** update data of the table: "knowledge" */
+  update_knowledge?: Maybe<Knowledge_Mutation_Response>;
   /** update data of the table: "knowledge_base" */
   update_knowledge_base?: Maybe<Knowledge_Base_Mutation_Response>;
   /** update single row of the table: "knowledge_base" */
   update_knowledge_base_by_pk?: Maybe<Knowledge_Base>;
   /** update multiples rows of table: "knowledge_base" */
-  update_knowledge_base_many?: Maybe<Array<Maybe<Knowledge_Base_Mutation_Response>>>;
+  update_knowledge_base_many?: Maybe<
+    Array<Maybe<Knowledge_Base_Mutation_Response>>
+  >;
   /** update data of the table: "knowledge_base_type" */
   update_knowledge_base_type?: Maybe<Knowledge_Base_Type_Mutation_Response>;
   /** update single row of the table: "knowledge_base_type" */
   update_knowledge_base_type_by_pk?: Maybe<Knowledge_Base_Type>;
   /** update multiples rows of table: "knowledge_base_type" */
-  update_knowledge_base_type_many?: Maybe<Array<Maybe<Knowledge_Base_Type_Mutation_Response>>>;
+  update_knowledge_base_type_many?: Maybe<
+    Array<Maybe<Knowledge_Base_Type_Mutation_Response>>
+  >;
+  /** update single row of the table: "knowledge" */
+  update_knowledge_by_pk?: Maybe<Knowledge>;
+  /** update multiples rows of table: "knowledge" */
+  update_knowledge_many?: Maybe<Array<Maybe<Knowledge_Mutation_Response>>>;
   /** update data of the table: "message" */
   update_message?: Maybe<Message_Mutation_Response>;
   /** update single row of the table: "message" */
@@ -2854,7 +3908,9 @@ export type Mutation_Root = {
   /** update single row of the table: "message_feedback" */
   update_message_feedback_by_pk?: Maybe<Message_Feedback>;
   /** update multiples rows of table: "message_feedback" */
-  update_message_feedback_many?: Maybe<Array<Maybe<Message_Feedback_Mutation_Response>>>;
+  update_message_feedback_many?: Maybe<
+    Array<Maybe<Message_Feedback_Mutation_Response>>
+  >;
   /** update multiples rows of table: "message" */
   update_message_many?: Maybe<Array<Maybe<Message_Mutation_Response>>>;
   /** update data of the table: "message_role" */
@@ -2862,31 +3918,47 @@ export type Mutation_Root = {
   /** update single row of the table: "message_role" */
   update_message_role_by_pk?: Maybe<Message_Role>;
   /** update multiples rows of table: "message_role" */
-  update_message_role_many?: Maybe<Array<Maybe<Message_Role_Mutation_Response>>>;
+  update_message_role_many?: Maybe<
+    Array<Maybe<Message_Role_Mutation_Response>>
+  >;
   /** update data of the table: "message_status" */
   update_message_status?: Maybe<Message_Status_Mutation_Response>;
   /** update single row of the table: "message_status" */
   update_message_status_by_pk?: Maybe<Message_Status>;
   /** update multiples rows of table: "message_status" */
-  update_message_status_many?: Maybe<Array<Maybe<Message_Status_Mutation_Response>>>;
+  update_message_status_many?: Maybe<
+    Array<Maybe<Message_Status_Mutation_Response>>
+  >;
   /** update data of the table: "multimodal_data" */
   update_multimodal_data?: Maybe<Multimodal_Data_Mutation_Response>;
   /** update single row of the table: "multimodal_data" */
   update_multimodal_data_by_pk?: Maybe<Multimodal_Data>;
   /** update multiples rows of table: "multimodal_data" */
-  update_multimodal_data_many?: Maybe<Array<Maybe<Multimodal_Data_Mutation_Response>>>;
+  update_multimodal_data_many?: Maybe<
+    Array<Maybe<Multimodal_Data_Mutation_Response>>
+  >;
   /** update data of the table: "prompt_hub" */
   update_prompt_hub?: Maybe<Prompt_Hub_Mutation_Response>;
   /** update single row of the table: "prompt_hub" */
   update_prompt_hub_by_pk?: Maybe<Prompt_Hub>;
   /** update multiples rows of table: "prompt_hub" */
   update_prompt_hub_many?: Maybe<Array<Maybe<Prompt_Hub_Mutation_Response>>>;
+  /** update data of the table: "prompt_template" */
+  update_prompt_template?: Maybe<Prompt_Template_Mutation_Response>;
+  /** update single row of the table: "prompt_template" */
+  update_prompt_template_by_pk?: Maybe<Prompt_Template>;
+  /** update multiples rows of table: "prompt_template" */
+  update_prompt_template_many?: Maybe<
+    Array<Maybe<Prompt_Template_Mutation_Response>>
+  >;
   /** update data of the table: "provider_type" */
   update_provider_type?: Maybe<Provider_Type_Mutation_Response>;
   /** update single row of the table: "provider_type" */
   update_provider_type_by_pk?: Maybe<Provider_Type>;
   /** update multiples rows of table: "provider_type" */
-  update_provider_type_many?: Maybe<Array<Maybe<Provider_Type_Mutation_Response>>>;
+  update_provider_type_many?: Maybe<
+    Array<Maybe<Provider_Type_Mutation_Response>>
+  >;
   /** update data of the table: "r_agent_kb" */
   update_r_agent_kb?: Maybe<R_Agent_Kb_Mutation_Response>;
   /** update single row of the table: "r_agent_kb" */
@@ -2898,19 +3970,47 @@ export type Mutation_Root = {
   /** update single row of the table: "r_agent_user" */
   update_r_agent_user_by_pk?: Maybe<R_Agent_User>;
   /** update multiples rows of table: "r_agent_user" */
-  update_r_agent_user_many?: Maybe<Array<Maybe<R_Agent_User_Mutation_Response>>>;
+  update_r_agent_user_many?: Maybe<
+    Array<Maybe<R_Agent_User_Mutation_Response>>
+  >;
+  /** update data of the table: "r_kb_user" */
+  update_r_kb_user?: Maybe<R_Kb_User_Mutation_Response>;
+  /** update single row of the table: "r_kb_user" */
+  update_r_kb_user_by_pk?: Maybe<R_Kb_User>;
+  /** update multiples rows of table: "r_kb_user" */
+  update_r_kb_user_many?: Maybe<Array<Maybe<R_Kb_User_Mutation_Response>>>;
+  /** update data of the table: "role" */
+  update_role?: Maybe<Role_Mutation_Response>;
+  /** update single row of the table: "role" */
+  update_role_by_pk?: Maybe<Role>;
+  /** update multiples rows of table: "role" */
+  update_role_many?: Maybe<Array<Maybe<Role_Mutation_Response>>>;
   /** update data of the table: "sessions" */
   update_sessions?: Maybe<Sessions_Mutation_Response>;
   /** update single row of the table: "sessions" */
   update_sessions_by_pk?: Maybe<Sessions>;
   /** update multiples rows of table: "sessions" */
   update_sessions_many?: Maybe<Array<Maybe<Sessions_Mutation_Response>>>;
+  /** update data of the table: "spider" */
+  update_spider?: Maybe<Spider_Mutation_Response>;
+  /** update single row of the table: "spider" */
+  update_spider_by_pk?: Maybe<Spider>;
+  /** update multiples rows of table: "spider" */
+  update_spider_many?: Maybe<Array<Maybe<Spider_Mutation_Response>>>;
+  /** update data of the table: "status" */
+  update_status?: Maybe<Status_Mutation_Response>;
+  /** update single row of the table: "status" */
+  update_status_by_pk?: Maybe<Status>;
+  /** update multiples rows of table: "status" */
+  update_status_many?: Maybe<Array<Maybe<Status_Mutation_Response>>>;
   /** update data of the table: "topic_history" */
   update_topic_history?: Maybe<Topic_History_Mutation_Response>;
   /** update single row of the table: "topic_history" */
   update_topic_history_by_pk?: Maybe<Topic_History>;
   /** update multiples rows of table: "topic_history" */
-  update_topic_history_many?: Maybe<Array<Maybe<Topic_History_Mutation_Response>>>;
+  update_topic_history_many?: Maybe<
+    Array<Maybe<Topic_History_Mutation_Response>>
+  >;
   /** update data of the table: "users" */
   update_users?: Maybe<Users_Mutation_Response>;
   /** update single row of the table: "users" */
@@ -2922,225 +4022,270 @@ export type Mutation_Root = {
   /** update single row of the table: "verification_tokens" */
   update_verification_tokens_by_pk?: Maybe<Verification_Tokens>;
   /** update multiples rows of table: "verification_tokens" */
-  update_verification_tokens_many?: Maybe<Array<Maybe<Verification_Tokens_Mutation_Response>>>;
+  update_verification_tokens_many?: Maybe<
+    Array<Maybe<Verification_Tokens_Mutation_Response>>
+  >;
 };
-
 
 /** mutation root */
 export type Mutation_RootDelete_AccountsArgs = {
   where: Accounts_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootDelete_Accounts_By_PkArgs = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
-
 
 /** mutation root */
 export type Mutation_RootDelete_AgentArgs = {
   where: Agent_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootDelete_Agent_By_PkArgs = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
-
 
 /** mutation root */
 export type Mutation_RootDelete_Agent_TypeArgs = {
   where: Agent_Type_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootDelete_Agent_Type_By_PkArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars["Int"]["input"];
 };
 
+/** mutation root */
+export type Mutation_RootDelete_Chunking_StrategyArgs = {
+  where: Chunking_Strategy_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootDelete_Chunking_Strategy_By_PkArgs = {
+  value: Scalars["String"]["input"];
+};
+
+/** mutation root */
+export type Mutation_RootDelete_FilesArgs = {
+  where: Files_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootDelete_Files_By_PkArgs = {
+  id: Scalars["uuid"]["input"];
+};
+
+/** mutation root */
+export type Mutation_RootDelete_KnowledgeArgs = {
+  where: Knowledge_Bool_Exp;
+};
 
 /** mutation root */
 export type Mutation_RootDelete_Knowledge_BaseArgs = {
   where: Knowledge_Base_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootDelete_Knowledge_Base_By_PkArgs = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
-
 
 /** mutation root */
 export type Mutation_RootDelete_Knowledge_Base_TypeArgs = {
   where: Knowledge_Base_Type_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootDelete_Knowledge_Base_Type_By_PkArgs = {
-  value: Scalars['String']['input'];
+  value: Scalars["String"]["input"];
 };
 
+/** mutation root */
+export type Mutation_RootDelete_Knowledge_By_PkArgs = {
+  id: Scalars["uuid"]["input"];
+};
 
 /** mutation root */
 export type Mutation_RootDelete_MessageArgs = {
   where: Message_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootDelete_Message_By_PkArgs = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
-
 
 /** mutation root */
 export type Mutation_RootDelete_Message_FeedbackArgs = {
   where: Message_Feedback_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootDelete_Message_Feedback_By_PkArgs = {
-  value: Scalars['String']['input'];
+  value: Scalars["String"]["input"];
 };
-
 
 /** mutation root */
 export type Mutation_RootDelete_Message_RoleArgs = {
   where: Message_Role_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootDelete_Message_Role_By_PkArgs = {
-  value: Scalars['String']['input'];
+  value: Scalars["String"]["input"];
 };
-
 
 /** mutation root */
 export type Mutation_RootDelete_Message_StatusArgs = {
   where: Message_Status_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootDelete_Message_Status_By_PkArgs = {
-  value: Scalars['String']['input'];
+  value: Scalars["String"]["input"];
 };
-
 
 /** mutation root */
 export type Mutation_RootDelete_Multimodal_DataArgs = {
   where: Multimodal_Data_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootDelete_Multimodal_Data_By_PkArgs = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
-
 
 /** mutation root */
 export type Mutation_RootDelete_Prompt_HubArgs = {
   where: Prompt_Hub_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootDelete_Prompt_Hub_By_PkArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars["Int"]["input"];
 };
 
+/** mutation root */
+export type Mutation_RootDelete_Prompt_TemplateArgs = {
+  where: Prompt_Template_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootDelete_Prompt_Template_By_PkArgs = {
+  id: Scalars["Int"]["input"];
+};
 
 /** mutation root */
 export type Mutation_RootDelete_Provider_TypeArgs = {
   where: Provider_Type_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootDelete_Provider_Type_By_PkArgs = {
-  value: Scalars['String']['input'];
+  value: Scalars["String"]["input"];
 };
-
 
 /** mutation root */
 export type Mutation_RootDelete_R_Agent_KbArgs = {
   where: R_Agent_Kb_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootDelete_R_Agent_Kb_By_PkArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars["Int"]["input"];
 };
-
 
 /** mutation root */
 export type Mutation_RootDelete_R_Agent_UserArgs = {
   where: R_Agent_User_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootDelete_R_Agent_User_By_PkArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars["Int"]["input"];
 };
 
+/** mutation root */
+export type Mutation_RootDelete_R_Kb_UserArgs = {
+  where: R_Kb_User_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootDelete_R_Kb_User_By_PkArgs = {
+  id: Scalars["Int"]["input"];
+};
+
+/** mutation root */
+export type Mutation_RootDelete_RoleArgs = {
+  where: Role_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootDelete_Role_By_PkArgs = {
+  value: Scalars["String"]["input"];
+};
 
 /** mutation root */
 export type Mutation_RootDelete_SessionsArgs = {
   where: Sessions_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootDelete_Sessions_By_PkArgs = {
-  sessionToken: Scalars['String']['input'];
+  sessionToken: Scalars["String"]["input"];
 };
 
+/** mutation root */
+export type Mutation_RootDelete_SpiderArgs = {
+  where: Spider_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootDelete_Spider_By_PkArgs = {
+  id: Scalars["uuid"]["input"];
+};
+
+/** mutation root */
+export type Mutation_RootDelete_StatusArgs = {
+  where: Status_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootDelete_Status_By_PkArgs = {
+  value: Scalars["String"]["input"];
+};
 
 /** mutation root */
 export type Mutation_RootDelete_Topic_HistoryArgs = {
   where: Topic_History_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootDelete_Topic_History_By_PkArgs = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
-
 
 /** mutation root */
 export type Mutation_RootDelete_UsersArgs = {
   where: Users_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootDelete_Users_By_PkArgs = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
-
 
 /** mutation root */
 export type Mutation_RootDelete_Verification_TokensArgs = {
   where: Verification_Tokens_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootDelete_Verification_Tokens_By_PkArgs = {
-  token: Scalars['String']['input'];
+  token: Scalars["String"]["input"];
 };
-
 
 /** mutation root */
 export type Mutation_RootInsert_AccountsArgs = {
@@ -3148,13 +4293,11 @@ export type Mutation_RootInsert_AccountsArgs = {
   on_conflict?: InputMaybe<Accounts_On_Conflict>;
 };
 
-
 /** mutation root */
 export type Mutation_RootInsert_Accounts_OneArgs = {
   object: Accounts_Insert_Input;
   on_conflict?: InputMaybe<Accounts_On_Conflict>;
 };
-
 
 /** mutation root */
 export type Mutation_RootInsert_AgentArgs = {
@@ -3162,13 +4305,11 @@ export type Mutation_RootInsert_AgentArgs = {
   on_conflict?: InputMaybe<Agent_On_Conflict>;
 };
 
-
 /** mutation root */
 export type Mutation_RootInsert_Agent_OneArgs = {
   object: Agent_Insert_Input;
   on_conflict?: InputMaybe<Agent_On_Conflict>;
 };
-
 
 /** mutation root */
 export type Mutation_RootInsert_Agent_TypeArgs = {
@@ -3176,13 +4317,41 @@ export type Mutation_RootInsert_Agent_TypeArgs = {
   on_conflict?: InputMaybe<Agent_Type_On_Conflict>;
 };
 
-
 /** mutation root */
 export type Mutation_RootInsert_Agent_Type_OneArgs = {
   object: Agent_Type_Insert_Input;
   on_conflict?: InputMaybe<Agent_Type_On_Conflict>;
 };
 
+/** mutation root */
+export type Mutation_RootInsert_Chunking_StrategyArgs = {
+  objects: Array<Chunking_Strategy_Insert_Input>;
+  on_conflict?: InputMaybe<Chunking_Strategy_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootInsert_Chunking_Strategy_OneArgs = {
+  object: Chunking_Strategy_Insert_Input;
+  on_conflict?: InputMaybe<Chunking_Strategy_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootInsert_FilesArgs = {
+  objects: Array<Files_Insert_Input>;
+  on_conflict?: InputMaybe<Files_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootInsert_Files_OneArgs = {
+  object: Files_Insert_Input;
+  on_conflict?: InputMaybe<Files_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootInsert_KnowledgeArgs = {
+  objects: Array<Knowledge_Insert_Input>;
+  on_conflict?: InputMaybe<Knowledge_On_Conflict>;
+};
 
 /** mutation root */
 export type Mutation_RootInsert_Knowledge_BaseArgs = {
@@ -3190,13 +4359,11 @@ export type Mutation_RootInsert_Knowledge_BaseArgs = {
   on_conflict?: InputMaybe<Knowledge_Base_On_Conflict>;
 };
 
-
 /** mutation root */
 export type Mutation_RootInsert_Knowledge_Base_OneArgs = {
   object: Knowledge_Base_Insert_Input;
   on_conflict?: InputMaybe<Knowledge_Base_On_Conflict>;
 };
-
 
 /** mutation root */
 export type Mutation_RootInsert_Knowledge_Base_TypeArgs = {
@@ -3204,13 +4371,17 @@ export type Mutation_RootInsert_Knowledge_Base_TypeArgs = {
   on_conflict?: InputMaybe<Knowledge_Base_Type_On_Conflict>;
 };
 
-
 /** mutation root */
 export type Mutation_RootInsert_Knowledge_Base_Type_OneArgs = {
   object: Knowledge_Base_Type_Insert_Input;
   on_conflict?: InputMaybe<Knowledge_Base_Type_On_Conflict>;
 };
 
+/** mutation root */
+export type Mutation_RootInsert_Knowledge_OneArgs = {
+  object: Knowledge_Insert_Input;
+  on_conflict?: InputMaybe<Knowledge_On_Conflict>;
+};
 
 /** mutation root */
 export type Mutation_RootInsert_MessageArgs = {
@@ -3218,13 +4389,11 @@ export type Mutation_RootInsert_MessageArgs = {
   on_conflict?: InputMaybe<Message_On_Conflict>;
 };
 
-
 /** mutation root */
 export type Mutation_RootInsert_Message_FeedbackArgs = {
   objects: Array<Message_Feedback_Insert_Input>;
   on_conflict?: InputMaybe<Message_Feedback_On_Conflict>;
 };
-
 
 /** mutation root */
 export type Mutation_RootInsert_Message_Feedback_OneArgs = {
@@ -3232,13 +4401,11 @@ export type Mutation_RootInsert_Message_Feedback_OneArgs = {
   on_conflict?: InputMaybe<Message_Feedback_On_Conflict>;
 };
 
-
 /** mutation root */
 export type Mutation_RootInsert_Message_OneArgs = {
   object: Message_Insert_Input;
   on_conflict?: InputMaybe<Message_On_Conflict>;
 };
-
 
 /** mutation root */
 export type Mutation_RootInsert_Message_RoleArgs = {
@@ -3246,13 +4413,11 @@ export type Mutation_RootInsert_Message_RoleArgs = {
   on_conflict?: InputMaybe<Message_Role_On_Conflict>;
 };
 
-
 /** mutation root */
 export type Mutation_RootInsert_Message_Role_OneArgs = {
   object: Message_Role_Insert_Input;
   on_conflict?: InputMaybe<Message_Role_On_Conflict>;
 };
-
 
 /** mutation root */
 export type Mutation_RootInsert_Message_StatusArgs = {
@@ -3260,13 +4425,11 @@ export type Mutation_RootInsert_Message_StatusArgs = {
   on_conflict?: InputMaybe<Message_Status_On_Conflict>;
 };
 
-
 /** mutation root */
 export type Mutation_RootInsert_Message_Status_OneArgs = {
   object: Message_Status_Insert_Input;
   on_conflict?: InputMaybe<Message_Status_On_Conflict>;
 };
-
 
 /** mutation root */
 export type Mutation_RootInsert_Multimodal_DataArgs = {
@@ -3274,13 +4437,11 @@ export type Mutation_RootInsert_Multimodal_DataArgs = {
   on_conflict?: InputMaybe<Multimodal_Data_On_Conflict>;
 };
 
-
 /** mutation root */
 export type Mutation_RootInsert_Multimodal_Data_OneArgs = {
   object: Multimodal_Data_Insert_Input;
   on_conflict?: InputMaybe<Multimodal_Data_On_Conflict>;
 };
-
 
 /** mutation root */
 export type Mutation_RootInsert_Prompt_HubArgs = {
@@ -3288,13 +4449,23 @@ export type Mutation_RootInsert_Prompt_HubArgs = {
   on_conflict?: InputMaybe<Prompt_Hub_On_Conflict>;
 };
 
-
 /** mutation root */
 export type Mutation_RootInsert_Prompt_Hub_OneArgs = {
   object: Prompt_Hub_Insert_Input;
   on_conflict?: InputMaybe<Prompt_Hub_On_Conflict>;
 };
 
+/** mutation root */
+export type Mutation_RootInsert_Prompt_TemplateArgs = {
+  objects: Array<Prompt_Template_Insert_Input>;
+  on_conflict?: InputMaybe<Prompt_Template_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootInsert_Prompt_Template_OneArgs = {
+  object: Prompt_Template_Insert_Input;
+  on_conflict?: InputMaybe<Prompt_Template_On_Conflict>;
+};
 
 /** mutation root */
 export type Mutation_RootInsert_Provider_TypeArgs = {
@@ -3302,13 +4473,11 @@ export type Mutation_RootInsert_Provider_TypeArgs = {
   on_conflict?: InputMaybe<Provider_Type_On_Conflict>;
 };
 
-
 /** mutation root */
 export type Mutation_RootInsert_Provider_Type_OneArgs = {
   object: Provider_Type_Insert_Input;
   on_conflict?: InputMaybe<Provider_Type_On_Conflict>;
 };
-
 
 /** mutation root */
 export type Mutation_RootInsert_R_Agent_KbArgs = {
@@ -3316,13 +4485,11 @@ export type Mutation_RootInsert_R_Agent_KbArgs = {
   on_conflict?: InputMaybe<R_Agent_Kb_On_Conflict>;
 };
 
-
 /** mutation root */
 export type Mutation_RootInsert_R_Agent_Kb_OneArgs = {
   object: R_Agent_Kb_Insert_Input;
   on_conflict?: InputMaybe<R_Agent_Kb_On_Conflict>;
 };
-
 
 /** mutation root */
 export type Mutation_RootInsert_R_Agent_UserArgs = {
@@ -3330,13 +4497,35 @@ export type Mutation_RootInsert_R_Agent_UserArgs = {
   on_conflict?: InputMaybe<R_Agent_User_On_Conflict>;
 };
 
-
 /** mutation root */
 export type Mutation_RootInsert_R_Agent_User_OneArgs = {
   object: R_Agent_User_Insert_Input;
   on_conflict?: InputMaybe<R_Agent_User_On_Conflict>;
 };
 
+/** mutation root */
+export type Mutation_RootInsert_R_Kb_UserArgs = {
+  objects: Array<R_Kb_User_Insert_Input>;
+  on_conflict?: InputMaybe<R_Kb_User_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootInsert_R_Kb_User_OneArgs = {
+  object: R_Kb_User_Insert_Input;
+  on_conflict?: InputMaybe<R_Kb_User_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootInsert_RoleArgs = {
+  objects: Array<Role_Insert_Input>;
+  on_conflict?: InputMaybe<Role_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootInsert_Role_OneArgs = {
+  object: Role_Insert_Input;
+  on_conflict?: InputMaybe<Role_On_Conflict>;
+};
 
 /** mutation root */
 export type Mutation_RootInsert_SessionsArgs = {
@@ -3344,13 +4533,35 @@ export type Mutation_RootInsert_SessionsArgs = {
   on_conflict?: InputMaybe<Sessions_On_Conflict>;
 };
 
-
 /** mutation root */
 export type Mutation_RootInsert_Sessions_OneArgs = {
   object: Sessions_Insert_Input;
   on_conflict?: InputMaybe<Sessions_On_Conflict>;
 };
 
+/** mutation root */
+export type Mutation_RootInsert_SpiderArgs = {
+  objects: Array<Spider_Insert_Input>;
+  on_conflict?: InputMaybe<Spider_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootInsert_Spider_OneArgs = {
+  object: Spider_Insert_Input;
+  on_conflict?: InputMaybe<Spider_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootInsert_StatusArgs = {
+  objects: Array<Status_Insert_Input>;
+  on_conflict?: InputMaybe<Status_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootInsert_Status_OneArgs = {
+  object: Status_Insert_Input;
+  on_conflict?: InputMaybe<Status_On_Conflict>;
+};
 
 /** mutation root */
 export type Mutation_RootInsert_Topic_HistoryArgs = {
@@ -3358,13 +4569,11 @@ export type Mutation_RootInsert_Topic_HistoryArgs = {
   on_conflict?: InputMaybe<Topic_History_On_Conflict>;
 };
 
-
 /** mutation root */
 export type Mutation_RootInsert_Topic_History_OneArgs = {
   object: Topic_History_Insert_Input;
   on_conflict?: InputMaybe<Topic_History_On_Conflict>;
 };
-
 
 /** mutation root */
 export type Mutation_RootInsert_UsersArgs = {
@@ -3372,13 +4581,11 @@ export type Mutation_RootInsert_UsersArgs = {
   on_conflict?: InputMaybe<Users_On_Conflict>;
 };
 
-
 /** mutation root */
 export type Mutation_RootInsert_Users_OneArgs = {
   object: Users_Insert_Input;
   on_conflict?: InputMaybe<Users_On_Conflict>;
 };
-
 
 /** mutation root */
 export type Mutation_RootInsert_Verification_TokensArgs = {
@@ -3386,13 +4593,11 @@ export type Mutation_RootInsert_Verification_TokensArgs = {
   on_conflict?: InputMaybe<Verification_Tokens_On_Conflict>;
 };
 
-
 /** mutation root */
 export type Mutation_RootInsert_Verification_Tokens_OneArgs = {
   object: Verification_Tokens_Insert_Input;
   on_conflict?: InputMaybe<Verification_Tokens_On_Conflict>;
 };
-
 
 /** mutation root */
 export type Mutation_RootUpdate_AccountsArgs = {
@@ -3401,7 +4606,6 @@ export type Mutation_RootUpdate_AccountsArgs = {
   where: Accounts_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Accounts_By_PkArgs = {
   _inc?: InputMaybe<Accounts_Inc_Input>;
@@ -3409,12 +4613,10 @@ export type Mutation_RootUpdate_Accounts_By_PkArgs = {
   pk_columns: Accounts_Pk_Columns_Input;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Accounts_ManyArgs = {
   updates: Array<Accounts_Updates>;
 };
-
 
 /** mutation root */
 export type Mutation_RootUpdate_AgentArgs = {
@@ -3423,7 +4625,6 @@ export type Mutation_RootUpdate_AgentArgs = {
   where: Agent_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Agent_By_PkArgs = {
   _inc?: InputMaybe<Agent_Inc_Input>;
@@ -3431,12 +4632,10 @@ export type Mutation_RootUpdate_Agent_By_PkArgs = {
   pk_columns: Agent_Pk_Columns_Input;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Agent_ManyArgs = {
   updates: Array<Agent_Updates>;
 };
-
 
 /** mutation root */
 export type Mutation_RootUpdate_Agent_TypeArgs = {
@@ -3445,7 +4644,6 @@ export type Mutation_RootUpdate_Agent_TypeArgs = {
   where: Agent_Type_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Agent_Type_By_PkArgs = {
   _inc?: InputMaybe<Agent_Type_Inc_Input>;
@@ -3453,32 +4651,96 @@ export type Mutation_RootUpdate_Agent_Type_By_PkArgs = {
   pk_columns: Agent_Type_Pk_Columns_Input;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Agent_Type_ManyArgs = {
   updates: Array<Agent_Type_Updates>;
 };
 
+/** mutation root */
+export type Mutation_RootUpdate_Chunking_StrategyArgs = {
+  _set?: InputMaybe<Chunking_Strategy_Set_Input>;
+  where: Chunking_Strategy_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Chunking_Strategy_By_PkArgs = {
+  _set?: InputMaybe<Chunking_Strategy_Set_Input>;
+  pk_columns: Chunking_Strategy_Pk_Columns_Input;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Chunking_Strategy_ManyArgs = {
+  updates: Array<Chunking_Strategy_Updates>;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_FilesArgs = {
+  _append?: InputMaybe<Files_Append_Input>;
+  _delete_at_path?: InputMaybe<Files_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Files_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Files_Delete_Key_Input>;
+  _inc?: InputMaybe<Files_Inc_Input>;
+  _prepend?: InputMaybe<Files_Prepend_Input>;
+  _set?: InputMaybe<Files_Set_Input>;
+  where: Files_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Files_By_PkArgs = {
+  _append?: InputMaybe<Files_Append_Input>;
+  _delete_at_path?: InputMaybe<Files_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Files_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Files_Delete_Key_Input>;
+  _inc?: InputMaybe<Files_Inc_Input>;
+  _prepend?: InputMaybe<Files_Prepend_Input>;
+  _set?: InputMaybe<Files_Set_Input>;
+  pk_columns: Files_Pk_Columns_Input;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Files_ManyArgs = {
+  updates: Array<Files_Updates>;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_KnowledgeArgs = {
+  _append?: InputMaybe<Knowledge_Append_Input>;
+  _delete_at_path?: InputMaybe<Knowledge_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Knowledge_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Knowledge_Delete_Key_Input>;
+  _prepend?: InputMaybe<Knowledge_Prepend_Input>;
+  _set?: InputMaybe<Knowledge_Set_Input>;
+  where: Knowledge_Bool_Exp;
+};
 
 /** mutation root */
 export type Mutation_RootUpdate_Knowledge_BaseArgs = {
+  _append?: InputMaybe<Knowledge_Base_Append_Input>;
+  _delete_at_path?: InputMaybe<Knowledge_Base_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Knowledge_Base_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Knowledge_Base_Delete_Key_Input>;
+  _inc?: InputMaybe<Knowledge_Base_Inc_Input>;
+  _prepend?: InputMaybe<Knowledge_Base_Prepend_Input>;
   _set?: InputMaybe<Knowledge_Base_Set_Input>;
   where: Knowledge_Base_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Knowledge_Base_By_PkArgs = {
+  _append?: InputMaybe<Knowledge_Base_Append_Input>;
+  _delete_at_path?: InputMaybe<Knowledge_Base_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Knowledge_Base_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Knowledge_Base_Delete_Key_Input>;
+  _inc?: InputMaybe<Knowledge_Base_Inc_Input>;
+  _prepend?: InputMaybe<Knowledge_Base_Prepend_Input>;
   _set?: InputMaybe<Knowledge_Base_Set_Input>;
   pk_columns: Knowledge_Base_Pk_Columns_Input;
 };
-
 
 /** mutation root */
 export type Mutation_RootUpdate_Knowledge_Base_ManyArgs = {
   updates: Array<Knowledge_Base_Updates>;
 };
-
 
 /** mutation root */
 export type Mutation_RootUpdate_Knowledge_Base_TypeArgs = {
@@ -3486,19 +4748,32 @@ export type Mutation_RootUpdate_Knowledge_Base_TypeArgs = {
   where: Knowledge_Base_Type_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Knowledge_Base_Type_By_PkArgs = {
   _set?: InputMaybe<Knowledge_Base_Type_Set_Input>;
   pk_columns: Knowledge_Base_Type_Pk_Columns_Input;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Knowledge_Base_Type_ManyArgs = {
   updates: Array<Knowledge_Base_Type_Updates>;
 };
 
+/** mutation root */
+export type Mutation_RootUpdate_Knowledge_By_PkArgs = {
+  _append?: InputMaybe<Knowledge_Append_Input>;
+  _delete_at_path?: InputMaybe<Knowledge_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Knowledge_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Knowledge_Delete_Key_Input>;
+  _prepend?: InputMaybe<Knowledge_Prepend_Input>;
+  _set?: InputMaybe<Knowledge_Set_Input>;
+  pk_columns: Knowledge_Pk_Columns_Input;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Knowledge_ManyArgs = {
+  updates: Array<Knowledge_Updates>;
+};
 
 /** mutation root */
 export type Mutation_RootUpdate_MessageArgs = {
@@ -3511,7 +4786,6 @@ export type Mutation_RootUpdate_MessageArgs = {
   where: Message_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Message_By_PkArgs = {
   _append?: InputMaybe<Message_Append_Input>;
@@ -3523,13 +4797,11 @@ export type Mutation_RootUpdate_Message_By_PkArgs = {
   pk_columns: Message_Pk_Columns_Input;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Message_FeedbackArgs = {
   _set?: InputMaybe<Message_Feedback_Set_Input>;
   where: Message_Feedback_Bool_Exp;
 };
-
 
 /** mutation root */
 export type Mutation_RootUpdate_Message_Feedback_By_PkArgs = {
@@ -3537,18 +4809,15 @@ export type Mutation_RootUpdate_Message_Feedback_By_PkArgs = {
   pk_columns: Message_Feedback_Pk_Columns_Input;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Message_Feedback_ManyArgs = {
   updates: Array<Message_Feedback_Updates>;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Message_ManyArgs = {
   updates: Array<Message_Updates>;
 };
-
 
 /** mutation root */
 export type Mutation_RootUpdate_Message_RoleArgs = {
@@ -3556,19 +4825,16 @@ export type Mutation_RootUpdate_Message_RoleArgs = {
   where: Message_Role_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Message_Role_By_PkArgs = {
   _set?: InputMaybe<Message_Role_Set_Input>;
   pk_columns: Message_Role_Pk_Columns_Input;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Message_Role_ManyArgs = {
   updates: Array<Message_Role_Updates>;
 };
-
 
 /** mutation root */
 export type Mutation_RootUpdate_Message_StatusArgs = {
@@ -3576,19 +4842,16 @@ export type Mutation_RootUpdate_Message_StatusArgs = {
   where: Message_Status_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Message_Status_By_PkArgs = {
   _set?: InputMaybe<Message_Status_Set_Input>;
   pk_columns: Message_Status_Pk_Columns_Input;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Message_Status_ManyArgs = {
   updates: Array<Message_Status_Updates>;
 };
-
 
 /** mutation root */
 export type Mutation_RootUpdate_Multimodal_DataArgs = {
@@ -3602,7 +4865,6 @@ export type Mutation_RootUpdate_Multimodal_DataArgs = {
   where: Multimodal_Data_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Multimodal_Data_By_PkArgs = {
   _append?: InputMaybe<Multimodal_Data_Append_Input>;
@@ -3615,44 +4877,48 @@ export type Mutation_RootUpdate_Multimodal_Data_By_PkArgs = {
   pk_columns: Multimodal_Data_Pk_Columns_Input;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Multimodal_Data_ManyArgs = {
   updates: Array<Multimodal_Data_Updates>;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Prompt_HubArgs = {
-  _append?: InputMaybe<Prompt_Hub_Append_Input>;
-  _delete_at_path?: InputMaybe<Prompt_Hub_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<Prompt_Hub_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<Prompt_Hub_Delete_Key_Input>;
   _inc?: InputMaybe<Prompt_Hub_Inc_Input>;
-  _prepend?: InputMaybe<Prompt_Hub_Prepend_Input>;
   _set?: InputMaybe<Prompt_Hub_Set_Input>;
   where: Prompt_Hub_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Prompt_Hub_By_PkArgs = {
-  _append?: InputMaybe<Prompt_Hub_Append_Input>;
-  _delete_at_path?: InputMaybe<Prompt_Hub_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<Prompt_Hub_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<Prompt_Hub_Delete_Key_Input>;
   _inc?: InputMaybe<Prompt_Hub_Inc_Input>;
-  _prepend?: InputMaybe<Prompt_Hub_Prepend_Input>;
   _set?: InputMaybe<Prompt_Hub_Set_Input>;
   pk_columns: Prompt_Hub_Pk_Columns_Input;
 };
-
 
 /** mutation root */
 export type Mutation_RootUpdate_Prompt_Hub_ManyArgs = {
   updates: Array<Prompt_Hub_Updates>;
 };
 
+/** mutation root */
+export type Mutation_RootUpdate_Prompt_TemplateArgs = {
+  _inc?: InputMaybe<Prompt_Template_Inc_Input>;
+  _set?: InputMaybe<Prompt_Template_Set_Input>;
+  where: Prompt_Template_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Prompt_Template_By_PkArgs = {
+  _inc?: InputMaybe<Prompt_Template_Inc_Input>;
+  _set?: InputMaybe<Prompt_Template_Set_Input>;
+  pk_columns: Prompt_Template_Pk_Columns_Input;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Prompt_Template_ManyArgs = {
+  updates: Array<Prompt_Template_Updates>;
+};
 
 /** mutation root */
 export type Mutation_RootUpdate_Provider_TypeArgs = {
@@ -3660,19 +4926,16 @@ export type Mutation_RootUpdate_Provider_TypeArgs = {
   where: Provider_Type_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Provider_Type_By_PkArgs = {
   _set?: InputMaybe<Provider_Type_Set_Input>;
   pk_columns: Provider_Type_Pk_Columns_Input;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Provider_Type_ManyArgs = {
   updates: Array<Provider_Type_Updates>;
 };
-
 
 /** mutation root */
 export type Mutation_RootUpdate_R_Agent_KbArgs = {
@@ -3681,7 +4944,6 @@ export type Mutation_RootUpdate_R_Agent_KbArgs = {
   where: R_Agent_Kb_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_R_Agent_Kb_By_PkArgs = {
   _inc?: InputMaybe<R_Agent_Kb_Inc_Input>;
@@ -3689,12 +4951,10 @@ export type Mutation_RootUpdate_R_Agent_Kb_By_PkArgs = {
   pk_columns: R_Agent_Kb_Pk_Columns_Input;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_R_Agent_Kb_ManyArgs = {
   updates: Array<R_Agent_Kb_Updates>;
 };
-
 
 /** mutation root */
 export type Mutation_RootUpdate_R_Agent_UserArgs = {
@@ -3703,7 +4963,6 @@ export type Mutation_RootUpdate_R_Agent_UserArgs = {
   where: R_Agent_User_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_R_Agent_User_By_PkArgs = {
   _inc?: InputMaybe<R_Agent_User_Inc_Input>;
@@ -3711,12 +4970,46 @@ export type Mutation_RootUpdate_R_Agent_User_By_PkArgs = {
   pk_columns: R_Agent_User_Pk_Columns_Input;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_R_Agent_User_ManyArgs = {
   updates: Array<R_Agent_User_Updates>;
 };
 
+/** mutation root */
+export type Mutation_RootUpdate_R_Kb_UserArgs = {
+  _inc?: InputMaybe<R_Kb_User_Inc_Input>;
+  _set?: InputMaybe<R_Kb_User_Set_Input>;
+  where: R_Kb_User_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_R_Kb_User_By_PkArgs = {
+  _inc?: InputMaybe<R_Kb_User_Inc_Input>;
+  _set?: InputMaybe<R_Kb_User_Set_Input>;
+  pk_columns: R_Kb_User_Pk_Columns_Input;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_R_Kb_User_ManyArgs = {
+  updates: Array<R_Kb_User_Updates>;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_RoleArgs = {
+  _set?: InputMaybe<Role_Set_Input>;
+  where: Role_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Role_By_PkArgs = {
+  _set?: InputMaybe<Role_Set_Input>;
+  pk_columns: Role_Pk_Columns_Input;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Role_ManyArgs = {
+  updates: Array<Role_Updates>;
+};
 
 /** mutation root */
 export type Mutation_RootUpdate_SessionsArgs = {
@@ -3724,19 +5017,50 @@ export type Mutation_RootUpdate_SessionsArgs = {
   where: Sessions_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Sessions_By_PkArgs = {
   _set?: InputMaybe<Sessions_Set_Input>;
   pk_columns: Sessions_Pk_Columns_Input;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Sessions_ManyArgs = {
   updates: Array<Sessions_Updates>;
 };
 
+/** mutation root */
+export type Mutation_RootUpdate_SpiderArgs = {
+  _set?: InputMaybe<Spider_Set_Input>;
+  where: Spider_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Spider_By_PkArgs = {
+  _set?: InputMaybe<Spider_Set_Input>;
+  pk_columns: Spider_Pk_Columns_Input;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Spider_ManyArgs = {
+  updates: Array<Spider_Updates>;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_StatusArgs = {
+  _set?: InputMaybe<Status_Set_Input>;
+  where: Status_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Status_By_PkArgs = {
+  _set?: InputMaybe<Status_Set_Input>;
+  pk_columns: Status_Pk_Columns_Input;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Status_ManyArgs = {
+  updates: Array<Status_Updates>;
+};
 
 /** mutation root */
 export type Mutation_RootUpdate_Topic_HistoryArgs = {
@@ -3744,19 +5068,16 @@ export type Mutation_RootUpdate_Topic_HistoryArgs = {
   where: Topic_History_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Topic_History_By_PkArgs = {
   _set?: InputMaybe<Topic_History_Set_Input>;
   pk_columns: Topic_History_Pk_Columns_Input;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Topic_History_ManyArgs = {
   updates: Array<Topic_History_Updates>;
 };
-
 
 /** mutation root */
 export type Mutation_RootUpdate_UsersArgs = {
@@ -3764,19 +5085,16 @@ export type Mutation_RootUpdate_UsersArgs = {
   where: Users_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Users_By_PkArgs = {
   _set?: InputMaybe<Users_Set_Input>;
   pk_columns: Users_Pk_Columns_Input;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Users_ManyArgs = {
   updates: Array<Users_Updates>;
 };
-
 
 /** mutation root */
 export type Mutation_RootUpdate_Verification_TokensArgs = {
@@ -3784,62 +5102,91 @@ export type Mutation_RootUpdate_Verification_TokensArgs = {
   where: Verification_Tokens_Bool_Exp;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Verification_Tokens_By_PkArgs = {
   _set?: InputMaybe<Verification_Tokens_Set_Input>;
   pk_columns: Verification_Tokens_Pk_Columns_Input;
 };
 
-
 /** mutation root */
 export type Mutation_RootUpdate_Verification_Tokens_ManyArgs = {
   updates: Array<Verification_Tokens_Updates>;
 };
 
+/** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
+export type Numeric_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars["numeric"]["input"]>;
+  _gt?: InputMaybe<Scalars["numeric"]["input"]>;
+  _gte?: InputMaybe<Scalars["numeric"]["input"]>;
+  _in?: InputMaybe<Array<Scalars["numeric"]["input"]>>;
+  _is_null?: InputMaybe<Scalars["Boolean"]["input"]>;
+  _lt?: InputMaybe<Scalars["numeric"]["input"]>;
+  _lte?: InputMaybe<Scalars["numeric"]["input"]>;
+  _neq?: InputMaybe<Scalars["numeric"]["input"]>;
+  _nin?: InputMaybe<Array<Scalars["numeric"]["input"]>>;
+};
+
 /** column ordering options */
 export enum Order_By {
   /** in ascending order, nulls last */
-  Asc = 'asc',
+  Asc = "asc",
   /** in ascending order, nulls first */
-  AscNullsFirst = 'asc_nulls_first',
+  AscNullsFirst = "asc_nulls_first",
   /** in ascending order, nulls last */
-  AscNullsLast = 'asc_nulls_last',
+  AscNullsLast = "asc_nulls_last",
   /** in descending order, nulls first */
-  Desc = 'desc',
+  Desc = "desc",
   /** in descending order, nulls first */
-  DescNullsFirst = 'desc_nulls_first',
+  DescNullsFirst = "desc_nulls_first",
   /** in descending order, nulls last */
-  DescNullsLast = 'desc_nulls_last'
+  DescNullsLast = "desc_nulls_last",
 }
 
 /** prompt hub */
 export type Prompt_Hub = {
-  __typename?: 'prompt_hub';
-  created_at: Scalars['timestamptz']['output'];
-  id: Scalars['Int']['output'];
-  template: Scalars['jsonb']['output'];
-  updated_at: Scalars['timestamptz']['output'];
+  __typename?: "prompt_hub";
+  created_at: Scalars["timestamptz"]["output"];
+  creator_id?: Maybe<Scalars["uuid"]["output"]>;
+  id: Scalars["Int"]["output"];
+  name?: Maybe<Scalars["String"]["output"]>;
+  template_ids?: Maybe<Array<Scalars["Int"]["output"]>>;
+  /** An array relationship */
+  templates: Array<Prompt_Template>;
+  /** An aggregate relationship */
+  templates_aggregate: Prompt_Template_Aggregate;
+  updated_at: Scalars["timestamptz"]["output"];
 };
 
+/** prompt hub */
+export type Prompt_HubTemplatesArgs = {
+  distinct_on?: InputMaybe<Array<Prompt_Template_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Prompt_Template_Order_By>>;
+  where?: InputMaybe<Prompt_Template_Bool_Exp>;
+};
 
 /** prompt hub */
-export type Prompt_HubTemplateArgs = {
-  path?: InputMaybe<Scalars['String']['input']>;
+export type Prompt_HubTemplates_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Prompt_Template_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Prompt_Template_Order_By>>;
+  where?: InputMaybe<Prompt_Template_Bool_Exp>;
 };
 
 /** aggregated selection of "prompt_hub" */
 export type Prompt_Hub_Aggregate = {
-  __typename?: 'prompt_hub_aggregate';
+  __typename?: "prompt_hub_aggregate";
   aggregate?: Maybe<Prompt_Hub_Aggregate_Fields>;
   nodes: Array<Prompt_Hub>;
 };
 
 /** aggregate fields of "prompt_hub" */
 export type Prompt_Hub_Aggregate_Fields = {
-  __typename?: 'prompt_hub_aggregate_fields';
+  __typename?: "prompt_hub_aggregate_fields";
   avg?: Maybe<Prompt_Hub_Avg_Fields>;
-  count: Scalars['Int']['output'];
+  count: Scalars["Int"]["output"];
   max?: Maybe<Prompt_Hub_Max_Fields>;
   min?: Maybe<Prompt_Hub_Min_Fields>;
   stddev?: Maybe<Prompt_Hub_Stddev_Fields>;
@@ -3851,22 +5198,16 @@ export type Prompt_Hub_Aggregate_Fields = {
   variance?: Maybe<Prompt_Hub_Variance_Fields>;
 };
 
-
 /** aggregate fields of "prompt_hub" */
 export type Prompt_Hub_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Prompt_Hub_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** append existing jsonb value of filtered columns with new jsonb value */
-export type Prompt_Hub_Append_Input = {
-  template?: InputMaybe<Scalars['jsonb']['input']>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 /** aggregate avg on columns */
 export type Prompt_Hub_Avg_Fields = {
-  __typename?: 'prompt_hub_avg_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "prompt_hub_avg_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** Boolean expression to filter rows from the table "prompt_hub". All fields are combined with a logical 'AND'. */
@@ -3875,66 +5216,64 @@ export type Prompt_Hub_Bool_Exp = {
   _not?: InputMaybe<Prompt_Hub_Bool_Exp>;
   _or?: InputMaybe<Array<Prompt_Hub_Bool_Exp>>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  creator_id?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
-  template?: InputMaybe<Jsonb_Comparison_Exp>;
+  name?: InputMaybe<String_Comparison_Exp>;
+  template_ids?: InputMaybe<Int_Array_Comparison_Exp>;
+  templates?: InputMaybe<Prompt_Template_Bool_Exp>;
+  templates_aggregate?: InputMaybe<Prompt_Template_Aggregate_Bool_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "prompt_hub" */
 export enum Prompt_Hub_Constraint {
   /** unique or primary key constraint on columns "id" */
-  PromptHubPkey = 'prompt_hub_pkey'
+  PromptHubPkey = "prompt_hub_pkey",
 }
-
-/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-export type Prompt_Hub_Delete_At_Path_Input = {
-  template?: InputMaybe<Array<Scalars['String']['input']>>;
-};
-
-/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-export type Prompt_Hub_Delete_Elem_Input = {
-  template?: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-export type Prompt_Hub_Delete_Key_Input = {
-  template?: InputMaybe<Scalars['String']['input']>;
-};
 
 /** input type for incrementing numeric columns in table "prompt_hub" */
 export type Prompt_Hub_Inc_Input = {
-  id?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars["Int"]["input"]>;
 };
 
 /** input type for inserting data into table "prompt_hub" */
 export type Prompt_Hub_Insert_Input = {
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  id?: InputMaybe<Scalars['Int']['input']>;
-  template?: InputMaybe<Scalars['jsonb']['input']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  creator_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  id?: InputMaybe<Scalars["Int"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  template_ids?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  templates?: InputMaybe<Prompt_Template_Arr_Rel_Insert_Input>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
 };
 
 /** aggregate max on columns */
 export type Prompt_Hub_Max_Fields = {
-  __typename?: 'prompt_hub_max_fields';
-  created_at?: Maybe<Scalars['timestamptz']['output']>;
-  id?: Maybe<Scalars['Int']['output']>;
-  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+  __typename?: "prompt_hub_max_fields";
+  created_at?: Maybe<Scalars["timestamptz"]["output"]>;
+  creator_id?: Maybe<Scalars["uuid"]["output"]>;
+  id?: Maybe<Scalars["Int"]["output"]>;
+  name?: Maybe<Scalars["String"]["output"]>;
+  template_ids?: Maybe<Array<Scalars["Int"]["output"]>>;
+  updated_at?: Maybe<Scalars["timestamptz"]["output"]>;
 };
 
 /** aggregate min on columns */
 export type Prompt_Hub_Min_Fields = {
-  __typename?: 'prompt_hub_min_fields';
-  created_at?: Maybe<Scalars['timestamptz']['output']>;
-  id?: Maybe<Scalars['Int']['output']>;
-  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+  __typename?: "prompt_hub_min_fields";
+  created_at?: Maybe<Scalars["timestamptz"]["output"]>;
+  creator_id?: Maybe<Scalars["uuid"]["output"]>;
+  id?: Maybe<Scalars["Int"]["output"]>;
+  name?: Maybe<Scalars["String"]["output"]>;
+  template_ids?: Maybe<Array<Scalars["Int"]["output"]>>;
+  updated_at?: Maybe<Scalars["timestamptz"]["output"]>;
 };
 
 /** response of any mutation on the table "prompt_hub" */
 export type Prompt_Hub_Mutation_Response = {
-  __typename?: 'prompt_hub_mutation_response';
+  __typename?: "prompt_hub_mutation_response";
   /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
+  affected_rows: Scalars["Int"]["output"];
   /** data from the rows affected by the mutation */
   returning: Array<Prompt_Hub>;
 };
@@ -3949,57 +5288,61 @@ export type Prompt_Hub_On_Conflict = {
 /** Ordering options when selecting data from "prompt_hub". */
 export type Prompt_Hub_Order_By = {
   created_at?: InputMaybe<Order_By>;
+  creator_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
-  template?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  template_ids?: InputMaybe<Order_By>;
+  templates_aggregate?: InputMaybe<Prompt_Template_Aggregate_Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: prompt_hub */
 export type Prompt_Hub_Pk_Columns_Input = {
-  id: Scalars['Int']['input'];
-};
-
-/** prepend existing jsonb value of filtered columns with new jsonb value */
-export type Prompt_Hub_Prepend_Input = {
-  template?: InputMaybe<Scalars['jsonb']['input']>;
+  id: Scalars["Int"]["input"];
 };
 
 /** select columns of table "prompt_hub" */
 export enum Prompt_Hub_Select_Column {
   /** column name */
-  CreatedAt = 'created_at',
+  CreatedAt = "created_at",
   /** column name */
-  Id = 'id',
+  CreatorId = "creator_id",
   /** column name */
-  Template = 'template',
+  Id = "id",
   /** column name */
-  UpdatedAt = 'updated_at'
+  Name = "name",
+  /** column name */
+  TemplateIds = "template_ids",
+  /** column name */
+  UpdatedAt = "updated_at",
 }
 
 /** input type for updating data in table "prompt_hub" */
 export type Prompt_Hub_Set_Input = {
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  id?: InputMaybe<Scalars['Int']['input']>;
-  template?: InputMaybe<Scalars['jsonb']['input']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  creator_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  id?: InputMaybe<Scalars["Int"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  template_ids?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
 };
 
 /** aggregate stddev on columns */
 export type Prompt_Hub_Stddev_Fields = {
-  __typename?: 'prompt_hub_stddev_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "prompt_hub_stddev_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** aggregate stddev_pop on columns */
 export type Prompt_Hub_Stddev_Pop_Fields = {
-  __typename?: 'prompt_hub_stddev_pop_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "prompt_hub_stddev_pop_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** aggregate stddev_samp on columns */
 export type Prompt_Hub_Stddev_Samp_Fields = {
-  __typename?: 'prompt_hub_stddev_samp_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "prompt_hub_stddev_samp_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** Streaming cursor of the table "prompt_hub" */
@@ -4012,43 +5355,39 @@ export type Prompt_Hub_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Prompt_Hub_Stream_Cursor_Value_Input = {
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  id?: InputMaybe<Scalars['Int']['input']>;
-  template?: InputMaybe<Scalars['jsonb']['input']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  creator_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  id?: InputMaybe<Scalars["Int"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  template_ids?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
 };
 
 /** aggregate sum on columns */
 export type Prompt_Hub_Sum_Fields = {
-  __typename?: 'prompt_hub_sum_fields';
-  id?: Maybe<Scalars['Int']['output']>;
+  __typename?: "prompt_hub_sum_fields";
+  id?: Maybe<Scalars["Int"]["output"]>;
 };
 
 /** update columns of table "prompt_hub" */
 export enum Prompt_Hub_Update_Column {
   /** column name */
-  CreatedAt = 'created_at',
+  CreatedAt = "created_at",
   /** column name */
-  Id = 'id',
+  CreatorId = "creator_id",
   /** column name */
-  Template = 'template',
+  Id = "id",
   /** column name */
-  UpdatedAt = 'updated_at'
+  Name = "name",
+  /** column name */
+  TemplateIds = "template_ids",
+  /** column name */
+  UpdatedAt = "updated_at",
 }
 
 export type Prompt_Hub_Updates = {
-  /** append existing jsonb value of filtered columns with new jsonb value */
-  _append?: InputMaybe<Prompt_Hub_Append_Input>;
-  /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-  _delete_at_path?: InputMaybe<Prompt_Hub_Delete_At_Path_Input>;
-  /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-  _delete_elem?: InputMaybe<Prompt_Hub_Delete_Elem_Input>;
-  /** delete key/value pair or string element. key/value pairs are matched based on their key value */
-  _delete_key?: InputMaybe<Prompt_Hub_Delete_Key_Input>;
   /** increments the numeric columns with given value of the filtered values */
   _inc?: InputMaybe<Prompt_Hub_Inc_Input>;
-  /** prepend existing jsonb value of filtered columns with new jsonb value */
-  _prepend?: InputMaybe<Prompt_Hub_Prepend_Input>;
   /** sets the columns of the filtered rows to the given values */
   _set?: InputMaybe<Prompt_Hub_Set_Input>;
   /** filter the rows which have to be updated */
@@ -4057,72 +5396,391 @@ export type Prompt_Hub_Updates = {
 
 /** aggregate var_pop on columns */
 export type Prompt_Hub_Var_Pop_Fields = {
-  __typename?: 'prompt_hub_var_pop_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "prompt_hub_var_pop_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** aggregate var_samp on columns */
 export type Prompt_Hub_Var_Samp_Fields = {
-  __typename?: 'prompt_hub_var_samp_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "prompt_hub_var_samp_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** aggregate variance on columns */
 export type Prompt_Hub_Variance_Fields = {
-  __typename?: 'prompt_hub_variance_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "prompt_hub_variance_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** prompt_template */
+export type Prompt_Template = {
+  __typename?: "prompt_template";
+  id: Scalars["Int"]["output"];
+  prompt_id?: Maybe<Scalars["Int"]["output"]>;
+  role: Message_Role_Enum;
+  template: Scalars["String"]["output"];
+};
+
+/** aggregated selection of "prompt_template" */
+export type Prompt_Template_Aggregate = {
+  __typename?: "prompt_template_aggregate";
+  aggregate?: Maybe<Prompt_Template_Aggregate_Fields>;
+  nodes: Array<Prompt_Template>;
+};
+
+export type Prompt_Template_Aggregate_Bool_Exp = {
+  count?: InputMaybe<Prompt_Template_Aggregate_Bool_Exp_Count>;
+};
+
+export type Prompt_Template_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Prompt_Template_Select_Column>>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+  filter?: InputMaybe<Prompt_Template_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
+/** aggregate fields of "prompt_template" */
+export type Prompt_Template_Aggregate_Fields = {
+  __typename?: "prompt_template_aggregate_fields";
+  avg?: Maybe<Prompt_Template_Avg_Fields>;
+  count: Scalars["Int"]["output"];
+  max?: Maybe<Prompt_Template_Max_Fields>;
+  min?: Maybe<Prompt_Template_Min_Fields>;
+  stddev?: Maybe<Prompt_Template_Stddev_Fields>;
+  stddev_pop?: Maybe<Prompt_Template_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Prompt_Template_Stddev_Samp_Fields>;
+  sum?: Maybe<Prompt_Template_Sum_Fields>;
+  var_pop?: Maybe<Prompt_Template_Var_Pop_Fields>;
+  var_samp?: Maybe<Prompt_Template_Var_Samp_Fields>;
+  variance?: Maybe<Prompt_Template_Variance_Fields>;
+};
+
+/** aggregate fields of "prompt_template" */
+export type Prompt_Template_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Prompt_Template_Select_Column>>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+};
+
+/** order by aggregate values of table "prompt_template" */
+export type Prompt_Template_Aggregate_Order_By = {
+  avg?: InputMaybe<Prompt_Template_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Prompt_Template_Max_Order_By>;
+  min?: InputMaybe<Prompt_Template_Min_Order_By>;
+  stddev?: InputMaybe<Prompt_Template_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Prompt_Template_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Prompt_Template_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Prompt_Template_Sum_Order_By>;
+  var_pop?: InputMaybe<Prompt_Template_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Prompt_Template_Var_Samp_Order_By>;
+  variance?: InputMaybe<Prompt_Template_Variance_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "prompt_template" */
+export type Prompt_Template_Arr_Rel_Insert_Input = {
+  data: Array<Prompt_Template_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Prompt_Template_On_Conflict>;
+};
+
+/** aggregate avg on columns */
+export type Prompt_Template_Avg_Fields = {
+  __typename?: "prompt_template_avg_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
+  prompt_id?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** order by avg() on columns of table "prompt_template" */
+export type Prompt_Template_Avg_Order_By = {
+  id?: InputMaybe<Order_By>;
+  prompt_id?: InputMaybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "prompt_template". All fields are combined with a logical 'AND'. */
+export type Prompt_Template_Bool_Exp = {
+  _and?: InputMaybe<Array<Prompt_Template_Bool_Exp>>;
+  _not?: InputMaybe<Prompt_Template_Bool_Exp>;
+  _or?: InputMaybe<Array<Prompt_Template_Bool_Exp>>;
+  id?: InputMaybe<Int_Comparison_Exp>;
+  prompt_id?: InputMaybe<Int_Comparison_Exp>;
+  role?: InputMaybe<Message_Role_Enum_Comparison_Exp>;
+  template?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "prompt_template" */
+export enum Prompt_Template_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  PromptTemplatePkey = "prompt_template_pkey",
+}
+
+/** input type for incrementing numeric columns in table "prompt_template" */
+export type Prompt_Template_Inc_Input = {
+  id?: InputMaybe<Scalars["Int"]["input"]>;
+  prompt_id?: InputMaybe<Scalars["Int"]["input"]>;
+};
+
+/** input type for inserting data into table "prompt_template" */
+export type Prompt_Template_Insert_Input = {
+  id?: InputMaybe<Scalars["Int"]["input"]>;
+  prompt_id?: InputMaybe<Scalars["Int"]["input"]>;
+  role?: InputMaybe<Message_Role_Enum>;
+  template?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/** aggregate max on columns */
+export type Prompt_Template_Max_Fields = {
+  __typename?: "prompt_template_max_fields";
+  id?: Maybe<Scalars["Int"]["output"]>;
+  prompt_id?: Maybe<Scalars["Int"]["output"]>;
+  template?: Maybe<Scalars["String"]["output"]>;
+};
+
+/** order by max() on columns of table "prompt_template" */
+export type Prompt_Template_Max_Order_By = {
+  id?: InputMaybe<Order_By>;
+  prompt_id?: InputMaybe<Order_By>;
+  template?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Prompt_Template_Min_Fields = {
+  __typename?: "prompt_template_min_fields";
+  id?: Maybe<Scalars["Int"]["output"]>;
+  prompt_id?: Maybe<Scalars["Int"]["output"]>;
+  template?: Maybe<Scalars["String"]["output"]>;
+};
+
+/** order by min() on columns of table "prompt_template" */
+export type Prompt_Template_Min_Order_By = {
+  id?: InputMaybe<Order_By>;
+  prompt_id?: InputMaybe<Order_By>;
+  template?: InputMaybe<Order_By>;
+};
+
+/** response of any mutation on the table "prompt_template" */
+export type Prompt_Template_Mutation_Response = {
+  __typename?: "prompt_template_mutation_response";
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars["Int"]["output"];
+  /** data from the rows affected by the mutation */
+  returning: Array<Prompt_Template>;
+};
+
+/** on_conflict condition type for table "prompt_template" */
+export type Prompt_Template_On_Conflict = {
+  constraint: Prompt_Template_Constraint;
+  update_columns?: Array<Prompt_Template_Update_Column>;
+  where?: InputMaybe<Prompt_Template_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "prompt_template". */
+export type Prompt_Template_Order_By = {
+  id?: InputMaybe<Order_By>;
+  prompt_id?: InputMaybe<Order_By>;
+  role?: InputMaybe<Order_By>;
+  template?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: prompt_template */
+export type Prompt_Template_Pk_Columns_Input = {
+  id: Scalars["Int"]["input"];
+};
+
+/** select columns of table "prompt_template" */
+export enum Prompt_Template_Select_Column {
+  /** column name */
+  Id = "id",
+  /** column name */
+  PromptId = "prompt_id",
+  /** column name */
+  Role = "role",
+  /** column name */
+  Template = "template",
+}
+
+/** input type for updating data in table "prompt_template" */
+export type Prompt_Template_Set_Input = {
+  id?: InputMaybe<Scalars["Int"]["input"]>;
+  prompt_id?: InputMaybe<Scalars["Int"]["input"]>;
+  role?: InputMaybe<Message_Role_Enum>;
+  template?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/** aggregate stddev on columns */
+export type Prompt_Template_Stddev_Fields = {
+  __typename?: "prompt_template_stddev_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
+  prompt_id?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** order by stddev() on columns of table "prompt_template" */
+export type Prompt_Template_Stddev_Order_By = {
+  id?: InputMaybe<Order_By>;
+  prompt_id?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Prompt_Template_Stddev_Pop_Fields = {
+  __typename?: "prompt_template_stddev_pop_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
+  prompt_id?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** order by stddev_pop() on columns of table "prompt_template" */
+export type Prompt_Template_Stddev_Pop_Order_By = {
+  id?: InputMaybe<Order_By>;
+  prompt_id?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Prompt_Template_Stddev_Samp_Fields = {
+  __typename?: "prompt_template_stddev_samp_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
+  prompt_id?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** order by stddev_samp() on columns of table "prompt_template" */
+export type Prompt_Template_Stddev_Samp_Order_By = {
+  id?: InputMaybe<Order_By>;
+  prompt_id?: InputMaybe<Order_By>;
+};
+
+/** Streaming cursor of the table "prompt_template" */
+export type Prompt_Template_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Prompt_Template_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Prompt_Template_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars["Int"]["input"]>;
+  prompt_id?: InputMaybe<Scalars["Int"]["input"]>;
+  role?: InputMaybe<Message_Role_Enum>;
+  template?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/** aggregate sum on columns */
+export type Prompt_Template_Sum_Fields = {
+  __typename?: "prompt_template_sum_fields";
+  id?: Maybe<Scalars["Int"]["output"]>;
+  prompt_id?: Maybe<Scalars["Int"]["output"]>;
+};
+
+/** order by sum() on columns of table "prompt_template" */
+export type Prompt_Template_Sum_Order_By = {
+  id?: InputMaybe<Order_By>;
+  prompt_id?: InputMaybe<Order_By>;
+};
+
+/** update columns of table "prompt_template" */
+export enum Prompt_Template_Update_Column {
+  /** column name */
+  Id = "id",
+  /** column name */
+  PromptId = "prompt_id",
+  /** column name */
+  Role = "role",
+  /** column name */
+  Template = "template",
+}
+
+export type Prompt_Template_Updates = {
+  /** increments the numeric columns with given value of the filtered values */
+  _inc?: InputMaybe<Prompt_Template_Inc_Input>;
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Prompt_Template_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Prompt_Template_Bool_Exp;
+};
+
+/** aggregate var_pop on columns */
+export type Prompt_Template_Var_Pop_Fields = {
+  __typename?: "prompt_template_var_pop_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
+  prompt_id?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** order by var_pop() on columns of table "prompt_template" */
+export type Prompt_Template_Var_Pop_Order_By = {
+  id?: InputMaybe<Order_By>;
+  prompt_id?: InputMaybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Prompt_Template_Var_Samp_Fields = {
+  __typename?: "prompt_template_var_samp_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
+  prompt_id?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** order by var_samp() on columns of table "prompt_template" */
+export type Prompt_Template_Var_Samp_Order_By = {
+  id?: InputMaybe<Order_By>;
+  prompt_id?: InputMaybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Prompt_Template_Variance_Fields = {
+  __typename?: "prompt_template_variance_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
+  prompt_id?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** order by variance() on columns of table "prompt_template" */
+export type Prompt_Template_Variance_Order_By = {
+  id?: InputMaybe<Order_By>;
+  prompt_id?: InputMaybe<Order_By>;
 };
 
 /** columns and relationships of "provider_type" */
 export type Provider_Type = {
-  __typename?: 'provider_type';
+  __typename?: "provider_type";
   /** An array relationship */
   accounts: Array<Accounts>;
   /** An aggregate relationship */
   accounts_aggregate: Accounts_Aggregate;
-  value: Scalars['String']['output'];
+  value: Scalars["String"]["output"];
 };
-
 
 /** columns and relationships of "provider_type" */
 export type Provider_TypeAccountsArgs = {
   distinct_on?: InputMaybe<Array<Accounts_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Accounts_Order_By>>;
   where?: InputMaybe<Accounts_Bool_Exp>;
 };
 
-
 /** columns and relationships of "provider_type" */
 export type Provider_TypeAccounts_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Accounts_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Accounts_Order_By>>;
   where?: InputMaybe<Accounts_Bool_Exp>;
 };
 
 /** aggregated selection of "provider_type" */
 export type Provider_Type_Aggregate = {
-  __typename?: 'provider_type_aggregate';
+  __typename?: "provider_type_aggregate";
   aggregate?: Maybe<Provider_Type_Aggregate_Fields>;
   nodes: Array<Provider_Type>;
 };
 
 /** aggregate fields of "provider_type" */
 export type Provider_Type_Aggregate_Fields = {
-  __typename?: 'provider_type_aggregate_fields';
-  count: Scalars['Int']['output'];
+  __typename?: "provider_type_aggregate_fields";
+  count: Scalars["Int"]["output"];
   max?: Maybe<Provider_Type_Max_Fields>;
   min?: Maybe<Provider_Type_Min_Fields>;
 };
 
-
 /** aggregate fields of "provider_type" */
 export type Provider_Type_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Provider_Type_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 /** Boolean expression to filter rows from the table "provider_type". All fields are combined with a logical 'AND'. */
@@ -4138,32 +5796,32 @@ export type Provider_Type_Bool_Exp = {
 /** unique or primary key constraints on table "provider_type" */
 export enum Provider_Type_Constraint {
   /** unique or primary key constraint on columns "value" */
-  ProviderTypePkey = 'provider_type_pkey'
+  ProviderTypePkey = "provider_type_pkey",
 }
 
 /** input type for inserting data into table "provider_type" */
 export type Provider_Type_Insert_Input = {
   accounts?: InputMaybe<Accounts_Arr_Rel_Insert_Input>;
-  value?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** aggregate max on columns */
 export type Provider_Type_Max_Fields = {
-  __typename?: 'provider_type_max_fields';
-  value?: Maybe<Scalars['String']['output']>;
+  __typename?: "provider_type_max_fields";
+  value?: Maybe<Scalars["String"]["output"]>;
 };
 
 /** aggregate min on columns */
 export type Provider_Type_Min_Fields = {
-  __typename?: 'provider_type_min_fields';
-  value?: Maybe<Scalars['String']['output']>;
+  __typename?: "provider_type_min_fields";
+  value?: Maybe<Scalars["String"]["output"]>;
 };
 
 /** response of any mutation on the table "provider_type" */
 export type Provider_Type_Mutation_Response = {
-  __typename?: 'provider_type_mutation_response';
+  __typename?: "provider_type_mutation_response";
   /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
+  affected_rows: Scalars["Int"]["output"];
   /** data from the rows affected by the mutation */
   returning: Array<Provider_Type>;
 };
@@ -4190,18 +5848,18 @@ export type Provider_Type_Order_By = {
 
 /** primary key columns input for table: provider_type */
 export type Provider_Type_Pk_Columns_Input = {
-  value: Scalars['String']['input'];
+  value: Scalars["String"]["input"];
 };
 
 /** select columns of table "provider_type" */
 export enum Provider_Type_Select_Column {
   /** column name */
-  Value = 'value'
+  Value = "value",
 }
 
 /** input type for updating data in table "provider_type" */
 export type Provider_Type_Set_Input = {
-  value?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** Streaming cursor of the table "provider_type" */
@@ -4214,13 +5872,13 @@ export type Provider_Type_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Provider_Type_Stream_Cursor_Value_Input = {
-  value?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** update columns of table "provider_type" */
 export enum Provider_Type_Update_Column {
   /** column name */
-  Value = 'value'
+  Value = "value",
 }
 
 export type Provider_Type_Updates = {
@@ -4231,7 +5889,7 @@ export type Provider_Type_Updates = {
 };
 
 export type Query_Root = {
-  __typename?: 'query_root';
+  __typename?: "query_root";
   /** An array relationship */
   accounts: Array<Accounts>;
   /** An aggregate relationship */
@@ -4250,6 +5908,22 @@ export type Query_Root = {
   agent_type_aggregate: Agent_Type_Aggregate;
   /** fetch data from the table: "agent_type" using primary key columns */
   agent_type_by_pk?: Maybe<Agent_Type>;
+  /** fetch data from the table: "chunking_strategy" */
+  chunking_strategy: Array<Chunking_Strategy>;
+  /** fetch aggregated fields from the table: "chunking_strategy" */
+  chunking_strategy_aggregate: Chunking_Strategy_Aggregate;
+  /** fetch data from the table: "chunking_strategy" using primary key columns */
+  chunking_strategy_by_pk?: Maybe<Chunking_Strategy>;
+  /** fetch data from the table: "files" */
+  files: Array<Files>;
+  /** fetch aggregated fields from the table: "files" */
+  files_aggregate: Files_Aggregate;
+  /** fetch data from the table: "files" using primary key columns */
+  files_by_pk?: Maybe<Files>;
+  /** fetch data from the table: "knowledge" */
+  knowledge: Array<Knowledge>;
+  /** fetch aggregated fields from the table: "knowledge" */
+  knowledge_aggregate: Knowledge_Aggregate;
   /** fetch data from the table: "knowledge_base" */
   knowledge_base: Array<Knowledge_Base>;
   /** fetch aggregated fields from the table: "knowledge_base" */
@@ -4262,6 +5936,8 @@ export type Query_Root = {
   knowledge_base_type_aggregate: Knowledge_Base_Type_Aggregate;
   /** fetch data from the table: "knowledge_base_type" using primary key columns */
   knowledge_base_type_by_pk?: Maybe<Knowledge_Base_Type>;
+  /** fetch data from the table: "knowledge" using primary key columns */
+  knowledge_by_pk?: Maybe<Knowledge>;
   /** fetch data from the table: "message" */
   message: Array<Message>;
   /** fetch aggregated fields from the table: "message" */
@@ -4298,6 +5974,12 @@ export type Query_Root = {
   prompt_hub_aggregate: Prompt_Hub_Aggregate;
   /** fetch data from the table: "prompt_hub" using primary key columns */
   prompt_hub_by_pk?: Maybe<Prompt_Hub>;
+  /** fetch data from the table: "prompt_template" */
+  prompt_template: Array<Prompt_Template>;
+  /** fetch aggregated fields from the table: "prompt_template" */
+  prompt_template_aggregate: Prompt_Template_Aggregate;
+  /** fetch data from the table: "prompt_template" using primary key columns */
+  prompt_template_by_pk?: Maybe<Prompt_Template>;
   /** fetch data from the table: "provider_type" */
   provider_type: Array<Provider_Type>;
   /** fetch aggregated fields from the table: "provider_type" */
@@ -4316,12 +5998,36 @@ export type Query_Root = {
   r_agent_user_aggregate: R_Agent_User_Aggregate;
   /** fetch data from the table: "r_agent_user" using primary key columns */
   r_agent_user_by_pk?: Maybe<R_Agent_User>;
+  /** fetch data from the table: "r_kb_user" */
+  r_kb_user: Array<R_Kb_User>;
+  /** fetch aggregated fields from the table: "r_kb_user" */
+  r_kb_user_aggregate: R_Kb_User_Aggregate;
+  /** fetch data from the table: "r_kb_user" using primary key columns */
+  r_kb_user_by_pk?: Maybe<R_Kb_User>;
+  /** fetch data from the table: "role" */
+  role: Array<Role>;
+  /** fetch aggregated fields from the table: "role" */
+  role_aggregate: Role_Aggregate;
+  /** fetch data from the table: "role" using primary key columns */
+  role_by_pk?: Maybe<Role>;
   /** An array relationship */
   sessions: Array<Sessions>;
   /** An aggregate relationship */
   sessions_aggregate: Sessions_Aggregate;
   /** fetch data from the table: "sessions" using primary key columns */
   sessions_by_pk?: Maybe<Sessions>;
+  /** fetch data from the table: "spider" */
+  spider: Array<Spider>;
+  /** fetch aggregated fields from the table: "spider" */
+  spider_aggregate: Spider_Aggregate;
+  /** fetch data from the table: "spider" using primary key columns */
+  spider_by_pk?: Maybe<Spider>;
+  /** fetch data from the table: "status" */
+  status: Array<Status>;
+  /** fetch aggregated fields from the table: "status" */
+  status_aggregate: Status_Aggregate;
+  /** fetch data from the table: "status" using primary key columns */
+  status_by_pk?: Maybe<Status>;
   /** fetch data from the table: "topic_history" */
   topic_history: Array<Topic_History>;
   /** fetch aggregated fields from the table: "topic_history" */
@@ -4342,433 +6048,539 @@ export type Query_Root = {
   verification_tokens_by_pk?: Maybe<Verification_Tokens>;
 };
 
-
 export type Query_RootAccountsArgs = {
   distinct_on?: InputMaybe<Array<Accounts_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Accounts_Order_By>>;
   where?: InputMaybe<Accounts_Bool_Exp>;
 };
-
 
 export type Query_RootAccounts_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Accounts_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Accounts_Order_By>>;
   where?: InputMaybe<Accounts_Bool_Exp>;
 };
 
-
 export type Query_RootAccounts_By_PkArgs = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
-
 
 export type Query_RootAgentArgs = {
   distinct_on?: InputMaybe<Array<Agent_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Agent_Order_By>>;
   where?: InputMaybe<Agent_Bool_Exp>;
 };
-
 
 export type Query_RootAgent_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Agent_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Agent_Order_By>>;
   where?: InputMaybe<Agent_Bool_Exp>;
 };
 
-
 export type Query_RootAgent_By_PkArgs = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
-
 
 export type Query_RootAgent_TypeArgs = {
   distinct_on?: InputMaybe<Array<Agent_Type_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Agent_Type_Order_By>>;
   where?: InputMaybe<Agent_Type_Bool_Exp>;
 };
-
 
 export type Query_RootAgent_Type_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Agent_Type_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Agent_Type_Order_By>>;
   where?: InputMaybe<Agent_Type_Bool_Exp>;
 };
 
-
 export type Query_RootAgent_Type_By_PkArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars["Int"]["input"];
 };
 
+export type Query_RootChunking_StrategyArgs = {
+  distinct_on?: InputMaybe<Array<Chunking_Strategy_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Chunking_Strategy_Order_By>>;
+  where?: InputMaybe<Chunking_Strategy_Bool_Exp>;
+};
+
+export type Query_RootChunking_Strategy_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Chunking_Strategy_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Chunking_Strategy_Order_By>>;
+  where?: InputMaybe<Chunking_Strategy_Bool_Exp>;
+};
+
+export type Query_RootChunking_Strategy_By_PkArgs = {
+  value: Scalars["String"]["input"];
+};
+
+export type Query_RootFilesArgs = {
+  distinct_on?: InputMaybe<Array<Files_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Files_Order_By>>;
+  where?: InputMaybe<Files_Bool_Exp>;
+};
+
+export type Query_RootFiles_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Files_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Files_Order_By>>;
+  where?: InputMaybe<Files_Bool_Exp>;
+};
+
+export type Query_RootFiles_By_PkArgs = {
+  id: Scalars["uuid"]["input"];
+};
+
+export type Query_RootKnowledgeArgs = {
+  distinct_on?: InputMaybe<Array<Knowledge_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Knowledge_Order_By>>;
+  where?: InputMaybe<Knowledge_Bool_Exp>;
+};
+
+export type Query_RootKnowledge_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Knowledge_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Knowledge_Order_By>>;
+  where?: InputMaybe<Knowledge_Bool_Exp>;
+};
 
 export type Query_RootKnowledge_BaseArgs = {
   distinct_on?: InputMaybe<Array<Knowledge_Base_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Knowledge_Base_Order_By>>;
   where?: InputMaybe<Knowledge_Base_Bool_Exp>;
 };
-
 
 export type Query_RootKnowledge_Base_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Knowledge_Base_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Knowledge_Base_Order_By>>;
   where?: InputMaybe<Knowledge_Base_Bool_Exp>;
 };
 
-
 export type Query_RootKnowledge_Base_By_PkArgs = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
-
 
 export type Query_RootKnowledge_Base_TypeArgs = {
   distinct_on?: InputMaybe<Array<Knowledge_Base_Type_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Knowledge_Base_Type_Order_By>>;
   where?: InputMaybe<Knowledge_Base_Type_Bool_Exp>;
 };
-
 
 export type Query_RootKnowledge_Base_Type_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Knowledge_Base_Type_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Knowledge_Base_Type_Order_By>>;
   where?: InputMaybe<Knowledge_Base_Type_Bool_Exp>;
 };
 
-
 export type Query_RootKnowledge_Base_Type_By_PkArgs = {
-  value: Scalars['String']['input'];
+  value: Scalars["String"]["input"];
 };
 
+export type Query_RootKnowledge_By_PkArgs = {
+  id: Scalars["uuid"]["input"];
+};
 
 export type Query_RootMessageArgs = {
   distinct_on?: InputMaybe<Array<Message_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Message_Order_By>>;
   where?: InputMaybe<Message_Bool_Exp>;
 };
-
 
 export type Query_RootMessage_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Message_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Message_Order_By>>;
   where?: InputMaybe<Message_Bool_Exp>;
 };
 
-
 export type Query_RootMessage_By_PkArgs = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
-
 
 export type Query_RootMessage_FeedbackArgs = {
   distinct_on?: InputMaybe<Array<Message_Feedback_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Message_Feedback_Order_By>>;
   where?: InputMaybe<Message_Feedback_Bool_Exp>;
 };
-
 
 export type Query_RootMessage_Feedback_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Message_Feedback_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Message_Feedback_Order_By>>;
   where?: InputMaybe<Message_Feedback_Bool_Exp>;
 };
 
-
 export type Query_RootMessage_Feedback_By_PkArgs = {
-  value: Scalars['String']['input'];
+  value: Scalars["String"]["input"];
 };
-
 
 export type Query_RootMessage_RoleArgs = {
   distinct_on?: InputMaybe<Array<Message_Role_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Message_Role_Order_By>>;
   where?: InputMaybe<Message_Role_Bool_Exp>;
 };
-
 
 export type Query_RootMessage_Role_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Message_Role_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Message_Role_Order_By>>;
   where?: InputMaybe<Message_Role_Bool_Exp>;
 };
 
-
 export type Query_RootMessage_Role_By_PkArgs = {
-  value: Scalars['String']['input'];
+  value: Scalars["String"]["input"];
 };
-
 
 export type Query_RootMessage_StatusArgs = {
   distinct_on?: InputMaybe<Array<Message_Status_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Message_Status_Order_By>>;
   where?: InputMaybe<Message_Status_Bool_Exp>;
 };
-
 
 export type Query_RootMessage_Status_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Message_Status_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Message_Status_Order_By>>;
   where?: InputMaybe<Message_Status_Bool_Exp>;
 };
 
-
 export type Query_RootMessage_Status_By_PkArgs = {
-  value: Scalars['String']['input'];
+  value: Scalars["String"]["input"];
 };
-
 
 export type Query_RootMultimodal_DataArgs = {
   distinct_on?: InputMaybe<Array<Multimodal_Data_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Multimodal_Data_Order_By>>;
   where?: InputMaybe<Multimodal_Data_Bool_Exp>;
 };
-
 
 export type Query_RootMultimodal_Data_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Multimodal_Data_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Multimodal_Data_Order_By>>;
   where?: InputMaybe<Multimodal_Data_Bool_Exp>;
 };
 
-
 export type Query_RootMultimodal_Data_By_PkArgs = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
-
 
 export type Query_RootPrompt_HubArgs = {
   distinct_on?: InputMaybe<Array<Prompt_Hub_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Prompt_Hub_Order_By>>;
   where?: InputMaybe<Prompt_Hub_Bool_Exp>;
 };
-
 
 export type Query_RootPrompt_Hub_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Prompt_Hub_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Prompt_Hub_Order_By>>;
   where?: InputMaybe<Prompt_Hub_Bool_Exp>;
 };
 
-
 export type Query_RootPrompt_Hub_By_PkArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars["Int"]["input"];
 };
 
+export type Query_RootPrompt_TemplateArgs = {
+  distinct_on?: InputMaybe<Array<Prompt_Template_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Prompt_Template_Order_By>>;
+  where?: InputMaybe<Prompt_Template_Bool_Exp>;
+};
+
+export type Query_RootPrompt_Template_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Prompt_Template_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Prompt_Template_Order_By>>;
+  where?: InputMaybe<Prompt_Template_Bool_Exp>;
+};
+
+export type Query_RootPrompt_Template_By_PkArgs = {
+  id: Scalars["Int"]["input"];
+};
 
 export type Query_RootProvider_TypeArgs = {
   distinct_on?: InputMaybe<Array<Provider_Type_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Provider_Type_Order_By>>;
   where?: InputMaybe<Provider_Type_Bool_Exp>;
 };
-
 
 export type Query_RootProvider_Type_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Provider_Type_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Provider_Type_Order_By>>;
   where?: InputMaybe<Provider_Type_Bool_Exp>;
 };
 
-
 export type Query_RootProvider_Type_By_PkArgs = {
-  value: Scalars['String']['input'];
+  value: Scalars["String"]["input"];
 };
-
 
 export type Query_RootR_Agent_KbArgs = {
   distinct_on?: InputMaybe<Array<R_Agent_Kb_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<R_Agent_Kb_Order_By>>;
   where?: InputMaybe<R_Agent_Kb_Bool_Exp>;
 };
-
 
 export type Query_RootR_Agent_Kb_AggregateArgs = {
   distinct_on?: InputMaybe<Array<R_Agent_Kb_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<R_Agent_Kb_Order_By>>;
   where?: InputMaybe<R_Agent_Kb_Bool_Exp>;
 };
 
-
 export type Query_RootR_Agent_Kb_By_PkArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars["Int"]["input"];
 };
-
 
 export type Query_RootR_Agent_UserArgs = {
   distinct_on?: InputMaybe<Array<R_Agent_User_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<R_Agent_User_Order_By>>;
   where?: InputMaybe<R_Agent_User_Bool_Exp>;
 };
-
 
 export type Query_RootR_Agent_User_AggregateArgs = {
   distinct_on?: InputMaybe<Array<R_Agent_User_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<R_Agent_User_Order_By>>;
   where?: InputMaybe<R_Agent_User_Bool_Exp>;
 };
 
-
 export type Query_RootR_Agent_User_By_PkArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars["Int"]["input"];
 };
 
+export type Query_RootR_Kb_UserArgs = {
+  distinct_on?: InputMaybe<Array<R_Kb_User_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<R_Kb_User_Order_By>>;
+  where?: InputMaybe<R_Kb_User_Bool_Exp>;
+};
+
+export type Query_RootR_Kb_User_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<R_Kb_User_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<R_Kb_User_Order_By>>;
+  where?: InputMaybe<R_Kb_User_Bool_Exp>;
+};
+
+export type Query_RootR_Kb_User_By_PkArgs = {
+  id: Scalars["Int"]["input"];
+};
+
+export type Query_RootRoleArgs = {
+  distinct_on?: InputMaybe<Array<Role_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Role_Order_By>>;
+  where?: InputMaybe<Role_Bool_Exp>;
+};
+
+export type Query_RootRole_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Role_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Role_Order_By>>;
+  where?: InputMaybe<Role_Bool_Exp>;
+};
+
+export type Query_RootRole_By_PkArgs = {
+  value: Scalars["String"]["input"];
+};
 
 export type Query_RootSessionsArgs = {
   distinct_on?: InputMaybe<Array<Sessions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Sessions_Order_By>>;
   where?: InputMaybe<Sessions_Bool_Exp>;
 };
-
 
 export type Query_RootSessions_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Sessions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Sessions_Order_By>>;
   where?: InputMaybe<Sessions_Bool_Exp>;
 };
 
-
 export type Query_RootSessions_By_PkArgs = {
-  sessionToken: Scalars['String']['input'];
+  sessionToken: Scalars["String"]["input"];
 };
 
+export type Query_RootSpiderArgs = {
+  distinct_on?: InputMaybe<Array<Spider_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Spider_Order_By>>;
+  where?: InputMaybe<Spider_Bool_Exp>;
+};
+
+export type Query_RootSpider_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Spider_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Spider_Order_By>>;
+  where?: InputMaybe<Spider_Bool_Exp>;
+};
+
+export type Query_RootSpider_By_PkArgs = {
+  id: Scalars["uuid"]["input"];
+};
+
+export type Query_RootStatusArgs = {
+  distinct_on?: InputMaybe<Array<Status_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Status_Order_By>>;
+  where?: InputMaybe<Status_Bool_Exp>;
+};
+
+export type Query_RootStatus_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Status_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Status_Order_By>>;
+  where?: InputMaybe<Status_Bool_Exp>;
+};
+
+export type Query_RootStatus_By_PkArgs = {
+  value: Scalars["String"]["input"];
+};
 
 export type Query_RootTopic_HistoryArgs = {
   distinct_on?: InputMaybe<Array<Topic_History_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Topic_History_Order_By>>;
   where?: InputMaybe<Topic_History_Bool_Exp>;
 };
-
 
 export type Query_RootTopic_History_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Topic_History_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Topic_History_Order_By>>;
   where?: InputMaybe<Topic_History_Bool_Exp>;
 };
 
-
 export type Query_RootTopic_History_By_PkArgs = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
-
 
 export type Query_RootUsersArgs = {
   distinct_on?: InputMaybe<Array<Users_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Users_Order_By>>;
   where?: InputMaybe<Users_Bool_Exp>;
 };
-
 
 export type Query_RootUsers_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Users_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Users_Order_By>>;
   where?: InputMaybe<Users_Bool_Exp>;
 };
 
-
 export type Query_RootUsers_By_PkArgs = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
-
 
 export type Query_RootVerification_TokensArgs = {
   distinct_on?: InputMaybe<Array<Verification_Tokens_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Verification_Tokens_Order_By>>;
   where?: InputMaybe<Verification_Tokens_Bool_Exp>;
 };
-
 
 export type Query_RootVerification_Tokens_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Verification_Tokens_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Verification_Tokens_Order_By>>;
   where?: InputMaybe<Verification_Tokens_Bool_Exp>;
 };
 
-
 export type Query_RootVerification_Tokens_By_PkArgs = {
-  token: Scalars['String']['input'];
+  token: Scalars["String"]["input"];
 };
 
 /** agent knowledge_bases */
 export type R_Agent_Kb = {
-  __typename?: 'r_agent_kb';
-  agent_id: Scalars['uuid']['output'];
-  created_at: Scalars['timestamptz']['output'];
-  id: Scalars['Int']['output'];
-  kb_id: Scalars['uuid']['output'];
-  updated_at: Scalars['timestamptz']['output'];
+  __typename?: "r_agent_kb";
+  agent_id: Scalars["uuid"]["output"];
+  created_at: Scalars["timestamptz"]["output"];
+  id: Scalars["Int"]["output"];
+  kb_id: Scalars["uuid"]["output"];
+  updated_at: Scalars["timestamptz"]["output"];
 };
 
 /** aggregated selection of "r_agent_kb" */
 export type R_Agent_Kb_Aggregate = {
-  __typename?: 'r_agent_kb_aggregate';
+  __typename?: "r_agent_kb_aggregate";
   aggregate?: Maybe<R_Agent_Kb_Aggregate_Fields>;
   nodes: Array<R_Agent_Kb>;
 };
@@ -4779,16 +6591,16 @@ export type R_Agent_Kb_Aggregate_Bool_Exp = {
 
 export type R_Agent_Kb_Aggregate_Bool_Exp_Count = {
   arguments?: InputMaybe<Array<R_Agent_Kb_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
   filter?: InputMaybe<R_Agent_Kb_Bool_Exp>;
   predicate: Int_Comparison_Exp;
 };
 
 /** aggregate fields of "r_agent_kb" */
 export type R_Agent_Kb_Aggregate_Fields = {
-  __typename?: 'r_agent_kb_aggregate_fields';
+  __typename?: "r_agent_kb_aggregate_fields";
   avg?: Maybe<R_Agent_Kb_Avg_Fields>;
-  count: Scalars['Int']['output'];
+  count: Scalars["Int"]["output"];
   max?: Maybe<R_Agent_Kb_Max_Fields>;
   min?: Maybe<R_Agent_Kb_Min_Fields>;
   stddev?: Maybe<R_Agent_Kb_Stddev_Fields>;
@@ -4800,11 +6612,10 @@ export type R_Agent_Kb_Aggregate_Fields = {
   variance?: Maybe<R_Agent_Kb_Variance_Fields>;
 };
 
-
 /** aggregate fields of "r_agent_kb" */
 export type R_Agent_Kb_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<R_Agent_Kb_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 /** order by aggregate values of table "r_agent_kb" */
@@ -4831,8 +6642,8 @@ export type R_Agent_Kb_Arr_Rel_Insert_Input = {
 
 /** aggregate avg on columns */
 export type R_Agent_Kb_Avg_Fields = {
-  __typename?: 'r_agent_kb_avg_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "r_agent_kb_avg_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by avg() on columns of table "r_agent_kb" */
@@ -4855,33 +6666,33 @@ export type R_Agent_Kb_Bool_Exp = {
 /** unique or primary key constraints on table "r_agent_kb" */
 export enum R_Agent_Kb_Constraint {
   /** unique or primary key constraint on columns "agent_id", "kb_id" */
-  RAgentKbAgentIdKbIdKey = 'r_agent_kb_agent_id_kb_id_key',
+  RAgentKbAgentIdKbIdKey = "r_agent_kb_agent_id_kb_id_key",
   /** unique or primary key constraint on columns "id" */
-  RAgentKbPkey = 'r_agent_kb_pkey'
+  RAgentKbPkey = "r_agent_kb_pkey",
 }
 
 /** input type for incrementing numeric columns in table "r_agent_kb" */
 export type R_Agent_Kb_Inc_Input = {
-  id?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars["Int"]["input"]>;
 };
 
 /** input type for inserting data into table "r_agent_kb" */
 export type R_Agent_Kb_Insert_Input = {
-  agent_id?: InputMaybe<Scalars['uuid']['input']>;
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  id?: InputMaybe<Scalars['Int']['input']>;
-  kb_id?: InputMaybe<Scalars['uuid']['input']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  agent_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  id?: InputMaybe<Scalars["Int"]["input"]>;
+  kb_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
 };
 
 /** aggregate max on columns */
 export type R_Agent_Kb_Max_Fields = {
-  __typename?: 'r_agent_kb_max_fields';
-  agent_id?: Maybe<Scalars['uuid']['output']>;
-  created_at?: Maybe<Scalars['timestamptz']['output']>;
-  id?: Maybe<Scalars['Int']['output']>;
-  kb_id?: Maybe<Scalars['uuid']['output']>;
-  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+  __typename?: "r_agent_kb_max_fields";
+  agent_id?: Maybe<Scalars["uuid"]["output"]>;
+  created_at?: Maybe<Scalars["timestamptz"]["output"]>;
+  id?: Maybe<Scalars["Int"]["output"]>;
+  kb_id?: Maybe<Scalars["uuid"]["output"]>;
+  updated_at?: Maybe<Scalars["timestamptz"]["output"]>;
 };
 
 /** order by max() on columns of table "r_agent_kb" */
@@ -4895,12 +6706,12 @@ export type R_Agent_Kb_Max_Order_By = {
 
 /** aggregate min on columns */
 export type R_Agent_Kb_Min_Fields = {
-  __typename?: 'r_agent_kb_min_fields';
-  agent_id?: Maybe<Scalars['uuid']['output']>;
-  created_at?: Maybe<Scalars['timestamptz']['output']>;
-  id?: Maybe<Scalars['Int']['output']>;
-  kb_id?: Maybe<Scalars['uuid']['output']>;
-  updated_at?: Maybe<Scalars['timestamptz']['output']>;
+  __typename?: "r_agent_kb_min_fields";
+  agent_id?: Maybe<Scalars["uuid"]["output"]>;
+  created_at?: Maybe<Scalars["timestamptz"]["output"]>;
+  id?: Maybe<Scalars["Int"]["output"]>;
+  kb_id?: Maybe<Scalars["uuid"]["output"]>;
+  updated_at?: Maybe<Scalars["timestamptz"]["output"]>;
 };
 
 /** order by min() on columns of table "r_agent_kb" */
@@ -4914,9 +6725,9 @@ export type R_Agent_Kb_Min_Order_By = {
 
 /** response of any mutation on the table "r_agent_kb" */
 export type R_Agent_Kb_Mutation_Response = {
-  __typename?: 'r_agent_kb_mutation_response';
+  __typename?: "r_agent_kb_mutation_response";
   /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
+  affected_rows: Scalars["Int"]["output"];
   /** data from the rows affected by the mutation */
   returning: Array<R_Agent_Kb>;
 };
@@ -4939,36 +6750,36 @@ export type R_Agent_Kb_Order_By = {
 
 /** primary key columns input for table: r_agent_kb */
 export type R_Agent_Kb_Pk_Columns_Input = {
-  id: Scalars['Int']['input'];
+  id: Scalars["Int"]["input"];
 };
 
 /** select columns of table "r_agent_kb" */
 export enum R_Agent_Kb_Select_Column {
   /** column name */
-  AgentId = 'agent_id',
+  AgentId = "agent_id",
   /** column name */
-  CreatedAt = 'created_at',
+  CreatedAt = "created_at",
   /** column name */
-  Id = 'id',
+  Id = "id",
   /** column name */
-  KbId = 'kb_id',
+  KbId = "kb_id",
   /** column name */
-  UpdatedAt = 'updated_at'
+  UpdatedAt = "updated_at",
 }
 
 /** input type for updating data in table "r_agent_kb" */
 export type R_Agent_Kb_Set_Input = {
-  agent_id?: InputMaybe<Scalars['uuid']['input']>;
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  id?: InputMaybe<Scalars['Int']['input']>;
-  kb_id?: InputMaybe<Scalars['uuid']['input']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  agent_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  id?: InputMaybe<Scalars["Int"]["input"]>;
+  kb_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
 };
 
 /** aggregate stddev on columns */
 export type R_Agent_Kb_Stddev_Fields = {
-  __typename?: 'r_agent_kb_stddev_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "r_agent_kb_stddev_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by stddev() on columns of table "r_agent_kb" */
@@ -4978,8 +6789,8 @@ export type R_Agent_Kb_Stddev_Order_By = {
 
 /** aggregate stddev_pop on columns */
 export type R_Agent_Kb_Stddev_Pop_Fields = {
-  __typename?: 'r_agent_kb_stddev_pop_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "r_agent_kb_stddev_pop_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by stddev_pop() on columns of table "r_agent_kb" */
@@ -4989,8 +6800,8 @@ export type R_Agent_Kb_Stddev_Pop_Order_By = {
 
 /** aggregate stddev_samp on columns */
 export type R_Agent_Kb_Stddev_Samp_Fields = {
-  __typename?: 'r_agent_kb_stddev_samp_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "r_agent_kb_stddev_samp_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by stddev_samp() on columns of table "r_agent_kb" */
@@ -5008,17 +6819,17 @@ export type R_Agent_Kb_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type R_Agent_Kb_Stream_Cursor_Value_Input = {
-  agent_id?: InputMaybe<Scalars['uuid']['input']>;
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  id?: InputMaybe<Scalars['Int']['input']>;
-  kb_id?: InputMaybe<Scalars['uuid']['input']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  agent_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  id?: InputMaybe<Scalars["Int"]["input"]>;
+  kb_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
 };
 
 /** aggregate sum on columns */
 export type R_Agent_Kb_Sum_Fields = {
-  __typename?: 'r_agent_kb_sum_fields';
-  id?: Maybe<Scalars['Int']['output']>;
+  __typename?: "r_agent_kb_sum_fields";
+  id?: Maybe<Scalars["Int"]["output"]>;
 };
 
 /** order by sum() on columns of table "r_agent_kb" */
@@ -5029,15 +6840,15 @@ export type R_Agent_Kb_Sum_Order_By = {
 /** update columns of table "r_agent_kb" */
 export enum R_Agent_Kb_Update_Column {
   /** column name */
-  AgentId = 'agent_id',
+  AgentId = "agent_id",
   /** column name */
-  CreatedAt = 'created_at',
+  CreatedAt = "created_at",
   /** column name */
-  Id = 'id',
+  Id = "id",
   /** column name */
-  KbId = 'kb_id',
+  KbId = "kb_id",
   /** column name */
-  UpdatedAt = 'updated_at'
+  UpdatedAt = "updated_at",
 }
 
 export type R_Agent_Kb_Updates = {
@@ -5051,8 +6862,8 @@ export type R_Agent_Kb_Updates = {
 
 /** aggregate var_pop on columns */
 export type R_Agent_Kb_Var_Pop_Fields = {
-  __typename?: 'r_agent_kb_var_pop_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "r_agent_kb_var_pop_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by var_pop() on columns of table "r_agent_kb" */
@@ -5062,8 +6873,8 @@ export type R_Agent_Kb_Var_Pop_Order_By = {
 
 /** aggregate var_samp on columns */
 export type R_Agent_Kb_Var_Samp_Fields = {
-  __typename?: 'r_agent_kb_var_samp_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "r_agent_kb_var_samp_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by var_samp() on columns of table "r_agent_kb" */
@@ -5073,8 +6884,8 @@ export type R_Agent_Kb_Var_Samp_Order_By = {
 
 /** aggregate variance on columns */
 export type R_Agent_Kb_Variance_Fields = {
-  __typename?: 'r_agent_kb_variance_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "r_agent_kb_variance_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by variance() on columns of table "r_agent_kb" */
@@ -5084,15 +6895,16 @@ export type R_Agent_Kb_Variance_Order_By = {
 
 /** relation of agent and user */
 export type R_Agent_User = {
-  __typename?: 'r_agent_user';
-  agent_id: Scalars['uuid']['output'];
-  id: Scalars['Int']['output'];
-  user_id: Scalars['uuid']['output'];
+  __typename?: "r_agent_user";
+  agent_id: Scalars["uuid"]["output"];
+  id: Scalars["Int"]["output"];
+  role?: Maybe<Role_Enum>;
+  user_id: Scalars["uuid"]["output"];
 };
 
 /** aggregated selection of "r_agent_user" */
 export type R_Agent_User_Aggregate = {
-  __typename?: 'r_agent_user_aggregate';
+  __typename?: "r_agent_user_aggregate";
   aggregate?: Maybe<R_Agent_User_Aggregate_Fields>;
   nodes: Array<R_Agent_User>;
 };
@@ -5103,16 +6915,16 @@ export type R_Agent_User_Aggregate_Bool_Exp = {
 
 export type R_Agent_User_Aggregate_Bool_Exp_Count = {
   arguments?: InputMaybe<Array<R_Agent_User_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
   filter?: InputMaybe<R_Agent_User_Bool_Exp>;
   predicate: Int_Comparison_Exp;
 };
 
 /** aggregate fields of "r_agent_user" */
 export type R_Agent_User_Aggregate_Fields = {
-  __typename?: 'r_agent_user_aggregate_fields';
+  __typename?: "r_agent_user_aggregate_fields";
   avg?: Maybe<R_Agent_User_Avg_Fields>;
-  count: Scalars['Int']['output'];
+  count: Scalars["Int"]["output"];
   max?: Maybe<R_Agent_User_Max_Fields>;
   min?: Maybe<R_Agent_User_Min_Fields>;
   stddev?: Maybe<R_Agent_User_Stddev_Fields>;
@@ -5124,11 +6936,10 @@ export type R_Agent_User_Aggregate_Fields = {
   variance?: Maybe<R_Agent_User_Variance_Fields>;
 };
 
-
 /** aggregate fields of "r_agent_user" */
 export type R_Agent_User_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<R_Agent_User_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 /** order by aggregate values of table "r_agent_user" */
@@ -5155,8 +6966,8 @@ export type R_Agent_User_Arr_Rel_Insert_Input = {
 
 /** aggregate avg on columns */
 export type R_Agent_User_Avg_Fields = {
-  __typename?: 'r_agent_user_avg_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "r_agent_user_avg_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by avg() on columns of table "r_agent_user" */
@@ -5171,33 +6982,35 @@ export type R_Agent_User_Bool_Exp = {
   _or?: InputMaybe<Array<R_Agent_User_Bool_Exp>>;
   agent_id?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
+  role?: InputMaybe<Role_Enum_Comparison_Exp>;
   user_id?: InputMaybe<Uuid_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "r_agent_user" */
 export enum R_Agent_User_Constraint {
   /** unique or primary key constraint on columns "id" */
-  RAgentUserPkey = 'r_agent_user_pkey'
+  RAgentUserPkey = "r_agent_user_pkey",
 }
 
 /** input type for incrementing numeric columns in table "r_agent_user" */
 export type R_Agent_User_Inc_Input = {
-  id?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars["Int"]["input"]>;
 };
 
 /** input type for inserting data into table "r_agent_user" */
 export type R_Agent_User_Insert_Input = {
-  agent_id?: InputMaybe<Scalars['uuid']['input']>;
-  id?: InputMaybe<Scalars['Int']['input']>;
-  user_id?: InputMaybe<Scalars['uuid']['input']>;
+  agent_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  id?: InputMaybe<Scalars["Int"]["input"]>;
+  role?: InputMaybe<Role_Enum>;
+  user_id?: InputMaybe<Scalars["uuid"]["input"]>;
 };
 
 /** aggregate max on columns */
 export type R_Agent_User_Max_Fields = {
-  __typename?: 'r_agent_user_max_fields';
-  agent_id?: Maybe<Scalars['uuid']['output']>;
-  id?: Maybe<Scalars['Int']['output']>;
-  user_id?: Maybe<Scalars['uuid']['output']>;
+  __typename?: "r_agent_user_max_fields";
+  agent_id?: Maybe<Scalars["uuid"]["output"]>;
+  id?: Maybe<Scalars["Int"]["output"]>;
+  user_id?: Maybe<Scalars["uuid"]["output"]>;
 };
 
 /** order by max() on columns of table "r_agent_user" */
@@ -5209,10 +7022,10 @@ export type R_Agent_User_Max_Order_By = {
 
 /** aggregate min on columns */
 export type R_Agent_User_Min_Fields = {
-  __typename?: 'r_agent_user_min_fields';
-  agent_id?: Maybe<Scalars['uuid']['output']>;
-  id?: Maybe<Scalars['Int']['output']>;
-  user_id?: Maybe<Scalars['uuid']['output']>;
+  __typename?: "r_agent_user_min_fields";
+  agent_id?: Maybe<Scalars["uuid"]["output"]>;
+  id?: Maybe<Scalars["Int"]["output"]>;
+  user_id?: Maybe<Scalars["uuid"]["output"]>;
 };
 
 /** order by min() on columns of table "r_agent_user" */
@@ -5224,9 +7037,9 @@ export type R_Agent_User_Min_Order_By = {
 
 /** response of any mutation on the table "r_agent_user" */
 export type R_Agent_User_Mutation_Response = {
-  __typename?: 'r_agent_user_mutation_response';
+  __typename?: "r_agent_user_mutation_response";
   /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
+  affected_rows: Scalars["Int"]["output"];
   /** data from the rows affected by the mutation */
   returning: Array<R_Agent_User>;
 };
@@ -5242,35 +7055,39 @@ export type R_Agent_User_On_Conflict = {
 export type R_Agent_User_Order_By = {
   agent_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  role?: InputMaybe<Order_By>;
   user_id?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: r_agent_user */
 export type R_Agent_User_Pk_Columns_Input = {
-  id: Scalars['Int']['input'];
+  id: Scalars["Int"]["input"];
 };
 
 /** select columns of table "r_agent_user" */
 export enum R_Agent_User_Select_Column {
   /** column name */
-  AgentId = 'agent_id',
+  AgentId = "agent_id",
   /** column name */
-  Id = 'id',
+  Id = "id",
   /** column name */
-  UserId = 'user_id'
+  Role = "role",
+  /** column name */
+  UserId = "user_id",
 }
 
 /** input type for updating data in table "r_agent_user" */
 export type R_Agent_User_Set_Input = {
-  agent_id?: InputMaybe<Scalars['uuid']['input']>;
-  id?: InputMaybe<Scalars['Int']['input']>;
-  user_id?: InputMaybe<Scalars['uuid']['input']>;
+  agent_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  id?: InputMaybe<Scalars["Int"]["input"]>;
+  role?: InputMaybe<Role_Enum>;
+  user_id?: InputMaybe<Scalars["uuid"]["input"]>;
 };
 
 /** aggregate stddev on columns */
 export type R_Agent_User_Stddev_Fields = {
-  __typename?: 'r_agent_user_stddev_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "r_agent_user_stddev_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by stddev() on columns of table "r_agent_user" */
@@ -5280,8 +7097,8 @@ export type R_Agent_User_Stddev_Order_By = {
 
 /** aggregate stddev_pop on columns */
 export type R_Agent_User_Stddev_Pop_Fields = {
-  __typename?: 'r_agent_user_stddev_pop_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "r_agent_user_stddev_pop_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by stddev_pop() on columns of table "r_agent_user" */
@@ -5291,8 +7108,8 @@ export type R_Agent_User_Stddev_Pop_Order_By = {
 
 /** aggregate stddev_samp on columns */
 export type R_Agent_User_Stddev_Samp_Fields = {
-  __typename?: 'r_agent_user_stddev_samp_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "r_agent_user_stddev_samp_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by stddev_samp() on columns of table "r_agent_user" */
@@ -5310,15 +7127,16 @@ export type R_Agent_User_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type R_Agent_User_Stream_Cursor_Value_Input = {
-  agent_id?: InputMaybe<Scalars['uuid']['input']>;
-  id?: InputMaybe<Scalars['Int']['input']>;
-  user_id?: InputMaybe<Scalars['uuid']['input']>;
+  agent_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  id?: InputMaybe<Scalars["Int"]["input"]>;
+  role?: InputMaybe<Role_Enum>;
+  user_id?: InputMaybe<Scalars["uuid"]["input"]>;
 };
 
 /** aggregate sum on columns */
 export type R_Agent_User_Sum_Fields = {
-  __typename?: 'r_agent_user_sum_fields';
-  id?: Maybe<Scalars['Int']['output']>;
+  __typename?: "r_agent_user_sum_fields";
+  id?: Maybe<Scalars["Int"]["output"]>;
 };
 
 /** order by sum() on columns of table "r_agent_user" */
@@ -5329,11 +7147,13 @@ export type R_Agent_User_Sum_Order_By = {
 /** update columns of table "r_agent_user" */
 export enum R_Agent_User_Update_Column {
   /** column name */
-  AgentId = 'agent_id',
+  AgentId = "agent_id",
   /** column name */
-  Id = 'id',
+  Id = "id",
   /** column name */
-  UserId = 'user_id'
+  Role = "role",
+  /** column name */
+  UserId = "user_id",
 }
 
 export type R_Agent_User_Updates = {
@@ -5347,8 +7167,8 @@ export type R_Agent_User_Updates = {
 
 /** aggregate var_pop on columns */
 export type R_Agent_User_Var_Pop_Fields = {
-  __typename?: 'r_agent_user_var_pop_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "r_agent_user_var_pop_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by var_pop() on columns of table "r_agent_user" */
@@ -5358,8 +7178,8 @@ export type R_Agent_User_Var_Pop_Order_By = {
 
 /** aggregate var_samp on columns */
 export type R_Agent_User_Var_Samp_Fields = {
-  __typename?: 'r_agent_user_var_samp_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "r_agent_user_var_samp_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by var_samp() on columns of table "r_agent_user" */
@@ -5369,8 +7189,8 @@ export type R_Agent_User_Var_Samp_Order_By = {
 
 /** aggregate variance on columns */
 export type R_Agent_User_Variance_Fields = {
-  __typename?: 'r_agent_user_variance_fields';
-  id?: Maybe<Scalars['Float']['output']>;
+  __typename?: "r_agent_user_variance_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
 };
 
 /** order by variance() on columns of table "r_agent_user" */
@@ -5378,20 +7198,391 @@ export type R_Agent_User_Variance_Order_By = {
   id?: InputMaybe<Order_By>;
 };
 
+/** columns and relationships of "r_kb_user" */
+export type R_Kb_User = {
+  __typename?: "r_kb_user";
+  id: Scalars["Int"]["output"];
+  kb_id: Scalars["uuid"]["output"];
+  role: Role_Enum;
+  user_id: Scalars["uuid"]["output"];
+};
+
+/** aggregated selection of "r_kb_user" */
+export type R_Kb_User_Aggregate = {
+  __typename?: "r_kb_user_aggregate";
+  aggregate?: Maybe<R_Kb_User_Aggregate_Fields>;
+  nodes: Array<R_Kb_User>;
+};
+
+/** aggregate fields of "r_kb_user" */
+export type R_Kb_User_Aggregate_Fields = {
+  __typename?: "r_kb_user_aggregate_fields";
+  avg?: Maybe<R_Kb_User_Avg_Fields>;
+  count: Scalars["Int"]["output"];
+  max?: Maybe<R_Kb_User_Max_Fields>;
+  min?: Maybe<R_Kb_User_Min_Fields>;
+  stddev?: Maybe<R_Kb_User_Stddev_Fields>;
+  stddev_pop?: Maybe<R_Kb_User_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<R_Kb_User_Stddev_Samp_Fields>;
+  sum?: Maybe<R_Kb_User_Sum_Fields>;
+  var_pop?: Maybe<R_Kb_User_Var_Pop_Fields>;
+  var_samp?: Maybe<R_Kb_User_Var_Samp_Fields>;
+  variance?: Maybe<R_Kb_User_Variance_Fields>;
+};
+
+/** aggregate fields of "r_kb_user" */
+export type R_Kb_User_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<R_Kb_User_Select_Column>>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+};
+
+/** aggregate avg on columns */
+export type R_Kb_User_Avg_Fields = {
+  __typename?: "r_kb_user_avg_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** Boolean expression to filter rows from the table "r_kb_user". All fields are combined with a logical 'AND'. */
+export type R_Kb_User_Bool_Exp = {
+  _and?: InputMaybe<Array<R_Kb_User_Bool_Exp>>;
+  _not?: InputMaybe<R_Kb_User_Bool_Exp>;
+  _or?: InputMaybe<Array<R_Kb_User_Bool_Exp>>;
+  id?: InputMaybe<Int_Comparison_Exp>;
+  kb_id?: InputMaybe<Uuid_Comparison_Exp>;
+  role?: InputMaybe<Role_Enum_Comparison_Exp>;
+  user_id?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "r_kb_user" */
+export enum R_Kb_User_Constraint {
+  /** unique or primary key constraint on columns "user_id", "kb_id" */
+  RKbUserKbIdUserIdKey = "r_kb_user_kb_id_user_id_key",
+  /** unique or primary key constraint on columns "id" */
+  RKbUserPkey = "r_kb_user_pkey",
+}
+
+/** input type for incrementing numeric columns in table "r_kb_user" */
+export type R_Kb_User_Inc_Input = {
+  id?: InputMaybe<Scalars["Int"]["input"]>;
+};
+
+/** input type for inserting data into table "r_kb_user" */
+export type R_Kb_User_Insert_Input = {
+  id?: InputMaybe<Scalars["Int"]["input"]>;
+  kb_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  role?: InputMaybe<Role_Enum>;
+  user_id?: InputMaybe<Scalars["uuid"]["input"]>;
+};
+
+/** aggregate max on columns */
+export type R_Kb_User_Max_Fields = {
+  __typename?: "r_kb_user_max_fields";
+  id?: Maybe<Scalars["Int"]["output"]>;
+  kb_id?: Maybe<Scalars["uuid"]["output"]>;
+  user_id?: Maybe<Scalars["uuid"]["output"]>;
+};
+
+/** aggregate min on columns */
+export type R_Kb_User_Min_Fields = {
+  __typename?: "r_kb_user_min_fields";
+  id?: Maybe<Scalars["Int"]["output"]>;
+  kb_id?: Maybe<Scalars["uuid"]["output"]>;
+  user_id?: Maybe<Scalars["uuid"]["output"]>;
+};
+
+/** response of any mutation on the table "r_kb_user" */
+export type R_Kb_User_Mutation_Response = {
+  __typename?: "r_kb_user_mutation_response";
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars["Int"]["output"];
+  /** data from the rows affected by the mutation */
+  returning: Array<R_Kb_User>;
+};
+
+/** on_conflict condition type for table "r_kb_user" */
+export type R_Kb_User_On_Conflict = {
+  constraint: R_Kb_User_Constraint;
+  update_columns?: Array<R_Kb_User_Update_Column>;
+  where?: InputMaybe<R_Kb_User_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "r_kb_user". */
+export type R_Kb_User_Order_By = {
+  id?: InputMaybe<Order_By>;
+  kb_id?: InputMaybe<Order_By>;
+  role?: InputMaybe<Order_By>;
+  user_id?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: r_kb_user */
+export type R_Kb_User_Pk_Columns_Input = {
+  id: Scalars["Int"]["input"];
+};
+
+/** select columns of table "r_kb_user" */
+export enum R_Kb_User_Select_Column {
+  /** column name */
+  Id = "id",
+  /** column name */
+  KbId = "kb_id",
+  /** column name */
+  Role = "role",
+  /** column name */
+  UserId = "user_id",
+}
+
+/** input type for updating data in table "r_kb_user" */
+export type R_Kb_User_Set_Input = {
+  id?: InputMaybe<Scalars["Int"]["input"]>;
+  kb_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  role?: InputMaybe<Role_Enum>;
+  user_id?: InputMaybe<Scalars["uuid"]["input"]>;
+};
+
+/** aggregate stddev on columns */
+export type R_Kb_User_Stddev_Fields = {
+  __typename?: "r_kb_user_stddev_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** aggregate stddev_pop on columns */
+export type R_Kb_User_Stddev_Pop_Fields = {
+  __typename?: "r_kb_user_stddev_pop_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** aggregate stddev_samp on columns */
+export type R_Kb_User_Stddev_Samp_Fields = {
+  __typename?: "r_kb_user_stddev_samp_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** Streaming cursor of the table "r_kb_user" */
+export type R_Kb_User_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: R_Kb_User_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type R_Kb_User_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars["Int"]["input"]>;
+  kb_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  role?: InputMaybe<Role_Enum>;
+  user_id?: InputMaybe<Scalars["uuid"]["input"]>;
+};
+
+/** aggregate sum on columns */
+export type R_Kb_User_Sum_Fields = {
+  __typename?: "r_kb_user_sum_fields";
+  id?: Maybe<Scalars["Int"]["output"]>;
+};
+
+/** update columns of table "r_kb_user" */
+export enum R_Kb_User_Update_Column {
+  /** column name */
+  Id = "id",
+  /** column name */
+  KbId = "kb_id",
+  /** column name */
+  Role = "role",
+  /** column name */
+  UserId = "user_id",
+}
+
+export type R_Kb_User_Updates = {
+  /** increments the numeric columns with given value of the filtered values */
+  _inc?: InputMaybe<R_Kb_User_Inc_Input>;
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<R_Kb_User_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: R_Kb_User_Bool_Exp;
+};
+
+/** aggregate var_pop on columns */
+export type R_Kb_User_Var_Pop_Fields = {
+  __typename?: "r_kb_user_var_pop_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** aggregate var_samp on columns */
+export type R_Kb_User_Var_Samp_Fields = {
+  __typename?: "r_kb_user_var_samp_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** aggregate variance on columns */
+export type R_Kb_User_Variance_Fields = {
+  __typename?: "r_kb_user_variance_fields";
+  id?: Maybe<Scalars["Float"]["output"]>;
+};
+
+/** columns and relationships of "role" */
+export type Role = {
+  __typename?: "role";
+  comment: Scalars["String"]["output"];
+  value: Scalars["String"]["output"];
+};
+
+/** aggregated selection of "role" */
+export type Role_Aggregate = {
+  __typename?: "role_aggregate";
+  aggregate?: Maybe<Role_Aggregate_Fields>;
+  nodes: Array<Role>;
+};
+
+/** aggregate fields of "role" */
+export type Role_Aggregate_Fields = {
+  __typename?: "role_aggregate_fields";
+  count: Scalars["Int"]["output"];
+  max?: Maybe<Role_Max_Fields>;
+  min?: Maybe<Role_Min_Fields>;
+};
+
+/** aggregate fields of "role" */
+export type Role_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Role_Select_Column>>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+};
+
+/** Boolean expression to filter rows from the table "role". All fields are combined with a logical 'AND'. */
+export type Role_Bool_Exp = {
+  _and?: InputMaybe<Array<Role_Bool_Exp>>;
+  _not?: InputMaybe<Role_Bool_Exp>;
+  _or?: InputMaybe<Array<Role_Bool_Exp>>;
+  comment?: InputMaybe<String_Comparison_Exp>;
+  value?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "role" */
+export enum Role_Constraint {
+  /** unique or primary key constraint on columns "value" */
+  RolePkey = "role_pkey",
+}
+
+export enum Role_Enum {
+  /** admin */
+  Admin = "admin",
+  /** creator */
+  Creator = "creator",
+  /** user */
+  User = "user",
+}
+
+/** Boolean expression to compare columns of type "role_enum". All fields are combined with logical 'AND'. */
+export type Role_Enum_Comparison_Exp = {
+  _eq?: InputMaybe<Role_Enum>;
+  _in?: InputMaybe<Array<Role_Enum>>;
+  _is_null?: InputMaybe<Scalars["Boolean"]["input"]>;
+  _neq?: InputMaybe<Role_Enum>;
+  _nin?: InputMaybe<Array<Role_Enum>>;
+};
+
+/** input type for inserting data into table "role" */
+export type Role_Insert_Input = {
+  comment?: InputMaybe<Scalars["String"]["input"]>;
+  value?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/** aggregate max on columns */
+export type Role_Max_Fields = {
+  __typename?: "role_max_fields";
+  comment?: Maybe<Scalars["String"]["output"]>;
+  value?: Maybe<Scalars["String"]["output"]>;
+};
+
+/** aggregate min on columns */
+export type Role_Min_Fields = {
+  __typename?: "role_min_fields";
+  comment?: Maybe<Scalars["String"]["output"]>;
+  value?: Maybe<Scalars["String"]["output"]>;
+};
+
+/** response of any mutation on the table "role" */
+export type Role_Mutation_Response = {
+  __typename?: "role_mutation_response";
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars["Int"]["output"];
+  /** data from the rows affected by the mutation */
+  returning: Array<Role>;
+};
+
+/** on_conflict condition type for table "role" */
+export type Role_On_Conflict = {
+  constraint: Role_Constraint;
+  update_columns?: Array<Role_Update_Column>;
+  where?: InputMaybe<Role_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "role". */
+export type Role_Order_By = {
+  comment?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: role */
+export type Role_Pk_Columns_Input = {
+  value: Scalars["String"]["input"];
+};
+
+/** select columns of table "role" */
+export enum Role_Select_Column {
+  /** column name */
+  Comment = "comment",
+  /** column name */
+  Value = "value",
+}
+
+/** input type for updating data in table "role" */
+export type Role_Set_Input = {
+  comment?: InputMaybe<Scalars["String"]["input"]>;
+  value?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/** Streaming cursor of the table "role" */
+export type Role_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Role_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Role_Stream_Cursor_Value_Input = {
+  comment?: InputMaybe<Scalars["String"]["input"]>;
+  value?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/** update columns of table "role" */
+export enum Role_Update_Column {
+  /** column name */
+  Comment = "comment",
+  /** column name */
+  Value = "value",
+}
+
+export type Role_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Role_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Role_Bool_Exp;
+};
+
 /** columns and relationships of "sessions" */
 export type Sessions = {
-  __typename?: 'sessions';
-  expires: Scalars['timestamptz']['output'];
-  id: Scalars['uuid']['output'];
-  sessionToken: Scalars['String']['output'];
+  __typename?: "sessions";
+  expires: Scalars["timestamptz"]["output"];
+  id: Scalars["uuid"]["output"];
+  sessionToken: Scalars["String"]["output"];
   /** An object relationship */
   user: Users;
-  userId: Scalars['uuid']['output'];
+  userId: Scalars["uuid"]["output"];
 };
 
 /** aggregated selection of "sessions" */
 export type Sessions_Aggregate = {
-  __typename?: 'sessions_aggregate';
+  __typename?: "sessions_aggregate";
   aggregate?: Maybe<Sessions_Aggregate_Fields>;
   nodes: Array<Sessions>;
 };
@@ -5402,24 +7593,23 @@ export type Sessions_Aggregate_Bool_Exp = {
 
 export type Sessions_Aggregate_Bool_Exp_Count = {
   arguments?: InputMaybe<Array<Sessions_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
   filter?: InputMaybe<Sessions_Bool_Exp>;
   predicate: Int_Comparison_Exp;
 };
 
 /** aggregate fields of "sessions" */
 export type Sessions_Aggregate_Fields = {
-  __typename?: 'sessions_aggregate_fields';
-  count: Scalars['Int']['output'];
+  __typename?: "sessions_aggregate_fields";
+  count: Scalars["Int"]["output"];
   max?: Maybe<Sessions_Max_Fields>;
   min?: Maybe<Sessions_Min_Fields>;
 };
 
-
 /** aggregate fields of "sessions" */
 export type Sessions_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Sessions_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 /** order by aggregate values of table "sessions" */
@@ -5451,25 +7641,25 @@ export type Sessions_Bool_Exp = {
 /** unique or primary key constraints on table "sessions" */
 export enum Sessions_Constraint {
   /** unique or primary key constraint on columns "sessionToken" */
-  SessionsPkey = 'sessions_pkey'
+  SessionsPkey = "sessions_pkey",
 }
 
 /** input type for inserting data into table "sessions" */
 export type Sessions_Insert_Input = {
-  expires?: InputMaybe<Scalars['timestamptz']['input']>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
-  sessionToken?: InputMaybe<Scalars['String']['input']>;
+  expires?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  sessionToken?: InputMaybe<Scalars["String"]["input"]>;
   user?: InputMaybe<Users_Obj_Rel_Insert_Input>;
-  userId?: InputMaybe<Scalars['uuid']['input']>;
+  userId?: InputMaybe<Scalars["uuid"]["input"]>;
 };
 
 /** aggregate max on columns */
 export type Sessions_Max_Fields = {
-  __typename?: 'sessions_max_fields';
-  expires?: Maybe<Scalars['timestamptz']['output']>;
-  id?: Maybe<Scalars['uuid']['output']>;
-  sessionToken?: Maybe<Scalars['String']['output']>;
-  userId?: Maybe<Scalars['uuid']['output']>;
+  __typename?: "sessions_max_fields";
+  expires?: Maybe<Scalars["timestamptz"]["output"]>;
+  id?: Maybe<Scalars["uuid"]["output"]>;
+  sessionToken?: Maybe<Scalars["String"]["output"]>;
+  userId?: Maybe<Scalars["uuid"]["output"]>;
 };
 
 /** order by max() on columns of table "sessions" */
@@ -5482,11 +7672,11 @@ export type Sessions_Max_Order_By = {
 
 /** aggregate min on columns */
 export type Sessions_Min_Fields = {
-  __typename?: 'sessions_min_fields';
-  expires?: Maybe<Scalars['timestamptz']['output']>;
-  id?: Maybe<Scalars['uuid']['output']>;
-  sessionToken?: Maybe<Scalars['String']['output']>;
-  userId?: Maybe<Scalars['uuid']['output']>;
+  __typename?: "sessions_min_fields";
+  expires?: Maybe<Scalars["timestamptz"]["output"]>;
+  id?: Maybe<Scalars["uuid"]["output"]>;
+  sessionToken?: Maybe<Scalars["String"]["output"]>;
+  userId?: Maybe<Scalars["uuid"]["output"]>;
 };
 
 /** order by min() on columns of table "sessions" */
@@ -5499,9 +7689,9 @@ export type Sessions_Min_Order_By = {
 
 /** response of any mutation on the table "sessions" */
 export type Sessions_Mutation_Response = {
-  __typename?: 'sessions_mutation_response';
+  __typename?: "sessions_mutation_response";
   /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
+  affected_rows: Scalars["Int"]["output"];
   /** data from the rows affected by the mutation */
   returning: Array<Sessions>;
 };
@@ -5524,27 +7714,27 @@ export type Sessions_Order_By = {
 
 /** primary key columns input for table: sessions */
 export type Sessions_Pk_Columns_Input = {
-  sessionToken: Scalars['String']['input'];
+  sessionToken: Scalars["String"]["input"];
 };
 
 /** select columns of table "sessions" */
 export enum Sessions_Select_Column {
   /** column name */
-  Expires = 'expires',
+  Expires = "expires",
   /** column name */
-  Id = 'id',
+  Id = "id",
   /** column name */
-  SessionToken = 'sessionToken',
+  SessionToken = "sessionToken",
   /** column name */
-  UserId = 'userId'
+  UserId = "userId",
 }
 
 /** input type for updating data in table "sessions" */
 export type Sessions_Set_Input = {
-  expires?: InputMaybe<Scalars['timestamptz']['input']>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
-  sessionToken?: InputMaybe<Scalars['String']['input']>;
-  userId?: InputMaybe<Scalars['uuid']['input']>;
+  expires?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  sessionToken?: InputMaybe<Scalars["String"]["input"]>;
+  userId?: InputMaybe<Scalars["uuid"]["input"]>;
 };
 
 /** Streaming cursor of the table "sessions" */
@@ -5557,22 +7747,22 @@ export type Sessions_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Sessions_Stream_Cursor_Value_Input = {
-  expires?: InputMaybe<Scalars['timestamptz']['input']>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
-  sessionToken?: InputMaybe<Scalars['String']['input']>;
-  userId?: InputMaybe<Scalars['uuid']['input']>;
+  expires?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  sessionToken?: InputMaybe<Scalars["String"]["input"]>;
+  userId?: InputMaybe<Scalars["uuid"]["input"]>;
 };
 
 /** update columns of table "sessions" */
 export enum Sessions_Update_Column {
   /** column name */
-  Expires = 'expires',
+  Expires = "expires",
   /** column name */
-  Id = 'id',
+  Id = "id",
   /** column name */
-  SessionToken = 'sessionToken',
+  SessionToken = "sessionToken",
   /** column name */
-  UserId = 'userId'
+  UserId = "userId",
 }
 
 export type Sessions_Updates = {
@@ -5582,8 +7772,292 @@ export type Sessions_Updates = {
   where: Sessions_Bool_Exp;
 };
 
+/** 爬虫列表 */
+export type Spider = {
+  __typename?: "spider";
+  id: Scalars["uuid"]["output"];
+  name: Scalars["String"]["output"];
+  start_urls: Array<Scalars["String"]["output"]>;
+};
+
+/** aggregated selection of "spider" */
+export type Spider_Aggregate = {
+  __typename?: "spider_aggregate";
+  aggregate?: Maybe<Spider_Aggregate_Fields>;
+  nodes: Array<Spider>;
+};
+
+/** aggregate fields of "spider" */
+export type Spider_Aggregate_Fields = {
+  __typename?: "spider_aggregate_fields";
+  count: Scalars["Int"]["output"];
+  max?: Maybe<Spider_Max_Fields>;
+  min?: Maybe<Spider_Min_Fields>;
+};
+
+/** aggregate fields of "spider" */
+export type Spider_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Spider_Select_Column>>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+};
+
+/** Boolean expression to filter rows from the table "spider". All fields are combined with a logical 'AND'. */
+export type Spider_Bool_Exp = {
+  _and?: InputMaybe<Array<Spider_Bool_Exp>>;
+  _not?: InputMaybe<Spider_Bool_Exp>;
+  _or?: InputMaybe<Array<Spider_Bool_Exp>>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  name?: InputMaybe<String_Comparison_Exp>;
+  start_urls?: InputMaybe<String_Array_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "spider" */
+export enum Spider_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  SpiderIdKey = "spider_id_key",
+  /** unique or primary key constraint on columns "name" */
+  SpiderNameKey = "spider_name_key",
+  /** unique or primary key constraint on columns "id" */
+  SpiderPkey = "spider_pkey",
+  /** unique or primary key constraint on columns "start_urls" */
+  SpiderStartUrlsKey = "spider_start_urls_key",
+}
+
+/** input type for inserting data into table "spider" */
+export type Spider_Insert_Input = {
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  start_urls?: InputMaybe<Array<Scalars["String"]["input"]>>;
+};
+
+/** aggregate max on columns */
+export type Spider_Max_Fields = {
+  __typename?: "spider_max_fields";
+  id?: Maybe<Scalars["uuid"]["output"]>;
+  name?: Maybe<Scalars["String"]["output"]>;
+  start_urls?: Maybe<Array<Scalars["String"]["output"]>>;
+};
+
+/** aggregate min on columns */
+export type Spider_Min_Fields = {
+  __typename?: "spider_min_fields";
+  id?: Maybe<Scalars["uuid"]["output"]>;
+  name?: Maybe<Scalars["String"]["output"]>;
+  start_urls?: Maybe<Array<Scalars["String"]["output"]>>;
+};
+
+/** response of any mutation on the table "spider" */
+export type Spider_Mutation_Response = {
+  __typename?: "spider_mutation_response";
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars["Int"]["output"];
+  /** data from the rows affected by the mutation */
+  returning: Array<Spider>;
+};
+
+/** on_conflict condition type for table "spider" */
+export type Spider_On_Conflict = {
+  constraint: Spider_Constraint;
+  update_columns?: Array<Spider_Update_Column>;
+  where?: InputMaybe<Spider_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "spider". */
+export type Spider_Order_By = {
+  id?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  start_urls?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: spider */
+export type Spider_Pk_Columns_Input = {
+  id: Scalars["uuid"]["input"];
+};
+
+/** select columns of table "spider" */
+export enum Spider_Select_Column {
+  /** column name */
+  Id = "id",
+  /** column name */
+  Name = "name",
+  /** column name */
+  StartUrls = "start_urls",
+}
+
+/** input type for updating data in table "spider" */
+export type Spider_Set_Input = {
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  start_urls?: InputMaybe<Array<Scalars["String"]["input"]>>;
+};
+
+/** Streaming cursor of the table "spider" */
+export type Spider_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Spider_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Spider_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  start_urls?: InputMaybe<Array<Scalars["String"]["input"]>>;
+};
+
+/** update columns of table "spider" */
+export enum Spider_Update_Column {
+  /** column name */
+  Id = "id",
+  /** column name */
+  Name = "name",
+  /** column name */
+  StartUrls = "start_urls",
+}
+
+export type Spider_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Spider_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Spider_Bool_Exp;
+};
+
+/** columns and relationships of "status" */
+export type Status = {
+  __typename?: "status";
+  comment: Scalars["String"]["output"];
+  value: Scalars["String"]["output"];
+};
+
+/** aggregated selection of "status" */
+export type Status_Aggregate = {
+  __typename?: "status_aggregate";
+  aggregate?: Maybe<Status_Aggregate_Fields>;
+  nodes: Array<Status>;
+};
+
+/** aggregate fields of "status" */
+export type Status_Aggregate_Fields = {
+  __typename?: "status_aggregate_fields";
+  count: Scalars["Int"]["output"];
+  max?: Maybe<Status_Max_Fields>;
+  min?: Maybe<Status_Min_Fields>;
+};
+
+/** aggregate fields of "status" */
+export type Status_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Status_Select_Column>>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
+};
+
+/** Boolean expression to filter rows from the table "status". All fields are combined with a logical 'AND'. */
+export type Status_Bool_Exp = {
+  _and?: InputMaybe<Array<Status_Bool_Exp>>;
+  _not?: InputMaybe<Status_Bool_Exp>;
+  _or?: InputMaybe<Array<Status_Bool_Exp>>;
+  comment?: InputMaybe<String_Comparison_Exp>;
+  value?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "status" */
+export enum Status_Constraint {
+  /** unique or primary key constraint on columns "value" */
+  StatusPkey = "status_pkey",
+}
+
+/** input type for inserting data into table "status" */
+export type Status_Insert_Input = {
+  comment?: InputMaybe<Scalars["String"]["input"]>;
+  value?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/** aggregate max on columns */
+export type Status_Max_Fields = {
+  __typename?: "status_max_fields";
+  comment?: Maybe<Scalars["String"]["output"]>;
+  value?: Maybe<Scalars["String"]["output"]>;
+};
+
+/** aggregate min on columns */
+export type Status_Min_Fields = {
+  __typename?: "status_min_fields";
+  comment?: Maybe<Scalars["String"]["output"]>;
+  value?: Maybe<Scalars["String"]["output"]>;
+};
+
+/** response of any mutation on the table "status" */
+export type Status_Mutation_Response = {
+  __typename?: "status_mutation_response";
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars["Int"]["output"];
+  /** data from the rows affected by the mutation */
+  returning: Array<Status>;
+};
+
+/** on_conflict condition type for table "status" */
+export type Status_On_Conflict = {
+  constraint: Status_Constraint;
+  update_columns?: Array<Status_Update_Column>;
+  where?: InputMaybe<Status_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "status". */
+export type Status_Order_By = {
+  comment?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: status */
+export type Status_Pk_Columns_Input = {
+  value: Scalars["String"]["input"];
+};
+
+/** select columns of table "status" */
+export enum Status_Select_Column {
+  /** column name */
+  Comment = "comment",
+  /** column name */
+  Value = "value",
+}
+
+/** input type for updating data in table "status" */
+export type Status_Set_Input = {
+  comment?: InputMaybe<Scalars["String"]["input"]>;
+  value?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/** Streaming cursor of the table "status" */
+export type Status_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Status_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Status_Stream_Cursor_Value_Input = {
+  comment?: InputMaybe<Scalars["String"]["input"]>;
+  value?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/** update columns of table "status" */
+export enum Status_Update_Column {
+  /** column name */
+  Comment = "comment",
+  /** column name */
+  Value = "value",
+}
+
+export type Status_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Status_Set_Input>;
+  /** filter the rows which have to be updated */
+  where: Status_Bool_Exp;
+};
+
 export type Subscription_Root = {
-  __typename?: 'subscription_root';
+  __typename?: "subscription_root";
   /** An array relationship */
   accounts: Array<Accounts>;
   /** An aggregate relationship */
@@ -5608,6 +8082,26 @@ export type Subscription_Root = {
   agent_type_by_pk?: Maybe<Agent_Type>;
   /** fetch data from the table in a streaming manner: "agent_type" */
   agent_type_stream: Array<Agent_Type>;
+  /** fetch data from the table: "chunking_strategy" */
+  chunking_strategy: Array<Chunking_Strategy>;
+  /** fetch aggregated fields from the table: "chunking_strategy" */
+  chunking_strategy_aggregate: Chunking_Strategy_Aggregate;
+  /** fetch data from the table: "chunking_strategy" using primary key columns */
+  chunking_strategy_by_pk?: Maybe<Chunking_Strategy>;
+  /** fetch data from the table in a streaming manner: "chunking_strategy" */
+  chunking_strategy_stream: Array<Chunking_Strategy>;
+  /** fetch data from the table: "files" */
+  files: Array<Files>;
+  /** fetch aggregated fields from the table: "files" */
+  files_aggregate: Files_Aggregate;
+  /** fetch data from the table: "files" using primary key columns */
+  files_by_pk?: Maybe<Files>;
+  /** fetch data from the table in a streaming manner: "files" */
+  files_stream: Array<Files>;
+  /** fetch data from the table: "knowledge" */
+  knowledge: Array<Knowledge>;
+  /** fetch aggregated fields from the table: "knowledge" */
+  knowledge_aggregate: Knowledge_Aggregate;
   /** fetch data from the table: "knowledge_base" */
   knowledge_base: Array<Knowledge_Base>;
   /** fetch aggregated fields from the table: "knowledge_base" */
@@ -5624,6 +8118,10 @@ export type Subscription_Root = {
   knowledge_base_type_by_pk?: Maybe<Knowledge_Base_Type>;
   /** fetch data from the table in a streaming manner: "knowledge_base_type" */
   knowledge_base_type_stream: Array<Knowledge_Base_Type>;
+  /** fetch data from the table: "knowledge" using primary key columns */
+  knowledge_by_pk?: Maybe<Knowledge>;
+  /** fetch data from the table in a streaming manner: "knowledge" */
+  knowledge_stream: Array<Knowledge>;
   /** fetch data from the table: "message" */
   message: Array<Message>;
   /** fetch aggregated fields from the table: "message" */
@@ -5672,6 +8170,14 @@ export type Subscription_Root = {
   prompt_hub_by_pk?: Maybe<Prompt_Hub>;
   /** fetch data from the table in a streaming manner: "prompt_hub" */
   prompt_hub_stream: Array<Prompt_Hub>;
+  /** fetch data from the table: "prompt_template" */
+  prompt_template: Array<Prompt_Template>;
+  /** fetch aggregated fields from the table: "prompt_template" */
+  prompt_template_aggregate: Prompt_Template_Aggregate;
+  /** fetch data from the table: "prompt_template" using primary key columns */
+  prompt_template_by_pk?: Maybe<Prompt_Template>;
+  /** fetch data from the table in a streaming manner: "prompt_template" */
+  prompt_template_stream: Array<Prompt_Template>;
   /** fetch data from the table: "provider_type" */
   provider_type: Array<Provider_Type>;
   /** fetch aggregated fields from the table: "provider_type" */
@@ -5696,6 +8202,22 @@ export type Subscription_Root = {
   r_agent_user_by_pk?: Maybe<R_Agent_User>;
   /** fetch data from the table in a streaming manner: "r_agent_user" */
   r_agent_user_stream: Array<R_Agent_User>;
+  /** fetch data from the table: "r_kb_user" */
+  r_kb_user: Array<R_Kb_User>;
+  /** fetch aggregated fields from the table: "r_kb_user" */
+  r_kb_user_aggregate: R_Kb_User_Aggregate;
+  /** fetch data from the table: "r_kb_user" using primary key columns */
+  r_kb_user_by_pk?: Maybe<R_Kb_User>;
+  /** fetch data from the table in a streaming manner: "r_kb_user" */
+  r_kb_user_stream: Array<R_Kb_User>;
+  /** fetch data from the table: "role" */
+  role: Array<Role>;
+  /** fetch aggregated fields from the table: "role" */
+  role_aggregate: Role_Aggregate;
+  /** fetch data from the table: "role" using primary key columns */
+  role_by_pk?: Maybe<Role>;
+  /** fetch data from the table in a streaming manner: "role" */
+  role_stream: Array<Role>;
   /** An array relationship */
   sessions: Array<Sessions>;
   /** An aggregate relationship */
@@ -5704,6 +8226,22 @@ export type Subscription_Root = {
   sessions_by_pk?: Maybe<Sessions>;
   /** fetch data from the table in a streaming manner: "sessions" */
   sessions_stream: Array<Sessions>;
+  /** fetch data from the table: "spider" */
+  spider: Array<Spider>;
+  /** fetch aggregated fields from the table: "spider" */
+  spider_aggregate: Spider_Aggregate;
+  /** fetch data from the table: "spider" using primary key columns */
+  spider_by_pk?: Maybe<Spider>;
+  /** fetch data from the table in a streaming manner: "spider" */
+  spider_stream: Array<Spider>;
+  /** fetch data from the table: "status" */
+  status: Array<Status>;
+  /** fetch aggregated fields from the table: "status" */
+  status_aggregate: Status_Aggregate;
+  /** fetch data from the table: "status" using primary key columns */
+  status_by_pk?: Maybe<Status>;
+  /** fetch data from the table in a streaming manner: "status" */
+  status_stream: Array<Status>;
   /** fetch data from the table: "topic_history" */
   topic_history: Array<Topic_History>;
   /** fetch aggregated fields from the table: "topic_history" */
@@ -5730,590 +8268,725 @@ export type Subscription_Root = {
   verification_tokens_stream: Array<Verification_Tokens>;
 };
 
-
 export type Subscription_RootAccountsArgs = {
   distinct_on?: InputMaybe<Array<Accounts_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Accounts_Order_By>>;
   where?: InputMaybe<Accounts_Bool_Exp>;
 };
-
 
 export type Subscription_RootAccounts_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Accounts_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Accounts_Order_By>>;
   where?: InputMaybe<Accounts_Bool_Exp>;
 };
 
-
 export type Subscription_RootAccounts_By_PkArgs = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
 
-
 export type Subscription_RootAccounts_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
+  batch_size: Scalars["Int"]["input"];
   cursor: Array<InputMaybe<Accounts_Stream_Cursor_Input>>;
   where?: InputMaybe<Accounts_Bool_Exp>;
 };
 
-
 export type Subscription_RootAgentArgs = {
   distinct_on?: InputMaybe<Array<Agent_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Agent_Order_By>>;
   where?: InputMaybe<Agent_Bool_Exp>;
 };
-
 
 export type Subscription_RootAgent_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Agent_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Agent_Order_By>>;
   where?: InputMaybe<Agent_Bool_Exp>;
 };
 
-
 export type Subscription_RootAgent_By_PkArgs = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
 
-
 export type Subscription_RootAgent_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
+  batch_size: Scalars["Int"]["input"];
   cursor: Array<InputMaybe<Agent_Stream_Cursor_Input>>;
   where?: InputMaybe<Agent_Bool_Exp>;
 };
 
-
 export type Subscription_RootAgent_TypeArgs = {
   distinct_on?: InputMaybe<Array<Agent_Type_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Agent_Type_Order_By>>;
   where?: InputMaybe<Agent_Type_Bool_Exp>;
 };
-
 
 export type Subscription_RootAgent_Type_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Agent_Type_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Agent_Type_Order_By>>;
   where?: InputMaybe<Agent_Type_Bool_Exp>;
 };
 
-
 export type Subscription_RootAgent_Type_By_PkArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars["Int"]["input"];
 };
 
-
 export type Subscription_RootAgent_Type_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
+  batch_size: Scalars["Int"]["input"];
   cursor: Array<InputMaybe<Agent_Type_Stream_Cursor_Input>>;
   where?: InputMaybe<Agent_Type_Bool_Exp>;
 };
 
+export type Subscription_RootChunking_StrategyArgs = {
+  distinct_on?: InputMaybe<Array<Chunking_Strategy_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Chunking_Strategy_Order_By>>;
+  where?: InputMaybe<Chunking_Strategy_Bool_Exp>;
+};
+
+export type Subscription_RootChunking_Strategy_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Chunking_Strategy_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Chunking_Strategy_Order_By>>;
+  where?: InputMaybe<Chunking_Strategy_Bool_Exp>;
+};
+
+export type Subscription_RootChunking_Strategy_By_PkArgs = {
+  value: Scalars["String"]["input"];
+};
+
+export type Subscription_RootChunking_Strategy_StreamArgs = {
+  batch_size: Scalars["Int"]["input"];
+  cursor: Array<InputMaybe<Chunking_Strategy_Stream_Cursor_Input>>;
+  where?: InputMaybe<Chunking_Strategy_Bool_Exp>;
+};
+
+export type Subscription_RootFilesArgs = {
+  distinct_on?: InputMaybe<Array<Files_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Files_Order_By>>;
+  where?: InputMaybe<Files_Bool_Exp>;
+};
+
+export type Subscription_RootFiles_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Files_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Files_Order_By>>;
+  where?: InputMaybe<Files_Bool_Exp>;
+};
+
+export type Subscription_RootFiles_By_PkArgs = {
+  id: Scalars["uuid"]["input"];
+};
+
+export type Subscription_RootFiles_StreamArgs = {
+  batch_size: Scalars["Int"]["input"];
+  cursor: Array<InputMaybe<Files_Stream_Cursor_Input>>;
+  where?: InputMaybe<Files_Bool_Exp>;
+};
+
+export type Subscription_RootKnowledgeArgs = {
+  distinct_on?: InputMaybe<Array<Knowledge_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Knowledge_Order_By>>;
+  where?: InputMaybe<Knowledge_Bool_Exp>;
+};
+
+export type Subscription_RootKnowledge_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Knowledge_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Knowledge_Order_By>>;
+  where?: InputMaybe<Knowledge_Bool_Exp>;
+};
 
 export type Subscription_RootKnowledge_BaseArgs = {
   distinct_on?: InputMaybe<Array<Knowledge_Base_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Knowledge_Base_Order_By>>;
   where?: InputMaybe<Knowledge_Base_Bool_Exp>;
 };
-
 
 export type Subscription_RootKnowledge_Base_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Knowledge_Base_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Knowledge_Base_Order_By>>;
   where?: InputMaybe<Knowledge_Base_Bool_Exp>;
 };
 
-
 export type Subscription_RootKnowledge_Base_By_PkArgs = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
 
-
 export type Subscription_RootKnowledge_Base_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
+  batch_size: Scalars["Int"]["input"];
   cursor: Array<InputMaybe<Knowledge_Base_Stream_Cursor_Input>>;
   where?: InputMaybe<Knowledge_Base_Bool_Exp>;
 };
 
-
 export type Subscription_RootKnowledge_Base_TypeArgs = {
   distinct_on?: InputMaybe<Array<Knowledge_Base_Type_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Knowledge_Base_Type_Order_By>>;
   where?: InputMaybe<Knowledge_Base_Type_Bool_Exp>;
 };
-
 
 export type Subscription_RootKnowledge_Base_Type_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Knowledge_Base_Type_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Knowledge_Base_Type_Order_By>>;
   where?: InputMaybe<Knowledge_Base_Type_Bool_Exp>;
 };
 
-
 export type Subscription_RootKnowledge_Base_Type_By_PkArgs = {
-  value: Scalars['String']['input'];
+  value: Scalars["String"]["input"];
 };
 
-
 export type Subscription_RootKnowledge_Base_Type_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
+  batch_size: Scalars["Int"]["input"];
   cursor: Array<InputMaybe<Knowledge_Base_Type_Stream_Cursor_Input>>;
   where?: InputMaybe<Knowledge_Base_Type_Bool_Exp>;
 };
 
+export type Subscription_RootKnowledge_By_PkArgs = {
+  id: Scalars["uuid"]["input"];
+};
+
+export type Subscription_RootKnowledge_StreamArgs = {
+  batch_size: Scalars["Int"]["input"];
+  cursor: Array<InputMaybe<Knowledge_Stream_Cursor_Input>>;
+  where?: InputMaybe<Knowledge_Bool_Exp>;
+};
 
 export type Subscription_RootMessageArgs = {
   distinct_on?: InputMaybe<Array<Message_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Message_Order_By>>;
   where?: InputMaybe<Message_Bool_Exp>;
 };
-
 
 export type Subscription_RootMessage_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Message_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Message_Order_By>>;
   where?: InputMaybe<Message_Bool_Exp>;
 };
 
-
 export type Subscription_RootMessage_By_PkArgs = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
-
 
 export type Subscription_RootMessage_FeedbackArgs = {
   distinct_on?: InputMaybe<Array<Message_Feedback_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Message_Feedback_Order_By>>;
   where?: InputMaybe<Message_Feedback_Bool_Exp>;
 };
-
 
 export type Subscription_RootMessage_Feedback_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Message_Feedback_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Message_Feedback_Order_By>>;
   where?: InputMaybe<Message_Feedback_Bool_Exp>;
 };
 
-
 export type Subscription_RootMessage_Feedback_By_PkArgs = {
-  value: Scalars['String']['input'];
+  value: Scalars["String"]["input"];
 };
 
-
 export type Subscription_RootMessage_Feedback_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
+  batch_size: Scalars["Int"]["input"];
   cursor: Array<InputMaybe<Message_Feedback_Stream_Cursor_Input>>;
   where?: InputMaybe<Message_Feedback_Bool_Exp>;
 };
 
-
 export type Subscription_RootMessage_RoleArgs = {
   distinct_on?: InputMaybe<Array<Message_Role_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Message_Role_Order_By>>;
   where?: InputMaybe<Message_Role_Bool_Exp>;
 };
-
 
 export type Subscription_RootMessage_Role_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Message_Role_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Message_Role_Order_By>>;
   where?: InputMaybe<Message_Role_Bool_Exp>;
 };
 
-
 export type Subscription_RootMessage_Role_By_PkArgs = {
-  value: Scalars['String']['input'];
+  value: Scalars["String"]["input"];
 };
 
-
 export type Subscription_RootMessage_Role_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
+  batch_size: Scalars["Int"]["input"];
   cursor: Array<InputMaybe<Message_Role_Stream_Cursor_Input>>;
   where?: InputMaybe<Message_Role_Bool_Exp>;
 };
 
-
 export type Subscription_RootMessage_StatusArgs = {
   distinct_on?: InputMaybe<Array<Message_Status_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Message_Status_Order_By>>;
   where?: InputMaybe<Message_Status_Bool_Exp>;
 };
-
 
 export type Subscription_RootMessage_Status_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Message_Status_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Message_Status_Order_By>>;
   where?: InputMaybe<Message_Status_Bool_Exp>;
 };
 
-
 export type Subscription_RootMessage_Status_By_PkArgs = {
-  value: Scalars['String']['input'];
+  value: Scalars["String"]["input"];
 };
 
-
 export type Subscription_RootMessage_Status_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
+  batch_size: Scalars["Int"]["input"];
   cursor: Array<InputMaybe<Message_Status_Stream_Cursor_Input>>;
   where?: InputMaybe<Message_Status_Bool_Exp>;
 };
 
-
 export type Subscription_RootMessage_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
+  batch_size: Scalars["Int"]["input"];
   cursor: Array<InputMaybe<Message_Stream_Cursor_Input>>;
   where?: InputMaybe<Message_Bool_Exp>;
 };
 
-
 export type Subscription_RootMultimodal_DataArgs = {
   distinct_on?: InputMaybe<Array<Multimodal_Data_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Multimodal_Data_Order_By>>;
   where?: InputMaybe<Multimodal_Data_Bool_Exp>;
 };
-
 
 export type Subscription_RootMultimodal_Data_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Multimodal_Data_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Multimodal_Data_Order_By>>;
   where?: InputMaybe<Multimodal_Data_Bool_Exp>;
 };
 
-
 export type Subscription_RootMultimodal_Data_By_PkArgs = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
 
-
 export type Subscription_RootMultimodal_Data_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
+  batch_size: Scalars["Int"]["input"];
   cursor: Array<InputMaybe<Multimodal_Data_Stream_Cursor_Input>>;
   where?: InputMaybe<Multimodal_Data_Bool_Exp>;
 };
 
-
 export type Subscription_RootPrompt_HubArgs = {
   distinct_on?: InputMaybe<Array<Prompt_Hub_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Prompt_Hub_Order_By>>;
   where?: InputMaybe<Prompt_Hub_Bool_Exp>;
 };
-
 
 export type Subscription_RootPrompt_Hub_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Prompt_Hub_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Prompt_Hub_Order_By>>;
   where?: InputMaybe<Prompt_Hub_Bool_Exp>;
 };
 
-
 export type Subscription_RootPrompt_Hub_By_PkArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars["Int"]["input"];
 };
 
-
 export type Subscription_RootPrompt_Hub_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
+  batch_size: Scalars["Int"]["input"];
   cursor: Array<InputMaybe<Prompt_Hub_Stream_Cursor_Input>>;
   where?: InputMaybe<Prompt_Hub_Bool_Exp>;
 };
 
+export type Subscription_RootPrompt_TemplateArgs = {
+  distinct_on?: InputMaybe<Array<Prompt_Template_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Prompt_Template_Order_By>>;
+  where?: InputMaybe<Prompt_Template_Bool_Exp>;
+};
+
+export type Subscription_RootPrompt_Template_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Prompt_Template_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Prompt_Template_Order_By>>;
+  where?: InputMaybe<Prompt_Template_Bool_Exp>;
+};
+
+export type Subscription_RootPrompt_Template_By_PkArgs = {
+  id: Scalars["Int"]["input"];
+};
+
+export type Subscription_RootPrompt_Template_StreamArgs = {
+  batch_size: Scalars["Int"]["input"];
+  cursor: Array<InputMaybe<Prompt_Template_Stream_Cursor_Input>>;
+  where?: InputMaybe<Prompt_Template_Bool_Exp>;
+};
 
 export type Subscription_RootProvider_TypeArgs = {
   distinct_on?: InputMaybe<Array<Provider_Type_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Provider_Type_Order_By>>;
   where?: InputMaybe<Provider_Type_Bool_Exp>;
 };
-
 
 export type Subscription_RootProvider_Type_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Provider_Type_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Provider_Type_Order_By>>;
   where?: InputMaybe<Provider_Type_Bool_Exp>;
 };
 
-
 export type Subscription_RootProvider_Type_By_PkArgs = {
-  value: Scalars['String']['input'];
+  value: Scalars["String"]["input"];
 };
 
-
 export type Subscription_RootProvider_Type_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
+  batch_size: Scalars["Int"]["input"];
   cursor: Array<InputMaybe<Provider_Type_Stream_Cursor_Input>>;
   where?: InputMaybe<Provider_Type_Bool_Exp>;
 };
 
-
 export type Subscription_RootR_Agent_KbArgs = {
   distinct_on?: InputMaybe<Array<R_Agent_Kb_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<R_Agent_Kb_Order_By>>;
   where?: InputMaybe<R_Agent_Kb_Bool_Exp>;
 };
-
 
 export type Subscription_RootR_Agent_Kb_AggregateArgs = {
   distinct_on?: InputMaybe<Array<R_Agent_Kb_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<R_Agent_Kb_Order_By>>;
   where?: InputMaybe<R_Agent_Kb_Bool_Exp>;
 };
 
-
 export type Subscription_RootR_Agent_Kb_By_PkArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars["Int"]["input"];
 };
 
-
 export type Subscription_RootR_Agent_Kb_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
+  batch_size: Scalars["Int"]["input"];
   cursor: Array<InputMaybe<R_Agent_Kb_Stream_Cursor_Input>>;
   where?: InputMaybe<R_Agent_Kb_Bool_Exp>;
 };
 
-
 export type Subscription_RootR_Agent_UserArgs = {
   distinct_on?: InputMaybe<Array<R_Agent_User_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<R_Agent_User_Order_By>>;
   where?: InputMaybe<R_Agent_User_Bool_Exp>;
 };
-
 
 export type Subscription_RootR_Agent_User_AggregateArgs = {
   distinct_on?: InputMaybe<Array<R_Agent_User_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<R_Agent_User_Order_By>>;
   where?: InputMaybe<R_Agent_User_Bool_Exp>;
 };
 
-
 export type Subscription_RootR_Agent_User_By_PkArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars["Int"]["input"];
 };
 
-
 export type Subscription_RootR_Agent_User_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
+  batch_size: Scalars["Int"]["input"];
   cursor: Array<InputMaybe<R_Agent_User_Stream_Cursor_Input>>;
   where?: InputMaybe<R_Agent_User_Bool_Exp>;
 };
 
+export type Subscription_RootR_Kb_UserArgs = {
+  distinct_on?: InputMaybe<Array<R_Kb_User_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<R_Kb_User_Order_By>>;
+  where?: InputMaybe<R_Kb_User_Bool_Exp>;
+};
+
+export type Subscription_RootR_Kb_User_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<R_Kb_User_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<R_Kb_User_Order_By>>;
+  where?: InputMaybe<R_Kb_User_Bool_Exp>;
+};
+
+export type Subscription_RootR_Kb_User_By_PkArgs = {
+  id: Scalars["Int"]["input"];
+};
+
+export type Subscription_RootR_Kb_User_StreamArgs = {
+  batch_size: Scalars["Int"]["input"];
+  cursor: Array<InputMaybe<R_Kb_User_Stream_Cursor_Input>>;
+  where?: InputMaybe<R_Kb_User_Bool_Exp>;
+};
+
+export type Subscription_RootRoleArgs = {
+  distinct_on?: InputMaybe<Array<Role_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Role_Order_By>>;
+  where?: InputMaybe<Role_Bool_Exp>;
+};
+
+export type Subscription_RootRole_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Role_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Role_Order_By>>;
+  where?: InputMaybe<Role_Bool_Exp>;
+};
+
+export type Subscription_RootRole_By_PkArgs = {
+  value: Scalars["String"]["input"];
+};
+
+export type Subscription_RootRole_StreamArgs = {
+  batch_size: Scalars["Int"]["input"];
+  cursor: Array<InputMaybe<Role_Stream_Cursor_Input>>;
+  where?: InputMaybe<Role_Bool_Exp>;
+};
 
 export type Subscription_RootSessionsArgs = {
   distinct_on?: InputMaybe<Array<Sessions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Sessions_Order_By>>;
   where?: InputMaybe<Sessions_Bool_Exp>;
 };
-
 
 export type Subscription_RootSessions_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Sessions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Sessions_Order_By>>;
   where?: InputMaybe<Sessions_Bool_Exp>;
 };
 
-
 export type Subscription_RootSessions_By_PkArgs = {
-  sessionToken: Scalars['String']['input'];
+  sessionToken: Scalars["String"]["input"];
 };
 
-
 export type Subscription_RootSessions_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
+  batch_size: Scalars["Int"]["input"];
   cursor: Array<InputMaybe<Sessions_Stream_Cursor_Input>>;
   where?: InputMaybe<Sessions_Bool_Exp>;
 };
 
+export type Subscription_RootSpiderArgs = {
+  distinct_on?: InputMaybe<Array<Spider_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Spider_Order_By>>;
+  where?: InputMaybe<Spider_Bool_Exp>;
+};
+
+export type Subscription_RootSpider_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Spider_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Spider_Order_By>>;
+  where?: InputMaybe<Spider_Bool_Exp>;
+};
+
+export type Subscription_RootSpider_By_PkArgs = {
+  id: Scalars["uuid"]["input"];
+};
+
+export type Subscription_RootSpider_StreamArgs = {
+  batch_size: Scalars["Int"]["input"];
+  cursor: Array<InputMaybe<Spider_Stream_Cursor_Input>>;
+  where?: InputMaybe<Spider_Bool_Exp>;
+};
+
+export type Subscription_RootStatusArgs = {
+  distinct_on?: InputMaybe<Array<Status_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Status_Order_By>>;
+  where?: InputMaybe<Status_Bool_Exp>;
+};
+
+export type Subscription_RootStatus_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Status_Select_Column>>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  order_by?: InputMaybe<Array<Status_Order_By>>;
+  where?: InputMaybe<Status_Bool_Exp>;
+};
+
+export type Subscription_RootStatus_By_PkArgs = {
+  value: Scalars["String"]["input"];
+};
+
+export type Subscription_RootStatus_StreamArgs = {
+  batch_size: Scalars["Int"]["input"];
+  cursor: Array<InputMaybe<Status_Stream_Cursor_Input>>;
+  where?: InputMaybe<Status_Bool_Exp>;
+};
 
 export type Subscription_RootTopic_HistoryArgs = {
   distinct_on?: InputMaybe<Array<Topic_History_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Topic_History_Order_By>>;
   where?: InputMaybe<Topic_History_Bool_Exp>;
 };
-
 
 export type Subscription_RootTopic_History_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Topic_History_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Topic_History_Order_By>>;
   where?: InputMaybe<Topic_History_Bool_Exp>;
 };
 
-
 export type Subscription_RootTopic_History_By_PkArgs = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
 
-
 export type Subscription_RootTopic_History_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
+  batch_size: Scalars["Int"]["input"];
   cursor: Array<InputMaybe<Topic_History_Stream_Cursor_Input>>;
   where?: InputMaybe<Topic_History_Bool_Exp>;
 };
 
-
 export type Subscription_RootUsersArgs = {
   distinct_on?: InputMaybe<Array<Users_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Users_Order_By>>;
   where?: InputMaybe<Users_Bool_Exp>;
 };
-
 
 export type Subscription_RootUsers_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Users_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Users_Order_By>>;
   where?: InputMaybe<Users_Bool_Exp>;
 };
 
-
 export type Subscription_RootUsers_By_PkArgs = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
 
-
 export type Subscription_RootUsers_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
+  batch_size: Scalars["Int"]["input"];
   cursor: Array<InputMaybe<Users_Stream_Cursor_Input>>;
   where?: InputMaybe<Users_Bool_Exp>;
 };
 
-
 export type Subscription_RootVerification_TokensArgs = {
   distinct_on?: InputMaybe<Array<Verification_Tokens_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Verification_Tokens_Order_By>>;
   where?: InputMaybe<Verification_Tokens_Bool_Exp>;
 };
-
 
 export type Subscription_RootVerification_Tokens_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Verification_Tokens_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Verification_Tokens_Order_By>>;
   where?: InputMaybe<Verification_Tokens_Bool_Exp>;
 };
 
-
 export type Subscription_RootVerification_Tokens_By_PkArgs = {
-  token: Scalars['String']['input'];
+  token: Scalars["String"]["input"];
 };
 
-
 export type Subscription_RootVerification_Tokens_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
+  batch_size: Scalars["Int"]["input"];
   cursor: Array<InputMaybe<Verification_Tokens_Stream_Cursor_Input>>;
   where?: InputMaybe<Verification_Tokens_Bool_Exp>;
 };
 
 /** Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'. */
 export type Timestamptz_Comparison_Exp = {
-  _eq?: InputMaybe<Scalars['timestamptz']['input']>;
-  _gt?: InputMaybe<Scalars['timestamptz']['input']>;
-  _gte?: InputMaybe<Scalars['timestamptz']['input']>;
-  _in?: InputMaybe<Array<Scalars['timestamptz']['input']>>;
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
-  _lt?: InputMaybe<Scalars['timestamptz']['input']>;
-  _lte?: InputMaybe<Scalars['timestamptz']['input']>;
-  _neq?: InputMaybe<Scalars['timestamptz']['input']>;
-  _nin?: InputMaybe<Array<Scalars['timestamptz']['input']>>;
+  _eq?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  _gt?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  _gte?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  _in?: InputMaybe<Array<Scalars["timestamptz"]["input"]>>;
+  _is_null?: InputMaybe<Scalars["Boolean"]["input"]>;
+  _lt?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  _lte?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  _neq?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  _nin?: InputMaybe<Array<Scalars["timestamptz"]["input"]>>;
 };
 
 /** topic_history */
 export type Topic_History = {
-  __typename?: 'topic_history';
-  agent_id?: Maybe<Scalars['uuid']['output']>;
-  created_at: Scalars['timestamptz']['output'];
-  id: Scalars['uuid']['output'];
-  title: Scalars['String']['output'];
-  updated_at: Scalars['timestamptz']['output'];
-  user_id?: Maybe<Scalars['uuid']['output']>;
+  __typename?: "topic_history";
+  agent_id?: Maybe<Scalars["uuid"]["output"]>;
+  created_at: Scalars["timestamptz"]["output"];
+  id: Scalars["uuid"]["output"];
+  title: Scalars["String"]["output"];
+  updated_at: Scalars["timestamptz"]["output"];
+  user_id?: Maybe<Scalars["uuid"]["output"]>;
 };
 
 /** aggregated selection of "topic_history" */
 export type Topic_History_Aggregate = {
-  __typename?: 'topic_history_aggregate';
+  __typename?: "topic_history_aggregate";
   aggregate?: Maybe<Topic_History_Aggregate_Fields>;
   nodes: Array<Topic_History>;
 };
 
 /** aggregate fields of "topic_history" */
 export type Topic_History_Aggregate_Fields = {
-  __typename?: 'topic_history_aggregate_fields';
-  count: Scalars['Int']['output'];
+  __typename?: "topic_history_aggregate_fields";
+  count: Scalars["Int"]["output"];
   max?: Maybe<Topic_History_Max_Fields>;
   min?: Maybe<Topic_History_Min_Fields>;
 };
 
-
 /** aggregate fields of "topic_history" */
 export type Topic_History_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Topic_History_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 /** Boolean expression to filter rows from the table "topic_history". All fields are combined with a logical 'AND'. */
@@ -6332,46 +9005,46 @@ export type Topic_History_Bool_Exp = {
 /** unique or primary key constraints on table "topic_history" */
 export enum Topic_History_Constraint {
   /** unique or primary key constraint on columns "id" */
-  TopicHistoryPkey = 'topic_history_pkey'
+  TopicHistoryPkey = "topic_history_pkey",
 }
 
 /** input type for inserting data into table "topic_history" */
 export type Topic_History_Insert_Input = {
-  agent_id?: InputMaybe<Scalars['uuid']['input']>;
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  user_id?: InputMaybe<Scalars['uuid']['input']>;
+  agent_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  user_id?: InputMaybe<Scalars["uuid"]["input"]>;
 };
 
 /** aggregate max on columns */
 export type Topic_History_Max_Fields = {
-  __typename?: 'topic_history_max_fields';
-  agent_id?: Maybe<Scalars['uuid']['output']>;
-  created_at?: Maybe<Scalars['timestamptz']['output']>;
-  id?: Maybe<Scalars['uuid']['output']>;
-  title?: Maybe<Scalars['String']['output']>;
-  updated_at?: Maybe<Scalars['timestamptz']['output']>;
-  user_id?: Maybe<Scalars['uuid']['output']>;
+  __typename?: "topic_history_max_fields";
+  agent_id?: Maybe<Scalars["uuid"]["output"]>;
+  created_at?: Maybe<Scalars["timestamptz"]["output"]>;
+  id?: Maybe<Scalars["uuid"]["output"]>;
+  title?: Maybe<Scalars["String"]["output"]>;
+  updated_at?: Maybe<Scalars["timestamptz"]["output"]>;
+  user_id?: Maybe<Scalars["uuid"]["output"]>;
 };
 
 /** aggregate min on columns */
 export type Topic_History_Min_Fields = {
-  __typename?: 'topic_history_min_fields';
-  agent_id?: Maybe<Scalars['uuid']['output']>;
-  created_at?: Maybe<Scalars['timestamptz']['output']>;
-  id?: Maybe<Scalars['uuid']['output']>;
-  title?: Maybe<Scalars['String']['output']>;
-  updated_at?: Maybe<Scalars['timestamptz']['output']>;
-  user_id?: Maybe<Scalars['uuid']['output']>;
+  __typename?: "topic_history_min_fields";
+  agent_id?: Maybe<Scalars["uuid"]["output"]>;
+  created_at?: Maybe<Scalars["timestamptz"]["output"]>;
+  id?: Maybe<Scalars["uuid"]["output"]>;
+  title?: Maybe<Scalars["String"]["output"]>;
+  updated_at?: Maybe<Scalars["timestamptz"]["output"]>;
+  user_id?: Maybe<Scalars["uuid"]["output"]>;
 };
 
 /** response of any mutation on the table "topic_history" */
 export type Topic_History_Mutation_Response = {
-  __typename?: 'topic_history_mutation_response';
+  __typename?: "topic_history_mutation_response";
   /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
+  affected_rows: Scalars["Int"]["output"];
   /** data from the rows affected by the mutation */
   returning: Array<Topic_History>;
 };
@@ -6395,33 +9068,33 @@ export type Topic_History_Order_By = {
 
 /** primary key columns input for table: topic_history */
 export type Topic_History_Pk_Columns_Input = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
 
 /** select columns of table "topic_history" */
 export enum Topic_History_Select_Column {
   /** column name */
-  AgentId = 'agent_id',
+  AgentId = "agent_id",
   /** column name */
-  CreatedAt = 'created_at',
+  CreatedAt = "created_at",
   /** column name */
-  Id = 'id',
+  Id = "id",
   /** column name */
-  Title = 'title',
+  Title = "title",
   /** column name */
-  UpdatedAt = 'updated_at',
+  UpdatedAt = "updated_at",
   /** column name */
-  UserId = 'user_id'
+  UserId = "user_id",
 }
 
 /** input type for updating data in table "topic_history" */
 export type Topic_History_Set_Input = {
-  agent_id?: InputMaybe<Scalars['uuid']['input']>;
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  user_id?: InputMaybe<Scalars['uuid']['input']>;
+  agent_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  user_id?: InputMaybe<Scalars["uuid"]["input"]>;
 };
 
 /** Streaming cursor of the table "topic_history" */
@@ -6434,28 +9107,28 @@ export type Topic_History_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Topic_History_Stream_Cursor_Value_Input = {
-  agent_id?: InputMaybe<Scalars['uuid']['input']>;
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
-  user_id?: InputMaybe<Scalars['uuid']['input']>;
+  agent_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  created_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  user_id?: InputMaybe<Scalars["uuid"]["input"]>;
 };
 
 /** update columns of table "topic_history" */
 export enum Topic_History_Update_Column {
   /** column name */
-  AgentId = 'agent_id',
+  AgentId = "agent_id",
   /** column name */
-  CreatedAt = 'created_at',
+  CreatedAt = "created_at",
   /** column name */
-  Id = 'id',
+  Id = "id",
   /** column name */
-  Title = 'title',
+  Title = "title",
   /** column name */
-  UpdatedAt = 'updated_at',
+  UpdatedAt = "updated_at",
   /** column name */
-  UserId = 'user_id'
+  UserId = "user_id",
 }
 
 export type Topic_History_Updates = {
@@ -6467,7 +9140,7 @@ export type Topic_History_Updates = {
 
 /** columns and relationships of "users" */
 export type Users = {
-  __typename?: 'users';
+  __typename?: "users";
   /** An array relationship */
   accounts: Array<Accounts>;
   /** An aggregate relationship */
@@ -6476,97 +9149,90 @@ export type Users = {
   agents: Array<R_Agent_User>;
   /** An aggregate relationship */
   agents_aggregate: R_Agent_User_Aggregate;
-  email: Scalars['String']['output'];
-  emailVerified?: Maybe<Scalars['timestamptz']['output']>;
-  id: Scalars['uuid']['output'];
-  image?: Maybe<Scalars['String']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
+  email: Scalars["String"]["output"];
+  emailVerified?: Maybe<Scalars["timestamptz"]["output"]>;
+  id: Scalars["uuid"]["output"];
+  image?: Maybe<Scalars["String"]["output"]>;
+  name?: Maybe<Scalars["String"]["output"]>;
   /** An array relationship */
   sessions: Array<Sessions>;
   /** An aggregate relationship */
   sessions_aggregate: Sessions_Aggregate;
 };
 
-
 /** columns and relationships of "users" */
 export type UsersAccountsArgs = {
   distinct_on?: InputMaybe<Array<Accounts_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Accounts_Order_By>>;
   where?: InputMaybe<Accounts_Bool_Exp>;
 };
-
 
 /** columns and relationships of "users" */
 export type UsersAccounts_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Accounts_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Accounts_Order_By>>;
   where?: InputMaybe<Accounts_Bool_Exp>;
 };
 
-
 /** columns and relationships of "users" */
 export type UsersAgentsArgs = {
   distinct_on?: InputMaybe<Array<R_Agent_User_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<R_Agent_User_Order_By>>;
   where?: InputMaybe<R_Agent_User_Bool_Exp>;
 };
-
 
 /** columns and relationships of "users" */
 export type UsersAgents_AggregateArgs = {
   distinct_on?: InputMaybe<Array<R_Agent_User_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<R_Agent_User_Order_By>>;
   where?: InputMaybe<R_Agent_User_Bool_Exp>;
 };
 
-
 /** columns and relationships of "users" */
 export type UsersSessionsArgs = {
   distinct_on?: InputMaybe<Array<Sessions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Sessions_Order_By>>;
   where?: InputMaybe<Sessions_Bool_Exp>;
 };
 
-
 /** columns and relationships of "users" */
 export type UsersSessions_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Sessions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   order_by?: InputMaybe<Array<Sessions_Order_By>>;
   where?: InputMaybe<Sessions_Bool_Exp>;
 };
 
 /** aggregated selection of "users" */
 export type Users_Aggregate = {
-  __typename?: 'users_aggregate';
+  __typename?: "users_aggregate";
   aggregate?: Maybe<Users_Aggregate_Fields>;
   nodes: Array<Users>;
 };
 
 /** aggregate fields of "users" */
 export type Users_Aggregate_Fields = {
-  __typename?: 'users_aggregate_fields';
-  count: Scalars['Int']['output'];
+  __typename?: "users_aggregate_fields";
+  count: Scalars["Int"]["output"];
   max?: Maybe<Users_Max_Fields>;
   min?: Maybe<Users_Min_Fields>;
 };
 
-
 /** aggregate fields of "users" */
 export type Users_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Users_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 /** Boolean expression to filter rows from the table "users". All fields are combined with a logical 'AND'. */
@@ -6590,48 +9256,48 @@ export type Users_Bool_Exp = {
 /** unique or primary key constraints on table "users" */
 export enum Users_Constraint {
   /** unique or primary key constraint on columns "email" */
-  UsersEmailKey = 'users_email_key',
+  UsersEmailKey = "users_email_key",
   /** unique or primary key constraint on columns "id" */
-  UsersPkey = 'users_pkey'
+  UsersPkey = "users_pkey",
 }
 
 /** input type for inserting data into table "users" */
 export type Users_Insert_Input = {
   accounts?: InputMaybe<Accounts_Arr_Rel_Insert_Input>;
   agents?: InputMaybe<R_Agent_User_Arr_Rel_Insert_Input>;
-  email?: InputMaybe<Scalars['String']['input']>;
-  emailVerified?: InputMaybe<Scalars['timestamptz']['input']>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
-  image?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars["String"]["input"]>;
+  emailVerified?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  image?: InputMaybe<Scalars["String"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
   sessions?: InputMaybe<Sessions_Arr_Rel_Insert_Input>;
 };
 
 /** aggregate max on columns */
 export type Users_Max_Fields = {
-  __typename?: 'users_max_fields';
-  email?: Maybe<Scalars['String']['output']>;
-  emailVerified?: Maybe<Scalars['timestamptz']['output']>;
-  id?: Maybe<Scalars['uuid']['output']>;
-  image?: Maybe<Scalars['String']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
+  __typename?: "users_max_fields";
+  email?: Maybe<Scalars["String"]["output"]>;
+  emailVerified?: Maybe<Scalars["timestamptz"]["output"]>;
+  id?: Maybe<Scalars["uuid"]["output"]>;
+  image?: Maybe<Scalars["String"]["output"]>;
+  name?: Maybe<Scalars["String"]["output"]>;
 };
 
 /** aggregate min on columns */
 export type Users_Min_Fields = {
-  __typename?: 'users_min_fields';
-  email?: Maybe<Scalars['String']['output']>;
-  emailVerified?: Maybe<Scalars['timestamptz']['output']>;
-  id?: Maybe<Scalars['uuid']['output']>;
-  image?: Maybe<Scalars['String']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
+  __typename?: "users_min_fields";
+  email?: Maybe<Scalars["String"]["output"]>;
+  emailVerified?: Maybe<Scalars["timestamptz"]["output"]>;
+  id?: Maybe<Scalars["uuid"]["output"]>;
+  image?: Maybe<Scalars["String"]["output"]>;
+  name?: Maybe<Scalars["String"]["output"]>;
 };
 
 /** response of any mutation on the table "users" */
 export type Users_Mutation_Response = {
-  __typename?: 'users_mutation_response';
+  __typename?: "users_mutation_response";
   /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
+  affected_rows: Scalars["Int"]["output"];
   /** data from the rows affected by the mutation */
   returning: Array<Users>;
 };
@@ -6664,30 +9330,30 @@ export type Users_Order_By = {
 
 /** primary key columns input for table: users */
 export type Users_Pk_Columns_Input = {
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 };
 
 /** select columns of table "users" */
 export enum Users_Select_Column {
   /** column name */
-  Email = 'email',
+  Email = "email",
   /** column name */
-  EmailVerified = 'emailVerified',
+  EmailVerified = "emailVerified",
   /** column name */
-  Id = 'id',
+  Id = "id",
   /** column name */
-  Image = 'image',
+  Image = "image",
   /** column name */
-  Name = 'name'
+  Name = "name",
 }
 
 /** input type for updating data in table "users" */
 export type Users_Set_Input = {
-  email?: InputMaybe<Scalars['String']['input']>;
-  emailVerified?: InputMaybe<Scalars['timestamptz']['input']>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
-  image?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars["String"]["input"]>;
+  emailVerified?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  image?: InputMaybe<Scalars["String"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** Streaming cursor of the table "users" */
@@ -6700,25 +9366,25 @@ export type Users_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Users_Stream_Cursor_Value_Input = {
-  email?: InputMaybe<Scalars['String']['input']>;
-  emailVerified?: InputMaybe<Scalars['timestamptz']['input']>;
-  id?: InputMaybe<Scalars['uuid']['input']>;
-  image?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars["String"]["input"]>;
+  emailVerified?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  id?: InputMaybe<Scalars["uuid"]["input"]>;
+  image?: InputMaybe<Scalars["String"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** update columns of table "users" */
 export enum Users_Update_Column {
   /** column name */
-  Email = 'email',
+  Email = "email",
   /** column name */
-  EmailVerified = 'emailVerified',
+  EmailVerified = "emailVerified",
   /** column name */
-  Id = 'id',
+  Id = "id",
   /** column name */
-  Image = 'image',
+  Image = "image",
   /** column name */
-  Name = 'name'
+  Name = "name",
 }
 
 export type Users_Updates = {
@@ -6730,45 +9396,44 @@ export type Users_Updates = {
 
 /** Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'. */
 export type Uuid_Comparison_Exp = {
-  _eq?: InputMaybe<Scalars['uuid']['input']>;
-  _gt?: InputMaybe<Scalars['uuid']['input']>;
-  _gte?: InputMaybe<Scalars['uuid']['input']>;
-  _in?: InputMaybe<Array<Scalars['uuid']['input']>>;
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
-  _lt?: InputMaybe<Scalars['uuid']['input']>;
-  _lte?: InputMaybe<Scalars['uuid']['input']>;
-  _neq?: InputMaybe<Scalars['uuid']['input']>;
-  _nin?: InputMaybe<Array<Scalars['uuid']['input']>>;
+  _eq?: InputMaybe<Scalars["uuid"]["input"]>;
+  _gt?: InputMaybe<Scalars["uuid"]["input"]>;
+  _gte?: InputMaybe<Scalars["uuid"]["input"]>;
+  _in?: InputMaybe<Array<Scalars["uuid"]["input"]>>;
+  _is_null?: InputMaybe<Scalars["Boolean"]["input"]>;
+  _lt?: InputMaybe<Scalars["uuid"]["input"]>;
+  _lte?: InputMaybe<Scalars["uuid"]["input"]>;
+  _neq?: InputMaybe<Scalars["uuid"]["input"]>;
+  _nin?: InputMaybe<Array<Scalars["uuid"]["input"]>>;
 };
 
 /** columns and relationships of "verification_tokens" */
 export type Verification_Tokens = {
-  __typename?: 'verification_tokens';
-  expires: Scalars['timestamptz']['output'];
-  identifier: Scalars['String']['output'];
-  token: Scalars['String']['output'];
+  __typename?: "verification_tokens";
+  expires: Scalars["timestamptz"]["output"];
+  identifier: Scalars["String"]["output"];
+  token: Scalars["String"]["output"];
 };
 
 /** aggregated selection of "verification_tokens" */
 export type Verification_Tokens_Aggregate = {
-  __typename?: 'verification_tokens_aggregate';
+  __typename?: "verification_tokens_aggregate";
   aggregate?: Maybe<Verification_Tokens_Aggregate_Fields>;
   nodes: Array<Verification_Tokens>;
 };
 
 /** aggregate fields of "verification_tokens" */
 export type Verification_Tokens_Aggregate_Fields = {
-  __typename?: 'verification_tokens_aggregate_fields';
-  count: Scalars['Int']['output'];
+  __typename?: "verification_tokens_aggregate_fields";
+  count: Scalars["Int"]["output"];
   max?: Maybe<Verification_Tokens_Max_Fields>;
   min?: Maybe<Verification_Tokens_Min_Fields>;
 };
 
-
 /** aggregate fields of "verification_tokens" */
 export type Verification_Tokens_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Verification_Tokens_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  distinct?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 /** Boolean expression to filter rows from the table "verification_tokens". All fields are combined with a logical 'AND'. */
@@ -6784,37 +9449,37 @@ export type Verification_Tokens_Bool_Exp = {
 /** unique or primary key constraints on table "verification_tokens" */
 export enum Verification_Tokens_Constraint {
   /** unique or primary key constraint on columns "token" */
-  VerificationTokensPkey = 'verification_tokens_pkey'
+  VerificationTokensPkey = "verification_tokens_pkey",
 }
 
 /** input type for inserting data into table "verification_tokens" */
 export type Verification_Tokens_Insert_Input = {
-  expires?: InputMaybe<Scalars['timestamptz']['input']>;
-  identifier?: InputMaybe<Scalars['String']['input']>;
-  token?: InputMaybe<Scalars['String']['input']>;
+  expires?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  identifier?: InputMaybe<Scalars["String"]["input"]>;
+  token?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** aggregate max on columns */
 export type Verification_Tokens_Max_Fields = {
-  __typename?: 'verification_tokens_max_fields';
-  expires?: Maybe<Scalars['timestamptz']['output']>;
-  identifier?: Maybe<Scalars['String']['output']>;
-  token?: Maybe<Scalars['String']['output']>;
+  __typename?: "verification_tokens_max_fields";
+  expires?: Maybe<Scalars["timestamptz"]["output"]>;
+  identifier?: Maybe<Scalars["String"]["output"]>;
+  token?: Maybe<Scalars["String"]["output"]>;
 };
 
 /** aggregate min on columns */
 export type Verification_Tokens_Min_Fields = {
-  __typename?: 'verification_tokens_min_fields';
-  expires?: Maybe<Scalars['timestamptz']['output']>;
-  identifier?: Maybe<Scalars['String']['output']>;
-  token?: Maybe<Scalars['String']['output']>;
+  __typename?: "verification_tokens_min_fields";
+  expires?: Maybe<Scalars["timestamptz"]["output"]>;
+  identifier?: Maybe<Scalars["String"]["output"]>;
+  token?: Maybe<Scalars["String"]["output"]>;
 };
 
 /** response of any mutation on the table "verification_tokens" */
 export type Verification_Tokens_Mutation_Response = {
-  __typename?: 'verification_tokens_mutation_response';
+  __typename?: "verification_tokens_mutation_response";
   /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int']['output'];
+  affected_rows: Scalars["Int"]["output"];
   /** data from the rows affected by the mutation */
   returning: Array<Verification_Tokens>;
 };
@@ -6835,24 +9500,24 @@ export type Verification_Tokens_Order_By = {
 
 /** primary key columns input for table: verification_tokens */
 export type Verification_Tokens_Pk_Columns_Input = {
-  token: Scalars['String']['input'];
+  token: Scalars["String"]["input"];
 };
 
 /** select columns of table "verification_tokens" */
 export enum Verification_Tokens_Select_Column {
   /** column name */
-  Expires = 'expires',
+  Expires = "expires",
   /** column name */
-  Identifier = 'identifier',
+  Identifier = "identifier",
   /** column name */
-  Token = 'token'
+  Token = "token",
 }
 
 /** input type for updating data in table "verification_tokens" */
 export type Verification_Tokens_Set_Input = {
-  expires?: InputMaybe<Scalars['timestamptz']['input']>;
-  identifier?: InputMaybe<Scalars['String']['input']>;
-  token?: InputMaybe<Scalars['String']['input']>;
+  expires?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  identifier?: InputMaybe<Scalars["String"]["input"]>;
+  token?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** Streaming cursor of the table "verification_tokens" */
@@ -6865,19 +9530,19 @@ export type Verification_Tokens_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Verification_Tokens_Stream_Cursor_Value_Input = {
-  expires?: InputMaybe<Scalars['timestamptz']['input']>;
-  identifier?: InputMaybe<Scalars['String']['input']>;
-  token?: InputMaybe<Scalars['String']['input']>;
+  expires?: InputMaybe<Scalars["timestamptz"]["input"]>;
+  identifier?: InputMaybe<Scalars["String"]["input"]>;
+  token?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** update columns of table "verification_tokens" */
 export enum Verification_Tokens_Update_Column {
   /** column name */
-  Expires = 'expires',
+  Expires = "expires",
   /** column name */
-  Identifier = 'identifier',
+  Identifier = "identifier",
   /** column name */
-  Token = 'token'
+  Token = "token",
 }
 
 export type Verification_Tokens_Updates = {
@@ -6888,69 +9553,135 @@ export type Verification_Tokens_Updates = {
 };
 
 export type AddNewTopicMutationMutationVariables = Exact<{
-  title?: InputMaybe<Scalars['String']['input']>;
-  user_id?: InputMaybe<Scalars['uuid']['input']>;
-  agent_id?: InputMaybe<Scalars['uuid']['input']>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
+  user_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  agent_id?: InputMaybe<Scalars["uuid"]["input"]>;
 }>;
 
-
-export type AddNewTopicMutationMutation = { __typename?: 'mutation_root', insert_topic_history_one?: { __typename?: 'topic_history', id: any, title: string, agent_id?: any | null, user_id?: any | null } | null };
+export type AddNewTopicMutationMutation = {
+  __typename?: "mutation_root";
+  insert_topic_history_one?: {
+    __typename?: "topic_history";
+    id: any;
+    title: string;
+    agent_id?: any | null;
+    user_id?: any | null;
+  } | null;
+};
 
 export type CreateMessageAndUpdateTopicHistoryMutationVariables = Exact<{
-  content?: InputMaybe<Scalars['String']['input']>;
-  session_id?: InputMaybe<Scalars['uuid']['input']>;
+  content?: InputMaybe<Scalars["String"]["input"]>;
+  session_id?: InputMaybe<Scalars["uuid"]["input"]>;
   role?: InputMaybe<Message_Role_Enum>;
-  attachments?: InputMaybe<Scalars['jsonb']['input']>;
+  attachments?: InputMaybe<Scalars["jsonb"]["input"]>;
 }>;
 
-
-export type CreateMessageAndUpdateTopicHistoryMutation = { __typename?: 'mutation_root', insert_message?: { __typename?: 'message_mutation_response', returning: Array<{ __typename?: 'message', id: any }> } | null, update_topic_history_by_pk?: { __typename?: 'topic_history', updated_at: any } | null };
+export type CreateMessageAndUpdateTopicHistoryMutation = {
+  __typename?: "mutation_root";
+  insert_message?: {
+    __typename?: "message_mutation_response";
+    returning: Array<{ __typename?: "message"; id: any }>;
+  } | null;
+  update_topic_history_by_pk?: {
+    __typename?: "topic_history";
+    updated_at: any;
+  } | null;
+};
 
 export type GetAgentListByTypeQueryVariables = Exact<{
-  user_id?: InputMaybe<Scalars['uuid']['input']>;
+  user_id?: InputMaybe<Scalars["uuid"]["input"]>;
 }>;
 
-
-export type GetAgentListByTypeQuery = { __typename?: 'query_root', agent_type: Array<{ __typename?: 'agent_type', id: number, name: string, agents: Array<{ __typename?: 'agent', id: any, name: string, description?: string | null, avatar?: string | null }> }> };
+export type GetAgentListByTypeQuery = {
+  __typename?: "query_root";
+  agent_type: Array<{
+    __typename?: "agent_type";
+    id: number;
+    name: string;
+    agents: Array<{
+      __typename?: "agent";
+      id: any;
+      name: string;
+      description?: string | null;
+      avatar?: string | null;
+    }>;
+  }>;
+};
 
 export type AgentByIdQueryVariables = Exact<{
-  id: Scalars['uuid']['input'];
+  id: Scalars["uuid"]["input"];
 }>;
 
-
-export type AgentByIdQuery = { __typename?: 'query_root', agent_by_pk?: { __typename?: 'agent', id: any, name: string, description?: string | null, avatar?: string | null } | null };
+export type AgentByIdQuery = {
+  __typename?: "query_root";
+  agent_by_pk?: {
+    __typename?: "agent";
+    id: any;
+    name: string;
+    description?: string | null;
+    avatar?: string | null;
+  } | null;
+};
 
 export type GetTopicHistoriesQueryVariables = Exact<{
-  agent_id: Scalars['uuid']['input'];
-  user_id: Scalars['uuid']['input'];
-  limit?: InputMaybe<Scalars['Int']['input']>;
+  agent_id: Scalars["uuid"]["input"];
+  user_id: Scalars["uuid"]["input"];
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
 }>;
 
-
-export type GetTopicHistoriesQuery = { __typename?: 'query_root', topic_history: Array<{ __typename?: 'topic_history', id: any, title: string, updated_at: any, user_id?: any | null, created_at: any, agent_id?: any | null }> };
+export type GetTopicHistoriesQuery = {
+  __typename?: "query_root";
+  topic_history: Array<{
+    __typename?: "topic_history";
+    id: any;
+    title: string;
+    updated_at: any;
+    user_id?: any | null;
+    created_at: any;
+    agent_id?: any | null;
+  }>;
+};
 
 export type GetMessageListSubscriptionVariables = Exact<{
-  session_id?: InputMaybe<Scalars['uuid']['input']>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
+  session_id?: InputMaybe<Scalars["uuid"]["input"]>;
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
 }>;
 
-
-export type GetMessageListSubscription = { __typename?: 'subscription_root', message: Array<{ __typename?: 'message', id: any, role: Message_Role_Enum, feedback?: Message_Feedback_Enum | null, created_at?: any | null, content?: string | null, status?: Message_Status_Enum | null, updated_at?: any | null, attachments?: any | null }> };
-
+export type GetMessageListSubscription = {
+  __typename?: "subscription_root";
+  message: Array<{
+    __typename?: "message";
+    id: any;
+    role: Message_Role_Enum;
+    feedback?: Message_Feedback_Enum | null;
+    created_at?: any | null;
+    content?: string | null;
+    status?: Message_Status_Enum | null;
+    updated_at?: any | null;
+    attachments?: any | null;
+  }>;
+};
 
 export const AddNewTopicMutationDocument = gql`
-    mutation AddNewTopicMutation($title: String, $user_id: uuid, $agent_id: uuid) {
-  insert_topic_history_one(
-    object: {title: $title, user_id: $user_id, agent_id: $agent_id}
+  mutation AddNewTopicMutation(
+    $title: String
+    $user_id: uuid
+    $agent_id: uuid
   ) {
-    id
-    title
-    agent_id
-    user_id
+    insert_topic_history_one(
+      object: { title: $title, user_id: $user_id, agent_id: $agent_id }
+    ) {
+      id
+      title
+      agent_id
+      user_id
+    }
   }
-}
-    `;
-export type AddNewTopicMutationMutationFn = Apollo.MutationFunction<AddNewTopicMutationMutation, AddNewTopicMutationMutationVariables>;
+`;
+export type AddNewTopicMutationMutationFn = Apollo.MutationFunction<
+  AddNewTopicMutationMutation,
+  AddNewTopicMutationMutationVariables
+>;
 
 /**
  * __useAddNewTopicMutationMutation__
@@ -6971,31 +9702,59 @@ export type AddNewTopicMutationMutationFn = Apollo.MutationFunction<AddNewTopicM
  *   },
  * });
  */
-export function useAddNewTopicMutationMutation(baseOptions?: Apollo.MutationHookOptions<AddNewTopicMutationMutation, AddNewTopicMutationMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddNewTopicMutationMutation, AddNewTopicMutationMutationVariables>(AddNewTopicMutationDocument, options);
-      }
-export type AddNewTopicMutationMutationHookResult = ReturnType<typeof useAddNewTopicMutationMutation>;
-export type AddNewTopicMutationMutationResult = Apollo.MutationResult<AddNewTopicMutationMutation>;
-export type AddNewTopicMutationMutationOptions = Apollo.BaseMutationOptions<AddNewTopicMutationMutation, AddNewTopicMutationMutationVariables>;
+export function useAddNewTopicMutationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    AddNewTopicMutationMutation,
+    AddNewTopicMutationMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    AddNewTopicMutationMutation,
+    AddNewTopicMutationMutationVariables
+  >(AddNewTopicMutationDocument, options);
+}
+export type AddNewTopicMutationMutationHookResult = ReturnType<
+  typeof useAddNewTopicMutationMutation
+>;
+export type AddNewTopicMutationMutationResult =
+  Apollo.MutationResult<AddNewTopicMutationMutation>;
+export type AddNewTopicMutationMutationOptions = Apollo.BaseMutationOptions<
+  AddNewTopicMutationMutation,
+  AddNewTopicMutationMutationVariables
+>;
 export const CreateMessageAndUpdateTopicHistoryDocument = gql`
-    mutation CreateMessageAndUpdateTopicHistory($content: String, $session_id: uuid = "", $role: message_role_enum = user, $attachments: jsonb = null) {
-  insert_message(
-    objects: {content: $content, session_id: $session_id, role: $role, attachments: $attachments}
+  mutation CreateMessageAndUpdateTopicHistory(
+    $content: String
+    $session_id: uuid = ""
+    $role: message_role_enum = user
+    $attachments: jsonb = null
   ) {
-    returning {
-      id
+    insert_message(
+      objects: {
+        content: $content
+        session_id: $session_id
+        role: $role
+        attachments: $attachments
+      }
+    ) {
+      returning {
+        id
+      }
+    }
+    update_topic_history_by_pk(
+      pk_columns: { id: $session_id }
+      _set: { updated_at: "now()" }
+    ) {
+      updated_at
     }
   }
-  update_topic_history_by_pk(
-    pk_columns: {id: $session_id}
-    _set: {updated_at: "now()"}
-  ) {
-    updated_at
-  }
-}
-    `;
-export type CreateMessageAndUpdateTopicHistoryMutationFn = Apollo.MutationFunction<CreateMessageAndUpdateTopicHistoryMutation, CreateMessageAndUpdateTopicHistoryMutationVariables>;
+`;
+export type CreateMessageAndUpdateTopicHistoryMutationFn =
+  Apollo.MutationFunction<
+    CreateMessageAndUpdateTopicHistoryMutation,
+    CreateMessageAndUpdateTopicHistoryMutationVariables
+  >;
 
 /**
  * __useCreateMessageAndUpdateTopicHistoryMutation__
@@ -7017,29 +9776,49 @@ export type CreateMessageAndUpdateTopicHistoryMutationFn = Apollo.MutationFuncti
  *   },
  * });
  */
-export function useCreateMessageAndUpdateTopicHistoryMutation(baseOptions?: Apollo.MutationHookOptions<CreateMessageAndUpdateTopicHistoryMutation, CreateMessageAndUpdateTopicHistoryMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateMessageAndUpdateTopicHistoryMutation, CreateMessageAndUpdateTopicHistoryMutationVariables>(CreateMessageAndUpdateTopicHistoryDocument, options);
-      }
-export type CreateMessageAndUpdateTopicHistoryMutationHookResult = ReturnType<typeof useCreateMessageAndUpdateTopicHistoryMutation>;
-export type CreateMessageAndUpdateTopicHistoryMutationResult = Apollo.MutationResult<CreateMessageAndUpdateTopicHistoryMutation>;
-export type CreateMessageAndUpdateTopicHistoryMutationOptions = Apollo.BaseMutationOptions<CreateMessageAndUpdateTopicHistoryMutation, CreateMessageAndUpdateTopicHistoryMutationVariables>;
+export function useCreateMessageAndUpdateTopicHistoryMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateMessageAndUpdateTopicHistoryMutation,
+    CreateMessageAndUpdateTopicHistoryMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateMessageAndUpdateTopicHistoryMutation,
+    CreateMessageAndUpdateTopicHistoryMutationVariables
+  >(CreateMessageAndUpdateTopicHistoryDocument, options);
+}
+export type CreateMessageAndUpdateTopicHistoryMutationHookResult = ReturnType<
+  typeof useCreateMessageAndUpdateTopicHistoryMutation
+>;
+export type CreateMessageAndUpdateTopicHistoryMutationResult =
+  Apollo.MutationResult<CreateMessageAndUpdateTopicHistoryMutation>;
+export type CreateMessageAndUpdateTopicHistoryMutationOptions =
+  Apollo.BaseMutationOptions<
+    CreateMessageAndUpdateTopicHistoryMutation,
+    CreateMessageAndUpdateTopicHistoryMutationVariables
+  >;
 export const GetAgentListByTypeDocument = gql`
-    query GetAgentListByType($user_id: uuid) {
-  agent_type(
-    where: {agents: {id: {_is_null: false}, users: {user_id: {_eq: $user_id}}}}
-  ) {
-    id
-    name
-    agents {
+  query GetAgentListByType($user_id: uuid) {
+    agent_type(
+      where: {
+        agents: {
+          id: { _is_null: false }
+          users: { user_id: { _eq: $user_id } }
+        }
+      }
+    ) {
       id
       name
-      description
-      avatar
+      agents {
+        id
+        name
+        description
+        avatar
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useGetAgentListByTypeQuery__
@@ -7057,32 +9836,65 @@ export const GetAgentListByTypeDocument = gql`
  *   },
  * });
  */
-export function useGetAgentListByTypeQuery(baseOptions?: Apollo.QueryHookOptions<GetAgentListByTypeQuery, GetAgentListByTypeQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAgentListByTypeQuery, GetAgentListByTypeQueryVariables>(GetAgentListByTypeDocument, options);
-      }
-export function useGetAgentListByTypeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAgentListByTypeQuery, GetAgentListByTypeQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAgentListByTypeQuery, GetAgentListByTypeQueryVariables>(GetAgentListByTypeDocument, options);
-        }
-export function useGetAgentListByTypeSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAgentListByTypeQuery, GetAgentListByTypeQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetAgentListByTypeQuery, GetAgentListByTypeQueryVariables>(GetAgentListByTypeDocument, options);
-        }
-export type GetAgentListByTypeQueryHookResult = ReturnType<typeof useGetAgentListByTypeQuery>;
-export type GetAgentListByTypeLazyQueryHookResult = ReturnType<typeof useGetAgentListByTypeLazyQuery>;
-export type GetAgentListByTypeSuspenseQueryHookResult = ReturnType<typeof useGetAgentListByTypeSuspenseQuery>;
-export type GetAgentListByTypeQueryResult = Apollo.QueryResult<GetAgentListByTypeQuery, GetAgentListByTypeQueryVariables>;
-export const AgentByIdDocument = gql`
-    query AgentByID($id: uuid!) {
-  agent_by_pk(id: $id) {
-    id
-    name
-    description
-    avatar
-  }
+export function useGetAgentListByTypeQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetAgentListByTypeQuery,
+    GetAgentListByTypeQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetAgentListByTypeQuery,
+    GetAgentListByTypeQueryVariables
+  >(GetAgentListByTypeDocument, options);
 }
-    `;
+export function useGetAgentListByTypeLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetAgentListByTypeQuery,
+    GetAgentListByTypeQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetAgentListByTypeQuery,
+    GetAgentListByTypeQueryVariables
+  >(GetAgentListByTypeDocument, options);
+}
+export function useGetAgentListByTypeSuspenseQuery(
+  baseOptions?: Apollo.SuspenseQueryHookOptions<
+    GetAgentListByTypeQuery,
+    GetAgentListByTypeQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    GetAgentListByTypeQuery,
+    GetAgentListByTypeQueryVariables
+  >(GetAgentListByTypeDocument, options);
+}
+export type GetAgentListByTypeQueryHookResult = ReturnType<
+  typeof useGetAgentListByTypeQuery
+>;
+export type GetAgentListByTypeLazyQueryHookResult = ReturnType<
+  typeof useGetAgentListByTypeLazyQuery
+>;
+export type GetAgentListByTypeSuspenseQueryHookResult = ReturnType<
+  typeof useGetAgentListByTypeSuspenseQuery
+>;
+export type GetAgentListByTypeQueryResult = Apollo.QueryResult<
+  GetAgentListByTypeQuery,
+  GetAgentListByTypeQueryVariables
+>;
+export const AgentByIdDocument = gql`
+  query AgentByID($id: uuid!) {
+    agent_by_pk(id: $id) {
+      id
+      name
+      description
+      avatar
+    }
+  }
+`;
 
 /**
  * __useAgentByIdQuery__
@@ -7100,38 +9912,77 @@ export const AgentByIdDocument = gql`
  *   },
  * });
  */
-export function useAgentByIdQuery(baseOptions: Apollo.QueryHookOptions<AgentByIdQuery, AgentByIdQueryVariables> & ({ variables: AgentByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<AgentByIdQuery, AgentByIdQueryVariables>(AgentByIdDocument, options);
-      }
-export function useAgentByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AgentByIdQuery, AgentByIdQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<AgentByIdQuery, AgentByIdQueryVariables>(AgentByIdDocument, options);
-        }
-export function useAgentByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<AgentByIdQuery, AgentByIdQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<AgentByIdQuery, AgentByIdQueryVariables>(AgentByIdDocument, options);
-        }
-export type AgentByIdQueryHookResult = ReturnType<typeof useAgentByIdQuery>;
-export type AgentByIdLazyQueryHookResult = ReturnType<typeof useAgentByIdLazyQuery>;
-export type AgentByIdSuspenseQueryHookResult = ReturnType<typeof useAgentByIdSuspenseQuery>;
-export type AgentByIdQueryResult = Apollo.QueryResult<AgentByIdQuery, AgentByIdQueryVariables>;
-export const GetTopicHistoriesDocument = gql`
-    query GetTopicHistories($agent_id: uuid!, $user_id: uuid!, $limit: Int = 100) {
-  topic_history(
-    where: {agent_id: {_eq: $agent_id}, user_id: {_eq: $user_id}}
-    order_by: {updated_at: desc_nulls_last}
-    limit: $limit
-  ) {
-    id
-    title
-    updated_at
-    user_id
-    created_at
-    agent_id
-  }
+export function useAgentByIdQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    AgentByIdQuery,
+    AgentByIdQueryVariables
+  > &
+    (
+      | { variables: AgentByIdQueryVariables; skip?: boolean }
+      | { skip: boolean }
+    ),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<AgentByIdQuery, AgentByIdQueryVariables>(
+    AgentByIdDocument,
+    options,
+  );
 }
-    `;
+export function useAgentByIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    AgentByIdQuery,
+    AgentByIdQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<AgentByIdQuery, AgentByIdQueryVariables>(
+    AgentByIdDocument,
+    options,
+  );
+}
+export function useAgentByIdSuspenseQuery(
+  baseOptions?: Apollo.SuspenseQueryHookOptions<
+    AgentByIdQuery,
+    AgentByIdQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<AgentByIdQuery, AgentByIdQueryVariables>(
+    AgentByIdDocument,
+    options,
+  );
+}
+export type AgentByIdQueryHookResult = ReturnType<typeof useAgentByIdQuery>;
+export type AgentByIdLazyQueryHookResult = ReturnType<
+  typeof useAgentByIdLazyQuery
+>;
+export type AgentByIdSuspenseQueryHookResult = ReturnType<
+  typeof useAgentByIdSuspenseQuery
+>;
+export type AgentByIdQueryResult = Apollo.QueryResult<
+  AgentByIdQuery,
+  AgentByIdQueryVariables
+>;
+export const GetTopicHistoriesDocument = gql`
+  query GetTopicHistories(
+    $agent_id: uuid!
+    $user_id: uuid!
+    $limit: Int = 100
+  ) {
+    topic_history(
+      where: { agent_id: { _eq: $agent_id }, user_id: { _eq: $user_id } }
+      order_by: { updated_at: desc_nulls_last }
+      limit: $limit
+    ) {
+      id
+      title
+      updated_at
+      user_id
+      created_at
+      agent_id
+    }
+  }
+`;
 
 /**
  * __useGetTopicHistoriesQuery__
@@ -7151,36 +10002,73 @@ export const GetTopicHistoriesDocument = gql`
  *   },
  * });
  */
-export function useGetTopicHistoriesQuery(baseOptions: Apollo.QueryHookOptions<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables> & ({ variables: GetTopicHistoriesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>(GetTopicHistoriesDocument, options);
-      }
-export function useGetTopicHistoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>(GetTopicHistoriesDocument, options);
-        }
-export function useGetTopicHistoriesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>(GetTopicHistoriesDocument, options);
-        }
-export type GetTopicHistoriesQueryHookResult = ReturnType<typeof useGetTopicHistoriesQuery>;
-export type GetTopicHistoriesLazyQueryHookResult = ReturnType<typeof useGetTopicHistoriesLazyQuery>;
-export type GetTopicHistoriesSuspenseQueryHookResult = ReturnType<typeof useGetTopicHistoriesSuspenseQuery>;
-export type GetTopicHistoriesQueryResult = Apollo.QueryResult<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>;
-export const GetMessageListDocument = gql`
-    subscription GetMessageList($session_id: uuid, $limit: Int = 100) {
-  message(where: {session_id: {_eq: $session_id}}, limit: $limit) {
-    id
-    role
-    feedback
-    created_at
-    content
-    status
-    updated_at
-    attachments
-  }
+export function useGetTopicHistoriesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetTopicHistoriesQuery,
+    GetTopicHistoriesQueryVariables
+  > &
+    (
+      | { variables: GetTopicHistoriesQueryVariables; skip?: boolean }
+      | { skip: boolean }
+    ),
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetTopicHistoriesQuery,
+    GetTopicHistoriesQueryVariables
+  >(GetTopicHistoriesDocument, options);
 }
-    `;
+export function useGetTopicHistoriesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetTopicHistoriesQuery,
+    GetTopicHistoriesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetTopicHistoriesQuery,
+    GetTopicHistoriesQueryVariables
+  >(GetTopicHistoriesDocument, options);
+}
+export function useGetTopicHistoriesSuspenseQuery(
+  baseOptions?: Apollo.SuspenseQueryHookOptions<
+    GetTopicHistoriesQuery,
+    GetTopicHistoriesQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    GetTopicHistoriesQuery,
+    GetTopicHistoriesQueryVariables
+  >(GetTopicHistoriesDocument, options);
+}
+export type GetTopicHistoriesQueryHookResult = ReturnType<
+  typeof useGetTopicHistoriesQuery
+>;
+export type GetTopicHistoriesLazyQueryHookResult = ReturnType<
+  typeof useGetTopicHistoriesLazyQuery
+>;
+export type GetTopicHistoriesSuspenseQueryHookResult = ReturnType<
+  typeof useGetTopicHistoriesSuspenseQuery
+>;
+export type GetTopicHistoriesQueryResult = Apollo.QueryResult<
+  GetTopicHistoriesQuery,
+  GetTopicHistoriesQueryVariables
+>;
+export const GetMessageListDocument = gql`
+  subscription GetMessageList($session_id: uuid, $limit: Int = 100) {
+    message(where: { session_id: { _eq: $session_id } }, limit: $limit) {
+      id
+      role
+      feedback
+      created_at
+      content
+      status
+      updated_at
+      attachments
+    }
+  }
+`;
 
 /**
  * __useGetMessageListSubscription__
@@ -7199,9 +10087,20 @@ export const GetMessageListDocument = gql`
  *   },
  * });
  */
-export function useGetMessageListSubscription(baseOptions?: Apollo.SubscriptionHookOptions<GetMessageListSubscription, GetMessageListSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<GetMessageListSubscription, GetMessageListSubscriptionVariables>(GetMessageListDocument, options);
-      }
-export type GetMessageListSubscriptionHookResult = ReturnType<typeof useGetMessageListSubscription>;
-export type GetMessageListSubscriptionResult = Apollo.SubscriptionResult<GetMessageListSubscription>;
+export function useGetMessageListSubscription(
+  baseOptions?: Apollo.SubscriptionHookOptions<
+    GetMessageListSubscription,
+    GetMessageListSubscriptionVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    GetMessageListSubscription,
+    GetMessageListSubscriptionVariables
+  >(GetMessageListDocument, options);
+}
+export type GetMessageListSubscriptionHookResult = ReturnType<
+  typeof useGetMessageListSubscription
+>;
+export type GetMessageListSubscriptionResult =
+  Apollo.SubscriptionResult<GetMessageListSubscription>;

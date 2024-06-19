@@ -1,26 +1,12 @@
-import "@/styles/globals.css";
-import { Metadata, Viewport } from "next";
-import { fontSans } from "@/config/fonts";
 import { Providers } from "@/app/providers";
-import { Link } from "@nextui-org/link";
+import { fontSans } from "@/config/fonts";
+import "@/styles/globals.css";
 import clsx from "clsx";
+import { Viewport } from "next";
 
-import {
-  Avatar,
-  Button,
-  ScrollShadow,
-  Spacer,
-  Tooltip,
-} from "@nextui-org/react";
-import { Icon } from "@iconify/react";
-
-import SideBar from "@/components/Sidebar";
-
-import { AcmeLogo } from "@/components/ui/icons";
+import StoreProvider from "@/app/StoreProvider";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "sonner";
-import PromptInputWithFaq from "@/components/Conversation/prompt-input-with-faq";
-import StoreProvider from "@/app/StoreProvider";
 
 export const viewport: Viewport = {
   themeColor: [
@@ -40,7 +26,7 @@ export default function ChatLayout({
       <body
         className={clsx(
           "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
+          fontSans.variable,
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "white" }}>

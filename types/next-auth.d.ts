@@ -1,13 +1,12 @@
-import { Session } from "inspector";
 import "next-auth";
-import { JWT } from "next-auth/jwt";
+import "next-auth/jwt";
 declare module "next-auth" {
   // Extending the built-in User model
   interface User {
     access_token?: string;
     email?: string;
     groups?: string[];
-    avatar?: string = "https://api.dicebear.com/8.x/adventurer-neutral/svg?seed=Jasmine";
+    avatar?: string;
   }
 
   interface Session {

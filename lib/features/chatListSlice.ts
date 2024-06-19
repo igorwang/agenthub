@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ChatDTO, GroupedChatListDTO } from "../../types/chatTypes";
+import { GroupedChatListDTO } from "../../types/chatTypes";
 import { RootState } from "../store";
 
 interface ChatListState {

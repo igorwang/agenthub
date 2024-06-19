@@ -1,22 +1,18 @@
-import { auth } from "@/auth";
 import {
   ApolloClient,
-  InMemoryCache,
   HttpLink,
+  InMemoryCache,
   NormalizedCacheObject,
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { WebSocketLink } from "@apollo/client/link/ws";
 import { getSession } from "next-auth/react";
-import { useMemo } from "react";
 import { SubscriptionClient } from "subscriptions-transport-ws";
 
 let accessToken: string | null = null;
 const requestAccessToken = async (): Promise<void> => {
-  console.log('check token')
   if (accessToken) return;
   const session = await getSession();
-  console.log("session");
 
   if (session && session?.access_token) {
     accessToken = session.access_token;
@@ -24,7 +20,6 @@ const requestAccessToken = async (): Promise<void> => {
     accessToken = "public";
   }
 };
-
 
 const resetTokenLink = onError(({ networkError }) => {
   if (
@@ -62,7 +57,7 @@ const createWSLink = (): WebSocketLink => {
           },
         };
       },
-    })
+    }),
   );
 };
 
@@ -72,11 +67,11 @@ export interface InitialState {
 
 export function createApolloClient(
   initialState: InitialState,
-  headers: Record<string, string> | null
+  headers: Record<string, string> | null,
 ) {
   const ssrMode = typeof window === "undefined";
   let link;
-  console.log(`ssrMode: ${ssrMode}`)
+  console.log(`ssrMode: ${ssrMode}`);
   if (ssrMode) {
     link = createHttpLink(headers);
   } else {
@@ -94,7 +89,7 @@ let apolloClient: ApolloClient<NormalizedCacheObject> | null = null;
 
 export function initializeApollo(
   initialState: InitialState,
-  headers: Record<string, string>
+  headers: Record<string, string>,
 ) {
   const _apolloClient =
     apolloClient ?? createApolloClient(initialState, headers);

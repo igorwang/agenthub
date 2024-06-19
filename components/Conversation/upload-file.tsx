@@ -1,10 +1,10 @@
 import {
-  DocumentIcon,
-  VideoIcon,
   DefaultFileIcon,
   DeleteIcon,
+  DocumentIcon,
+  VideoIcon,
 } from "@/components/ui/icons";
-import { Button, CircularProgress, Image } from "@nextui-org/react";
+import { CircularProgress, Image } from "@nextui-org/react";
 import clsx from "clsx";
 import React from "react";
 
@@ -30,7 +30,7 @@ export const UploadFile = React.forwardRef<HTMLDivElement, UploadFileProps>(
       isLoading = false,
       removeFileHandler,
     },
-    ref
+    ref,
   ) => {
     const extension = fileName.split(".").pop()?.toLowerCase();
 
@@ -77,7 +77,7 @@ export const UploadFile = React.forwardRef<HTMLDivElement, UploadFileProps>(
       <div
         className={clsx(
           "relative flex flex-none items-center justify-start  max-w-48 p-2 ml-2 mt-2 bg-white rounded-md group",
-          className
+          className,
         )}
       >
         {removeFileHandler && (
@@ -93,12 +93,12 @@ export const UploadFile = React.forwardRef<HTMLDivElement, UploadFileProps>(
           />
         )}
         {iconElement}
-        {fileName && !showImage &&(
+        {fileName && !showImage && (
           <span className="flex flex-1 ml-2 max-w-full text-nowrap text-ellipsis overflow-auto ">
             {fileName}
           </span>
         )}
       </div>
     );
-  }
+  },
 );

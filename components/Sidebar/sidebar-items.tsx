@@ -1,12 +1,6 @@
-import { Chip } from "@nextui-org/react";
 import { Icon } from "@iconify/react";
 
-import {
-  type SidebarItem,
-  SidebarItemType,
-} from "@/components/Sidebar/sidebar-nav";
-
-import TeamAvatar from "@/components/Sidebar/team-avatar";
+import { type SidebarItem } from "@/components/Sidebar/sidebar-nav";
 
 export const sectionItems: SidebarItem[] = [
   {

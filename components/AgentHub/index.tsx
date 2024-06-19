@@ -1,24 +1,8 @@
 "use client";
-import React from "react";
 
+import { ChatList } from "@/components/AgentHub/chat-list";
 import { Spacer } from "@nextui-org/react";
 import SearchBar from "./searchbar";
-import {
-  GetAgentListByTypeDocument,
-  useGetAgentListByTypeQuery,
-  useGetAgentListByTypeSuspenseQuery,
-} from "@/graphql/generated/types";
-import { fetchData } from "@/lib/apolloRequest";
-import { GroupedChatListDTO } from "@/types/chatTypes";
-import { ChatList } from "@/components/AgentHub/chat-list";
-import { AppDispatch } from "@/lib/store";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  selectChatList,
-  selectSelectedChatId,
-} from "@/lib/features/chatListSlice";
-import { useQuery } from "@apollo/client";
-import { GetAgentListByTypeQuery } from "../../graphql/generated/types";
 
 const ChatHub = () => {
   return (

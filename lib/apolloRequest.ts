@@ -34,7 +34,7 @@ export async function fetchData(query: DocumentNode) {
 
 export async function performMutation(
   mutation: DocumentNode,
-  variables: object
+  variables: object,
 ) {
   const headers = await getSessionHeaders();
 

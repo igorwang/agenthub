@@ -1,13 +1,13 @@
 "use client";
 
-import * as React from "react";
 import { NextUIProvider } from "@nextui-org/system";
-import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { ThemeProviderProps } from "next-themes/dist/types";
+import { useRouter } from "next/navigation";
+import * as React from "react";
 
-import { ApolloProvider, NormalizedCacheObject } from "@apollo/client";
-import {createApolloClient} from "../lib/apolloClient";
+import { ApolloProvider } from "@apollo/client";
+import { createApolloClient } from "../lib/apolloClient";
 
 export interface ProvidersProps {
   children: React.ReactNode;

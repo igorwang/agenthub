@@ -1,5 +1,5 @@
-import { AcmeIcon } from "@/components/ui/social";
 import Login from "@/components/Login";
+import { AcmeIcon } from "@/components/ui/social";
 
 export default function LoginPage() {
   return (

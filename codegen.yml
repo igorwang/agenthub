@@ -2,10 +2,13 @@ schema:
   - ${HASURA_ENDPOINT}:
       headers:
         x-hasura-admin-secret: ${HASURA_ADMIN_SECRET}
-documents: 
+documents:
   - "./app/**/*.{gql,ts,tsx,graphql}"
   - "./graphql/**/*.{gql,ts,tsx,graphql}"
 generates:
+  ./graphql/generated/schema.graphql:
+    plugins:
+      - "schema-ast"
   ./graphql/generated/types.ts:
     plugins:
       - "typescript"

@@ -2,7 +2,7 @@
 
 import { AcmeLogo } from "../ui/icons";
 
-import React from "react";
+import { Icon } from "@iconify/react";
 import {
   Avatar,
   Button,
@@ -10,7 +10,6 @@ import {
   Spacer,
   Tooltip,
 } from "@nextui-org/react";
-import { Icon } from "@iconify/react";
 
 import SidebarNav from "./sidebar-nav";
 

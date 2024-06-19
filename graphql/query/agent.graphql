@@ -1,5 +1,9 @@
 query GetAgentListByType($user_id: uuid) {
-  agent_type(where: {agents: {id: {_is_null: false}, users: {user_id: {_eq: $user_id}}}}) {
+  agent_type(
+    where: {
+      agents: { id: { _is_null: false }, users: { user_id: { _eq: $user_id } } }
+    }
+  ) {
     id
     name
     agents {
@@ -11,7 +15,6 @@ query GetAgentListByType($user_id: uuid) {
   }
 }
 
-
 query AgentByID($id: uuid!) {
   agent_by_pk(id: $id) {
     id
@@ -21,12 +24,7 @@ query AgentByID($id: uuid!) {
   }
 }
 
-
-query GetTopicHistories(
-  $agent_id: uuid!
-  $user_id: uuid!
-  $limit: Int = 100
-) {
+query GetTopicHistories($agent_id: uuid!, $user_id: uuid!, $limit: Int = 100) {
   topic_history(
     where: { agent_id: { _eq: $agent_id }, user_id: { _eq: $user_id } }
     order_by: { updated_at: desc_nulls_last }

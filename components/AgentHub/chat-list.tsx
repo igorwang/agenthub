@@ -1,38 +1,31 @@
 "use client";
-import React, { useEffect, useId, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
+  Avatar,
+  Button,
   Listbox,
   ListboxItem,
-  Chip,
   ScrollShadow,
-  Avatar,
-  Selection,
-  ListboxSection,
-  ListboxSectionProps,
-  Button,
-  Tooltip,
 } from "@nextui-org/react";
 import {
   OcticonChevronDownIcon,
   OcticonChevronRightIcon,
   OcticonKebabHorizontalIcon,
-  TagIcon,
 } from "../ui/icons";
 
-import { GroupedChatListDTO } from "@/types/chatTypes";
-import { AppDispatch } from "../../lib/store";
-import { useDispatch, useSelector } from "react-redux";
+import { useGetAgentListByTypeQuery } from "@/graphql/generated/types";
 import {
   selectChat,
   selectChatList,
   selectSelectedChatId,
   setChatList,
 } from "@/lib/features/chatListSlice";
-import { useGetAgentListByTypeQuery } from "@/graphql/generated/types";
-import { group } from "console";
+import { GroupedChatListDTO } from "@/types/chatTypes";
 import { useSession } from "next-auth/react";
-import { usePathname, useRouter, useParams } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "../../lib/store";
 
 export const ChatList: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -67,7 +60,7 @@ export const ChatList: React.FC = () => {
             description: agent.description,
             avatar: agent.avatar,
           })),
-        })
+        }),
       );
 
       dispatch(setChatList(groupedChatList));

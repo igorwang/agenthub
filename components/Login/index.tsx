@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
-import { Button, Input, Checkbox, Link, Divider } from "@nextui-org/react";
 import { Icon } from "@iconify/react";
+import { Button, Checkbox, Divider, Input, Link } from "@nextui-org/react";
 import { signIn } from "next-auth/react";
+import React from "react";
 
 export default function Login() {
   const [isVisible, setIsVisible] = React.useState(false);
@@ -82,7 +82,11 @@ export default function Login() {
           <Button
             onClick={() => signIn("authentik")}
             startContent={
-              <Icon className="text-default-500" icon="simple-icons:anthropic" width={24} />
+              <Icon
+                className="text-default-500"
+                icon="simple-icons:anthropic"
+                width={24}
+              />
             }
             variant="bordered"
           >

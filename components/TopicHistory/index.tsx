@@ -1,14 +1,11 @@
 "use client";
 
-import { ChatList } from "@/components/AgentHub/chat-list";
 import {
   DiscussionIcon,
   OcticonKebabHorizontalIcon,
-  PlusIcon,
 } from "@/components/ui/icons";
 import { useGetTopicHistoriesQuery } from "@/graphql/generated/types";
 import {
-  selectSelectedChatId,
   selectSelectedSessionId,
   selectSession,
 } from "@/lib/features/chatListSlice";
@@ -21,7 +18,6 @@ import {
   DropdownTrigger,
   Listbox,
   ListboxItem,
-  ScrollShadow,
 } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { useParams, usePathname, useRouter } from "next/navigation";

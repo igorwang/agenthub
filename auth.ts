@@ -1,11 +1,8 @@
 import NextAuth from "next-auth";
 
-import Credentials from "next-auth/providers/credentials";
-import Authentik from "next-auth/providers/authentik";
-import { use } from "react";
-import { getToken } from "next-auth/jwt";
-import jwt from "jsonwebtoken";
 import { HasuraAdapter } from "@auth/hasura-adapter";
+import jwt from "jsonwebtoken";
+import Authentik from "next-auth/providers/authentik";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: HasuraAdapter({
@@ -87,7 +84,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           process.env.HASURA_API_SECRET as string,
           {
             algorithm: "HS256",
-          }
+          },
         );
         if (profile?.sub) {
           token.uid = user.id;

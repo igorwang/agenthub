@@ -1,4 +1,4 @@
-import chatListSliceReducer, { selectChat } from "@/lib/features/chatListSlice";
+import chatListSliceReducer from "@/lib/features/chatListSlice";
 import { configureStore } from "@reduxjs/toolkit";
 
 export const makeStore = () => {

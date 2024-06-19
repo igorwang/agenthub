@@ -1,20 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
-import { AppDispatch } from "@/lib/store";
-import { useDispatch, useSelector } from "react-redux";
 import {
   selectSelectedChatId,
   selectSelectedSessionId,
 } from "@/lib/features/chatListSlice";
+import { AppDispatch } from "@/lib/store";
 import { useSession } from "next-auth/react";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import MessageCard from "./message-card";
-import {
-  useGetMessageListSubscription,
-  GetMessageListSubscription,
-  Message_Update_Column,
-} from "@/graphql/generated/types";
-import { Avatar, ScrollShadow } from "@nextui-org/react";
 import FeatureCards from "@/components/Conversation/feature-cards";
+import { useGetMessageListSubscription } from "@/graphql/generated/types";
+import { Avatar, ScrollShadow } from "@nextui-org/react";
+import MessageCard from "./message-card";
 
 export const assistantMessages = [
   <div key="1">
@@ -114,8 +110,6 @@ export default function MessageWindow() {
   });
 
   useEffect(() => {
-    console.log(data?.message);
-    console.log(selectedSessionId);
     if (data && data.message) {
       setMessages(
         data.message.map((item) => ({
@@ -129,9 +123,9 @@ export default function MessageWindow() {
               (attachment: { fileName: string }, index: number) => ({
                 key: index,
                 fileName: attachment.fileName,
-              })
+              }),
             ) || [],
-        }))
+        })),
       );
     }
   }, [data]);

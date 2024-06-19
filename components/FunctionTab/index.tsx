@@ -1,29 +1,21 @@
 "use client";
 
 import { TopicHistory } from "@/components/TopicHistory";
-import { TopicFolderIcon, BookIcon, PlusIcon } from "@/components/ui/icons";
+import { PlusIcon } from "@/components/ui/icons";
 import {
   selectSelectedChatId,
   selectSelectedSessionId,
   selectSession,
 } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
-import {
-  Button,
-  ScrollShadow,
-  SelectSection,
-  Tab,
-  Tabs,
-} from "@nextui-org/react";
+import { Button, ScrollShadow, Tab, Tabs } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
-import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 import {
-  AddNewTopicMutationMutation,
   useAddNewTopicMutationMutation,
   useGetTopicHistoriesQuery,
 } from "../../graphql/generated/types";
-import { toast } from "sonner";
 
 export const FunctionTab = () => {
   const dispatch: AppDispatch = useDispatch();

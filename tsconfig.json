@@ -19,7 +19,7 @@
         "name": "next"
       }
     ],
-    "baseUrl": ".",  // Ensure this is set
+    "baseUrl": ".", // Ensure this is set
     "paths": {
       "@/*": ["./*"],
       "@types/*": ["types/*"] // Add this to map your types directory

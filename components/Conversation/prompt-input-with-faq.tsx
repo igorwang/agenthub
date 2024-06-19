@@ -1,27 +1,26 @@
 "use client";
 
-import React, { useRef, useState } from "react";
-import { Button, Tooltip, ScrollShadow, Input } from "@nextui-org/react";
-import { Icon } from "@iconify/react";
 import { cn } from "@/cn";
+import { Icon } from "@iconify/react";
+import { Button, ScrollShadow, Tooltip } from "@nextui-org/react";
+import React, { useRef, useState } from "react";
 
-import PromptInput from "./prompt-input";
 import {
   UploadFile,
   UploadFileProps,
 } from "@/components/Conversation/upload-file";
-import { AppDispatch } from "@/lib/store";
-import { useDispatch, useSelector } from "react-redux";
+import {
+  Message_Role_Enum,
+  useCreateMessageAndUpdateTopicHistoryMutation,
+} from "@/graphql/generated/types";
 import {
   selectSelectedChatId,
   selectSelectedSessionId,
 } from "@/lib/features/chatListSlice";
+import { AppDispatch } from "@/lib/store";
 import { useSession } from "next-auth/react";
-import {
-  CreateMessageAndUpdateTopicHistoryDocument,
-  Message_Role_Enum,
-  useCreateMessageAndUpdateTopicHistoryMutation,
-} from "@/graphql/generated/types";
+import { useDispatch, useSelector } from "react-redux";
+import PromptInput from "./prompt-input";
 
 export default function PromptInputWithFaq() {
   const dispatch: AppDispatch = useDispatch();
@@ -81,14 +80,14 @@ export default function PromptInputWithFaq() {
   };
 
   const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
 
     if (file) {
       try {
         const res = await fetch(
-          `/api/file/presigned_url?fileName=${file.name}&fileType=${file.type}&location=chat`
+          `/api/file/presigned_url?fileName=${file.name}&fileType=${file.type}&location=chat`,
         );
         const { url, bucket, fileKey, previewUrl } = await res.json();
 
@@ -118,8 +117,8 @@ export default function PromptInputWithFaq() {
 
         setFiles((prevFiles) =>
           prevFiles.map((file) =>
-            file.key === newFileKey ? { ...file, isLoading: false } : file
-          )
+            file.key === newFileKey ? { ...file, isLoading: false } : file,
+          ),
         );
       } catch (error) {
         console.error("Error:", error);
@@ -213,7 +212,7 @@ export default function PromptInputWithFaq() {
                   <Icon
                     className={cn(
                       "[&>path]:stroke-[2px]",
-                      !prompt ? "text-default-600" : "text-primary-foreground"
+                      !prompt ? "text-default-600" : "text-primary-foreground",
                     )}
                     icon="solar:arrow-up-linear"
                     width={20}

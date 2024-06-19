@@ -1,21 +1,14 @@
 "use client";
 import React from "react";
 
-import {
-  Avatar,
-  Badge,
-  Button,
-  Link,
-  ScrollShadow,
-  Tooltip,
-} from "@nextui-org/react";
-import { useClipboard } from "@nextui-org/use-clipboard";
-import { Icon } from "@iconify/react";
 import { cn } from "@/cn";
 import {
   UploadFile,
   UploadFileProps,
 } from "@/components/Conversation/upload-file";
+import { Icon } from "@iconify/react";
+import { Avatar, Badge, Button, Link } from "@nextui-org/react";
+import { useClipboard } from "@nextui-org/use-clipboard";
 
 export type MessageCardProps = React.HTMLAttributes<HTMLDivElement> & {
   avatar?: string;
@@ -52,7 +45,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       messageClassName,
       ...props
     },
-    ref
+    ref,
   ) => {
     const [feedback, setFeedback] = React.useState<"like" | "dislike">();
     const [attemptFeedback, setAttemptFeedback] = React.useState<
@@ -111,7 +104,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
 
         onFeedback?.(liked ? "like" : "dislike");
       },
-      [onFeedback]
+      [onFeedback],
     );
 
     const handleAttemptFeedback = React.useCallback(
@@ -120,7 +113,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
 
         onAttemptFeedback?.(feedback);
       },
-      [onAttemptFeedback]
+      [onAttemptFeedback],
     );
 
     const avatarBadgeContent = (
@@ -149,14 +142,17 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
           className={cn(
             "relative w-full rounded-medium px-4 py-2 text-default-800 ",
             failedMessageClassName,
-            messageClassName
+            messageClassName,
           )}
         >
           <div ref={messageRef} className={"px-1 text-medium flex justify-end"}>
             {hasFailed ? failedMessage : message}
           </div>
           <div className="flex flex-row flex-wrap w-full ">
-            {files && files.map((item) => <UploadFile className="flex shrink" {...item} />)}
+            {files &&
+              files.map((item) => (
+                <UploadFile className="flex shrink" {...item} />
+              ))}
           </div>
         </div>
       </div>
@@ -168,7 +164,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
           className={cn(
             "relative w-full rounded-medium bg-content2 px-4 py-1 text-default-600",
             failedMessageClassName,
-            messageClassName
+            messageClassName,
           )}
         >
           <div ref={messageRef} className={"px-1 text-medium min-h-8"}>
@@ -242,7 +238,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
                 <button
                   onClick={() =>
                     onAttemptChange?.(
-                      currentAttempt > 1 ? currentAttempt - 1 : 1
+                      currentAttempt > 1 ? currentAttempt - 1 : 1,
                     )
                   }
                 >
@@ -254,7 +250,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
                 <button
                   onClick={() =>
                     onAttemptChange?.(
-                      currentAttempt < attempts ? currentAttempt + 1 : attempts
+                      currentAttempt < attempts ? currentAttempt + 1 : attempts,
                     )
                   }
                 >
@@ -360,7 +356,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 export default MessageCard;

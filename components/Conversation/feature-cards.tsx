@@ -1,4 +1,3 @@
-import React from "react";
 import { Icon } from "@iconify/react";
 
 import FeatureCard from "./feature-card";
@@ -35,7 +34,6 @@ const featuresCategories = [
     ],
   },
 ];
-
 
 export default function FeatureCards() {
   return (

@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
-import s3Client from "@/lib/s3Client";
 import { auth } from "@/auth";
+import s3Client from "@/lib/s3Client";
+import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 import { uuid } from "uuidv4";
 
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
   if (!fileName || !fileType || !location) {
     return NextResponse.json(
       { error: "fileName and fileType are required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
   const userId = session?.user?.id;
@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
   if (!supportedLocations.includes(location)) {
     return NextResponse.json(
       { error: "Unsupported location to upload" },
-      { status: 400 }
+      { status: 400 },
     );
   }
   const bucket = location;
@@ -56,7 +56,7 @@ export async function GET(req: NextRequest) {
   try {
     const presignedPutUrl = await s3Client.getSignedUrlPromise(
       "putObject",
-      params
+      params,
     );
     const presignedGetUrl = await s3Client.getSignedUrlPromise("getObject", {
       Bucket: bucket,
@@ -73,7 +73,7 @@ export async function GET(req: NextRequest) {
     console.error("Error generating presigned URL", error);
     return NextResponse.json(
       { error: "Error generating presigned URL" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -2,9 +2,9 @@
 
 import type { TextAreaProps } from "@nextui-org/react";
 
-import React from "react";
-import { Textarea } from "@nextui-org/react";
 import { cn } from "@/cn";
+import { Textarea } from "@nextui-org/react";
+import React from "react";
 
 const PromptInput = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
   ({ classNames = {}, ...props }, ref) => {
@@ -25,7 +25,7 @@ const PromptInput = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
         {...props}
       />
     );
-  }
+  },
 );
 
 export default PromptInput;

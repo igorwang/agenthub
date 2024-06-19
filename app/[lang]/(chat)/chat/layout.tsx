@@ -1,4 +1,3 @@
-import StoreProvider from "@/app/StoreProvider";
 import ChatHub from "@/components/AgentHub";
 import SideBar from "@/components/Sidebar";
 

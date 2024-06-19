@@ -1,23 +1,15 @@
 "use client";
 
-import { cn } from "@/cn";
-import {
-  Avatar,
-  Button,
-  ScrollShadow,
-  Tab,
-  Tabs,
-  Tooltip,
-} from "@nextui-org/react";
-import React from "react";
-import MessageWindow from "./message-window";
-import PromptInputWithFaq from "./prompt-input-with-faq";
-import { selectSelectedChatId } from "@/lib/features/chatListSlice";
-import { useSelector } from "react-redux";
-import { useAgentByIdQuery } from "@/graphql/generated/types";
 import { FunctionTab } from "@/components/FunctionTab";
 import { ConfigIcon } from "@/components/ui/icons";
+import { useAgentByIdQuery } from "@/graphql/generated/types";
+import { selectSelectedChatId } from "@/lib/features/chatListSlice";
+import { Avatar, Button, Tab, Tabs, Tooltip } from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
+import React from "react";
+import { useSelector } from "react-redux";
+import MessageWindow from "./message-window";
+import PromptInputWithFaq from "./prompt-input-with-faq";
 
 export type BotDTO = {
   id: number;
