@@ -1,4 +1,5 @@
 "use client";
+import MarkdownRenderer from "@/components/MarkdownRender";
 import ModelSelect from "@/components/PromptFrom/model-select";
 import PromptTemplateInput from "@/components/PromptFrom/prompt-template-input";
 import PromptVariablesInput from "@/components/PromptFrom/prompt-variables-input";
@@ -311,7 +312,9 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
                 <ModelSelect onSelectionChange={setSelectedModel}></ModelSelect>
               </div>
               <div className="w-full overflow-scroll max-h-[600px] pb-8">
-                {message && `Assisitant: ${message}`}
+                <MarkdownRenderer
+                  content={message && `Assistant: ${message}`}
+                ></MarkdownRenderer>
               </div>
               <Button
                 className="absolute right-1 bottom-1"
