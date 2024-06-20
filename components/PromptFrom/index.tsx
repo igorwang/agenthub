@@ -3,6 +3,7 @@ import ModelSelect from "@/components/PromptFrom/model-select";
 import PromptTemplateInput from "@/components/PromptFrom/prompt-template-input";
 import PromptVariablesInput from "@/components/PromptFrom/prompt-variables-input";
 import { PlusIcon, StartOutlineIcon } from "@/components/ui/icons";
+import { Message_Role_Enum } from "@/graphql/generated/types";
 import {
   Edge,
   extractClosestEdge,
@@ -10,15 +11,17 @@ import {
 import { getReorderDestinationIndex } from "@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index";
 import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { reorder } from "@atlaskit/pragmatic-drag-and-drop/reorder";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { Button } from "@nextui-org/button";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 type TemplateStatus = "draft" | "saved";
 
 export type PromptTemplateType = {
   id: number | string;
   template: string;
-  role: string;
+  role: Message_Role_Enum | string;
   status: TemplateStatus;
 };
 
@@ -161,13 +164,54 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
 
     const handleStartChat = async () => {
       setIsChating(true);
-      setMessage("");
+      setMessage("Think...");
+
+      const cleanTemplates = templatesState.filter(
+        (template) => template.template.length > 0,
+      );
+      const promptTemplate = ChatPromptTemplate.fromMessages(
+        cleanTemplates.map((template) => {
+          return [template.role, template.template];
+        }),
+      );
+
+      const variabledDict = variableInputs.reduce(
+        (acc: { [key: string]: string }, item: variableInputsType) => {
+          acc[item.name] = item.value;
+          return acc;
+        },
+        {},
+      );
+
+      let formattedPrompt;
+      // build prompt
+      try {
+        formattedPrompt = await promptTemplate.format({
+          ...variabledDict,
+        });
+      } catch (e) {
+        toast.error("Please input variables", {
+          classNames: { toast: "bg-red-400" },
+        });
+        setMessage("Please input variables and try again.");
+        setIsChating(false);
+        return;
+      }
 
       try {
         // Fetch the streaming data from the API
-        const response = await fetch("/api/chat"); // Adjust the endpoint as needed
-
-        console.log(response);
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: selectedModel,
+            prompt: formattedPrompt,
+          }),
+        }); // Adjust the endpoint as needed
+        console.log("response", response);
+        setMessage(""); // new message
 
         if (!response.body) {
           throw new Error("ReadableStream not supported by the browser.");
@@ -262,18 +306,22 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
               setVariableInputs={handelVariableInputChange}
             ></PromptVariablesInput>
             <div className="text-xl font-bold">Output</div>
-            <div className="flex flex-col h-full min-h-80 relative  items-baseline border-2 gap-2 p-2">
+            <div className="flex flex-col h-full relative  items-baseline border-2 gap-2 p-2">
               <div className="flex flex-col w-full">
                 <ModelSelect onSelectionChange={setSelectedModel}></ModelSelect>
               </div>
-              <div className="w-full overflow-scroll max-h-[600px]">
-                {message && `Assisitant:${message}`}
+              <div className="w-full overflow-scroll max-h-[600px] pb-8">
+                {message && `Assisitant: ${message}`}
               </div>
               <Button
                 className="absolute right-1 bottom-1"
-                color={isChating ? "default" : "primary"}
+                color={
+                  isChating || selectedModel.length === 0
+                    ? "default"
+                    : "primary"
+                }
                 startContent={<StartOutlineIcon size={28} />}
-                isDisabled={isChating}
+                isDisabled={isChating || selectedModel.length === 0}
                 onClick={handleStartChat}
               >
                 Start

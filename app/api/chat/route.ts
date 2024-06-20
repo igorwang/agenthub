@@ -1,33 +1,38 @@
 export const dynamic = "force-dynamic"; // always run dynamically
+import { ChatOpenAI } from "@langchain/openai";
+import { NextRequest } from "next/server";
 
-export async function GET() {
-  // This encoder will stream your text
+export async function POST(req: NextRequest) {
   const encoder = new TextEncoder();
-  //   const customReadable = new ReadableStream({
-  //     start(controller) {
-  //       // Start encoding 'Basic Streaming Test',
-  //       // and add the resulting stream to the queue
-  //       controller.enqueue(
-  //         encoder.encode(
-  //           "Basic Streaming Test Basic Streaming Test Basic Streaming Test Basic Streaming Test"
-  //         )
-  //       );
-  //       // Prevent anything else being added to the stream
-  //       controller.close();
-  //     },
-  //   });
-  const customReadable = new ReadableStream({
-    async start(controller) {
-      const messages = ["Basic", " Streaming", " Test"];
-      for (const message of messages) {
-        controller.enqueue(encoder.encode(message));
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // 延时1秒
-      }
-      controller.close();
+  const body = await req.json();
+
+  const { model, prompt } = body;
+
+  const llm = new ChatOpenAI({
+    model: model,
+    apiKey: "anykey",
+    configuration: {
+      baseURL: process.env.LITELLM_ENDPOINT,
     },
   });
 
-  return new Response(customReadable, {
-    headers: { "Content-Type": "text/html; charset=utf-8" },
-  });
+  try {
+    const stream = await llm.stream(prompt);
+
+    const customReadable = new ReadableStream({
+      async start(controller) {
+        for await (const chunk of stream) {
+          controller.enqueue(encoder.encode(chunk.content.toString()));
+        }
+        controller.close();
+      },
+    });
+
+    return new Response(customReadable, {
+      headers: { "Content-Type": "text/html; charset=utf-8" },
+    });
+  } catch (error) {
+    console.error("An error occurred while processing the stream:", error);
+    return new Response("Internal Server Error", { status: 500 });
+  }
 }

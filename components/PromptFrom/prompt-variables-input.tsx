@@ -42,16 +42,19 @@ const PromptVariablesInput = forwardRef<
       brackets.
     </div>
   );
+
   return (
     <div className="flex flex-col gap-2" ref={ref}>
       {variables && variables.length > 0
         ? variables.map((variable) => (
             <Textarea
+              // isRequired
               key={variable.name}
               minRows={2}
               variant="bordered"
               placeholder="Enter variable value..."
               label={`{${variable.name}}`}
+              defaultValue=""
               onValueChange={(value) =>
                 handleInputsValueChange(variable.name, value)
               }

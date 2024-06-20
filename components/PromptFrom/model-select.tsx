@@ -62,6 +62,7 @@ const ModelSelect = React.forwardRef<HTMLDivElement, ModelSelectProps>(
         label="Model"
         placeholder="Select an Model"
         // defaultSelectedKeys={"gpt-3.5-turbo"}
+        onChange={handleSelectionChange}
         className="max-w-full"
       >
         {models.map((model) => (
