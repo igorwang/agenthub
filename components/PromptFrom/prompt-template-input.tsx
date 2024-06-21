@@ -34,6 +34,7 @@ export type PromptTemplateType = {
 const PromptTemplateInput = React.forwardRef<
   HTMLDivElement,
   {
+    isDisabled?: boolean;
     template: PromptTemplateType;
     handleDeleteMessage?: (id: number | string) => void;
     handleValueChange?: (id: number | string, newValue: string) => void;
@@ -42,6 +43,7 @@ const PromptTemplateInput = React.forwardRef<
 >(
   (
     {
+      isDisabled,
       template,
       handleDeleteMessage,
       handleValueChange,
@@ -104,12 +106,16 @@ const PromptTemplateInput = React.forwardRef<
         <Textarea
           key={template.id}
           ref={refTextarea}
-          variant={dragging ? "faded" : "bordered"}
+          variant={dragging || isDisabled ? "faded" : "bordered"}
           placeholder="Enter your template"
           className={clsx("relative col-span-12 md:col-span-6 mb-2 md:mb-0 ", {
             // "bg-slate-200": dragging,
           })}
-          disabled={dragging}
+          disabled={dragging || isDisabled}
+          classNames={{ label: "mt-[-0.5em] h-6", input: "resize-y" }}
+          onValueChange={(value) =>
+            handleValueChange && handleValueChange(template.id, value)
+          }
           endContent={
             <Button
               isIconOnly
@@ -152,10 +158,6 @@ const PromptTemplateInput = React.forwardRef<
                 <DropdownItem key="assistant">assistant</DropdownItem>
               </DropdownMenu>
             </Dropdown>
-          }
-          classNames={{ label: "mt-[-0.5em] h-6" }}
-          onValueChange={(value) =>
-            handleValueChange && handleValueChange(template.id, value)
           }
         ></Textarea>
         {isDraggedOver && (

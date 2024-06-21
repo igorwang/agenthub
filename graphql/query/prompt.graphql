@@ -1,0 +1,24 @@
+query GetPromptById($id: Int!) {
+  prompt_hub_by_pk(id: $id) {
+    id
+    name
+    template_ids
+    templates {
+      id
+      role
+      template
+    }
+  }
+}
+
+mutation UpadeAgentPrompt($_set: agent_set_input, $id: uuid!) {
+  update_agent_by_pk(pk_columns: { id: $id }, _set: $_set) {
+    id
+  }
+}
+
+mutation UpadeKnowledgeBasePrompt($id: uuid!, $_set: knowledge_base_set_input) {
+  update_knowledge_base_by_pk(pk_columns: { id: $id }, _set: $_set) {
+    id
+  }
+}

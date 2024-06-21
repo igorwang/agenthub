@@ -10,12 +10,13 @@ type Variable = {
 type PromptVariabelsInputProps = {
   templates: PromptTemplateType[];
   setVariableInputs?: (name: string, value: string) => void;
+  isDisabled?: boolean;
 };
 
 const PromptVariablesInput = forwardRef<
   HTMLDivElement,
   PromptVariabelsInputProps
->(({ templates, setVariableInputs, ...props }, ref) => {
+>(({ isDisabled, templates, setVariableInputs, ...props }, ref) => {
   const [variables, setVariables] = useState<Variable[]>([]);
 
   useEffect(() => {
@@ -52,6 +53,7 @@ const PromptVariablesInput = forwardRef<
               key={variable.name}
               minRows={2}
               variant="bordered"
+              isDisabled={isDisabled}
               placeholder="Enter variable value..."
               label={`{${variable.name}}`}
               defaultValue=""

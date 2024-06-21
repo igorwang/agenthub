@@ -1,0 +1,9 @@
+subscription GetPromptList(
+  $where: prompt_hub_bool_exp = {}
+  $order_by: [prompt_hub_order_by!] = {}
+) {
+  prompt_hub(where: $where, order_by: $order_by) {
+    id
+    name
+  }
+}

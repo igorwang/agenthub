@@ -196,10 +196,10 @@ export default function PromptInputWithFaq() {
             innerWrapper: "relative",
             input: "pt-1 pl-2 pb-6 !pr-10 text-medium",
           }}
-          placeholder='向"智能助理"发消息'
+          placeholder="Send message to AI"
           endContent={
             <div className="flex items-end gap-2">
-              <Tooltip showArrow content="发送消息">
+              <Tooltip showArrow content="Send message">
                 <Button
                   isIconOnly
                   color={!prompt ? "default" : "primary"}
@@ -247,7 +247,7 @@ export default function PromptInputWithFaq() {
               variant="flat"
               onClick={handleFileButtonClick}
             >
-              文件
+              File
             </Button>
             <Button
               size="sm"
@@ -260,7 +260,7 @@ export default function PromptInputWithFaq() {
               }
               variant="flat"
             >
-              语音
+              Voice
             </Button>
           </div>
           <p className="py-1 text-tiny text-default-400">

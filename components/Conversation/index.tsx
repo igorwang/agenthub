@@ -28,7 +28,6 @@ export const Conversation: React.FC<ConversationProps> = ({
   scrollShadowClassname,
 }) => {
   const agent_id = useSelector(selectSelectedChatId);
-
   const router = useRouter();
   const pathname = usePathname();
 
@@ -93,7 +92,7 @@ export const Conversation: React.FC<ConversationProps> = ({
           <div className="flex flex-col w-full max-w-full overflow-auto">
             <PromptInputWithFaq></PromptInputWithFaq>
             <p className="px-2 text-tiny text-default-400">
-              AI也可能会犯错。请核查重要信息。
+              AI can also make mistakes. Please verify important information.
             </p>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { Select, SelectItem } from "@nextui-org/react";
+import { Select, SelectItem, Spinner } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 
 export type ModelProps = {
@@ -47,7 +47,7 @@ const ModelSelect = React.forwardRef<HTMLDivElement, ModelSelectProps>(
     }, []);
 
     if (loading) {
-      return <div>Loading...</div>;
+      return <Spinner label="Loading..." />;
     }
 
     const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

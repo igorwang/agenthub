@@ -1,0 +1,13 @@
+mutation CreateNewPrompt($object: prompt_hub_insert_input = {}) {
+  insert_prompt_hub_one(object: $object) {
+    id
+    name
+    creator_id
+  }
+}
+
+mutation DeletePromptTemplate($where: prompt_template_bool_exp = {}) {
+  delete_prompt_template(where: $where) {
+    affected_rows
+  }
+}
