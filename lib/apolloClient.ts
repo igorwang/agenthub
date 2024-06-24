@@ -5,6 +5,7 @@ import {
   NormalizedCacheObject,
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
+import { RetryLink } from "@apollo/client/link/retry";
 import { WebSocketLink } from "@apollo/client/link/ws";
 import { getSession } from "next-auth/react";
 import { SubscriptionClient } from "subscriptions-transport-ws";
@@ -43,23 +44,27 @@ const createHttpLink = (headers: Record<string, string> | null) => {
 };
 
 const createWSLink = (): WebSocketLink => {
-  console.log(`createWSLink: ${accessToken}`);
-
-  return new WebSocketLink(
-    new SubscriptionClient(`${process.env.WS_API_HOST}`, {
+  const subscriptionClient = new SubscriptionClient(
+    `${process.env.WS_API_HOST}`,
+    {
       lazy: true,
       reconnect: true,
       connectionParams: async () => {
         await requestAccessToken();
-        console.log(`createWSLink: ${accessToken}`);
         return {
           headers: {
             Authorization: accessToken ? `Bearer ${accessToken}` : "",
           },
         };
       },
-    }),
+    },
   );
+
+  subscriptionClient.onConnected(() => {
+    console.log("WebSocket connection established");
+  });
+
+  return new WebSocketLink(subscriptionClient);
 };
 
 export interface InitialState {
@@ -71,6 +76,19 @@ export function createApolloClient(
   headers: Record<string, string> | null,
 ) {
   const ssrMode = typeof window === "undefined";
+  // retryLink sovled the 'start received before the connection is initialised' problem
+  const retryLink = new RetryLink({
+    delay: {
+      initial: 300,
+      max: 3000,
+      jitter: true,
+    },
+    attempts: {
+      max: 5,
+      retryIf: (error, _operation) => !!error,
+    },
+  });
+
   let link;
   console.log(`ssrMode: ${ssrMode}`);
   if (ssrMode) {
@@ -81,7 +99,7 @@ export function createApolloClient(
 
   return new ApolloClient({
     ssrMode,
-    link,
+    link: retryLink.concat(link),
     cache: new InMemoryCache().restore(initialState),
   });
 }

@@ -14,7 +14,7 @@ import {
 import { GroupedChatListDTO } from "@/types/chatTypes";
 import { useSession } from "next-auth/react";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import { useEffect, useId } from "react";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
 const ChatHub = () => {
@@ -30,7 +30,6 @@ const ChatHub = () => {
 
   const { data: sessionData, status } = useSession();
   const userId = sessionData?.user?.id;
-  console.log(useId);
   const { data, loading, error } = useGetAgentListByTypeQuery({
     variables: {
       user_id: userId,
@@ -39,6 +38,7 @@ const ChatHub = () => {
   });
 
   useEffect(() => {
+    console.log("useEffect");
     if (data) {
       const groupedChatList: GroupedChatListDTO[] = data.agent_type.map(
         (group) => ({
@@ -54,16 +54,7 @@ const ChatHub = () => {
       );
       dispatch(setChatList(groupedChatList));
     }
-  }, [data]);
-
-  if (!data) {
-    console.log("userId:", userId);
-    console.log("chatId:", chatId);
-
-    console.log("selectedChatId:", selectedChatId);
-    console.log("selectedChatId:", error);
-    console.log("error", error, data);
-  }
+  }, [data, dispatch]);
 
   return (
     <div className="hidden sm:flex h-full min-w-[200px]  flex-col border-r-1 border-b-1">

@@ -15,7 +15,7 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function ChatLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;

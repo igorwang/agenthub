@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.10.4",
-    "@apollo/experimental-nextjs-app-support": "^0.10.1",
+    "@apollo/experimental-nextjs-app-support": "^0.11.2",
     "@atlaskit/pragmatic-drag-and-drop": "^1.1.12",
     "@atlaskit/pragmatic-drag-and-drop-flourish": "^1.1.0",
     "@atlaskit/pragmatic-drag-and-drop-hitbox": "^1.0.3",
