@@ -77,7 +77,10 @@ export default function FunctionTab({ agentId }: FunctionTabProps) {
       if (errors) {
         console.error(errors);
       } else {
-        toast.success("成功添加", { duration: 1000, position: "bottom-left" });
+        toast.success("Add success!", {
+          duration: 1000,
+          position: "bottom-left",
+        });
         const new_sid = data?.insert_topic_history_one?.id;
         if (new_sid) {
           dispatch(selectSession(new_sid));
@@ -133,7 +136,9 @@ export default function FunctionTab({ agentId }: FunctionTabProps) {
             setSelectedLibrary={setSelectedLibrary}
           ></LibrarySideBar>
           <Divider className="mt-2" />
-          {selectedLibrary?.creator === userId && <UploadZone></UploadZone>}
+          {selectedLibrary?.creator === userId && (
+            <UploadZone knowledgeBaseId={selectedLibrary?.id}></UploadZone>
+          )}
         </Tab>
         <Tab
           key="setting"

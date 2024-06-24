@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import FeatureCards from "@/components/Conversation/feature-cards";
+import { useGetMessageListSubscription } from "@/graphql/generated/types";
 import { Avatar, ScrollShadow } from "@nextui-org/react";
 import MessageCard from "./message-card";
 
@@ -100,34 +101,34 @@ export default function MessageWindow() {
   const agent_id = selectedChatId;
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // const { data, loading, error } = useGetMessageListSubscription({
-  //   variables: {
-  //     session_id: selectedSessionId || "", // Provide a default value
-  //     limit: 50,
-  //   },
-  //   skip: !selectedSessionId, // Skip the query if session_id is not provided
-  // });
+  const { data, loading, error } = useGetMessageListSubscription({
+    variables: {
+      session_id: selectedSessionId || "", // Provide a default value
+      limit: 50,
+    },
+    skip: !selectedSessionId, // Skip the query if session_id is not provided
+  });
 
-  // useEffect(() => {
-  //   if (data && data.message) {
-  //     setMessages(
-  //       data.message.map((item) => ({
-  //         id: item.id,
-  //         role: item.role,
-  //         message: item.content,
-  //         status: item.status,
-  //         feedback: item.feedback,
-  //         files:
-  //           item.attachments?.map(
-  //             (attachment: { fileName: string }, index: number) => ({
-  //               key: index,
-  //               fileName: attachment.fileName,
-  //             }),
-  //           ) || [],
-  //       })),
-  //     );
-  //   }
-  // }, [data]);
+  useEffect(() => {
+    if (data && data.message) {
+      setMessages(
+        data.message.map((item) => ({
+          id: item.id,
+          role: item.role,
+          message: item.content,
+          status: item.status,
+          feedback: item.feedback,
+          files:
+            item.attachments?.map(
+              (attachment: { fileName: string }, index: number) => ({
+                key: index,
+                fileName: attachment.fileName,
+              }),
+            ) || [],
+        })),
+      );
+    }
+  }, [data]);
 
   useEffect(() => {
     if (scrollRef.current) {
