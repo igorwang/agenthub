@@ -1,0 +1,17 @@
+query GetKbList($where: r_agent_kb_bool_exp = {}) {
+  r_agent_kb(where: $where) {
+    knowledge_base {
+      ...knowledgeBaseFragment
+    }
+  }
+}
+
+fragment knowledgeBaseFragment on knowledge_base {
+  id
+  name
+  description
+  updated_at
+  created_at
+  creator_id
+  base_type
+}
