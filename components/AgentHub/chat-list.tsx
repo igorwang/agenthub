@@ -14,79 +14,27 @@ import {
   OcticonKebabHorizontalIcon,
 } from "../ui/icons";
 
-import { useGetAgentListByTypeQuery } from "@/graphql/generated/types";
-import {
-  selectChat,
-  selectChatList,
-  selectSelectedChatId,
-  setChatList,
-} from "@/lib/features/chatListSlice";
+import { selectChat } from "@/lib/features/chatListSlice";
+import { AppDispatch } from "@/lib/store";
 import { GroupedChatListDTO } from "@/types/chatTypes";
-import { useSession } from "next-auth/react";
-import { useParams, usePathname, useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../../lib/store";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
 
-export const ChatList: React.FC = () => {
+export const ChatList: React.FC<{ groupedChatList: GroupedChatListDTO[] }> = ({
+  groupedChatList,
+}) => {
   const dispatch: AppDispatch = useDispatch();
-  const chatList = useSelector(selectChatList);
-  const selectedChatId = useSelector(selectSelectedChatId);
-
   const router = useRouter();
-  const params = useParams();
-  const pathname = usePathname();
 
-  const { id: chatId } = params;
-
-  const { data: sessionData, status } = useSession();
-  const userId = sessionData?.user?.id;
-
-  const { data, loading, error } = useGetAgentListByTypeQuery({
-    variables: {
-      user_id: userId,
-    },
-    skip: !userId,
-  });
+  const [openStates, setOpenStates] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
-    if (data) {
-      const groupedChatList: GroupedChatListDTO[] = data.agent_type.map(
-        (group) => ({
-          id: group.id,
-          name: group.name,
-          agents: group.agents.map((agent) => ({
-            id: agent.id,
-            name: agent.name,
-            description: agent.description,
-            avatar: agent.avatar,
-          })),
-        }),
-      );
-
-      dispatch(setChatList(groupedChatList));
-      const defaultSelectedChatId = data.agent_type[0].agents[0].id;
-
-      if (chatId && chatId != "default") {
-        dispatch(selectChat(chatId.toString()));
-      } else {
-        dispatch(selectChat(defaultSelectedChatId));
-      }
-      // Initialize open states
-      const initialOpenStates: Record<string, boolean> = {};
-      groupedChatList.forEach((group) => {
-        initialOpenStates[group.id] = true;
-      });
-      setOpenStates(initialOpenStates);
-    }
-  }, [data, dispatch]);
-
-  const [openStates, setOpenStates] = useState<Record<number, boolean>>(() => {
-    const initialState: Record<number, boolean> = {};
-    chatList.forEach((group) => {
-      initialState[group.id] = true;
+    const initialOpenStates: Record<number, boolean> = {};
+    groupedChatList.forEach((group) => {
+      initialOpenStates[group.id] = true;
     });
-    return initialState;
-  });
+    setOpenStates(initialOpenStates);
+  }, [groupedChatList]);
 
   const toggleListbox = (id: number) => {
     setOpenStates((prevStates) => ({
@@ -96,12 +44,11 @@ export const ChatList: React.FC = () => {
   };
 
   const handleSelectChat = (selectId: string) => {
-    const newPathname = pathname.replace(chatId.toString(), selectId);
     dispatch(selectChat(selectId));
-    router.push(newPathname);
+    router.push(`/chat/${selectId}`);
   };
 
-  const chatListContent = chatList.map((group) => (
+  const chatListContent = groupedChatList.map((group) => (
     <div className="flex flex-col" key={group.id}>
       {group.name && group.name != "system" && (
         <div className="flex flex-row justify-between px-2 py-2 items-center hover:bg-slate-200 bg-slate-100 h-12">

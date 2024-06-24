@@ -44,6 +44,7 @@ const createHttpLink = (headers: Record<string, string> | null) => {
 
 const createWSLink = (): WebSocketLink => {
   console.log(`createWSLink: ${accessToken}`);
+
   return new WebSocketLink(
     new SubscriptionClient(`${process.env.WS_API_HOST}`, {
       lazy: true,

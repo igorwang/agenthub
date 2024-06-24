@@ -915,6 +915,16 @@ type agent_mutation_response {
 }
 
 """
+input type for inserting object relation for remote table "agent"
+"""
+input agent_obj_rel_insert_input {
+  data: agent_insert_input!
+
+  """upsert condition"""
+  on_conflict: agent_on_conflict
+}
+
+"""
 on_conflict condition type for table "agent"
 """
 input agent_on_conflict {
@@ -2341,6 +2351,16 @@ type knowledge_base_mutation_response {
 
   """data from the rows affected by the mutation"""
   returning: [knowledge_base!]!
+}
+
+"""
+input type for inserting object relation for remote table "knowledge_base"
+"""
+input knowledge_base_obj_rel_insert_input {
+  data: knowledge_base_insert_input!
+
+  """upsert condition"""
+  on_conflict: knowledge_base_on_conflict
 }
 
 """
@@ -8157,10 +8177,15 @@ type query_root {
 
 """agent knowledge_bases"""
 type r_agent_kb {
+  """An object relationship"""
+  agent: agent!
   agent_id: uuid!
   created_at: timestamptz!
   id: Int!
   kb_id: uuid!
+
+  """An object relationship"""
+  knowledge_base: knowledge_base!
   updated_at: timestamptz!
 }
 
@@ -8246,10 +8271,12 @@ input r_agent_kb_bool_exp {
   _and: [r_agent_kb_bool_exp!]
   _not: r_agent_kb_bool_exp
   _or: [r_agent_kb_bool_exp!]
+  agent: agent_bool_exp
   agent_id: uuid_comparison_exp
   created_at: timestamptz_comparison_exp
   id: Int_comparison_exp
   kb_id: uuid_comparison_exp
+  knowledge_base: knowledge_base_bool_exp
   updated_at: timestamptz_comparison_exp
 }
 
@@ -8279,10 +8306,12 @@ input r_agent_kb_inc_input {
 input type for inserting data into table "r_agent_kb"
 """
 input r_agent_kb_insert_input {
+  agent: agent_obj_rel_insert_input
   agent_id: uuid
   created_at: timestamptz
   id: Int
   kb_id: uuid
+  knowledge_base: knowledge_base_obj_rel_insert_input
   updated_at: timestamptz
 }
 
@@ -8348,10 +8377,12 @@ input r_agent_kb_on_conflict {
 
 """Ordering options when selecting data from "r_agent_kb"."""
 input r_agent_kb_order_by {
+  agent: agent_order_by
   agent_id: order_by
   created_at: order_by
   id: order_by
   kb_id: order_by
+  knowledge_base: knowledge_base_order_by
   updated_at: order_by
 }
 

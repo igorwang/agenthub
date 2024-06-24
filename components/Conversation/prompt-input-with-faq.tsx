@@ -249,7 +249,7 @@ export default function PromptInputWithFaq() {
             >
               File
             </Button>
-            <Button
+            {/* <Button
               size="sm"
               startContent={
                 <Icon
@@ -261,7 +261,7 @@ export default function PromptInputWithFaq() {
               variant="flat"
             >
               Voice
-            </Button>
+            </Button> */}
           </div>
           <p className="py-1 text-tiny text-default-400">
             {prompt.length}/8000

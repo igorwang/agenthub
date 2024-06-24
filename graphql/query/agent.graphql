@@ -15,7 +15,7 @@ query GetAgentListByType($user_id: uuid) {
   }
 }
 
-query AgentByID($id: uuid!) {
+query GetAgentByID($id: uuid!) {
   agent_by_pk(id: $id) {
     id
     name

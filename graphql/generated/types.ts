@@ -794,6 +794,13 @@ export type Agent_Mutation_Response = {
   returning: Array<Agent>;
 };
 
+/** input type for inserting object relation for remote table "agent" */
+export type Agent_Obj_Rel_Insert_Input = {
+  data: Agent_Insert_Input;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Agent_On_Conflict>;
+};
+
 /** on_conflict condition type for table "agent" */
 export type Agent_On_Conflict = {
   constraint: Agent_Constraint;
@@ -2064,6 +2071,13 @@ export type Knowledge_Base_Mutation_Response = {
   affected_rows: Scalars['Int']['output'];
   /** data from the rows affected by the mutation */
   returning: Array<Knowledge_Base>;
+};
+
+/** input type for inserting object relation for remote table "knowledge_base" */
+export type Knowledge_Base_Obj_Rel_Insert_Input = {
+  data: Knowledge_Base_Insert_Input;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Knowledge_Base_On_Conflict>;
 };
 
 /** on_conflict condition type for table "knowledge_base" */
@@ -6871,10 +6885,14 @@ export type Query_RootVerification_Tokens_By_PkArgs = {
 /** agent knowledge_bases */
 export type R_Agent_Kb = {
   __typename?: 'r_agent_kb';
+  /** An object relationship */
+  agent: Agent;
   agent_id: Scalars['uuid']['output'];
   created_at: Scalars['timestamptz']['output'];
   id: Scalars['Int']['output'];
   kb_id: Scalars['uuid']['output'];
+  /** An object relationship */
+  knowledge_base: Knowledge_Base;
   updated_at: Scalars['timestamptz']['output'];
 };
 
@@ -6957,10 +6975,12 @@ export type R_Agent_Kb_Bool_Exp = {
   _and?: InputMaybe<Array<R_Agent_Kb_Bool_Exp>>;
   _not?: InputMaybe<R_Agent_Kb_Bool_Exp>;
   _or?: InputMaybe<Array<R_Agent_Kb_Bool_Exp>>;
+  agent?: InputMaybe<Agent_Bool_Exp>;
   agent_id?: InputMaybe<Uuid_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
   kb_id?: InputMaybe<Uuid_Comparison_Exp>;
+  knowledge_base?: InputMaybe<Knowledge_Base_Bool_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
 
@@ -6979,10 +6999,12 @@ export type R_Agent_Kb_Inc_Input = {
 
 /** input type for inserting data into table "r_agent_kb" */
 export type R_Agent_Kb_Insert_Input = {
+  agent?: InputMaybe<Agent_Obj_Rel_Insert_Input>;
   agent_id?: InputMaybe<Scalars['uuid']['input']>;
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   id?: InputMaybe<Scalars['Int']['input']>;
   kb_id?: InputMaybe<Scalars['uuid']['input']>;
+  knowledge_base?: InputMaybe<Knowledge_Base_Obj_Rel_Insert_Input>;
   updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
 };
 
@@ -7042,10 +7064,12 @@ export type R_Agent_Kb_On_Conflict = {
 
 /** Ordering options when selecting data from "r_agent_kb". */
 export type R_Agent_Kb_Order_By = {
+  agent?: InputMaybe<Agent_Order_By>;
   agent_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   kb_id?: InputMaybe<Order_By>;
+  knowledge_base?: InputMaybe<Knowledge_Base_Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
 
@@ -10012,12 +10036,12 @@ export type GetAgentListByTypeQueryVariables = Exact<{
 
 export type GetAgentListByTypeQuery = { __typename?: 'query_root', agent_type: Array<{ __typename?: 'agent_type', id: number, name: string, agents: Array<{ __typename?: 'agent', id: any, name: string, description?: string | null, avatar?: string | null }> }> };
 
-export type AgentByIdQueryVariables = Exact<{
+export type GetAgentByIdQueryVariables = Exact<{
   id: Scalars['uuid']['input'];
 }>;
 
 
-export type AgentByIdQuery = { __typename?: 'query_root', agent_by_pk?: { __typename?: 'agent', id: any, name: string, description?: string | null, avatar?: string | null } | null };
+export type GetAgentByIdQuery = { __typename?: 'query_root', agent_by_pk?: { __typename?: 'agent', id: any, name: string, description?: string | null, avatar?: string | null } | null };
 
 export type GetTopicHistoriesQueryVariables = Exact<{
   agent_id: Scalars['uuid']['input'];
@@ -10027,6 +10051,15 @@ export type GetTopicHistoriesQueryVariables = Exact<{
 
 
 export type GetTopicHistoriesQuery = { __typename?: 'query_root', topic_history: Array<{ __typename?: 'topic_history', id: any, title: string, updated_at: any, user_id?: any | null, created_at: any, agent_id?: any | null }> };
+
+export type GetKbListQueryVariables = Exact<{
+  where?: InputMaybe<R_Agent_Kb_Bool_Exp>;
+}>;
+
+
+export type GetKbListQuery = { __typename?: 'query_root', r_agent_kb: Array<{ __typename?: 'r_agent_kb', knowledge_base: { __typename?: 'knowledge_base', id: any, name: string, description: string, updated_at: any, created_at: any, creator_id?: any | null, base_type: Knowledge_Base_Type_Enum } }> };
+
+export type KnowledgeBaseFragmentFragment = { __typename?: 'knowledge_base', id: any, name: string, description: string, updated_at: any, created_at: any, creator_id?: any | null, base_type: Knowledge_Base_Type_Enum };
 
 export type GetPromptByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -10067,7 +10100,17 @@ export type GetPromptListSubscriptionVariables = Exact<{
 
 export type GetPromptListSubscription = { __typename?: 'subscription_root', prompt_hub: Array<{ __typename?: 'prompt_hub', id: number, name?: string | null }> };
 
-
+export const KnowledgeBaseFragmentFragmentDoc = gql`
+    fragment knowledgeBaseFragment on knowledge_base {
+  id
+  name
+  description
+  updated_at
+  created_at
+  creator_id
+  base_type
+}
+    `;
 export const AddNewTopicMutationDocument = gql`
     mutation AddNewTopicMutation($title: String, $user_id: uuid, $agent_id: uuid) {
   insert_topic_history_one(
@@ -10271,8 +10314,8 @@ export type GetAgentListByTypeQueryHookResult = ReturnType<typeof useGetAgentLis
 export type GetAgentListByTypeLazyQueryHookResult = ReturnType<typeof useGetAgentListByTypeLazyQuery>;
 export type GetAgentListByTypeSuspenseQueryHookResult = ReturnType<typeof useGetAgentListByTypeSuspenseQuery>;
 export type GetAgentListByTypeQueryResult = Apollo.QueryResult<GetAgentListByTypeQuery, GetAgentListByTypeQueryVariables>;
-export const AgentByIdDocument = gql`
-    query AgentByID($id: uuid!) {
+export const GetAgentByIdDocument = gql`
+    query GetAgentByID($id: uuid!) {
   agent_by_pk(id: $id) {
     id
     name
@@ -10283,37 +10326,37 @@ export const AgentByIdDocument = gql`
     `;
 
 /**
- * __useAgentByIdQuery__
+ * __useGetAgentByIdQuery__
  *
- * To run a query within a React component, call `useAgentByIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useAgentByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetAgentByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAgentByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useAgentByIdQuery({
+ * const { data, loading, error } = useGetAgentByIdQuery({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useAgentByIdQuery(baseOptions: Apollo.QueryHookOptions<AgentByIdQuery, AgentByIdQueryVariables> & ({ variables: AgentByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+export function useGetAgentByIdQuery(baseOptions: Apollo.QueryHookOptions<GetAgentByIdQuery, GetAgentByIdQueryVariables> & ({ variables: GetAgentByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<AgentByIdQuery, AgentByIdQueryVariables>(AgentByIdDocument, options);
+        return Apollo.useQuery<GetAgentByIdQuery, GetAgentByIdQueryVariables>(GetAgentByIdDocument, options);
       }
-export function useAgentByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AgentByIdQuery, AgentByIdQueryVariables>) {
+export function useGetAgentByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAgentByIdQuery, GetAgentByIdQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<AgentByIdQuery, AgentByIdQueryVariables>(AgentByIdDocument, options);
+          return Apollo.useLazyQuery<GetAgentByIdQuery, GetAgentByIdQueryVariables>(GetAgentByIdDocument, options);
         }
-export function useAgentByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<AgentByIdQuery, AgentByIdQueryVariables>) {
+export function useGetAgentByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAgentByIdQuery, GetAgentByIdQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<AgentByIdQuery, AgentByIdQueryVariables>(AgentByIdDocument, options);
+          return Apollo.useSuspenseQuery<GetAgentByIdQuery, GetAgentByIdQueryVariables>(GetAgentByIdDocument, options);
         }
-export type AgentByIdQueryHookResult = ReturnType<typeof useAgentByIdQuery>;
-export type AgentByIdLazyQueryHookResult = ReturnType<typeof useAgentByIdLazyQuery>;
-export type AgentByIdSuspenseQueryHookResult = ReturnType<typeof useAgentByIdSuspenseQuery>;
-export type AgentByIdQueryResult = Apollo.QueryResult<AgentByIdQuery, AgentByIdQueryVariables>;
+export type GetAgentByIdQueryHookResult = ReturnType<typeof useGetAgentByIdQuery>;
+export type GetAgentByIdLazyQueryHookResult = ReturnType<typeof useGetAgentByIdLazyQuery>;
+export type GetAgentByIdSuspenseQueryHookResult = ReturnType<typeof useGetAgentByIdSuspenseQuery>;
+export type GetAgentByIdQueryResult = Apollo.QueryResult<GetAgentByIdQuery, GetAgentByIdQueryVariables>;
 export const GetTopicHistoriesDocument = gql`
     query GetTopicHistories($agent_id: uuid!, $user_id: uuid!, $limit: Int = 100) {
   topic_history(
@@ -10365,6 +10408,48 @@ export type GetTopicHistoriesQueryHookResult = ReturnType<typeof useGetTopicHist
 export type GetTopicHistoriesLazyQueryHookResult = ReturnType<typeof useGetTopicHistoriesLazyQuery>;
 export type GetTopicHistoriesSuspenseQueryHookResult = ReturnType<typeof useGetTopicHistoriesSuspenseQuery>;
 export type GetTopicHistoriesQueryResult = Apollo.QueryResult<GetTopicHistoriesQuery, GetTopicHistoriesQueryVariables>;
+export const GetKbListDocument = gql`
+    query GetKbList($where: r_agent_kb_bool_exp = {}) {
+  r_agent_kb(where: $where) {
+    knowledge_base {
+      ...knowledgeBaseFragment
+    }
+  }
+}
+    ${KnowledgeBaseFragmentFragmentDoc}`;
+
+/**
+ * __useGetKbListQuery__
+ *
+ * To run a query within a React component, call `useGetKbListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetKbListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetKbListQuery({
+ *   variables: {
+ *      where: // value for 'where'
+ *   },
+ * });
+ */
+export function useGetKbListQuery(baseOptions?: Apollo.QueryHookOptions<GetKbListQuery, GetKbListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetKbListQuery, GetKbListQueryVariables>(GetKbListDocument, options);
+      }
+export function useGetKbListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetKbListQuery, GetKbListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetKbListQuery, GetKbListQueryVariables>(GetKbListDocument, options);
+        }
+export function useGetKbListSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetKbListQuery, GetKbListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetKbListQuery, GetKbListQueryVariables>(GetKbListDocument, options);
+        }
+export type GetKbListQueryHookResult = ReturnType<typeof useGetKbListQuery>;
+export type GetKbListLazyQueryHookResult = ReturnType<typeof useGetKbListLazyQuery>;
+export type GetKbListSuspenseQueryHookResult = ReturnType<typeof useGetKbListSuspenseQuery>;
+export type GetKbListQueryResult = Apollo.QueryResult<GetKbListQuery, GetKbListQueryVariables>;
 export const GetPromptByIdDocument = gql`
     query GetPromptById($id: Int!) {
   prompt_hub_by_pk(id: $id) {

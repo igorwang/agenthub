@@ -241,23 +241,14 @@ export const ConfigIcon: React.FC<IconSvgProps> = ({
       height={height || size}
       viewBox="0 0 48 48"
     >
-      <g
+      <path
         fill="none"
-        stroke="#000"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="4"
-      >
-        <path d="M41.5 10H35.5" />
-        <path d="M27.5 6V14" />
-        <path d="M27.5 10L5.5 10" />
-        <path d="M13.5 24H5.5" />
-        <path d="M21.5 20V28" />
-        <path d="M43.5 24H21.5" />
-        <path d="M41.5 38H35.5" />
-        <path d="M27.5 34V42" />
-        <path d="M27.5 38H5.5" />
-      </g>
+        stroke="currentColor"
+        // strokeLinecap="round"
+        // strokeLinejoin="round"
+        strokeWidth="4"
+        d="M41.5 10h-6m-8-4v8m0-4h-22m8 14h-8m16-4v8m22-4h-22m20 14h-6m-8-4v8m0-4h-22"
+      />
     </svg>
   );
 };
@@ -320,6 +311,63 @@ export const StartOutlineIcon: React.FC<IconSvgProps> = ({
       <path
         fill="currentColor"
         d="M8.885 15.058h1V8.942h-1zm3.23 0L16.713 12l-4.596-3.058zM12.004 21q-1.866 0-3.51-.708q-1.643-.709-2.859-1.924T3.71 15.512T3 12.003t.709-3.51Q4.417 6.85 5.63 5.634t2.857-1.925T11.997 3t3.51.709q1.643.708 2.859 1.922t1.925 2.857t.709 3.509t-.708 3.51t-1.924 2.859t-2.856 1.925t-3.509.709M12 20q3.35 0 5.675-2.325T20 12t-2.325-5.675T12 4T6.325 6.325T4 12t2.325 5.675T12 20m0-8"
+      />
+    </svg>
+  );
+};
+
+export const ArrowForwardIcon: React.FC<IconSvgProps> = ({
+  size = 20,
+  width,
+  height,
+  ...props
+}) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={width || size}
+      height={height || size}
+      viewBox="0 0 24 24"
+    >
+      <path fill="currentColor" d="M12.6 12L8 7.4L9.4 6l6 6l-6 6L8 16.6z" />
+    </svg>
+  );
+};
+
+export const ArrowBackIcon: React.FC<IconSvgProps> = ({
+  size = 20,
+  width,
+  height,
+  ...props
+}) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={width || size}
+      height={height || size}
+      viewBox="0 0 24 24"
+    >
+      <path fill="currentColor" d="m14 18l-6-6l6-6l1.4 1.4l-4.6 4.6l4.6 4.6z" />
+    </svg>
+  );
+};
+
+export const LibraryIcon: React.FC<IconSvgProps> = ({
+  size = 20,
+  width,
+  height,
+  ...props
+}) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={width || size}
+      height={height || size}
+      viewBox="0 0 24 24"
+    >
+      <path
+        fill="currentColor"
+        d="M5.5 3A1.5 1.5 0 0 1 7 4.5v15A1.5 1.5 0 0 1 5.5 21h-2A1.5 1.5 0 0 1 2 19.5v-15A1.5 1.5 0 0 1 3.5 3zm6 0A1.5 1.5 0 0 1 13 4.5v15a1.5 1.5 0 0 1-1.5 1.5h-2A1.5 1.5 0 0 1 8 19.5v-15A1.5 1.5 0 0 1 9.5 3zm7.281 3.124l3.214 12.519a1.5 1.5 0 0 1-1.08 1.826l-1.876.48a1.5 1.5 0 0 1-1.826-1.08L13.999 7.354a1.5 1.5 0 0 1 1.08-1.826l1.876-.483a1.5 1.5 0 0 1 1.826 1.08"
       />
     </svg>
   );
