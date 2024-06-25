@@ -20,16 +20,24 @@ import {
 import { AppDispatch } from "@/lib/store";
 import { useSession } from "next-auth/react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 import PromptInput from "./prompt-input";
 
-export default function PromptInputWithFaq() {
+type PromptInputWithFaqProps = {
+  isChating?: boolean;
+  handleChatingStatus?: (stauts: boolean) => void;
+};
+
+export default function PromptInputWithFaq({
+  isChating: isButtonDisabled,
+  handleChatingStatus,
+}: PromptInputWithFaqProps) {
   const dispatch: AppDispatch = useDispatch();
 
   const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
 
   const [files, setFiles] = useState<UploadFileProps[]>([]);
-
   const [prompt, setPrompt] = useState<string>("");
 
   const [createMessageAndUpdateTopicHistoryMutation, { data, loading, error }] =
@@ -132,12 +140,20 @@ export default function PromptInputWithFaq() {
   };
 
   const sendMessageHanlder = () => {
+    handleChatingStatus && handleChatingStatus(true);
+    if (!selectedSessionId) {
+      toast.error("Please choose a topic to start the conversation.");
+      return null;
+    }
+    console.log("selectedChatId", selectedChatId);
+    console.log("selectedSessionId", selectedSessionId);
     const attachments = files.map((item) => ({
       // key: item.key,
       fileName: item.fileName,
       bucket: item.bucket,
       fileKey: item.fileKey,
     }));
+
     createMessageAndUpdateTopicHistoryMutation({
       variables: {
         content: prompt,
@@ -146,7 +162,6 @@ export default function PromptInputWithFaq() {
         attachments: attachments,
       },
     });
-
     setPrompt("");
     setFiles([]);
   };
@@ -203,7 +218,7 @@ export default function PromptInputWithFaq() {
                 <Button
                   isIconOnly
                   color={!prompt ? "default" : "primary"}
-                  isDisabled={!prompt}
+                  isDisabled={!prompt || isButtonDisabled}
                   radius="lg"
                   size="md"
                   variant="solid"
@@ -264,7 +279,7 @@ export default function PromptInputWithFaq() {
             </Button> */}
           </div>
           <p className="py-1 text-tiny text-default-400">
-            {prompt.length}/8000
+            {prompt.length}/4000
           </p>
         </div>
       </form>

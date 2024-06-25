@@ -8,7 +8,10 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import FeatureCards from "@/components/Conversation/feature-cards";
-import { useGetMessageListSubscription } from "@/graphql/generated/types";
+import {
+  useGetAgentByIdQuery,
+  useGetMessageListSubscription,
+} from "@/graphql/generated/types";
 import { Avatar, ScrollShadow } from "@nextui-org/react";
 import MessageCard from "./message-card";
 
@@ -89,12 +92,27 @@ type MessageType = {
   files?: any;
 };
 
-export default function MessageWindow() {
-  const dispatch: AppDispatch = useDispatch();
+type AgentProps = {
+  id: string;
+  name?: string;
+  avatar?: string;
+};
 
+type MessageWindowProps = {
+  isChating?: boolean;
+  handleChatingStatus?: (stauts: boolean) => void;
+};
+
+export default function MessageWindow({
+  isChating,
+  handleChatingStatus,
+}: MessageWindowProps) {
+  const dispatch: AppDispatch = useDispatch();
   const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
   const [messages, setMessages] = useState<MessageType[]>([]);
+  const [agent, setAgent] = useState<AgentProps>();
+  const [streamingMessage, setStreamingMessage] = useState<string>("");
 
   const session = useSession();
   const user_id = session.data?.user?.id;
@@ -108,6 +126,29 @@ export default function MessageWindow() {
     },
     skip: !selectedSessionId, // Skip the query if session_id is not provided
   });
+
+  const { data: agentData } = useGetAgentByIdQuery({
+    variables: {
+      id: agent_id, // value for 'id'
+    },
+    skip: !agent_id,
+  });
+
+  useEffect(() => {
+    if (agentData) {
+      setAgent({
+        id: agentData.agent_by_pk?.id,
+        name: agentData.agent_by_pk?.name,
+        avatar: agentData.agent_by_pk?.avatar || "",
+      });
+    }
+  }, [selectedChatId, agentData]);
+
+  useEffect(() => {
+    console.log("isChating", isChating);
+    setTimeout(() => {}, 100000);
+    handleChatingStatus && handleChatingStatus(false);
+  }, [isChating]);
 
   useEffect(() => {
     if (data && data.message) {
@@ -139,10 +180,16 @@ export default function MessageWindow() {
   const featureContent = (
     <div className="flex h-full flex-col justify-center">
       <div className="flex w-full flex-col items-center justify-center gap-10">
-        <Avatar
-          size="lg"
-          src="https://nextuipro.nyc3.cdn.digitaloceanspaces.com/components-images/avatar_ai.png"
-        />
+        {agent && agent?.avatar ? (
+          <Avatar size="lg" src={agent.avatar} />
+        ) : (
+          <Avatar
+            className="flex-shrink-0 bg-blue-400"
+            size="md"
+            name={agent && agent.name?.charAt(0)}
+            classNames={{ name: "text-xl" }}
+          ></Avatar>
+        )}
         <h1 className="text-xl font-medium text-default-700">
           How can I help you today?
         </h1>
@@ -157,7 +204,6 @@ export default function MessageWindow() {
     >
       <div className="flex flex-1 flex-grow flex-col px-1 gap-1  ">
         {messages.length === 0 && featureContent}
-
         {messages.map(({ role, message, files }, index) => (
           <MessageCard
             key={index}
@@ -177,6 +223,7 @@ export default function MessageWindow() {
             files={files}
           />
         ))}
+        <div>{isChating && streamingMessage}</div>
       </div>
     </ScrollShadow>
   );

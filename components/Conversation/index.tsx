@@ -18,17 +18,21 @@ export type Agent = {
 
 export type ConversationProps = {
   agentId: string;
+  sessionId?: string;
   className?: string;
   scrollShadowClassname?: string;
 };
 
 export const Conversation: React.FC<ConversationProps> = ({
   agentId,
+  sessionId,
   className,
   scrollShadowClassname,
 }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const [isChating, setIsChating] = useState<boolean>(false);
+
   const [agent, setAgent] = useState<Agent>();
   const { data, loading, error } = useGetAgentByIdQuery({
     variables: {
@@ -106,9 +110,15 @@ export const Conversation: React.FC<ConversationProps> = ({
       {headerElement}
       <div className="flex flex-row flex-grow max-w-full overflow-auto">
         <div className="flex flex-grow flex-col pt-2 max-w-full overflow-auto">
-          <MessageWindow />
+          <MessageWindow
+            isChating={isChating}
+            handleChatingStatus={setIsChating}
+          />
           <div className="flex flex-col w-full max-w-full overflow-auto">
-            <PromptInputWithFaq></PromptInputWithFaq>
+            <PromptInputWithFaq
+              isChating={isChating}
+              handleChatingStatus={setIsChating}
+            ></PromptInputWithFaq>
             <p className="px-2 text-tiny text-default-400">
               AI can also make mistakes. Please verify important information.
             </p>

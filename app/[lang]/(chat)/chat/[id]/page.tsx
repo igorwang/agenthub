@@ -1,24 +1,38 @@
 "use client";
 import { Conversation } from "@/components/Conversation";
-import { selectChatList } from "@/lib/features/chatListSlice";
+import {
+  selectChat,
+  selectChatList,
+  selectSession,
+} from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
 import { useSession } from "next-auth/react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function ChatPage() {
   const dispatch: AppDispatch = useDispatch();
   const chatList = useSelector(selectChatList);
 
-  const params = useParams();
+  const params = useParams<{ id: string }>();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  console.log(params);
   const { id } = params;
   const { data: sessionData, status } = useSession();
   const userId = sessionData?.user?.id;
+  const sessionId = searchParams.get("session_id");
+  console.log(sessionId);
+
+  useEffect(() => {
+    dispatch(selectChat(id));
+    dispatch(selectSession(sessionId));
+  }, [id, sessionId, dispatch]);
 
   return (
     <div className="flex flex-row overflow-auto">
-      <Conversation agentId={id.toString()}></Conversation>
+      <Conversation agentId={id}></Conversation>
     </div>
   );
 }

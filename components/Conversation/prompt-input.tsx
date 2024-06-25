@@ -12,7 +12,7 @@ const PromptInput = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
       <Textarea
         ref={ref}
         aria-label="Prompt"
-        className="min-h-[100px]"
+        className="sm:min-h-[100px] md:min-h-[160px]"
         classNames={{
           ...classNames,
           label: cn("hidden", classNames?.label),

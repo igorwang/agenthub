@@ -34,7 +34,13 @@ export default function RootLayout({
             <SessionProvider>
               <div className="h-dvh w-dvw">
                 {children}
-                <Toaster />
+                <Toaster
+                  toastOptions={{
+                    classNames: {
+                      error: "text-red-400",
+                    },
+                  }}
+                />
               </div>
             </SessionProvider>
           </StoreProvider>

@@ -35,7 +35,7 @@ const chatListSlice = createSlice({
     selectChat: (state, action: PayloadAction<string>) => {
       state.selectedChatId = action.payload;
     },
-    selectSession: (state, action: PayloadAction<string>) => {
+    selectSession: (state, action: PayloadAction<string | null>) => {
       state.selectedSessionId = action.payload;
     },
   },
