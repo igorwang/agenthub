@@ -179,8 +179,8 @@ export default function PromptInputWithFaq({
   ));
 
   return (
-    <div className="flex flex-col w-full  p-2 gap-4 items-center max-w-full overflow-auto">
-      <ScrollShadow
+    <div className="flex flex-col w-full p-2 gap-4 items-center max-w-full overflow-auto">
+      {/* <ScrollShadow
         hideScrollBar
         className="flex flex-nowrap gap-2 max-w-full overflow-auto"
         orientation="horizontal"
@@ -197,7 +197,7 @@ export default function PromptInputWithFaq({
             </Button>
           ))}
         </div>
-      </ScrollShadow>
+      </ScrollShadow> */}
       <form className="flex flex-col w-full items-start rounded-medium bg-default-100 transition-colors hover:bg-default-200/70">
         <ScrollShadow
           className="flex flex-row flex-nowrap gap-2 w-full"

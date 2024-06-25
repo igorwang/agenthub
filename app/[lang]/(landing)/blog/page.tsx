@@ -1,6 +1,6 @@
 "use client";
 
-import UploadZone from "@/components/UploadZone";
+import { SourceSection } from "@/components/Conversation/source-section";
 import { PromptTemplate } from "@langchain/core/prompts";
 
 export default function Blog() {
@@ -13,7 +13,8 @@ export default function Blog() {
       ></PromptForm> */}
       {/* <PromptTemplateInput></PromptTemplateInput> */}
       {/* <LibrarySideBar></LibrarySideBar> */}
-      <UploadZone></UploadZone>
+      {/* <UploadZone></UploadZone> */}
+      <SourceSection title="Sources"></SourceSection>
     </div>
   );
 }

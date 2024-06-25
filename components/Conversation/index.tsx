@@ -9,6 +9,12 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import PromptInputWithFaq from "./prompt-input-with-faq";
 
+enum CHAT_STATUS_ENUM {
+  Analyzing,
+  Searching,
+  Generating,
+}
+
 export type Agent = {
   id: string;
   name: string;
@@ -31,7 +37,9 @@ export const Conversation: React.FC<ConversationProps> = ({
 }) => {
   const router = useRouter();
   const pathname = usePathname();
+
   const [isChating, setIsChating] = useState<boolean>(false);
+  const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
 
   const [agent, setAgent] = useState<Agent>();
   const { data, loading, error } = useGetAgentByIdQuery({
@@ -40,6 +48,12 @@ export const Conversation: React.FC<ConversationProps> = ({
     },
     skip: !agentId,
   });
+
+  useEffect(() => {
+    console.log("isChating", isChating);
+    setTimeout(() => {}, 100000);
+    setIsChating(false);
+  }, [isChating]);
 
   useEffect(() => {
     if (data) {

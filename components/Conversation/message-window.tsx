@@ -145,12 +145,6 @@ export default function MessageWindow({
   }, [selectedChatId, agentData]);
 
   useEffect(() => {
-    console.log("isChating", isChating);
-    setTimeout(() => {}, 100000);
-    handleChatingStatus && handleChatingStatus(false);
-  }, [isChating]);
-
-  useEffect(() => {
     if (data && data.message) {
       setMessages(
         data.message.map((item) => ({
