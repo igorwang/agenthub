@@ -69,7 +69,7 @@ export default function UploadZone({ knowledgeBaseId }: UploadZoneProps) {
         objectName: `knowledge_base/${knowledgeBaseId}/${fileName}`,
         contentType: file.type || "application/octet-stream",
         metadata: {
-          fileName: fileName,
+          fileName: file.name,
           creatorId: session.data?.user?.id || "",
         },
       };

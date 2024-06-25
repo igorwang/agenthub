@@ -9,44 +9,6 @@ import { EmblaOptionsType } from "embla-carousel";
 import useEmblaCarousel from "embla-carousel-react";
 import { useCallback, useEffect, useState } from "react";
 
-const data = [
-  {
-    id: "1",
-    name: "Alice Johnson Alice JohnsonAlice JohnsonAlice JohnsonAlice Johnson ",
-    from: "New York, USA",
-    description:
-      "Alice is a software engineer with a passion for open-source projects.",
-  },
-  {
-    id: "2",
-    name: "Bob Smith",
-    from: "London, UK",
-    description:
-      "Bob is a front-end developer who loves creating interactive web applications.",
-  },
-  {
-    id: "3",
-    name: "Catherine Lee",
-    from: "Sydney, Australia",
-    description:
-      "Catherine is a UI/UX designer with a keen eye for detail and user experience.",
-  },
-  {
-    id: "4",
-    name: "David Kim",
-    from: "Seoul, South Korea",
-    description:
-      "David is a back-end developer with expertise in database management and server-side logic.",
-  },
-  {
-    id: "5",
-    name: "Eva Müller",
-    from: "Berlin, Germany",
-    description:
-      "Eva is a full-stack developer who enjoys working on both front-end and back-end technologies.",
-  },
-];
-
 const LibrarySideBar: React.FC<{
   cards: LibraryCardProps[];
   setSelectedLibrary: (item: LibraryCardProps) => void;
@@ -55,26 +17,27 @@ const LibrarySideBar: React.FC<{
     loop: false,
     align: "center",
   });
-  const [currentSlide, setCurrentSilide] = useState();
+  const [currentSlide, setCurrentSilide] = useState<number | null>(0);
+  const [hasNext, setHasNext] = useState<boolean>();
+  const [hasPrev, setHasPrev] = useState<boolean>();
 
   useEffect(() => {
     const selectedSnap = emblaApi?.selectedScrollSnap();
-
     if (selectedSnap !== undefined && selectedSnap !== null) {
       setSelectedLibrary(cards[selectedSnap]);
     }
-
-    if (emblaApi) {
-      console.log(emblaApi.slideNodes()); // Access API
-    }
-  }, [emblaApi, cards]);
+    setHasNext(emblaApi?.canScrollNext);
+    setHasPrev(emblaApi?.canScrollPrev);
+  }, [emblaApi, cards, currentSlide]);
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
+    setCurrentSilide(emblaApi?.selectedScrollSnap() || 0);
   }, [emblaApi]);
 
   const scrollNext = useCallback(() => {
     if (emblaApi) emblaApi.scrollNext();
+    setCurrentSilide(emblaApi?.selectedScrollSnap() || 0);
   }, [emblaApi]);
 
   const OPTIONS: EmblaOptionsType = { loop: true };
@@ -99,18 +62,21 @@ const LibrarySideBar: React.FC<{
           aria-label="back"
           onClick={scrollPrev}
           startContent={<ArrowBackIcon size={30} />}
-          variant="flat"
+          // variant="flat"
+          variant={hasPrev ? "flat" : "faded"}
           radius="full"
           isIconOnly
+          isDisabled={!hasPrev}
         ></Button>
         <Spacer />
         <Button
           aria-label="forward"
+          variant={hasNext ? "flat" : "faded"}
           onClick={scrollNext}
           startContent={<ArrowForwardIcon size={30} />}
           isIconOnly
-          variant="flat"
           radius="full"
+          isDisabled={!hasNext}
         ></Button>
       </div>
     </div>

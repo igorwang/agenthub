@@ -31,6 +31,7 @@ export default function FunctionTab({ agentId }: FunctionTabProps) {
   const selectedSessionId = useSelector(selectSelectedSessionId);
   const [libraries, setLibraries] = useState<LibraryCardProps[]>();
   const [selectedLibrary, setSelectedLibrary] = useState<LibraryCardProps>();
+  const [knowledgeBaseId, setKnowledgeBaseId] = useState(selectedLibrary?.id);
 
   const session = useSession();
   const userId = session.data?.user?.id;
@@ -65,6 +66,11 @@ export default function FunctionTab({ agentId }: FunctionTabProps) {
     );
   }, [kbData]);
 
+  useEffect(() => {
+    setKnowledgeBaseId(selectedLibrary?.id);
+    console.log(selectedLibrary);
+  }, [selectedLibrary]);
+
   const handleAddTopic = async ({ agent_id, user_id }: AddTopicParams) => {
     try {
       const { data, errors } = await addNewTopicMutation({
@@ -95,6 +101,9 @@ export default function FunctionTab({ agentId }: FunctionTabProps) {
       });
     }
   };
+  const element = selectedLibrary?.creator === userId && (
+    <UploadZone knowledgeBaseId={selectedLibrary?.id}></UploadZone>
+  );
 
   return (
     <div className="flex flex-col w-full h-full pt-2 overflow-auto">
@@ -136,8 +145,11 @@ export default function FunctionTab({ agentId }: FunctionTabProps) {
             setSelectedLibrary={setSelectedLibrary}
           ></LibrarySideBar>
           <Divider className="mt-2" />
-          {selectedLibrary?.creator === userId && (
-            <UploadZone knowledgeBaseId={selectedLibrary?.id}></UploadZone>
+          {selectedLibrary?.creator === userId && knowledgeBaseId && (
+            <UploadZone
+              key={knowledgeBaseId}
+              knowledgeBaseId={knowledgeBaseId}
+            ></UploadZone>
           )}
         </Tab>
         <Tab

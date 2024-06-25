@@ -22,8 +22,8 @@ export type LibraryCardProps = {
 
 const LibraryCard: React.FC<{ library: LibraryCardProps }> = ({ library }) => {
   return (
-    <Card key={library.id} className="mx-8 my-4">
-      <CardHeader className="flex gap-3 overflow-auto">
+    <Card key={library.id} className="mx-4 my-4 w-[280px]">
+      <CardHeader className="flex gap-3 overflow-auto ">
         <div className="flex-shrink-0 min-w-10 min-h-10">
           {library.avatar ? (
             <Image
