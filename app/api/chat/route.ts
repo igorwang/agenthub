@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
   const encoder = new TextEncoder();
   const body = await req.json();
 
-  const { model, prompt } = body;
+  const { model, prompt, isStream = true } = body;
 
   const llm = new ChatOpenAI({
     model: model,
@@ -17,6 +17,15 @@ export async function POST(req: NextRequest) {
   });
 
   try {
+    if (!isStream) {
+      const response = await llm.invoke(prompt);
+      const responseData = { data: response.content };
+      return new Response(JSON.stringify(responseData), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
     const stream = await llm.stream(prompt);
 
     const customReadable = new ReadableStream({

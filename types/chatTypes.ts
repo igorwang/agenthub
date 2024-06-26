@@ -1,3 +1,15 @@
+export enum CHAT_STATUS_ENUM {
+  Analyzing,
+  Searching,
+  Generating,
+}
+
+export enum CHAT_MODE {
+  simple,
+  deep,
+  creative,
+}
+
 export enum SOURCE_TYPE_ENUM {
   file,
   webpage,
@@ -24,4 +36,13 @@ export type SourceDTO = {
   fileName: string;
   pages: number[];
   content: string;
+};
+
+export type MessageType = {
+  id: string;
+  role: string;
+  message?: string | null;
+  feedback?: string | null;
+  status?: string | null;
+  files?: any;
 };

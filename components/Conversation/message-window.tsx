@@ -12,6 +12,9 @@ import {
   useGetAgentByIdQuery,
   useGetMessageListSubscription,
 } from "@/graphql/generated/types";
+import { queryAnalyzerPrompt } from "@/lib/prompts/queryAnalyzer";
+import { CHAT_MODE, CHAT_STATUS_ENUM, MessageType } from "@/types/chatTypes";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { Avatar, ScrollShadow } from "@nextui-org/react";
 import MessageCard from "./message-card";
 
@@ -83,15 +86,6 @@ export const assistantMessages = [
   </div>,
 ];
 
-type MessageType = {
-  id: string;
-  role: string;
-  message?: string | null;
-  feedback?: string | null;
-  status?: string | null;
-  files?: any;
-};
-
 type AgentProps = {
   id: string;
   name?: string;
@@ -100,11 +94,13 @@ type AgentProps = {
 
 type MessageWindowProps = {
   isChating?: boolean;
+  chatMode?: CHAT_MODE;
   handleChatingStatus?: (stauts: boolean) => void;
 };
 
 export default function MessageWindow({
   isChating,
+  chatMode,
   handleChatingStatus,
 }: MessageWindowProps) {
   const dispatch: AppDispatch = useDispatch();
@@ -113,6 +109,7 @@ export default function MessageWindow({
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [agent, setAgent] = useState<AgentProps>();
   const [streamingMessage, setStreamingMessage] = useState<string>("");
+  const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
 
   const session = useSession();
   const user_id = session.data?.user?.id;
@@ -163,7 +160,17 @@ export default function MessageWindow({
         })),
       );
     }
-  }, [data]);
+
+    if (isChating) {
+      setChatStatus(CHAT_STATUS_ENUM.Analyzing);
+
+      const refineQuery = queryAnalyzer();
+      console.log(refineQuery);
+      setChatStatus(CHAT_STATUS_ENUM.Searching);
+
+      handleChatingStatus?.(false);
+    }
+  }, [data, isChating]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -171,19 +178,60 @@ export default function MessageWindow({
     }
   }, [messages]);
 
+  const queryAnalyzer = async () => {
+    const userMessages = messages.filter((message) => message.role == "user");
+    const question = userMessages
+      .slice(-3)
+      .map((m) => m.message)
+      .join("\n");
+    const promptTemplate = ChatPromptTemplate.fromMessages([
+      ["system", queryAnalyzerPrompt],
+      [
+        "human",
+        "Ensure the output language is consistent with the input language",
+      ],
+      ["human", "Input: {question}"],
+    ]);
+    const formattedPrompt = await promptTemplate.format({
+      question: question,
+    });
+    const defaultModel = "mistralai/Mistral-7B-Instruct-v0.3";
+
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: defaultModel,
+        prompt: formattedPrompt,
+        isStream: false,
+      }),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log("1112123123123", response);
+    return data;
+  };
+
+  const agentAvatarElement =
+    agent && agent?.avatar ? (
+      <Avatar size="md" src={agent.avatar} />
+    ) : (
+      <Avatar
+        className="flex-shrink-0 bg-blue-400"
+        size="md"
+        name={agent && agent.name?.charAt(0)}
+        classNames={{ name: "text-xl" }}
+      />
+    );
+
   const featureContent = (
     <div className="flex h-full flex-col justify-center">
       <div className="flex w-full flex-col items-center justify-center gap-10">
-        {agent && agent?.avatar ? (
-          <Avatar size="lg" src={agent.avatar} />
-        ) : (
-          <Avatar
-            className="flex-shrink-0 bg-blue-400"
-            size="md"
-            name={agent && agent.name?.charAt(0)}
-            classNames={{ name: "text-xl" }}
-          ></Avatar>
-        )}
+        {agentAvatarElement}
         <h1 className="text-xl font-medium text-default-700">
           How can I help you today?
         </h1>
@@ -191,6 +239,7 @@ export default function MessageWindow({
       </div>
     </div>
   );
+
   return (
     <ScrollShadow
       ref={scrollRef}
@@ -203,9 +252,11 @@ export default function MessageWindow({
             key={index}
             attempts={index === 1 ? 2 : 1}
             avatar={
-              role === "assistant"
-                ? "https://nextuipro.nyc3.cdn.digitaloceanspaces.com/components-images/avatar_ai.png"
-                : "https://d2u8k2ocievbld.cloudfront.net/memojis/male/6.png"
+              role === "assistant" ? (
+                agentAvatarElement
+              ) : (
+                <Avatar src="https://d2u8k2ocievbld.cloudfront.net/memojis/male/6.png" />
+              )
             }
             currentAttempt={index === 1 ? 2 : 1}
             message={message}
@@ -217,6 +268,14 @@ export default function MessageWindow({
             files={files}
           />
         ))}
+        {/* living message card */}
+        <MessageCard
+          key={"index"}
+          avatar={agentAvatarElement}
+          message={"linving message card"}
+          messageClassName={""}
+          chatStatus={chatStatus}
+        />
         <div>{isChating && streamingMessage}</div>
       </div>
     </ScrollShadow>

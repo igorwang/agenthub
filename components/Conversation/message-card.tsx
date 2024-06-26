@@ -1,17 +1,19 @@
 "use client";
-import React from "react";
+import React, { ReactNode } from "react";
 
 import { cn } from "@/cn";
+import { MessageSkeleton } from "@/components/Conversation/message-skeleton";
 import {
   UploadFile,
   UploadFileProps,
 } from "@/components/Conversation/upload-file";
+import { CHAT_STATUS_ENUM } from "@/types/chatTypes";
 import { Icon } from "@iconify/react";
-import { Avatar, Badge, Button, Link } from "@nextui-org/react";
+import { Badge, Button, Link, Spacer, Spinner } from "@nextui-org/react";
 import { useClipboard } from "@nextui-org/use-clipboard";
 
 export type MessageCardProps = React.HTMLAttributes<HTMLDivElement> & {
-  avatar?: string;
+  avatar?: ReactNode;
   showFeedback?: boolean;
   isUser?: boolean;
   message?: React.ReactNode;
@@ -20,6 +22,7 @@ export type MessageCardProps = React.HTMLAttributes<HTMLDivElement> & {
   status?: "success" | "failed";
   attempts?: number;
   messageClassName?: string;
+  chatStatus?: CHAT_STATUS_ENUM | null;
   onAttemptChange?: (attempt: number) => void;
   onMessageCopy?: (content: string | string[]) => void;
   onFeedback?: (feedback: "like" | "dislike") => void;
@@ -30,6 +33,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
   (
     {
       avatar,
+      chatStatus,
       message,
       showFeedback,
       attempts = 1,
@@ -116,6 +120,35 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       [onAttemptFeedback],
     );
 
+    const getTipString = (status: CHAT_STATUS_ENUM) => {
+      switch (status) {
+        case CHAT_STATUS_ENUM.Analyzing:
+          return "Analyzing question...";
+        case CHAT_STATUS_ENUM.Searching:
+          return "Searching relevant information...";
+        case CHAT_STATUS_ENUM.Generating:
+          return "Organizing the response...";
+        default:
+          return "Think...";
+      }
+    };
+
+    if (chatStatus != null && chatStatus != CHAT_STATUS_ENUM.Generating) {
+      return (
+        <div className="flex flex-row w-full">
+          {avatar}
+          <Spacer x={4}></Spacer>
+          <div className="flex flex-col w-full mr-10 items-start gap-1">
+            <div className="flex flex-row justify-center gap-1 items-center">
+              <Spinner size="md"></Spinner>
+              <h4 className="text-slate-400">{getTipString(chatStatus)}</h4>
+            </div>
+            <MessageSkeleton />
+          </div>
+        </div>
+      );
+    }
+
     const avatarBadgeContent = (
       <div className="relative flex-shrink">
         <Badge
@@ -131,7 +164,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
           placement="bottom-right"
           shape="circle"
         >
-          <Avatar src={avatar} />
+          {avatar}
         </Badge>
       </div>
     );

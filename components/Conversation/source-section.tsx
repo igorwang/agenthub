@@ -73,7 +73,7 @@ export const SourceSection = ({
         />
         <span className="text-slate-500">{title}:</span>
       </div>
-      <section className="grid grid-cols-2 md:grid-cols-4  gap-2 p-2">
+      <section className="grid grid-cols-2 sm:grid-cols-4 gap-2 p-2">
         {items.map((item, index) => (
           <SourceCard key={index + 1} index={index + 1} source={item} />
         ))}

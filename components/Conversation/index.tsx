@@ -4,16 +4,11 @@ import MessageWindow from "@/components/Conversation/message-window";
 import FunctionTab from "@/components/FunctionTab";
 import { ConfigIcon } from "@/components/ui/icons";
 import { useGetAgentByIdQuery } from "@/graphql/generated/types";
+import { CHAT_MODE } from "@/types/chatTypes";
 import { Avatar, Button, Tab, Tabs, Tooltip } from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import PromptInputWithFaq from "./prompt-input-with-faq";
-
-enum CHAT_STATUS_ENUM {
-  Analyzing,
-  Searching,
-  Generating,
-}
 
 export type Agent = {
   id: string;
@@ -39,7 +34,7 @@ export const Conversation: React.FC<ConversationProps> = ({
   const pathname = usePathname();
 
   const [isChating, setIsChating] = useState<boolean>(false);
-  const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
+  const [chatMode, setChatMode] = useState<string>(CHAT_MODE.simple.toString());
 
   const [agent, setAgent] = useState<Agent>();
   const { data, loading, error } = useGetAgentByIdQuery({
@@ -48,12 +43,6 @@ export const Conversation: React.FC<ConversationProps> = ({
     },
     skip: !agentId,
   });
-
-  useEffect(() => {
-    console.log("isChating", isChating);
-    setTimeout(() => {}, 100000);
-    setIsChating(false);
-  }, [isChating]);
 
   useEffect(() => {
     if (data) {
@@ -74,7 +63,6 @@ export const Conversation: React.FC<ConversationProps> = ({
     return <div>Loading...</div>;
   }
 
-  // const{data} = use
   const headerElement = (
     <div className="relative flex flex-wrap items-center justify-center gap-2 border-b-small border-divider py-1 px-2 sm:justify-between">
       <div className="flex flex-row items-center">
@@ -111,10 +99,14 @@ export const Conversation: React.FC<ConversationProps> = ({
           </Tooltip>
         </div>
       </div>
-      <Tabs className="justify-center" defaultSelectedKey="simple">
-        <Tab key="simple" title="simple" />
-        <Tab key="deep" title="deep" />
-        <Tab key="creative" title="creative" />
+      <Tabs
+        className="justify-center"
+        selectedKey={chatMode}
+        onSelectionChange={(key) => setChatMode(key.toString())}
+      >
+        <Tab key={CHAT_MODE.simple.toString()} title="simple" />
+        <Tab key={CHAT_MODE.deep.toString()} title="deep" />
+        <Tab key={CHAT_MODE.creative.toString()} title="creative" />
       </Tabs>
     </div>
   );
