@@ -164,7 +164,7 @@ export default function MessageWindow({
     if (isChating) {
       setChatStatus(CHAT_STATUS_ENUM.Analyzing);
 
-      const refineQuery = queryAnalyzer();
+      const refineQuery = queryAnalyzer().then();
       console.log(refineQuery);
       setChatStatus(CHAT_STATUS_ENUM.Searching);
 
