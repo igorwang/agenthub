@@ -18,6 +18,8 @@
     "@atlaskit/pragmatic-drag-and-drop-hitbox": "^1.0.3",
     "@auth/core": "^0.31.0",
     "@auth/hasura-adapter": "^1.1.0",
+    "@dicebear/collection": "^9.0.1",
+    "@dicebear/core": "^9.0.1",
     "@dropzone-ui/react": "^7.0.4",
     "@formatjs/intl-localematcher": "^0.5.4",
     "@langchain/core": "^0.2.7",

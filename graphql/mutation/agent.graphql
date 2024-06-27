@@ -8,3 +8,30 @@ mutation AddNewTopicMutation($title: String, $user_id: uuid, $agent_id: uuid) {
     user_id
   }
 }
+
+
+mutation CreateOneAgent($object:agent_insert_input!){
+  insert_agent_one(object: $object){
+    id
+    name
+    description
+  }
+
+}
+
+mutation UpdateAgent(
+  $_set: agent_set_input
+  $pk_columns: agent_pk_columns_input!){
+  update_agent_by_pk(_set: $_set,pk_columns: $pk_columns){
+    ...AgentItem
+  }
+
+}
+
+fragment AgentItem on agent{
+  id
+  name
+  description
+  avatar
+  type_id
+}
