@@ -36,7 +36,7 @@ export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) =
   };
 
   return (
-    <Card className="basis-1/4 bg-gray-100 shadow-sm pr-1">
+    <Card className="basis-1/2 sm:basis-1/4 bg-gray-200 shadow-sm pr-1">
       <CardHeader className="justify-between px-1 py-0">
         <div className="flex flex-row">
           <div className="flex flex-col items-start justify-center">

@@ -45,4 +45,5 @@ export type MessageType = {
   feedback?: string | null;
   status?: string | null;
   files?: any;
+  sources?: SourceType[];
 };
