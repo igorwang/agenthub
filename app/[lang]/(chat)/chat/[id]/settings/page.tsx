@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Avatar,
-  Button,
-  Input,
-  Textarea,
-} from "@nextui-org/react";
+import { Avatar, Button, Input, Textarea } from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -18,7 +13,6 @@ import {
   useGetAgentByIdQuery,
   useUpdateAgentMutation,
 } from "@/graphql/generated/types";
-
 
 interface Agent {
   id?: string;
@@ -90,9 +84,19 @@ export default function Component() {
           </div>
           <div className={"mt-4"}>Avatar</div>
           <div className={"flex justify-center"}>
-            {data?.avatar ? <Avatar src={data?.avatar} /> : <NameAvatar name={data?.name} />}
+            {data?.avatar ? (
+              <Avatar src={data?.avatar} />
+            ) : (
+              <NameAvatar name={data?.name} />
+            )}
           </div>
-          <Button color={"primary"} className={"w-full mt-8"} onClick={(e) => handleSubmit(e)}>Submit</Button>
+          <Button
+            color={"primary"}
+            className={"w-full mt-8"}
+            onClick={(e) => handleSubmit(e)}
+          >
+            Submit
+          </Button>
         </form>
       </div>
     </div>

@@ -5,10 +5,7 @@ import { Icon } from "@iconify/react";
 import { Button, ScrollShadow, Tooltip } from "@nextui-org/react";
 import React, { useRef, useState } from "react";
 
-import {
-  UploadFile,
-  UploadFileProps,
-} from "@/components/Conversation/upload-file";
+import { UploadFile, UploadFileProps } from "@/components/Conversation/upload-file";
 import {
   Message_Role_Enum,
   useCreateMessageAndUpdateTopicHistoryMutation,
@@ -87,9 +84,7 @@ export default function PromptInputWithFaq({
     }
   };
 
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
     if (file) {
@@ -276,9 +271,7 @@ export default function PromptInputWithFaq({
               Voice
             </Button> */}
           </div>
-          <p className="py-1 text-tiny text-default-400">
-            {prompt.length}/4000
-          </p>
+          <p className="py-1 text-tiny text-default-400">{prompt.length}/4000</p>
         </div>
       </form>
     </div>

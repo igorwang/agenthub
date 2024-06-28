@@ -27,11 +27,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
       labelPlacement="outside"
       placeholder={placeholder}
       startContent={
-        <Icon
-          className={iconClassName}
-          icon="solar:magnifer-linear"
-          width={iconWidth}
-        />
+        <Icon className={iconClassName} icon="solar:magnifer-linear" width={iconWidth} />
       }
     />
   );

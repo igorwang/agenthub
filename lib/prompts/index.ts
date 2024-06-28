@@ -41,31 +41,26 @@ export async function createPrompt(
       return false;
     }
   });
-  const templateMessages: [string, string][] = validTemplates.map(
-    (template) => [template.role, template.template],
-  );
+  const templateMessages: [string, string][] = validTemplates.map((template) => [
+    template.role,
+    template.template,
+  ]);
 
   const context = await createContext(sources);
   const contextMessages = ["user", `Context: ${context}`];
-  const historyMessages = messages
-    .slice(0, -1)
-    .map((msg) => [msg.role, msg.message]);
+  const historyMessages = messages.slice(0, -1).map((msg) => [msg.role, msg.message]);
 
   const contextString = [contextMessages, ...historyMessages]
     .map((msg) => `${msg[0]}:${msg[1]}`)
     .join("\n");
 
-  const latestQuery =
-    messages.length > 0 ? messages[messages.length - 1].message : "";
+  const latestQuery = messages.length > 0 ? messages[messages.length - 1].message : "";
   const latestMessageContent = refineQuery
     ? `Query Context:${refineQuery}\nQuestion:${latestQuery}`
     : `Question:${latestQuery}`;
   const latestMessages: [string, string] = ["user", latestMessageContent];
 
-  const fixTokenCount = await messageTokenCounter([
-    ...templateMessages,
-    latestMessages,
-  ]);
+  const fixTokenCount = await messageTokenCounter([...templateMessages, latestMessages]);
 
   const leftTokenCount = tokenLimit - fixTokenCount - 300;
 
@@ -80,17 +75,14 @@ export async function createPrompt(
     promptFromContext = texts[0];
   }
 
-  const promptTemplateFromTemplate =
-    ChatPromptTemplate.fromMessages(templateMessages);
-  const templateVariables = promptTemplateFromTemplate.inputVariables.map(
-    (value) =>
-      variables && variables.hasOwnProperty(value)
-        ? { value: variables[value] }
-        : { value: "" },
+  const promptTemplateFromTemplate = ChatPromptTemplate.fromMessages(templateMessages);
+  const templateVariables = promptTemplateFromTemplate.inputVariables.map((value) =>
+    variables && variables.hasOwnProperty(value)
+      ? { value: variables[value] }
+      : { value: "" },
   );
 
-  const promptFromTemplate =
-    await promptTemplateFromTemplate.format(templateVariables);
+  const promptFromTemplate = await promptTemplateFromTemplate.format(templateVariables);
 
   const promptFromQuery = `${latestMessages[0]}:${latestMessages[1]}`;
   const prompt = `${promptFromTemplate}\n${promptFromContext}\n${promptFromQuery}`;

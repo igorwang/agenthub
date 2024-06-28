@@ -22,14 +22,7 @@ export type UploadFileProps = React.HTMLAttributes<HTMLDivElement> & {
 
 export const UploadFile = React.forwardRef<HTMLDivElement, UploadFileProps>(
   (
-    {
-      key = 0,
-      className = "",
-      fileName = "",
-      url,
-      isLoading = false,
-      removeFileHandler,
-    },
+    { key = 0, className = "", fileName = "", url, isLoading = false, removeFileHandler },
     ref,
   ) => {
     const extension = fileName.split(".").pop()?.toLowerCase();

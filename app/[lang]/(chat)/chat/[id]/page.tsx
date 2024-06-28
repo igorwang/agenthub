@@ -1,10 +1,6 @@
 "use client";
 import { Conversation } from "@/components/Conversation";
-import {
-  selectChat,
-  selectChatList,
-  selectSession,
-} from "@/lib/features/chatListSlice";
+import { selectChat, selectChatList, selectSession } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
 import { useSession } from "next-auth/react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";

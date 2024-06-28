@@ -71,20 +71,15 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
     },
     ref,
   ) => {
-    const [templatesState, setTemplatesState] =
-      useState<PromptTemplateType[]>(templates);
+    const [templatesState, setTemplatesState] = useState<PromptTemplateType[]>(templates);
     const [selectedModel, setSelectedModel] = useState<string>("");
     const [isChating, setIsChating] = useState<boolean>(false);
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [isNewPromot, setIsNewPromot] = useState<boolean>(false);
-    const [promptId, setPromptId] = useState<number | null>(
-      defaultPromptId || null,
-    );
+    const [promptId, setPromptId] = useState<number | null>(defaultPromptId || null);
     const [prompt, setPrompt] = useState<Prompt>();
 
-    const [variableInputs, setVariableInputs] = useState<variableInputsType[]>(
-      [],
-    );
+    const [variableInputs, setVariableInputs] = useState<variableInputsType[]>([]);
     const [message, setMessage] = useState<string>("");
 
     const variableInputRef = useRef<HTMLDivElement>(null);
@@ -106,8 +101,7 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
 
     const [upadeAgentPromptMutation] = useUpadeAgentPromptMutation();
 
-    const [upadeKnowledgeBasePromptMutation] =
-      useUpadeKnowledgeBasePromptMutation();
+    const [upadeKnowledgeBasePromptMutation] = useUpadeKnowledgeBasePromptMutation();
 
     useEffect(() => {
       if (data) {
@@ -425,9 +419,7 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
                 placeholder="Enter prompt name"
               ></Input>
             ) : (
-              <PromptSearchBar
-                handleChangePrompt={handleChangePrompt}
-              ></PromptSearchBar>
+              <PromptSearchBar handleChangePrompt={handleChangePrompt}></PromptSearchBar>
             )}
           </div>
           <div className="flex flex-row  gap-2">
@@ -500,11 +492,7 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
               </div>
               <Button
                 className="absolute right-1 bottom-1"
-                color={
-                  isChating || selectedModel.length === 0
-                    ? "default"
-                    : "primary"
-                }
+                color={isChating || selectedModel.length === 0 ? "default" : "primary"}
                 startContent={<StartOutlineIcon size={28} />}
                 isDisabled={isChating || selectedModel.length === 0}
                 onClick={handleStartChat}

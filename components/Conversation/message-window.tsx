@@ -23,8 +23,8 @@ import {
   CHAT_MODE,
   CHAT_STATUS_ENUM,
   MessageType,
-  SOURCE_TYPE_ENUM,
   SourceType,
+  SOURCE_TYPE_ENUM,
 } from "@/types/chatTypes";
 import { Avatar, ScrollShadow } from "@nextui-org/react";
 import MessageCard from "./message-card";
@@ -32,15 +32,13 @@ import MessageCard from "./message-card";
 export const assistantMessages = [
   <div key="1">
     {/* <p className="mb-5"> */}
-    Certainly! Here&apos;s a summary of five creative ways to use your
-    Certainly! Here&apos;s a summary of five creative ways to use your
-    Certainly! Here&apos;s a summary of five creative ways to use your
-    Certainly! Here&apos;s a summary of five creative ways to use your
-    Certainly! Here&apos;s a summary of five creative ways to use your
-    Certainly! Here&apos;s a summary of five creative ways to use your
-    Certainly! Here&apos;s a summary of five creative ways to use your
-    Certainly! Here&apos;s a summary of five creative ways to use your
-    kids&apos; art:
+    Certainly! Here&apos;s a summary of five creative ways to use your Certainly!
+    Here&apos;s a summary of five creative ways to use your Certainly! Here&apos;s a
+    summary of five creative ways to use your Certainly! Here&apos;s a summary of five
+    creative ways to use your Certainly! Here&apos;s a summary of five creative ways to
+    use your Certainly! Here&apos;s a summary of five creative ways to use your Certainly!
+    Here&apos;s a summary of five creative ways to use your Certainly! Here&apos;s a
+    summary of five creative ways to use your kids&apos; art:
     {/* </p> */}
     {/* <ol className="space-y-2">
       <li>
@@ -67,31 +65,29 @@ export const assistantMessages = [
   </div>,
   <div key="2">
     <p className="mb-3">
-      Of course! Here are five more creative suggestions for what to do with
-      your children&apos;s art:
+      Of course! Here are five more creative suggestions for what to do with your
+      children&apos;s art:
     </p>
     <ol className="space-y-2">
       <li>
-        <strong>Create a Digital Archive:</strong> Scan or take photos of the
-        artwork and save it in a digital cloud storage service for easy access
-        and space-saving.
+        <strong>Create a Digital Archive:</strong> Scan or take photos of the artwork and
+        save it in a digital cloud storage service for easy access and space-saving.
       </li>
       <li>
-        <strong>Custom Calendar:</strong> Design a custom calendar with each
-        month showcasing a different piece of your child&apos;s art.
+        <strong>Custom Calendar:</strong> Design a custom calendar with each month
+        showcasing a different piece of your child&apos;s art.
       </li>
       <li>
-        <strong>Storybook Creation:</strong> Compile the artwork into a
-        storybook, possibly with a narrative created by your child, to make a
-        personalized book.
+        <strong>Storybook Creation:</strong> Compile the artwork into a storybook,
+        possibly with a narrative created by your child, to make a personalized book.
       </li>
       <li>
-        <strong>Puzzle Making:</strong> Convert their artwork into a jigsaw
-        puzzle for a fun and unique pastime activity.
+        <strong>Puzzle Making:</strong> Convert their artwork into a jigsaw puzzle for a
+        fun and unique pastime activity.
       </li>
       <li>
-        <strong>Home Decor Items:</strong> Use the artwork to create home decor
-        items like coasters, magnets, or lampshades to decorate your house.
+        <strong>Home Decor Items:</strong> Use the artwork to create home decor items like
+        coasters, magnets, or lampshades to decorate your house.
       </li>
     </ol>
   </div>,
@@ -131,8 +127,7 @@ export default function MessageWindow({
   const [agent, setAgent] = useState<AgentProps>();
   const [refineQuery, setRefineQuery] = useState<string | null>(null);
   const [searchResults, setSearchResults] = useState<SourceType[] | null>(null);
-  const [promptTemplates, setPromptTemplates] =
-    useState<PromptTemplateType[]>();
+  const [promptTemplates, setPromptTemplates] = useState<PromptTemplateType[]>();
   const [streamingMessage, setStreamingMessage] = useState<string | null>(null);
   const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
 
@@ -156,12 +151,12 @@ export default function MessageWindow({
     skip: !agent_id,
   });
 
-  useEffect(()=>{
-    setRefineQuery(null)
-    setSearchResults(null)
-    setStreamingMessage(null)
-    setChatStatus(null)
-  },[selectedChatId, selectedSessionId,isChating])
+  useEffect(() => {
+    setRefineQuery(null);
+    setSearchResults(null);
+    setStreamingMessage(null);
+    setChatStatus(null);
+  }, [selectedChatId, selectedSessionId, isChating]);
 
   useEffect(() => {
     if (agentData) {
@@ -198,12 +193,10 @@ export default function MessageWindow({
           status: item.status,
           feedback: item.feedback,
           files:
-            item.attachments?.map(
-              (attachment: { fileName: string }, index: number) => ({
-                key: index,
-                fileName: attachment.fileName,
-              }),
-            ) || [],
+            item.attachments?.map((attachment: { fileName: string }, index: number) => ({
+              key: index,
+              fileName: attachment.fileName,
+            })) || [],
         })),
       );
     }
@@ -234,12 +227,7 @@ export default function MessageWindow({
       setChatStatus(CHAT_STATUS_ENUM.Searching);
       const searchLibrary = async () => {
         try {
-          const result = await librarySearcher(
-            refineQuery,
-            agent_id || "",
-            user_id,
-            5,
-          );
+          const result = await librarySearcher(refineQuery, agent_id || "", user_id, 5);
           setSearchResults(() => {
             return result.map(
               (item: SearchDocumentResultSchema): SourceType => ({
@@ -262,11 +250,7 @@ export default function MessageWindow({
   }, [refineQuery]);
 
   useEffect(() => {
-    if (
-      isChating &&
-      searchResults != null &&
-      chatStatus == CHAT_STATUS_ENUM.Searching
-    ) {
+    if (isChating && searchResults != null && chatStatus == CHAT_STATUS_ENUM.Searching) {
       setChatStatus(CHAT_STATUS_ENUM.Generating);
       console.log("searchResults", searchResults);
       const generateAnswer = async () => {
@@ -278,7 +262,7 @@ export default function MessageWindow({
           {},
           4096,
         );
-        let answer = ''
+        let answer = "";
         // call llm
         try {
           // Fetch the streaming data from the API
@@ -307,7 +291,7 @@ export default function MessageWindow({
             }
             // Decode the chunk and update the message state
             const chunk = decoder.decode(value, { stream: true });
-            answer += chunk
+            answer += chunk;
             setStreamingMessage(
               (prevMessage) => (prevMessage != null ? prevMessage : "") + chunk,
             );
@@ -325,14 +309,14 @@ export default function MessageWindow({
           content: answer,
           session_id: selectedSessionId || "",
           role: Message_Role_Enum.Assistant,
-          sources: searchResults 
+          sources: searchResults,
         });
         handleChatingStatus?.(false);
       };
       generateAnswer();
     }
   }, [searchResults]);
-  
+
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -364,10 +348,7 @@ export default function MessageWindow({
   );
 
   return (
-    <ScrollShadow
-      ref={scrollRef}
-      className="flex flex-grow flex-col gap-6 pb-8 w-full"
-    >
+    <ScrollShadow ref={scrollRef} className="flex flex-grow flex-col gap-6 pb-8 w-full">
       <div className="flex flex-1 flex-grow flex-col px-1 gap-1  ">
         {messages.length === 0 && featureContent}
         {messages.map(({ role, message, files }, index) => (

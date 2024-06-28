@@ -11,9 +11,6 @@ export const fileImages: { [key: string]: string } = {
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAACAklEQVR4nO2awUoDQRAF+09FT/7/VbS9hxAIbqzqnlewB28vVTMLkVSFEEII/08Pfb6q6q0W0oOfn6r6rGXQUjtRdgXpbTfl9sPZ6e1RtgTpLVGmB/m+8/dHDWZ6kPc7UUbflOlBaluUDUFWRdkSZE2UTUFWRNkWZHyUjUFGR9kaZGyUzUFGRtkeZFyUE4KMinJKkDFRTgoyIsppQfRRTgyijnJqEG2Uk4Moo0wP0i96vqnffSVIPfwxXoJIbgj2xsAHPEmCHEbTBxQfIAP3gQ+QgfvAB8jAfeADZOA+8AEycB/4ABm4D3yADNwHPkAG7gMfIAP3gQ+QgfvAB8jAffx1QMufZ0mQSpBLTwR9Azo3JEFeCv7OlIH7wAfIwH3gA2TgPvABMnAf+AAZuA98gAzcBz5ABu4DHyAD9zH9m/rVJEglyKUnIjfkYhJk2StrG037wAfIwH3gA2TgPvABMnAf+AAZuA98gAzcBz5ABu4DHyAD9zH9i2Ff/L+uBKkEyQ15QG5I5Ya4ToQM3Ac+QAbuAx8gA/eBD5CB+8AHyMB94ANk4D7wATJwH/gAGbgPfIAM3Ac+QAbuAx8gA/eBD5CB+8AHyMB94ANk4D7wATJwH/gAGbgPfIAM3Ac+QAbuAx8gA/eBD5CB+7gdkKcSpMUHITek+AgJUrx4TZAQQgh1NL82UAuj8u1i3wAAAABJRU5ErkJggg==",
 };
 
-export const getFileImage = (
-  key: string,
-  defaultKey: string = "default",
-): string => {
+export const getFileImage = (key: string, defaultKey: string = "default"): string => {
   return fileImages[key] || fileImages[defaultKey];
 };

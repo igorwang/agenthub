@@ -3,8 +3,8 @@
 import { LibraryCardProps } from "@/components/FunctionTab/libaray-card";
 import LibrarySideBar from "@/components/FunctionTab/library-sidebar";
 import { TopicHistory } from "@/components/TopicHistory";
-import UploadZone from "@/components/UploadZone";
 import { PlusIcon } from "@/components/ui/icons";
+import UploadZone from "@/components/UploadZone";
 import {
   selectSelectedChatId,
   selectSelectedSessionId,
@@ -119,9 +119,7 @@ export default function FunctionTab({ agentId }: FunctionTabProps) {
           <Button
             className="flex w-full bg-white max-h-16 hover:bg-slate-100"
             endContent={<PlusIcon />}
-            onClick={() =>
-              handleAddTopic({ agent_id: agentId, user_id: userId })
-            }
+            onClick={() => handleAddTopic({ agent_id: agentId, user_id: userId })}
             disabled={!userId}
           >
             New Topic

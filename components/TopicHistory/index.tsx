@@ -1,14 +1,8 @@
 "use client";
 
-import {
-  DiscussionIcon,
-  OcticonKebabHorizontalIcon,
-} from "@/components/ui/icons";
+import { DiscussionIcon, OcticonKebabHorizontalIcon } from "@/components/ui/icons";
 import { useGetTopicHistoriesQuery } from "@/graphql/generated/types";
-import {
-  selectSelectedSessionId,
-  selectSession,
-} from "@/lib/features/chatListSlice";
+import { selectSelectedSessionId, selectSession } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
 import {
   Button,
@@ -106,9 +100,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
     return (
       <ListboxItem
         classNames={{ base: "flex py-2 px-4 bg-slate-100 h-full" }}
-        className={
-          selectedSessionId === item.id ? "bg-primary-100" : "bg-slate-100"
-        }
+        className={selectedSessionId === item.id ? "bg-primary-100" : "bg-slate-100"}
         key={item.id}
         startContent={<DiscussionIcon className="hidden" />}
         endContent={dropdownContent}

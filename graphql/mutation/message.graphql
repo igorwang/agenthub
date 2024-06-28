@@ -24,11 +24,11 @@ mutation CreateMessageAndUpdateTopicHistory(
   }
 }
 
-mutation CreateNewMessage($object: message_insert_input = {}, $session_id: uuid = "" ) {
+mutation CreateNewMessage($object: message_insert_input = {}, $session_id: uuid = "") {
   insert_message_one(object: $object) {
     id
   }
-  
+
   update_topic_history_by_pk(
     pk_columns: { id: $session_id }
     _set: { updated_at: "now()" }
