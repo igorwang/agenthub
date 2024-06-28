@@ -29,13 +29,13 @@ export type GroupedChatListDTO = {
   agents: ChatDTO[];
 };
 
-export type SourceDTO = {
+export type SourceType = {
   sourceType: SOURCE_TYPE_ENUM;
   fileId: string;
   url: string;
   fileName: string;
   pages: number[];
-  content: string;
+  contents: string[];
 };
 
 export type MessageType = {

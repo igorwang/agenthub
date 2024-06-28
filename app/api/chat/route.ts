@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
   try {
     if (!isStream) {
       const response = await llm.invoke(prompt);
-      const responseData = { data: response.content };
+      const responseData = { content: response.content };
       return new Response(JSON.stringify(responseData), {
         status: 200,
         headers: { "Content-Type": "application/json" },

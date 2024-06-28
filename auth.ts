@@ -68,8 +68,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     jwt: async ({ token, user, profile }) => {
       if (user) {
-        console.log("User logged in:", user);
-        console.log("User profile:", profile);
+        // console.log("User logged in:", user);
+        // console.log("User profile:", profile);
         const payload = {
           "https://hasura.io/jwt/claims": {
             "x-hasura-user-id": user.id,

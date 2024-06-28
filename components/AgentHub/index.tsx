@@ -38,7 +38,6 @@ const ChatHub = () => {
   });
 
   useEffect(() => {
-    console.log("useEffect");
     if (data) {
       const groupedChatList: GroupedChatListDTO[] = data.agent_type.map(
         (group) => ({

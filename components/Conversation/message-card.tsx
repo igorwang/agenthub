@@ -3,11 +3,13 @@ import React, { ReactNode } from "react";
 
 import { cn } from "@/cn";
 import { MessageSkeleton } from "@/components/Conversation/message-skeleton";
+import { SourceSection } from "@/components/Conversation/source-section";
 import {
   UploadFile,
   UploadFileProps,
 } from "@/components/Conversation/upload-file";
-import { CHAT_STATUS_ENUM } from "@/types/chatTypes";
+import MarkdownRenderer from "@/components/MarkdownRender";
+import { CHAT_STATUS_ENUM, SourceType } from "@/types/chatTypes";
 import { Icon } from "@iconify/react";
 import { Badge, Button, Link, Spacer, Spinner } from "@nextui-org/react";
 import { useClipboard } from "@nextui-org/use-clipboard";
@@ -18,6 +20,7 @@ export type MessageCardProps = React.HTMLAttributes<HTMLDivElement> & {
   isUser?: boolean;
   message?: React.ReactNode;
   files?: UploadFileProps[];
+  sourceResults?: SourceType[];
   currentAttempt?: number;
   status?: "success" | "failed";
   attempts?: number;
@@ -41,6 +44,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       isUser,
       status,
       files,
+      sourceResults,
       onMessageCopy,
       onAttemptChange,
       onFeedback,
@@ -191,17 +195,23 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       </div>
     );
 
-    const messageContent = (
-      <div className="flex w-full flex-col gap-4 mr-14">
+    const aiMessageContent = (
+      <div className="flex flex-grow w-full flex-col gap-4 mr-14">
         <div
           className={cn(
-            "relative w-full rounded-medium bg-content2 px-4 py-1 text-default-600",
+            "relative flex-grow  w-full rounded-medium bg-content2 px-4 py-1 text-default-600",
             failedMessageClassName,
             messageClassName,
           )}
         >
           <div ref={messageRef} className={"px-1 text-medium min-h-8"}>
-            {hasFailed ? failedMessage : message}
+            {hasFailed ? (
+              failedMessage
+            ) : (
+              <MarkdownRenderer
+                content={message?.toString() || ""}
+              ></MarkdownRenderer>
+            )}
           </div>
 
           <div className="flex flex-row justify-between items-center">
@@ -375,17 +385,31 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
     );
 
     return (
-      <div {...props} ref={ref} className={cn("flex gap-3", className)}>
+      <div
+        {...props}
+        ref={ref}
+        className={cn("flex gap-3 max-h-[600px]", className)}
+      >
         {isUser ? (
           <>
             {userMessageContent}
             {avatarBadgeContent}
           </>
         ) : (
-          <>
+          <div className="flex flex-row gap-3">
             {avatarBadgeContent}
-            {messageContent}
-          </>
+            <div className="gap-3 mr-10">
+              {sourceResults && sourceResults.length > 0 && (
+                <SourceSection title="Sources" items={sourceResults} />
+              )}
+              <Spacer x={2} />
+              <div className="flex flex-row items-center justify-start gap-1 p-1 ">
+                <Icon className="text-lg text-default-600" icon="mdi:idea" />
+                <span className="text-slate-500">Answer:</span>
+              </div>
+              <div className="flex flex-col  pl-2">{aiMessageContent}</div>
+            </div>
+          </div>
         )}
       </div>
     );

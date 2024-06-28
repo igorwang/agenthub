@@ -21,6 +21,17 @@ query GetAgentByID($id: uuid!) {
     name
     description
     avatar
+    default_model
+    system_prompt {
+      id
+      name
+      templates {
+        id
+        order
+        role
+        template
+      }
+    }
   }
 }
 

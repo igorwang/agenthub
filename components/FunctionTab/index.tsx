@@ -68,7 +68,6 @@ export default function FunctionTab({ agentId }: FunctionTabProps) {
 
   useEffect(() => {
     setKnowledgeBaseId(selectedLibrary?.id);
-    console.log(selectedLibrary);
   }, [selectedLibrary]);
 
   const handleAddTopic = async ({ agent_id, user_id }: AddTopicParams) => {

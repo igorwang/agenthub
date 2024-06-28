@@ -1,5 +1,5 @@
 import { SourceFileIcon } from "@/components/ui/icons";
-import { SourceDTO } from "@/types/chatTypes";
+import { SourceType } from "@/types/chatTypes";
 import { Icon } from "@iconify/react";
 import {
   Button,
@@ -12,7 +12,7 @@ import {
 } from "@nextui-org/react";
 import React, { useState } from "react";
 type SourceCardProps = {
-  source: SourceDTO;
+  source: SourceType;
   index?: number;
   onFeedback?: (feedback: "like" | "dislike") => void;
 };
@@ -40,7 +40,7 @@ export const SourceCard = ({
   };
 
   return (
-    <Card className="basis-1/4 bg-gray-100 shadow-sm px-1 ">
+    <Card className="basis-1/4 bg-gray-100 shadow-sm pr-1">
       <CardHeader className="justify-between px-1 py-0">
         <div className="flex flex-row">
           <div className="flex flex-col items-start justify-center">
@@ -56,7 +56,11 @@ export const SourceCard = ({
         </div>
       </CardHeader>
       <CardBody className="p-0 text-small text-default-400">
-        <p className="line-clamp-1">{source.content}</p>
+        <p className="line-clamp-1">
+          {source.contents && source.contents.length > 0
+            ? source.contents[0]
+            : ""}
+        </p>
         <Divider className="my-1"></Divider>
         {source.pages.length > 0 && (
           <div className="flex flex-row flex-wrap gap-1 items-center px-1">
@@ -90,6 +94,7 @@ export const SourceCard = ({
               size="sm"
               variant="light"
               onPress={handleSelectSource}
+              className="h-[18px]"
             >
               {selected ? (
                 <Icon
@@ -111,6 +116,7 @@ export const SourceCard = ({
               size="sm"
               variant="light"
               onPress={() => handleFeedback(true)}
+              className="h-[18px]"
             >
               {feedback === "like" ? (
                 <Icon
@@ -131,6 +137,7 @@ export const SourceCard = ({
               radius="full"
               size="sm"
               variant="light"
+              className="h-[18px]"
               //   onPress={handleSelectSource}
             >
               <Icon

@@ -34,6 +34,7 @@ export type PromptTemplateType = {
   template: string;
   role: Message_Role_Enum | string;
   status: TemplateStatus;
+  order?: number;
 };
 
 export type PromptFormProps = {
@@ -359,7 +360,6 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
                 where: { id: { _in: removeIds } },
               },
             });
-          console.log(delteData?.delete_prompt_template?.affected_rows);
         }
         const newPromptId = data?.insert_prompt_hub_one?.id;
         if (newPromptId && agentId) {

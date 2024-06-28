@@ -167,3 +167,6 @@ dist
 .pnp.*
 
 .graphqlconfig
+
+./graphql/generated
+./restful/generated

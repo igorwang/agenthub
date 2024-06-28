@@ -85,7 +85,6 @@ export default function UploadZone({ knowledgeBaseId }: UploadZoneProps) {
 
         if (response.ok) {
           const { presignedPutUrl } = await response.json();
-          console.log("presignedPutUrl:", presignedPutUrl);
 
           const uploadResponse = await fetch(presignedPutUrl, {
             method: "PUT",
@@ -113,7 +112,7 @@ export default function UploadZone({ knowledgeBaseId }: UploadZoneProps) {
           throw new Error("Failed to get presigned URL");
         }
       } catch (error) {
-        console.log("error:", error);
+        console.error("error:", error);
         toast.error("Error uploading data");
         return {
           ...file,

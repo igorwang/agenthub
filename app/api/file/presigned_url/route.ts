@@ -69,7 +69,6 @@ export async function GET(req: NextRequest) {
       bucket: bucket,
       fileKey: s3Key,
     });
-    console.log(presignedPutUrl);
   } catch (error) {
     console.error("Error generating presigned URL", error);
     return NextResponse.json(

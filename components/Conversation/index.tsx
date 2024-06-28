@@ -1,6 +1,7 @@
 "use client";
 
 import MessageWindow from "@/components/Conversation/message-window";
+import PromptInputWithFaq from "@/components/Conversation/prompt-input-with-faq";
 import FunctionTab from "@/components/FunctionTab";
 import { ConfigIcon } from "@/components/ui/icons";
 import { useGetAgentByIdQuery } from "@/graphql/generated/types";
@@ -8,7 +9,6 @@ import { CHAT_MODE } from "@/types/chatTypes";
 import { Avatar, Button, Tab, Tabs, Tooltip } from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import PromptInputWithFaq from "./prompt-input-with-faq";
 
 export type Agent = {
   id: string;
@@ -115,17 +115,17 @@ export const Conversation: React.FC<ConversationProps> = ({
     <div className="flex flex-col h-full w-full max-w-full overflow-auto">
       {headerElement}
       <div className="flex flex-row flex-grow max-w-full overflow-auto">
-        <div className="flex flex-grow flex-col pt-2 max-w-full overflow-auto">
+        <div className="flex flex-col flex-grow  pt-2 max-w-full overflow-auto items-end">
           <MessageWindow
             isChating={isChating}
             handleChatingStatus={setIsChating}
           />
-          <div className="flex flex-col w-full max-w-full overflow-auto">
+          <div className="flex flex-col w-full max-w-full">
             <PromptInputWithFaq
               isChating={isChating}
               handleChatingStatus={setIsChating}
             ></PromptInputWithFaq>
-            <p className="px-2 text-tiny text-default-400">
+            <p className="px-2 text-tiny text-default-400 ">
               AI can also make mistakes. Please verify important information.
             </p>
           </div>

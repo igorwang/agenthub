@@ -633,6 +633,7 @@ type agent {
   avatar: String
   created_at: timestamptz!
   creator_id: uuid
+  default_model: String
   description: String
   id: uuid!
 
@@ -672,6 +673,9 @@ type agent {
     where: r_agent_kb_bool_exp
   ): r_agent_kb_aggregate!
   name: String!
+
+  """An object relationship"""
+  system_prompt: prompt_hub
   system_prompt_id: Int
   type_id: Int
   updated_at: timestamptz!
@@ -800,11 +804,13 @@ input agent_bool_exp {
   avatar: String_comparison_exp
   created_at: timestamptz_comparison_exp
   creator_id: uuid_comparison_exp
+  default_model: String_comparison_exp
   description: String_comparison_exp
   id: uuid_comparison_exp
   kbs: r_agent_kb_bool_exp
   kbs_aggregate: r_agent_kb_aggregate_bool_exp
   name: String_comparison_exp
+  system_prompt: prompt_hub_bool_exp
   system_prompt_id: Int_comparison_exp
   type_id: Int_comparison_exp
   updated_at: timestamptz_comparison_exp
@@ -837,10 +843,12 @@ input agent_insert_input {
   avatar: String
   created_at: timestamptz
   creator_id: uuid
+  default_model: String
   description: String
   id: uuid
   kbs: r_agent_kb_arr_rel_insert_input
   name: String
+  system_prompt: prompt_hub_obj_rel_insert_input
   system_prompt_id: Int
   type_id: Int
   updated_at: timestamptz
@@ -852,6 +860,7 @@ type agent_max_fields {
   avatar: String
   created_at: timestamptz
   creator_id: uuid
+  default_model: String
   description: String
   id: uuid
   name: String
@@ -867,6 +876,7 @@ input agent_max_order_by {
   avatar: order_by
   created_at: order_by
   creator_id: order_by
+  default_model: order_by
   description: order_by
   id: order_by
   name: order_by
@@ -880,6 +890,7 @@ type agent_min_fields {
   avatar: String
   created_at: timestamptz
   creator_id: uuid
+  default_model: String
   description: String
   id: uuid
   name: String
@@ -895,6 +906,7 @@ input agent_min_order_by {
   avatar: order_by
   created_at: order_by
   creator_id: order_by
+  default_model: order_by
   description: order_by
   id: order_by
   name: order_by
@@ -938,10 +950,12 @@ input agent_order_by {
   avatar: order_by
   created_at: order_by
   creator_id: order_by
+  default_model: order_by
   description: order_by
   id: order_by
   kbs_aggregate: r_agent_kb_aggregate_order_by
   name: order_by
+  system_prompt: prompt_hub_order_by
   system_prompt_id: order_by
   type_id: order_by
   updated_at: order_by
@@ -965,6 +979,9 @@ enum agent_select_column {
 
   """column name"""
   creator_id
+
+  """column name"""
+  default_model
 
   """column name"""
   description
@@ -992,6 +1009,7 @@ input agent_set_input {
   avatar: String
   created_at: timestamptz
   creator_id: uuid
+  default_model: String
   description: String
   id: uuid
   name: String
@@ -1058,6 +1076,7 @@ input agent_stream_cursor_value_input {
   avatar: String
   created_at: timestamptz
   creator_id: uuid
+  default_model: String
   description: String
   id: uuid
   name: String
@@ -1381,6 +1400,9 @@ enum agent_update_column {
 
   """column name"""
   creator_id
+
+  """column name"""
+  default_model
 
   """column name"""
   description
@@ -6320,6 +6342,16 @@ type prompt_hub_mutation_response {
 
   """data from the rows affected by the mutation"""
   returning: [prompt_hub!]!
+}
+
+"""
+input type for inserting object relation for remote table "prompt_hub"
+"""
+input prompt_hub_obj_rel_insert_input {
+  data: prompt_hub_insert_input!
+
+  """upsert condition"""
+  on_conflict: prompt_hub_on_conflict
 }
 
 """

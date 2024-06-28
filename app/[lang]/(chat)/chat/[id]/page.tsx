@@ -18,12 +18,10 @@ export default function ChatPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const searchParams = useSearchParams();
-  console.log(params);
   const { id } = params;
   const { data: sessionData, status } = useSession();
   const userId = sessionData?.user?.id;
   const sessionId = searchParams.get("session_id");
-  console.log(sessionId);
 
   useEffect(() => {
     dispatch(selectChat(id));

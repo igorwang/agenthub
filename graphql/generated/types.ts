@@ -552,6 +552,7 @@ export type Agent = {
   avatar?: Maybe<Scalars['String']['output']>;
   created_at: Scalars['timestamptz']['output'];
   creator_id?: Maybe<Scalars['uuid']['output']>;
+  default_model?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   id: Scalars['uuid']['output'];
   /** An array relationship */
@@ -559,6 +560,8 @@ export type Agent = {
   /** An aggregate relationship */
   kbs_aggregate: R_Agent_Kb_Aggregate;
   name: Scalars['String']['output'];
+  /** An object relationship */
+  system_prompt?: Maybe<Prompt_Hub>;
   system_prompt_id?: Maybe<Scalars['Int']['output']>;
   type_id?: Maybe<Scalars['Int']['output']>;
   updated_at: Scalars['timestamptz']['output'];
@@ -692,11 +695,13 @@ export type Agent_Bool_Exp = {
   avatar?: InputMaybe<String_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   creator_id?: InputMaybe<Uuid_Comparison_Exp>;
+  default_model?: InputMaybe<String_Comparison_Exp>;
   description?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   kbs?: InputMaybe<R_Agent_Kb_Bool_Exp>;
   kbs_aggregate?: InputMaybe<R_Agent_Kb_Aggregate_Bool_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
+  system_prompt?: InputMaybe<Prompt_Hub_Bool_Exp>;
   system_prompt_id?: InputMaybe<Int_Comparison_Exp>;
   type_id?: InputMaybe<Int_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
@@ -721,10 +726,12 @@ export type Agent_Insert_Input = {
   avatar?: InputMaybe<Scalars['String']['input']>;
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   creator_id?: InputMaybe<Scalars['uuid']['input']>;
+  default_model?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
   kbs?: InputMaybe<R_Agent_Kb_Arr_Rel_Insert_Input>;
   name?: InputMaybe<Scalars['String']['input']>;
+  system_prompt?: InputMaybe<Prompt_Hub_Obj_Rel_Insert_Input>;
   system_prompt_id?: InputMaybe<Scalars['Int']['input']>;
   type_id?: InputMaybe<Scalars['Int']['input']>;
   updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
@@ -737,6 +744,7 @@ export type Agent_Max_Fields = {
   avatar?: Maybe<Scalars['String']['output']>;
   created_at?: Maybe<Scalars['timestamptz']['output']>;
   creator_id?: Maybe<Scalars['uuid']['output']>;
+  default_model?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['uuid']['output']>;
   name?: Maybe<Scalars['String']['output']>;
@@ -750,6 +758,7 @@ export type Agent_Max_Order_By = {
   avatar?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   creator_id?: InputMaybe<Order_By>;
+  default_model?: InputMaybe<Order_By>;
   description?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
@@ -764,6 +773,7 @@ export type Agent_Min_Fields = {
   avatar?: Maybe<Scalars['String']['output']>;
   created_at?: Maybe<Scalars['timestamptz']['output']>;
   creator_id?: Maybe<Scalars['uuid']['output']>;
+  default_model?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['uuid']['output']>;
   name?: Maybe<Scalars['String']['output']>;
@@ -777,6 +787,7 @@ export type Agent_Min_Order_By = {
   avatar?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   creator_id?: InputMaybe<Order_By>;
+  default_model?: InputMaybe<Order_By>;
   description?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
@@ -813,10 +824,12 @@ export type Agent_Order_By = {
   avatar?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   creator_id?: InputMaybe<Order_By>;
+  default_model?: InputMaybe<Order_By>;
   description?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   kbs_aggregate?: InputMaybe<R_Agent_Kb_Aggregate_Order_By>;
   name?: InputMaybe<Order_By>;
+  system_prompt?: InputMaybe<Prompt_Hub_Order_By>;
   system_prompt_id?: InputMaybe<Order_By>;
   type_id?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
@@ -837,6 +850,8 @@ export enum Agent_Select_Column {
   /** column name */
   CreatorId = 'creator_id',
   /** column name */
+  DefaultModel = 'default_model',
+  /** column name */
   Description = 'description',
   /** column name */
   Id = 'id',
@@ -855,6 +870,7 @@ export type Agent_Set_Input = {
   avatar?: InputMaybe<Scalars['String']['input']>;
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   creator_id?: InputMaybe<Scalars['uuid']['input']>;
+  default_model?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
@@ -915,6 +931,7 @@ export type Agent_Stream_Cursor_Value_Input = {
   avatar?: InputMaybe<Scalars['String']['input']>;
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   creator_id?: InputMaybe<Scalars['uuid']['input']>;
+  default_model?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['uuid']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
@@ -1205,6 +1222,8 @@ export enum Agent_Update_Column {
   CreatedAt = 'created_at',
   /** column name */
   CreatorId = 'creator_id',
+  /** column name */
+  DefaultModel = 'default_model',
   /** column name */
   Description = 'description',
   /** column name */
@@ -5477,6 +5496,13 @@ export type Prompt_Hub_Mutation_Response = {
   affected_rows: Scalars['Int']['output'];
   /** data from the rows affected by the mutation */
   returning: Array<Prompt_Hub>;
+};
+
+/** input type for inserting object relation for remote table "prompt_hub" */
+export type Prompt_Hub_Obj_Rel_Insert_Input = {
+  data: Prompt_Hub_Insert_Input;
+  /** upsert condition */
+  on_conflict?: InputMaybe<Prompt_Hub_On_Conflict>;
 };
 
 /** on_conflict condition type for table "prompt_hub" */
@@ -10041,7 +10067,7 @@ export type GetAgentByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetAgentByIdQuery = { __typename?: 'query_root', agent_by_pk?: { __typename?: 'agent', id: any, name: string, description?: string | null, avatar?: string | null } | null };
+export type GetAgentByIdQuery = { __typename?: 'query_root', agent_by_pk?: { __typename?: 'agent', id: any, name: string, description?: string | null, avatar?: string | null, default_model?: string | null, system_prompt?: { __typename?: 'prompt_hub', id: number, name?: string | null, templates: Array<{ __typename?: 'prompt_template', id: number, order?: number | null, role: Message_Role_Enum, template: string }> } | null } | null };
 
 export type GetTopicHistoriesQueryVariables = Exact<{
   agent_id: Scalars['uuid']['input'];
@@ -10321,6 +10347,17 @@ export const GetAgentByIdDocument = gql`
     name
     description
     avatar
+    default_model
+    system_prompt {
+      id
+      name
+      templates {
+        id
+        order
+        role
+        template
+      }
+    }
   }
 }
     `;

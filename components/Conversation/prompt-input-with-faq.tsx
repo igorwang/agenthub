@@ -145,8 +145,6 @@ export default function PromptInputWithFaq({
       toast.error("Please choose a topic to start the conversation.");
       return null;
     }
-    console.log("selectedChatId", selectedChatId);
-    console.log("selectedSessionId", selectedSessionId);
     const attachments = files.map((item) => ({
       // key: item.key,
       fileName: item.fileName,
@@ -179,7 +177,7 @@ export default function PromptInputWithFaq({
   ));
 
   return (
-    <div className="flex flex-col w-full p-2 gap-4 items-center max-w-full overflow-auto">
+    <div className="flex flex-col w-full  p-2 gap-4 items-center max-w-full overflow-auto">
       {/* <ScrollShadow
         hideScrollBar
         className="flex flex-nowrap gap-2 max-w-full overflow-auto"

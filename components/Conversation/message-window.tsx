@@ -8,13 +8,23 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import FeatureCards from "@/components/Conversation/feature-cards";
+import { PromptTemplateType } from "@/components/PromptFrom";
 import {
   useGetAgentByIdQuery,
   useGetMessageListSubscription,
 } from "@/graphql/generated/types";
-import { queryAnalyzerPrompt } from "@/lib/prompts/queryAnalyzer";
-import { CHAT_MODE, CHAT_STATUS_ENUM, MessageType } from "@/types/chatTypes";
-import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { DEFAULT_LLM_MODEL, DEFAULT_TEMPLATES } from "@/lib/models";
+import { createPrompt } from "@/lib/prompts";
+import { queryAnalyzer } from "@/lib/prompts/queryAnalyzer";
+import { librarySearcher } from "@/lib/searchs/librarySearch";
+import { SearchDocumentResultSchema } from "@/restful/generated";
+import {
+  CHAT_MODE,
+  CHAT_STATUS_ENUM,
+  MessageType,
+  SOURCE_TYPE_ENUM,
+  SourceType,
+} from "@/types/chatTypes";
 import { Avatar, ScrollShadow } from "@nextui-org/react";
 import MessageCard from "./message-card";
 
@@ -90,6 +100,7 @@ type AgentProps = {
   id: string;
   name?: string;
   avatar?: string;
+  defaultModel?: string;
 };
 
 type MessageWindowProps = {
@@ -108,8 +119,13 @@ export default function MessageWindow({
   const selectedSessionId = useSelector(selectSelectedSessionId);
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [agent, setAgent] = useState<AgentProps>();
-  const [streamingMessage, setStreamingMessage] = useState<string>("");
+  const [refineQuery, setRefineQuery] = useState<string | null>(null);
+  const [searchResults, setSearchResults] = useState<SourceType[] | null>(null);
+  const [promptTemplates, setPromptTemplates] =
+    useState<PromptTemplateType[]>();
+  const [streamingMessage, setStreamingMessage] = useState<string | null>(null);
   const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
+  const lastMessagesRef = useRef(messages);
 
   const session = useSession();
   const user_id = session.data?.user?.id;
@@ -130,14 +146,28 @@ export default function MessageWindow({
     },
     skip: !agent_id,
   });
-
   useEffect(() => {
     if (agentData) {
       setAgent({
         id: agentData.agent_by_pk?.id,
         name: agentData.agent_by_pk?.name,
         avatar: agentData.agent_by_pk?.avatar || "",
+        defaultModel: agentData.agent_by_pk?.default_model || DEFAULT_LLM_MODEL,
       });
+      const templates = agentData.agent_by_pk?.system_prompt?.templates;
+      if (templates) {
+        setPromptTemplates(
+          templates.map((item) => ({
+            id: item.id,
+            role: item.role,
+            template: item.template,
+            order: item.order || -1,
+            status: "saved",
+          })),
+        );
+      } else {
+        setPromptTemplates(DEFAULT_TEMPLATES);
+      }
     }
   }, [selectedChatId, agentData]);
 
@@ -160,61 +190,141 @@ export default function MessageWindow({
         })),
       );
     }
+  }, [data]);
 
-    if (isChating) {
+  useEffect(() => {
+    if (isChating && messages.length > 0) {
+      console.log("lastMessage", messages[messages.length - 1]);
+
       setChatStatus(CHAT_STATUS_ENUM.Analyzing);
+      const fetchRefineQuery = async () => {
+        try {
+          console.log(messages);
+          const result = await queryAnalyzer(messages);
+          console.log("queryAnalyzer", refineQuery, result);
 
-      const refineQuery = queryAnalyzer().then();
-      console.log(refineQuery);
+          setRefineQuery(result.content);
+          console.log("queryAnalyzer", refineQuery);
+
+          console.log(result.content);
+        } catch (error) {
+          console.error("Error fetching refine query:", error);
+          setRefineQuery(messages[messages.length - 1].message || "");
+        }
+      };
+      fetchRefineQuery();
+      console.log("refineQuery", refineQuery, "这里结束了吗");
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    if (refineQuery && isChating && chatStatus == CHAT_STATUS_ENUM.Searching) {
       setChatStatus(CHAT_STATUS_ENUM.Searching);
+      console.log("refineQuery", refineQuery);
+      const searchLibrary = async () => {
+        try {
+          const result = await librarySearcher(
+            refineQuery,
+            agent_id || "",
+            user_id,
+            5,
+          );
+          setSearchResults(() => {
+            return result.map(
+              (item: SearchDocumentResultSchema): SourceType => ({
+                fileName: item.filename || "",
+                fileId: item.file_id,
+                url: item.url || "",
+                pages: item.pages || [],
+                contents: item.contents || [],
+                sourceType: SOURCE_TYPE_ENUM.file,
+              }),
+            );
+          });
+        } catch (error) {
+          console.error("Error searching library:", error);
+        }
+      };
+      searchLibrary();
+      setStreamingMessage(""); // new message
+    }
+  }, [refineQuery]);
 
+  useEffect(() => {
+    if (
+      refineQuery &&
+      searchResults &&
+      isChating &&
+      chatStatus == CHAT_STATUS_ENUM.Generating
+    ) {
+      setChatStatus(CHAT_STATUS_ENUM.Generating);
+      console.log("searchResults", searchResults);
+      const generateAnswer = async () => {
+        const prompt = await createPrompt(
+          promptTemplates || DEFAULT_TEMPLATES,
+          messages,
+          searchResults || [],
+          refineQuery,
+          {},
+          4096,
+        );
+
+        // call llm
+        try {
+          // Fetch the streaming data from the API
+          const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              model: agent?.defaultModel || DEFAULT_LLM_MODEL,
+              prompt: prompt,
+            }),
+          }); // Adjust the endpoint as needed
+
+          if (!response.body) {
+            throw new Error("ReadableStream not supported by the browser.");
+          }
+
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          // Function to read the stream
+          const readStream = async () => {
+            const { done, value } = await reader.read();
+            if (done) {
+              return;
+            }
+            // Decode the chunk and update the message state
+            const chunk = decoder.decode(value, { stream: true });
+            setStreamingMessage(
+              (prevMessage) => (prevMessage != null ? prevMessage : "") + chunk,
+            );
+
+            // Continue reading the stream
+            await readStream();
+          };
+          // Start reading the stream
+          await readStream();
+        } catch (error) {
+          console.error("Error while streaming:", error);
+        }
+      };
+      generateAnswer();
+      console.log(streamingMessage);
+      // reset state
+      // setSearchResults(null);
+      // setStreamingMessage(null);
+      // setRefineQuery(null);
       handleChatingStatus?.(false);
     }
-  }, [data, isChating]);
+  }, [searchResults]);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
-
-  const queryAnalyzer = async () => {
-    const userMessages = messages.filter((message) => message.role == "user");
-    const question = userMessages
-      .slice(-3)
-      .map((m) => m.message)
-      .join("\n");
-    const promptTemplate = ChatPromptTemplate.fromMessages([
-      ["system", queryAnalyzerPrompt],
-      [
-        "human",
-        "Ensure the output language is consistent with the input language",
-      ],
-      ["human", "Input: {question}"],
-    ]);
-    const formattedPrompt = await promptTemplate.format({
-      question: question,
-    });
-    const defaultModel = "mistralai/Mistral-7B-Instruct-v0.3";
-
-    const response = await fetch("/api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: defaultModel,
-        prompt: formattedPrompt,
-        isStream: false,
-      }),
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    console.log("1112123123123", response);
-    return data;
-  };
 
   const agentAvatarElement =
     agent && agent?.avatar ? (
@@ -243,7 +353,7 @@ export default function MessageWindow({
   return (
     <ScrollShadow
       ref={scrollRef}
-      className="flex flex-grow flex-col gap-6 pb-8"
+      className="flex flex-grow flex-col gap-6 pb-8 w-full"
     >
       <div className="flex flex-1 flex-grow flex-col px-1 gap-1  ">
         {messages.length === 0 && featureContent}
@@ -259,7 +369,7 @@ export default function MessageWindow({
               )
             }
             currentAttempt={index === 1 ? 2 : 1}
-            message={message}
+            message={message || ""}
             isUser={role === "user"}
             messageClassName={
               role === "user" ? "bg-content3 text-content3-foreground" : ""
@@ -268,15 +378,24 @@ export default function MessageWindow({
             files={files}
           />
         ))}
-        {/* living message card */}
+        {/* {isChating && (
+          <MessageCard
+            aria-label="streaming card"
+            avatar={agentAvatarElement}
+            message={streamingMessage || ""}
+            messageClassName={""}
+            chatStatus={chatStatus}
+            sourceResults={searchResults || []}
+          />
+        )} */}
         <MessageCard
-          key={"index"}
+          aria-label="streaming card"
           avatar={agentAvatarElement}
-          message={"linving message card"}
+          message={streamingMessage || ""}
           messageClassName={""}
           chatStatus={chatStatus}
+          sourceResults={searchResults || []}
         />
-        <div>{isChating && streamingMessage}</div>
       </div>
     </ScrollShadow>
   );
