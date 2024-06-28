@@ -26,7 +26,7 @@ type PromptInputWithFaqProps = {
 };
 
 export default function PromptInputWithFaq({
-  isChating: isButtonDisabled,
+  isChating: isChating,
   handleChatingStatus,
 }: PromptInputWithFaqProps) {
   const dispatch: AppDispatch = useDispatch();
@@ -134,6 +134,10 @@ export default function PromptInputWithFaq({
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
+  const stopSendMessageHanlder = () => {
+    handleChatingStatus?.(false);
+  };
+
   const sendMessageHanlder = () => {
     handleChatingStatus && handleChatingStatus(true);
     if (!selectedSessionId) {
@@ -171,6 +175,52 @@ export default function PromptInputWithFaq({
     />
   ));
 
+  const sendButton = (
+    <Tooltip showArrow content="Send message">
+      <Button
+        isIconOnly
+        color={!prompt ? "default" : "primary"}
+        isDisabled={!prompt || isChating}
+        radius="lg"
+        size="md"
+        variant="solid"
+        onClick={sendMessageHanlder}
+      >
+        <Icon
+          className={cn(
+            "[&>path]:stroke-[2px]",
+            !prompt ? "text-default-600" : "text-primary-foreground",
+          )}
+          icon="solar:arrow-up-linear"
+          width={20}
+        />
+      </Button>
+    </Tooltip>
+  );
+
+  const stopButton = (
+    <Tooltip showArrow content="Stop Chat">
+      <Button
+        isIconOnly
+        color={"primary"}
+        isDisabled={!isChating}
+        radius="lg"
+        size="md"
+        variant="solid"
+        onClick={stopSendMessageHanlder}
+      >
+        <Icon
+          className={cn(
+            "[&>path]:stroke-[2px]",
+            !prompt ? "text-default-600" : "text-primary-foreground",
+          )}
+          icon="teenyicons:stop-solid"
+          width={20}
+        />
+      </Button>
+    </Tooltip>
+  );
+
   return (
     <div className="flex flex-col w-full  p-2 gap-4 items-center max-w-full overflow-auto">
       {/* <ScrollShadow
@@ -207,26 +257,7 @@ export default function PromptInputWithFaq({
           placeholder="Send message to AI"
           endContent={
             <div className="flex items-end gap-2">
-              <Tooltip showArrow content="Send message">
-                <Button
-                  isIconOnly
-                  color={!prompt ? "default" : "primary"}
-                  isDisabled={!prompt || isButtonDisabled}
-                  radius="lg"
-                  size="md"
-                  variant="solid"
-                  onClick={sendMessageHanlder}
-                >
-                  <Icon
-                    className={cn(
-                      "[&>path]:stroke-[2px]",
-                      !prompt ? "text-default-600" : "text-primary-foreground",
-                    )}
-                    icon="solar:arrow-up-linear"
-                    width={20}
-                  />
-                </Button>
-              </Tooltip>
+              {isChating ? stopButton : sendButton}
             </div>
           }
           minRows={3}
