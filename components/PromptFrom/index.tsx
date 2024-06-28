@@ -104,6 +104,12 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
     const [upadeKnowledgeBasePromptMutation] = useUpadeKnowledgeBasePromptMutation();
 
     useEffect(() => {
+      if (defaultPromptId) {
+        setPromptId(defaultPromptId);
+      }
+    }, [defaultPromptId]);
+
+    useEffect(() => {
       if (data) {
         setPrompt({
           name: data.prompt_hub_by_pk?.name || "",
@@ -424,25 +430,16 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
           </div>
           <div className="flex flex-row  gap-2">
             {!isEditing && (
-              <Button
-                color="primary"
-                onClick={handleAddPrompt}
-              >
+              <Button color="primary" onClick={handleAddPrompt}>
                 New
               </Button>
             )}
             {isEditing ? (
-              <Button
-                color="primary"
-                onClick={() => handleSavePrompt()}
-              >
+              <Button color="primary" onClick={() => handleSavePrompt()}>
                 Save
               </Button>
             ) : (
-              <Button
-                color="primary"
-                onClick={() => setIsEditing(true)}
-              >
+              <Button color="primary" onClick={() => setIsEditing(true)}>
                 Edit
               </Button>
             )}

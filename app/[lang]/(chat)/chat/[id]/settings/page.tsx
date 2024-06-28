@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Avatar,
-  Button,
-  Input,
-  Textarea,
-  Divider,
-} from "@nextui-org/react";
+import { Avatar, Button, Divider, Input, Textarea } from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -19,11 +13,15 @@ import {
   useUpdateAgentMutation,
 } from "@/graphql/generated/types";
 
+interface SystemPrompt {
+  id: number;
+}
 interface Agent {
   id?: string;
   name?: string;
   description?: string | null | undefined;
   avatar?: string | null | undefined;
+  system_prompt?: SystemPrompt | null | undefined;
 }
 
 export default function Component() {
@@ -37,7 +35,10 @@ export default function Component() {
   const query = useGetAgentByIdQuery({ variables: { id: id } });
 
   useEffect(() => {
-    setData(query?.data?.agent_by_pk);
+    if (query.data) {
+      console.log(query.data);
+      setData(query?.data?.agent_by_pk);
+    }
   }, [query]);
 
   function handleSubmit(e: any) {
@@ -62,24 +63,25 @@ export default function Component() {
       <RightHeader title={"Agent Setting"} callBackUri={`/chat/${id}`} />
       <div className={"flex flex-col items-center"}>
         <form className={"gap-16 pt-8 px-4 w-full max-w-4xl  "}>
-          <div className={"flex justify-between"}>
+          <div className={"flex flex-row justify-between items-end pb-1"}>
             <span className="relative text-foreground-500">Agent Information</span>
-            <Button
-              color={"primary"}
-              onClick={(e) => handleSubmit(e)}>
+            <Button color={"primary"} onClick={(e) => handleSubmit(e)}>
               Save
             </Button>
           </div>
           <Divider />
           <div className={"mt-4"}>Avatar</div>
           <div className={"flex justify-center"}>
-            {data?.avatar ? <Avatar src={data?.avatar} /> :
+            {data?.avatar ? (
+              <Avatar src={data?.avatar} />
+            ) : (
               <Avatar
                 className="flex-shrink-0 bg-blue-400"
                 size="md"
                 name={data?.name?.charAt(0)}
                 classNames={{ name: "text-xl" }}
-              />}
+              />
+            )}
           </div>
           <div className={"mt-8"}>
             <Input
@@ -108,10 +110,9 @@ export default function Component() {
         <div className={"w-full pt-12 max-w-4xl"}>
           <span className="relative text-foreground-500">Prompt</span>
           <Divider />
-          <PromptFrom />
+          <PromptFrom agentId={id} defaultPromptId={data?.system_prompt?.id} />
         </div>
       </div>
-
     </div>
   );
 }
