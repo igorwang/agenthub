@@ -1,12 +1,17 @@
 "use client";
 
-import { Avatar, Button, Input, Textarea } from "@nextui-org/react";
+import {
+  Avatar,
+  Button,
+  Input,
+  Textarea,
+  Divider,
+} from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import NameAvatar from "../../../../../../components/NameAvatar";
-
+import PromptFrom from "@/components/PromptFrom";
 import RightHeader from "@/components/RightHeader";
 import {
   Agent_Set_Input,
@@ -49,16 +54,33 @@ export default function Component() {
       },
     }).then(() => {
       toast.success("Agent information update succeeded！");
-      router.back();
     });
   }
 
   return (
     <div className="w-full">
-      <RightHeader title={"Agent Setting"} />
-      <div className={"flex justify-center"}>
-        <form className={"gap-16 py-16 px-4 w-full max-w-2xl  "}>
-          <span className="relative text-foreground-500">Agent Information</span>
+      <RightHeader title={"Agent Setting"} callBackUri={`/chat/${id}`} />
+      <div className={"flex flex-col items-center"}>
+        <form className={"gap-16 pt-8 px-4 w-full max-w-4xl  "}>
+          <div className={"flex justify-between"}>
+            <span className="relative text-foreground-500">Agent Information</span>
+            <Button
+              color={"primary"}
+              onClick={(e) => handleSubmit(e)}>
+              Save
+            </Button>
+          </div>
+          <Divider />
+          <div className={"mt-4"}>Avatar</div>
+          <div className={"flex justify-center"}>
+            {data?.avatar ? <Avatar src={data?.avatar} /> :
+              <Avatar
+                className="flex-shrink-0 bg-blue-400"
+                size="md"
+                name={data?.name?.charAt(0)}
+                classNames={{ name: "text-xl" }}
+              />}
+          </div>
           <div className={"mt-8"}>
             <Input
               isRequired
@@ -82,23 +104,14 @@ export default function Component() {
               onChange={(e) => setData({ ...data, description: e.target.value })}
             />
           </div>
-          <div className={"mt-4"}>Avatar</div>
-          <div className={"flex justify-center"}>
-            {data?.avatar ? (
-              <Avatar src={data?.avatar} />
-            ) : (
-              <NameAvatar name={data?.name} />
-            )}
-          </div>
-          <Button
-            color={"primary"}
-            className={"w-full mt-8"}
-            onClick={(e) => handleSubmit(e)}
-          >
-            Submit
-          </Button>
         </form>
+        <div className={"w-full pt-12 max-w-4xl"}>
+          <span className="relative text-foreground-500">Prompt</span>
+          <Divider />
+          <PromptFrom />
+        </div>
       </div>
+
     </div>
   );
 }

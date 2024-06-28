@@ -425,10 +425,7 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
           <div className="flex flex-row  gap-2">
             {!isEditing && (
               <Button
-                className="flex-grow"
                 color="primary"
-                variant="flat"
-                radius="lg"
                 onClick={handleAddPrompt}
               >
                 New
@@ -436,20 +433,14 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
             )}
             {isEditing ? (
               <Button
-                className="flex-grow"
                 color="primary"
-                variant="flat"
-                radius="lg"
                 onClick={() => handleSavePrompt()}
               >
                 Save
               </Button>
             ) : (
               <Button
-                className="flex-grow"
                 color="primary"
-                variant="flat"
-                radius="lg"
                 onClick={() => setIsEditing(true)}
               >
                 Edit
