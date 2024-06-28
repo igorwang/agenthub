@@ -1,11 +1,12 @@
 "use client";
 import { ChatList } from "@/components/AgentHub/chat-list";
 import { AppDispatch } from "@/lib/store";
-import { Spacer } from "@nextui-org/react";
+import { Button, Spacer, Tooltip } from "@nextui-org/react";
 import { useDispatch } from "react-redux";
 import SearchBar from "./searchbar";
 
-import { useGetAgentListByTypeQuery } from "@/graphql/generated/types";
+import { IcTwotonePersonAdd } from "@/components/ui/icons";
+import { useCreateOneAgentMutation, useGetAgentListByTypeQuery } from "@/graphql/generated/types";
 import {
   selectChatList,
   selectSelectedChatId,
@@ -21,6 +22,7 @@ const ChatHub = () => {
   const dispatch: AppDispatch = useDispatch();
   const chatList = useSelector(selectChatList);
   const selectedChatId = useSelector(selectSelectedChatId);
+  const [createAgentMutation] = useCreateOneAgentMutation();
 
   const router = useRouter();
   const params = useParams();
@@ -30,12 +32,13 @@ const ChatHub = () => {
 
   const { data: sessionData, status } = useSession();
   const userId = sessionData?.user?.id;
-  const { data, loading, error } = useGetAgentListByTypeQuery({
+  const agentListQuery = useGetAgentListByTypeQuery({
     variables: {
       user_id: userId,
     },
     skip: !userId,
   });
+  const data = agentListQuery.data;
 
   useEffect(() => {
     if (data) {
@@ -55,10 +58,31 @@ const ChatHub = () => {
     }
   }, [data, dispatch]);
 
+  function createAgent() {
+    createAgentMutation({
+      variables: {
+        object: { name: "New Agent", type_id: 2, creator_id: userId },
+      },
+    }).then(res => {
+      agentListQuery.refetch();
+      const newAgentId = res?.data?.insert_agent_one?.id;
+      const path = `${newAgentId}/settings`;
+      router.push(path);
+    });
+  }
+
   return (
     <div className="hidden sm:flex h-full min-w-[200px]  flex-col border-r-1 border-b-1">
       <div className="text-3xl font-semibold leading-7 text-default-foreground px-2 pt-4">
         AgentHub
+        <Tooltip content="Add new agent">
+          <Button isIconOnly color="primary" variant="flat" onClick={() => createAgent()}>
+            <IcTwotonePersonAdd
+              width="1.5em"
+              height="1.5em"
+            />
+          </Button>
+        </Tooltip>
       </div>
       <Spacer y={4} />
       <SearchBar></SearchBar>

@@ -134,7 +134,7 @@ const PromptTemplateInput = React.forwardRef<
                 <Button
                   variant="light"
                   size="sm"
-                  disableAnimation
+                  // disableAnimation
                   disableRipple
                   className="flex items-center justify-start p-0  max-w-full data-[hover=true]:bg-transparent" // 使用 space-x-1 来添加文字和图标之间的间距
                 >

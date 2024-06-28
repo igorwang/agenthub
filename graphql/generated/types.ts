@@ -10031,6 +10031,23 @@ export type AddNewTopicMutationMutationVariables = Exact<{
 
 export type AddNewTopicMutationMutation = { __typename?: 'mutation_root', insert_topic_history_one?: { __typename?: 'topic_history', id: any, title: string, agent_id?: any | null, user_id?: any | null } | null };
 
+export type CreateOneAgentMutationVariables = Exact<{
+  object: Agent_Insert_Input;
+}>;
+
+
+export type CreateOneAgentMutation = { __typename?: 'mutation_root', insert_agent_one?: { __typename?: 'agent', id: any, name: string, description?: string | null } | null };
+
+export type UpdateAgentMutationVariables = Exact<{
+  _set?: InputMaybe<Agent_Set_Input>;
+  pk_columns: Agent_Pk_Columns_Input;
+}>;
+
+
+export type UpdateAgentMutation = { __typename?: 'mutation_root', update_agent_by_pk?: { __typename?: 'agent', id: any, name: string, description?: string | null, avatar?: string | null, type_id?: number | null } | null };
+
+export type AgentItemFragment = { __typename?: 'agent', id: any, name: string, description?: string | null, avatar?: string | null, type_id?: number | null };
+
 export type CreateMessageAndUpdateTopicHistoryMutationVariables = Exact<{
   content?: InputMaybe<Scalars['String']['input']>;
   session_id?: InputMaybe<Scalars['uuid']['input']>;
@@ -10126,6 +10143,15 @@ export type GetPromptListSubscriptionVariables = Exact<{
 
 export type GetPromptListSubscription = { __typename?: 'subscription_root', prompt_hub: Array<{ __typename?: 'prompt_hub', id: number, name?: string | null }> };
 
+export const AgentItemFragmentDoc = gql`
+    fragment AgentItem on agent {
+  id
+  name
+  description
+  avatar
+  type_id
+}
+    `;
 export const KnowledgeBaseFragmentFragmentDoc = gql`
     fragment knowledgeBaseFragment on knowledge_base {
   id
@@ -10177,6 +10203,75 @@ export function useAddNewTopicMutationMutation(baseOptions?: Apollo.MutationHook
 export type AddNewTopicMutationMutationHookResult = ReturnType<typeof useAddNewTopicMutationMutation>;
 export type AddNewTopicMutationMutationResult = Apollo.MutationResult<AddNewTopicMutationMutation>;
 export type AddNewTopicMutationMutationOptions = Apollo.BaseMutationOptions<AddNewTopicMutationMutation, AddNewTopicMutationMutationVariables>;
+export const CreateOneAgentDocument = gql`
+    mutation CreateOneAgent($object: agent_insert_input!) {
+  insert_agent_one(object: $object) {
+    id
+    name
+    description
+  }
+}
+    `;
+export type CreateOneAgentMutationFn = Apollo.MutationFunction<CreateOneAgentMutation, CreateOneAgentMutationVariables>;
+
+/**
+ * __useCreateOneAgentMutation__
+ *
+ * To run a mutation, you first call `useCreateOneAgentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOneAgentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createOneAgentMutation, { data, loading, error }] = useCreateOneAgentMutation({
+ *   variables: {
+ *      object: // value for 'object'
+ *   },
+ * });
+ */
+export function useCreateOneAgentMutation(baseOptions?: Apollo.MutationHookOptions<CreateOneAgentMutation, CreateOneAgentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateOneAgentMutation, CreateOneAgentMutationVariables>(CreateOneAgentDocument, options);
+      }
+export type CreateOneAgentMutationHookResult = ReturnType<typeof useCreateOneAgentMutation>;
+export type CreateOneAgentMutationResult = Apollo.MutationResult<CreateOneAgentMutation>;
+export type CreateOneAgentMutationOptions = Apollo.BaseMutationOptions<CreateOneAgentMutation, CreateOneAgentMutationVariables>;
+export const UpdateAgentDocument = gql`
+    mutation UpdateAgent($_set: agent_set_input, $pk_columns: agent_pk_columns_input!) {
+  update_agent_by_pk(_set: $_set, pk_columns: $pk_columns) {
+    ...AgentItem
+  }
+}
+    ${AgentItemFragmentDoc}`;
+export type UpdateAgentMutationFn = Apollo.MutationFunction<UpdateAgentMutation, UpdateAgentMutationVariables>;
+
+/**
+ * __useUpdateAgentMutation__
+ *
+ * To run a mutation, you first call `useUpdateAgentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAgentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAgentMutation, { data, loading, error }] = useUpdateAgentMutation({
+ *   variables: {
+ *      _set: // value for '_set'
+ *      pk_columns: // value for 'pk_columns'
+ *   },
+ * });
+ */
+export function useUpdateAgentMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAgentMutation, UpdateAgentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateAgentMutation, UpdateAgentMutationVariables>(UpdateAgentDocument, options);
+      }
+export type UpdateAgentMutationHookResult = ReturnType<typeof useUpdateAgentMutation>;
+export type UpdateAgentMutationResult = Apollo.MutationResult<UpdateAgentMutation>;
+export type UpdateAgentMutationOptions = Apollo.BaseMutationOptions<UpdateAgentMutation, UpdateAgentMutationVariables>;
 export const CreateMessageAndUpdateTopicHistoryDocument = gql`
     mutation CreateMessageAndUpdateTopicHistory($content: String, $session_id: uuid = "", $role: message_role_enum = user, $attachments: jsonb = null) {
   insert_message(

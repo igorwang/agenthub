@@ -1,6 +1,6 @@
 import { IconSvgProps } from "@/types";
 
-import React from "react";
+import React, { SVGProps } from "react";
 
 export const AcmeLogo = (props: IconSvgProps) => (
   <svg fill="none" height="36" viewBox="0 0 32 32" width="36" {...props}>
@@ -114,11 +114,11 @@ export const DiscussionIcon = (props: IconSvgProps) => (
 );
 
 export const PlusIcon: React.FC<IconSvgProps> = ({
-  size = 20, // Default size to 24
-  width,
-  height,
-  ...props
-}) => {
+                                                   size = 20, // Default size to 24
+                                                   width,
+                                                   height,
+                                                   ...props
+                                                 }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -135,11 +135,11 @@ export const PlusIcon: React.FC<IconSvgProps> = ({
 };
 
 export const DocumentIcon: React.FC<IconSvgProps> = ({
-  size = 24, // Default size to 24
-  width,
-  height,
-  ...props
-}) => {
+                                                       size = 24, // Default size to 24
+                                                       width,
+                                                       height,
+                                                       ...props
+                                                     }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -160,11 +160,11 @@ export const DocumentIcon: React.FC<IconSvgProps> = ({
   );
 };
 export const VideoIcon: React.FC<IconSvgProps> = ({
-  size = 24,
-  width,
-  height,
-  ...props
-}) => {
+                                                    size = 24,
+                                                    width,
+                                                    height,
+                                                    ...props
+                                                  }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -182,11 +182,11 @@ export const VideoIcon: React.FC<IconSvgProps> = ({
 };
 
 export const DefaultFileIcon: React.FC<IconSvgProps> = ({
-  size = 32, // Default size to 24
-  width,
-  height,
-  ...props
-}) => {
+                                                          size = 32, // Default size to 24
+                                                          width,
+                                                          height,
+                                                          ...props
+                                                        }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -206,11 +206,11 @@ export const DefaultFileIcon: React.FC<IconSvgProps> = ({
 };
 
 export const DeleteIcon: React.FC<IconSvgProps> = ({
-  size = 24, // Default size to 24
-  width,
-  height,
-  ...props
-}) => {
+                                                     size = 24, // Default size to 24
+                                                     width,
+                                                     height,
+                                                     ...props
+                                                   }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -223,17 +223,18 @@ export const DeleteIcon: React.FC<IconSvgProps> = ({
       <path
         fill="currentColor"
         d="M21.499 19.994L32.755 8.727a1.064 1.064 0 0 0-.001-1.502c-.398-.396-1.099-.398-1.501.002L20 18.494L8.743 7.224c-.4-.395-1.101-.393-1.499.002a1.05 1.05 0 0 0-.309.751c0 .284.11.55.309.747L18.5 19.993L7.245 31.263a1.064 1.064 0 0 0 .003 1.503c.193.191.466.301.748.301h.006c.283-.001.556-.112.745-.305L20 21.495l11.257 11.27c.199.198.465.308.747.308a1.058 1.058 0 0 0 1.061-1.061c0-.283-.11-.55-.31-.747z"
-      />{" "}
+      />
+      {" "}
     </svg>
   );
 };
 
 export const ConfigIcon: React.FC<IconSvgProps> = ({
-  size = 24, // Default size to 24
-  width,
-  height,
-  ...props
-}) => {
+                                                     size = 24, // Default size to 24
+                                                     width,
+                                                     height,
+                                                     ...props
+                                                   }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -254,11 +255,11 @@ export const ConfigIcon: React.FC<IconSvgProps> = ({
 };
 
 export const SelectIcon: React.FC<IconSvgProps> = ({
-  size = 20, // Default size to 24
-  width,
-  height,
-  ...props
-}) => {
+                                                     size = 20, // Default size to 24
+                                                     width,
+                                                     height,
+                                                     ...props
+                                                   }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -275,11 +276,11 @@ export const SelectIcon: React.FC<IconSvgProps> = ({
 };
 
 export const DeleteOutlineIcon: React.FC<IconSvgProps> = ({
-  size = 20, // Default size to 24
-  width,
-  height,
-  ...props
-}) => {
+                                                            size = 20, // Default size to 24
+                                                            width,
+                                                            height,
+                                                            ...props
+                                                          }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -296,11 +297,11 @@ export const DeleteOutlineIcon: React.FC<IconSvgProps> = ({
 };
 
 export const StartOutlineIcon: React.FC<IconSvgProps> = ({
-  size = 20, // Default size to 24
-  width,
-  height,
-  ...props
-}) => {
+                                                           size = 20, // Default size to 24
+                                                           width,
+                                                           height,
+                                                           ...props
+                                                         }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -317,11 +318,11 @@ export const StartOutlineIcon: React.FC<IconSvgProps> = ({
 };
 
 export const ArrowForwardIcon: React.FC<IconSvgProps> = ({
-  size = 20,
-  width,
-  height,
-  ...props
-}) => {
+                                                           size = 20,
+                                                           width,
+                                                           height,
+                                                           ...props
+                                                         }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -335,11 +336,11 @@ export const ArrowForwardIcon: React.FC<IconSvgProps> = ({
 };
 
 export const ArrowBackIcon: React.FC<IconSvgProps> = ({
-  size = 20,
-  width,
-  height,
-  ...props
-}) => {
+                                                        size = 20,
+                                                        width,
+                                                        height,
+                                                        ...props
+                                                      }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -353,11 +354,11 @@ export const ArrowBackIcon: React.FC<IconSvgProps> = ({
 };
 
 export const LibraryIcon: React.FC<IconSvgProps> = ({
-  size = 20,
-  width,
-  height,
-  ...props
-}) => {
+                                                      size = 20,
+                                                      width,
+                                                      height,
+                                                      ...props
+                                                    }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -374,11 +375,11 @@ export const LibraryIcon: React.FC<IconSvgProps> = ({
 };
 
 export const SourceFileIcon: React.FC<IconSvgProps> = ({
-  size = 20,
-  width,
-  height,
-  ...props
-}) => {
+                                                         size = 20,
+                                                         width,
+                                                         height,
+                                                         ...props
+                                                       }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -393,3 +394,18 @@ export const SourceFileIcon: React.FC<IconSvgProps> = ({
     </svg>
   );
 };
+
+export function IcTwotonePersonAdd(props: SVGProps<SVGSVGElement>) {
+  return (<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" {...props}>
+    <path fill="currentColor" d="M15 16c-2.69 0-5.77 1.28-6 2h12c-.2-.71-3.3-2-6-2" opacity={0.3}></path>
+    <circle cx={15} cy={8} r={2} fill="currentColor" opacity={0.3}></circle>
+    <path fill="currentColor"
+          d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4s-4 1.79-4 4s1.79 4 4 4m0-6c1.1 0 2 .9 2 2s-.9 2-2 2s-2-.9-2-2s.9-2 2-2m0 8c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4m-6 4c.22-.72 3.31-2 6-2c2.7 0 5.8 1.29 6 2zm-3-3v-3h3v-2H6V7H4v3H1v2h3v3z"></path>
+  </svg>);
+}
+
+export function IcBaselineArrowBackIosNew(props: SVGProps<SVGSVGElement>) {
+  return (<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" {...props}>
+    <path fill="currentColor" d="M17.77 3.77L16 2L6 12l10 10l1.77-1.77L9.54 12z"></path>
+  </svg>);
+}
