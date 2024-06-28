@@ -14,10 +14,7 @@ And Generate around 5 search keywords.
 If there are acronyms or words you are not familiar with, do not try to rephrase them.
 If the query is already well formed, do not try to decompose it further.`;
 
-export const queryAnalyzer = async (
-  messages: MessageType[],
-  model?: string | null,
-) => {
+export const queryAnalyzer = async (messages: MessageType[], model?: string | null) => {
   const userMessages = messages.filter((message) => message.role == "user");
   // memory
   const histryContext =
@@ -28,22 +25,18 @@ export const queryAnalyzer = async (
           .join("\n")
       : "";
 
-  const latestQuestion =
-    messages.length > 1 ? messages[messages.length - 1].message : "";
+  const latestQuestion = messages.length > 1 ? messages[messages.length - 1].message : "";
 
   const promptTemplate = ChatPromptTemplate.fromMessages([
     ["system", queryAnalyzerPrompt],
-    [
-      "user",
-      "Ensure the output language is consistent with the input language",
-    ],
-    ["user", `HisotryQuestions: ${histryContext}`],
+    ["user", "Ensure the output language is consistent with the input language"],
+    // ["user", `HisotryQuestions: ${histryContext}`],
     ["user", `Input: ${latestQuestion}`],
   ]);
 
   const formattedPrompt = await promptTemplate.format({});
 
-  const defaultModel = "mistralai/Mixtral-8x22B-Instruct-v0.1";
+  const defaultModel = "meta-llama/Meta-Llama-3-8B-Instruct";
   const selectedModel = model || defaultModel;
   const response = await fetch("/api/chat", {
     method: "POST",

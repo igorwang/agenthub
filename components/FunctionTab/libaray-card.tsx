@@ -39,16 +39,12 @@ const LibraryCard: React.FC<{ library: LibraryCardProps }> = ({ library }) => {
         </div>
         <div className="flex flex-col overflow-auto">
           <p className="text-md truncate text-ellipsis">{library.name}</p>
-          <p className="text-small text-default-500">
-            {library.from || "acme.com"}
-          </p>
+          <p className="text-small text-default-500">{library.from || "acme.com"}</p>
         </div>
       </CardHeader>
       <Divider />
       <CardBody>
-        <p className="text-ellipsis text-wrap h-[60px]">
-          {library.description}
-        </p>
+        <p className="text-ellipsis text-wrap h-[60px]">{library.description}</p>
       </CardBody>
       <Divider />
       <CardFooter>

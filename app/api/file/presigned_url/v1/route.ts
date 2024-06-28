@@ -37,10 +37,7 @@ export async function POST(req: NextRequest) {
       Metadata: parsedBody.metadata,
     };
 
-    const presignedPutUrl = await s3Client.getSignedUrlPromise(
-      "putObject",
-      params,
-    );
+    const presignedPutUrl = await s3Client.getSignedUrlPromise("putObject", params);
 
     return NextResponse.json({
       presignedPutUrl: presignedPutUrl,

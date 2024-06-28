@@ -6,9 +6,7 @@ async function getSessionHeaders(): Promise<{ Authorization: string }> {
   try {
     const session = await auth();
     return {
-      Authorization: session?.access_token
-        ? `Bearer ${session.access_token}`
-        : "public",
+      Authorization: session?.access_token ? `Bearer ${session.access_token}` : "public",
     };
   } catch (error) {
     console.error("Error fetching session:", error);
@@ -32,10 +30,7 @@ export async function fetchData(query: DocumentNode) {
   }
 }
 
-export async function performMutation(
-  mutation: DocumentNode,
-  variables: object,
-) {
+export async function performMutation(mutation: DocumentNode, variables: object) {
   const headers = await getSessionHeaders();
 
   const client = initializeApollo({}, headers);

@@ -23,11 +23,7 @@ const requestAccessToken = async (): Promise<void> => {
 };
 
 const resetTokenLink = onError(({ networkError }) => {
-  if (
-    networkError &&
-    "statusCode" in networkError &&
-    networkError.statusCode === 401
-  ) {
+  if (networkError && "statusCode" in networkError && networkError.statusCode === 401) {
     accessToken = null;
   }
 });
@@ -44,21 +40,18 @@ const createHttpLink = (headers: Record<string, string> | null) => {
 };
 
 const createWSLink = (): WebSocketLink => {
-  const subscriptionClient = new SubscriptionClient(
-    `${process.env.WS_API_HOST}`,
-    {
-      lazy: true,
-      reconnect: true,
-      connectionParams: async () => {
-        await requestAccessToken();
-        return {
-          headers: {
-            Authorization: accessToken ? `Bearer ${accessToken}` : "",
-          },
-        };
-      },
+  const subscriptionClient = new SubscriptionClient(`${process.env.WS_API_HOST}`, {
+    lazy: true,
+    reconnect: true,
+    connectionParams: async () => {
+      await requestAccessToken();
+      return {
+        headers: {
+          Authorization: accessToken ? `Bearer ${accessToken}` : "",
+        },
+      };
     },
-  );
+  });
 
   subscriptionClient.onConnected(() => {
     console.log("WebSocket connection established");
@@ -110,8 +103,7 @@ export function initializeApollo(
   initialState: InitialState,
   headers: Record<string, string>,
 ) {
-  const _apolloClient =
-    apolloClient ?? createApolloClient(initialState, headers);
+  const _apolloClient = apolloClient ?? createApolloClient(initialState, headers);
 
   if (initialState) {
     _apolloClient.cache.restore(initialState);

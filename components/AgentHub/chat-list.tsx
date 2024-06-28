@@ -13,6 +13,7 @@ import {
   ModalFooter,
   ModalBody,
 } from "@nextui-org/react";
+
 import {
   OcticonChevronDownIcon,
   OcticonChevronRightIcon,
@@ -91,11 +92,7 @@ export const ChatList: React.FC<{ groupedChatList: GroupedChatListDTO[] }> = ({
             <Button isIconOnly variant="light">
               <OcticonKebabHorizontalIcon />
             </Button>
-            <Button
-              isIconOnly
-              variant="light"
-              onClick={() => toggleListbox(group.id)}
-            >
+            <Button isIconOnly variant="light" onClick={() => toggleListbox(group.id)}>
               {openStates[group.id] ? (
                 <OcticonChevronDownIcon />
               ) : (

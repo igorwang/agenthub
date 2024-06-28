@@ -4,11 +4,16 @@ import MessageWindow from "@/components/Conversation/message-window";
 import PromptInputWithFaq from "@/components/Conversation/prompt-input-with-faq";
 import FunctionTab from "@/components/FunctionTab";
 import { ConfigIcon } from "@/components/ui/icons";
-import { useGetAgentByIdQuery } from "@/graphql/generated/types";
+import {
+  Message_Role_Enum,
+  useCreateNewMessageMutation,
+  useGetAgentByIdQuery,
+} from "@/graphql/generated/types";
 import { CHAT_MODE } from "@/types/chatTypes";
 import { Avatar, Button, Tab, Tabs, Tooltip } from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export type Agent = {
   id: string;
@@ -44,6 +49,9 @@ export const Conversation: React.FC<ConversationProps> = ({
     skip: !agentId,
   });
 
+  const [createNewMessageMutation, { error: createError }] =
+    useCreateNewMessageMutation();
+
   useEffect(() => {
     if (data) {
       setAgent({
@@ -54,6 +62,31 @@ export const Conversation: React.FC<ConversationProps> = ({
       });
     }
   }, [agentId, data]);
+
+  const handleCreateNewMessage = (params: {
+    content: string;
+    session_id: string;
+    role: Message_Role_Enum;
+    attachments?: any;
+    sources?: any;
+  }) => {
+    try {
+      createNewMessageMutation({
+        variables: {
+          object: {
+            content: params.content,
+            role: params.role,
+            session_id: params.session_id,
+            attachments: params.attachments,
+            sources: params.sources,
+          },
+          session_id: params.session_id,
+        },
+      });
+    } catch (error) {
+      toast.error("Create message error");
+    }
+  };
 
   const handleConfigCilck = () => {
     router.push(`${pathname}/settings`);
@@ -119,6 +152,7 @@ export const Conversation: React.FC<ConversationProps> = ({
           <MessageWindow
             isChating={isChating}
             handleChatingStatus={setIsChating}
+            handleCreateNewMessage={handleCreateNewMessage}
           />
           <div className="flex flex-col w-full max-w-full">
             <PromptInputWithFaq

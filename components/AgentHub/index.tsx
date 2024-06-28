@@ -7,6 +7,7 @@ import SearchBar from "./searchbar";
 import { Icon } from "@iconify/react";
 
 import { useCreateOneAgentMutation, useGetAgentListByTypeQuery } from "@/graphql/generated/types";
+
 import {
   selectChatList,
   selectSelectedChatId,
@@ -42,18 +43,16 @@ const ChatHub = () => {
 
   useEffect(() => {
     if (data) {
-      const groupedChatList: GroupedChatListDTO[] = data.agent_type.map(
-        (group) => ({
-          id: group.id,
-          name: group.name,
-          agents: group.agents.map((agent) => ({
-            id: agent.id,
-            name: agent.name,
-            description: agent.description,
-            avatar: agent.avatar,
-          })),
-        }),
-      );
+      const groupedChatList: GroupedChatListDTO[] = data.agent_type.map((group) => ({
+        id: group.id,
+        name: group.name,
+        agents: group.agents.map((agent) => ({
+          id: agent.id,
+          name: agent.name,
+          description: agent.description,
+          avatar: agent.avatar,
+        })),
+      }));
       dispatch(setChatList(groupedChatList));
     }
   }, [data, dispatch]);
@@ -63,7 +62,7 @@ const ChatHub = () => {
       variables: {
         object: { name: "New Agent", type_id: 2, creator_id: userId },
       },
-    }).then(res => {
+    }).then((res) => {
       agentListQuery.refetch();
       const newAgentId = res?.data?.insert_agent_one?.id;
       const path = `/chat/${newAgentId}/settings`;

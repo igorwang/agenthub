@@ -72,12 +72,7 @@ export const OcticonKebabHorizontalIcon = (props: IconSvgProps) => (
 );
 
 export const TopicFolderIcon = (props: IconSvgProps) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
     <path
       fill="currentColor"
       d="M6.5 15.5h7v-1h-7zm0-4h11v-1h-11zM4.616 19q-.691 0-1.153-.462T3 17.384V6.616q0-.691.463-1.153T4.615 5h4.981l2 2h7.789q.69 0 1.153.463T21 8.616v8.769q0 .69-.462 1.153T19.385 19zm0-1h14.769q.269 0 .442-.173t.173-.442v-8.77q0-.269-.173-.442T19.385 8h-8.19l-2-2h-4.58q-.269 0-.442.173T4 6.616v10.769q0 .269.173.442t.443.173M4 18V6z"
@@ -86,12 +81,7 @@ export const TopicFolderIcon = (props: IconSvgProps) => (
 );
 
 export const BookIcon = (props: IconSvgProps) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 16 16"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16">
     <path
       fill="currentColor"
       d="M0 1.75A.75.75 0 0 1 .75 1h4.253c1.227 0 2.317.59 3 1.501A3.74 3.74 0 0 1 11.006 1h4.245a.75.75 0 0 1 .75.75v10.5a.75.75 0 0 1-.75.75h-4.507a2.25 2.25 0 0 0-1.591.659l-.622.621a.75.75 0 0 1-1.06 0l-.622-.621A2.25 2.25 0 0 0 5.258 13H.75a.75.75 0 0 1-.75-.75Zm7.251 10.324l.004-5.073l-.002-2.253A2.25 2.25 0 0 0 5.003 2.5H1.5v9h3.757a3.75 3.75 0 0 1 1.994.574M8.755 4.75l-.004 7.322a3.75 3.75 0 0 1 1.992-.572H14.5v-9h-3.495a2.25 2.25 0 0 0-2.25 2.25"
@@ -100,12 +90,7 @@ export const BookIcon = (props: IconSvgProps) => (
 );
 
 export const DiscussionIcon = (props: IconSvgProps) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
     <path
       fill="currentColor"
       d="M0 2.75C0 1.783.784 1 1.75 1h12.5c.967 0 1.75.783 1.75 1.75v9.5A1.75 1.75 0 0 1 14.25 14H8.061l-2.574 2.573A1.457 1.457 0 0 1 3 15.543V14H1.75A1.75 1.75 0 0 1 0 12.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.189l2.72-2.719a.75.75 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm20.5 6h-3.5a.75.75 0 0 1 0-1.5h3.5c.966 0 1.75.784 1.75 1.75v9.5A1.75 1.75 0 0 1 22.25 20H21v1.543a1.457 1.457 0 0 1-2.487 1.03L15.939 20H10.75A1.75 1.75 0 0 1 9 18.25v-1.465a.75.75 0 0 1 1.5 0v1.465c0 .138.112.25.25.25h5.5c.199 0 .39.079.53.22l2.72 2.719V19.25a.75.75 0 0 1 .75-.75h2a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25m-9.72-3.22l-5 5a.747.747 0 0 1-1.06 0l-2.5-2.5a.749.749 0 1 1 1.06-1.06L7 8.689l4.47-4.469a.749.749 0 1 1 1.06 1.06"
@@ -114,11 +99,11 @@ export const DiscussionIcon = (props: IconSvgProps) => (
 );
 
 export const PlusIcon: React.FC<IconSvgProps> = ({
-                                                   size = 20, // Default size to 24
-                                                   width,
-                                                   height,
-                                                   ...props
-                                                 }) => {
+  size = 20, // Default size to 24
+  width,
+  height,
+  ...props
+}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -135,11 +120,11 @@ export const PlusIcon: React.FC<IconSvgProps> = ({
 };
 
 export const DocumentIcon: React.FC<IconSvgProps> = ({
-                                                       size = 24, // Default size to 24
-                                                       width,
-                                                       height,
-                                                       ...props
-                                                     }) => {
+  size = 24, // Default size to 24
+  width,
+  height,
+  ...props
+}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -160,11 +145,11 @@ export const DocumentIcon: React.FC<IconSvgProps> = ({
   );
 };
 export const VideoIcon: React.FC<IconSvgProps> = ({
-                                                    size = 24,
-                                                    width,
-                                                    height,
-                                                    ...props
-                                                  }) => {
+  size = 24,
+  width,
+  height,
+  ...props
+}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -182,11 +167,11 @@ export const VideoIcon: React.FC<IconSvgProps> = ({
 };
 
 export const DefaultFileIcon: React.FC<IconSvgProps> = ({
-                                                          size = 32, // Default size to 24
-                                                          width,
-                                                          height,
-                                                          ...props
-                                                        }) => {
+  size = 32, // Default size to 24
+  width,
+  height,
+  ...props
+}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -206,11 +191,11 @@ export const DefaultFileIcon: React.FC<IconSvgProps> = ({
 };
 
 export const DeleteIcon: React.FC<IconSvgProps> = ({
-                                                     size = 24, // Default size to 24
-                                                     width,
-                                                     height,
-                                                     ...props
-                                                   }) => {
+  size = 24, // Default size to 24
+  width,
+  height,
+  ...props
+}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -223,18 +208,17 @@ export const DeleteIcon: React.FC<IconSvgProps> = ({
       <path
         fill="currentColor"
         d="M21.499 19.994L32.755 8.727a1.064 1.064 0 0 0-.001-1.502c-.398-.396-1.099-.398-1.501.002L20 18.494L8.743 7.224c-.4-.395-1.101-.393-1.499.002a1.05 1.05 0 0 0-.309.751c0 .284.11.55.309.747L18.5 19.993L7.245 31.263a1.064 1.064 0 0 0 .003 1.503c.193.191.466.301.748.301h.006c.283-.001.556-.112.745-.305L20 21.495l11.257 11.27c.199.198.465.308.747.308a1.058 1.058 0 0 0 1.061-1.061c0-.283-.11-.55-.31-.747z"
-      />
-      {" "}
+      />{" "}
     </svg>
   );
 };
 
 export const ConfigIcon: React.FC<IconSvgProps> = ({
-                                                     size = 24, // Default size to 24
-                                                     width,
-                                                     height,
-                                                     ...props
-                                                   }) => {
+  size = 24, // Default size to 24
+  width,
+  height,
+  ...props
+}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -255,11 +239,11 @@ export const ConfigIcon: React.FC<IconSvgProps> = ({
 };
 
 export const SelectIcon: React.FC<IconSvgProps> = ({
-                                                     size = 20, // Default size to 24
-                                                     width,
-                                                     height,
-                                                     ...props
-                                                   }) => {
+  size = 20, // Default size to 24
+  width,
+  height,
+  ...props
+}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -276,11 +260,11 @@ export const SelectIcon: React.FC<IconSvgProps> = ({
 };
 
 export const DeleteOutlineIcon: React.FC<IconSvgProps> = ({
-                                                            size = 20, // Default size to 24
-                                                            width,
-                                                            height,
-                                                            ...props
-                                                          }) => {
+  size = 20, // Default size to 24
+  width,
+  height,
+  ...props
+}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -297,11 +281,11 @@ export const DeleteOutlineIcon: React.FC<IconSvgProps> = ({
 };
 
 export const StartOutlineIcon: React.FC<IconSvgProps> = ({
-                                                           size = 20, // Default size to 24
-                                                           width,
-                                                           height,
-                                                           ...props
-                                                         }) => {
+  size = 20, // Default size to 24
+  width,
+  height,
+  ...props
+}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -318,11 +302,11 @@ export const StartOutlineIcon: React.FC<IconSvgProps> = ({
 };
 
 export const ArrowForwardIcon: React.FC<IconSvgProps> = ({
-                                                           size = 20,
-                                                           width,
-                                                           height,
-                                                           ...props
-                                                         }) => {
+  size = 20,
+  width,
+  height,
+  ...props
+}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -336,11 +320,11 @@ export const ArrowForwardIcon: React.FC<IconSvgProps> = ({
 };
 
 export const ArrowBackIcon: React.FC<IconSvgProps> = ({
-                                                        size = 20,
-                                                        width,
-                                                        height,
-                                                        ...props
-                                                      }) => {
+  size = 20,
+  width,
+  height,
+  ...props
+}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -354,11 +338,11 @@ export const ArrowBackIcon: React.FC<IconSvgProps> = ({
 };
 
 export const LibraryIcon: React.FC<IconSvgProps> = ({
-                                                      size = 20,
-                                                      width,
-                                                      height,
-                                                      ...props
-                                                    }) => {
+  size = 20,
+  width,
+  height,
+  ...props
+}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -375,11 +359,11 @@ export const LibraryIcon: React.FC<IconSvgProps> = ({
 };
 
 export const SourceFileIcon: React.FC<IconSvgProps> = ({
-                                                         size = 20,
-                                                         width,
-                                                         height,
-                                                         ...props
-                                                       }) => {
+  size = 20,
+  width,
+  height,
+  ...props
+}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -396,16 +380,38 @@ export const SourceFileIcon: React.FC<IconSvgProps> = ({
 };
 
 export function IcTwotonePersonAdd(props: SVGProps<SVGSVGElement>) {
-  return (<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" {...props}>
-    <path fill="currentColor" d="M15 16c-2.69 0-5.77 1.28-6 2h12c-.2-.71-3.3-2-6-2" opacity={0.3}></path>
-    <circle cx={15} cy={8} r={2} fill="currentColor" opacity={0.3}></circle>
-    <path fill="currentColor"
-          d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4s-4 1.79-4 4s1.79 4 4 4m0-6c1.1 0 2 .9 2 2s-.9 2-2 2s-2-.9-2-2s.9-2 2-2m0 8c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4m-6 4c.22-.72 3.31-2 6-2c2.7 0 5.8 1.29 6 2zm-3-3v-3h3v-2H6V7H4v3H1v2h3v3z"></path>
-  </svg>);
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="currentColor"
+        d="M15 16c-2.69 0-5.77 1.28-6 2h12c-.2-.71-3.3-2-6-2"
+        opacity={0.3}
+      ></path>
+      <circle cx={15} cy={8} r={2} fill="currentColor" opacity={0.3}></circle>
+      <path
+        fill="currentColor"
+        d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4s-4 1.79-4 4s1.79 4 4 4m0-6c1.1 0 2 .9 2 2s-.9 2-2 2s-2-.9-2-2s.9-2 2-2m0 8c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4m-6 4c.22-.72 3.31-2 6-2c2.7 0 5.8 1.29 6 2zm-3-3v-3h3v-2H6V7H4v3H1v2h3v3z"
+      ></path>
+    </svg>
+  );
 }
 
 export function IcBaselineArrowBackIosNew(props: SVGProps<SVGSVGElement>) {
-  return (<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" {...props}>
-    <path fill="currentColor" d="M17.77 3.77L16 2L6 12l10 10l1.77-1.77L9.54 12z"></path>
-  </svg>);
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path fill="currentColor" d="M17.77 3.77L16 2L6 12l10 10l1.77-1.77L9.54 12z"></path>
+    </svg>
+  );
 }

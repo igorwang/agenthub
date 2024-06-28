@@ -19,7 +19,6 @@ import {
   useUpdateAgentMutation,
 } from "@/graphql/generated/types";
 
-
 interface Agent {
   id?: string;
   name?: string;

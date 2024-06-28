@@ -1,7 +1,5 @@
 "use client";
-import LibraryCard, {
-  LibraryCardProps,
-} from "@/components/FunctionTab/libaray-card";
+import LibraryCard, { LibraryCardProps } from "@/components/FunctionTab/libaray-card";
 import { ArrowBackIcon, ArrowForwardIcon } from "@/components/ui/icons";
 import { Button } from "@nextui-org/button";
 import { Spacer } from "@nextui-org/react";
@@ -48,10 +46,7 @@ const LibrarySideBar: React.FC<{
       <div className="flex embla max-w-full overflow-hidden " ref={emblaRef}>
         <div className="embla__container flex ">
           {cards.map((item) => (
-            <div
-              key={item.id}
-              className="embla__slide flex shrink-0 basis-full min-w-0"
-            >
+            <div key={item.id} className="embla__slide flex shrink-0 basis-full min-w-0">
               <LibraryCard library={item} />
             </div>
           ))}

@@ -4,10 +4,7 @@ import React, { ReactNode } from "react";
 import { cn } from "@/cn";
 import { MessageSkeleton } from "@/components/Conversation/message-skeleton";
 import { SourceSection } from "@/components/Conversation/source-section";
-import {
-  UploadFile,
-  UploadFileProps,
-} from "@/components/Conversation/upload-file";
+import { UploadFile, UploadFileProps } from "@/components/Conversation/upload-file";
 import MarkdownRenderer from "@/components/MarkdownRender";
 import { CHAT_STATUS_ENUM, SourceType } from "@/types/chatTypes";
 import { Icon } from "@iconify/react";
@@ -70,8 +67,8 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
         : "";
     const failedMessage = (
       <p>
-        Something went wrong, if the issue persists please contact us through
-        our help center at&nbsp;
+        Something went wrong, if the issue persists please contact us through our help
+        center at&nbsp;
         <Link href="mailto:support@acmeai.com" size="sm">
           support@acmeai.com
         </Link>
@@ -89,9 +86,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
         message.forEach((child) => {
           // @ts-ignore
           const childString =
-            typeof child === "string"
-              ? child
-              : child?.props?.children?.toString();
+            typeof child === "string" ? child : child?.props?.children?.toString();
 
           if (childString) {
             stringValue += childString + "\n";
@@ -159,10 +154,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
           isOneChar
           color="danger"
           content={
-            <Icon
-              className="text-background"
-              icon="gravity-ui:circle-exclamation-fill"
-            />
+            <Icon className="text-background" icon="gravity-ui:circle-exclamation-fill" />
           }
           isInvisible={!hasFailed}
           placement="bottom-right"
@@ -187,9 +179,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
           </div>
           <div className="flex flex-row flex-wrap w-full ">
             {files &&
-              files.map((item) => (
-                <UploadFile className="flex shrink" {...item} />
-              ))}
+              files.map((item) => <UploadFile className="flex shrink" {...item} />)}
           </div>
         </div>
       </div>
@@ -208,9 +198,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
             {hasFailed ? (
               failedMessage
             ) : (
-              <MarkdownRenderer
-                content={message?.toString() || ""}
-              ></MarkdownRenderer>
+              <MarkdownRenderer content={message?.toString() || ""}></MarkdownRenderer>
             )}
           </div>
 
@@ -225,15 +213,9 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
                   onPress={handleCopy}
                 >
                   {copied ? (
-                    <Icon
-                      className="text-lg text-default-600"
-                      icon="gravity-ui:check"
-                    />
+                    <Icon className="text-lg text-default-600" icon="gravity-ui:check" />
                   ) : (
-                    <Icon
-                      className="text-lg text-default-600"
-                      icon="gravity-ui:copy"
-                    />
+                    <Icon className="text-lg text-default-600" icon="gravity-ui:copy" />
                   )}
                 </Button>
                 <Button
@@ -280,9 +262,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
               <div className="flex w-full items-center justify-end">
                 <button
                   onClick={() =>
-                    onAttemptChange?.(
-                      currentAttempt > 1 ? currentAttempt - 1 : 1,
-                    )
+                    onAttemptChange?.(currentAttempt > 1 ? currentAttempt - 1 : 1)
                   }
                 >
                   <Icon
@@ -385,11 +365,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
     );
 
     return (
-      <div
-        {...props}
-        ref={ref}
-        className={cn("flex gap-3 max-h-[600px]", className)}
-      >
+      <div {...props} ref={ref} className={cn("flex gap-3 max-h-[600px]", className)}>
         {isUser ? (
           <>
             {userMessageContent}

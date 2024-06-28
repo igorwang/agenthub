@@ -1,9 +1,6 @@
 "use client";
 import { SearchIcon } from "@/components/icons";
-import {
-  Order_By,
-  useGetPromptListSubscription,
-} from "@/graphql/generated/types";
+import { Order_By, useGetPromptListSubscription } from "@/graphql/generated/types";
 import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
@@ -70,9 +67,7 @@ const PromptSearchBar: React.FC<{
         onKeyUp={() => setSelection && setSelection(null)}
         selectorIcon={<SearchIcon />}
       >
-        {(item) => (
-          <AutocompleteItem key={item.id}>{item.name}</AutocompleteItem>
-        )}
+        {(item) => <AutocompleteItem key={item.id}>{item.name}</AutocompleteItem>}
       </Autocomplete>
     </div>
   );
