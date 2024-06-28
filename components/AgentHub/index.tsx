@@ -4,8 +4,8 @@ import { AppDispatch } from "@/lib/store";
 import { Button, Spacer, Tooltip } from "@nextui-org/react";
 import { useDispatch } from "react-redux";
 import SearchBar from "./searchbar";
+import { Icon } from "@iconify/react";
 
-import { IcTwotonePersonAdd } from "@/components/ui/icons";
 import { useCreateOneAgentMutation, useGetAgentListByTypeQuery } from "@/graphql/generated/types";
 import {
   selectChatList,
@@ -66,22 +66,22 @@ const ChatHub = () => {
     }).then(res => {
       agentListQuery.refetch();
       const newAgentId = res?.data?.insert_agent_one?.id;
-      const path = `${newAgentId}/settings`;
+      const path = `/chat/${newAgentId}/settings`;
       router.push(path);
     });
   }
 
   return (
     <div className="hidden sm:flex h-full min-w-[200px]  flex-col border-r-1 border-b-1">
-      <div className="text-3xl font-semibold leading-7 text-default-foreground px-2 pt-4">
-        AgentHub
+      <div className="flex justify-between items-center text-3xl font-semibold leading-7 text-default-foreground px-2 pt-4">
+        <div>AgentHub</div>
         <Tooltip content="Add new agent">
-          <Button isIconOnly color="primary" variant="flat" onClick={() => createAgent()}>
-            <IcTwotonePersonAdd
-              width="1.5em"
-              height="1.5em"
-            />
-          </Button>
+          <Icon
+            className={"cursor-pointer"}
+            onClick={() => createAgent()}
+            icon="material-symbols-light:chat-add-on-outline"
+            width={"1.2em"}
+          />
         </Tooltip>
       </div>
       <Spacer y={4} />

@@ -28,6 +28,18 @@ mutation UpdateAgent(
 
 }
 
+mutation DeleteAgentUserRelation(
+  $agentId:uuid_comparison_exp
+  $userId:uuid_comparison_exp
+){
+  delete_r_agent_user(where: {agent_id: $agentId,user_id: $userId}){
+    returning {
+      id
+    }
+  }
+
+}
+
 fragment AgentItem on agent{
   id
   name
