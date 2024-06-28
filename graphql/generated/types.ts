@@ -2649,6 +2649,7 @@ export type Message = {
   id: Scalars['uuid']['output'];
   role: Message_Role_Enum;
   session_id?: Maybe<Scalars['uuid']['output']>;
+  sources?: Maybe<Scalars['jsonb']['output']>;
   status?: Maybe<Message_Status_Enum>;
   updated_at?: Maybe<Scalars['timestamptz']['output']>;
 };
@@ -2656,6 +2657,12 @@ export type Message = {
 
 /** message */
 export type MessageAttachmentsArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+/** message */
+export type MessageSourcesArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -2684,6 +2691,7 @@ export type Message_Aggregate_FieldsCountArgs = {
 /** append existing jsonb value of filtered columns with new jsonb value */
 export type Message_Append_Input = {
   attachments?: InputMaybe<Scalars['jsonb']['input']>;
+  sources?: InputMaybe<Scalars['jsonb']['input']>;
 };
 
 /** Boolean expression to filter rows from the table "message". All fields are combined with a logical 'AND'. */
@@ -2698,6 +2706,7 @@ export type Message_Bool_Exp = {
   id?: InputMaybe<Uuid_Comparison_Exp>;
   role?: InputMaybe<Message_Role_Enum_Comparison_Exp>;
   session_id?: InputMaybe<Uuid_Comparison_Exp>;
+  sources?: InputMaybe<Jsonb_Comparison_Exp>;
   status?: InputMaybe<Message_Status_Enum_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
@@ -2711,16 +2720,19 @@ export enum Message_Constraint {
 /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 export type Message_Delete_At_Path_Input = {
   attachments?: InputMaybe<Array<Scalars['String']['input']>>;
+  sources?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
 export type Message_Delete_Elem_Input = {
   attachments?: InputMaybe<Scalars['Int']['input']>;
+  sources?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** delete key/value pair or string element. key/value pairs are matched based on their key value */
 export type Message_Delete_Key_Input = {
   attachments?: InputMaybe<Scalars['String']['input']>;
+  sources?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** message_feedback */
@@ -2882,6 +2894,7 @@ export type Message_Insert_Input = {
   id?: InputMaybe<Scalars['uuid']['input']>;
   role?: InputMaybe<Message_Role_Enum>;
   session_id?: InputMaybe<Scalars['uuid']['input']>;
+  sources?: InputMaybe<Scalars['jsonb']['input']>;
   status?: InputMaybe<Message_Status_Enum>;
   updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
 };
@@ -2931,6 +2944,7 @@ export type Message_Order_By = {
   id?: InputMaybe<Order_By>;
   role?: InputMaybe<Order_By>;
   session_id?: InputMaybe<Order_By>;
+  sources?: InputMaybe<Order_By>;
   status?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
@@ -2943,6 +2957,7 @@ export type Message_Pk_Columns_Input = {
 /** prepend existing jsonb value of filtered columns with new jsonb value */
 export type Message_Prepend_Input = {
   attachments?: InputMaybe<Scalars['jsonb']['input']>;
+  sources?: InputMaybe<Scalars['jsonb']['input']>;
 };
 
 /** message_role */
@@ -3114,6 +3129,8 @@ export enum Message_Select_Column {
   /** column name */
   SessionId = 'session_id',
   /** column name */
+  Sources = 'sources',
+  /** column name */
   Status = 'status',
   /** column name */
   UpdatedAt = 'updated_at'
@@ -3128,6 +3145,7 @@ export type Message_Set_Input = {
   id?: InputMaybe<Scalars['uuid']['input']>;
   role?: InputMaybe<Message_Role_Enum>;
   session_id?: InputMaybe<Scalars['uuid']['input']>;
+  sources?: InputMaybe<Scalars['jsonb']['input']>;
   status?: InputMaybe<Message_Status_Enum>;
   updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
 };
@@ -3299,6 +3317,7 @@ export type Message_Stream_Cursor_Value_Input = {
   id?: InputMaybe<Scalars['uuid']['input']>;
   role?: InputMaybe<Message_Role_Enum>;
   session_id?: InputMaybe<Scalars['uuid']['input']>;
+  sources?: InputMaybe<Scalars['jsonb']['input']>;
   status?: InputMaybe<Message_Status_Enum>;
   updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
 };
@@ -3319,6 +3338,8 @@ export enum Message_Update_Column {
   Role = 'role',
   /** column name */
   SessionId = 'session_id',
+  /** column name */
+  Sources = 'sources',
   /** column name */
   Status = 'status',
   /** column name */
@@ -10058,6 +10079,14 @@ export type CreateMessageAndUpdateTopicHistoryMutationVariables = Exact<{
 
 export type CreateMessageAndUpdateTopicHistoryMutation = { __typename?: 'mutation_root', insert_message?: { __typename?: 'message_mutation_response', returning: Array<{ __typename?: 'message', id: any }> } | null, update_topic_history_by_pk?: { __typename?: 'topic_history', updated_at: any } | null };
 
+export type CreateNewMessageMutationVariables = Exact<{
+  object?: InputMaybe<Message_Insert_Input>;
+  session_id?: InputMaybe<Scalars['uuid']['input']>;
+}>;
+
+
+export type CreateNewMessageMutation = { __typename?: 'mutation_root', insert_message_one?: { __typename?: 'message', id: any } | null, update_topic_history_by_pk?: { __typename?: 'topic_history', updated_at: any } | null };
+
 export type CreateNewPromptMutationVariables = Exact<{
   object?: InputMaybe<Prompt_Hub_Insert_Input>;
 }>;
@@ -10318,6 +10347,46 @@ export function useCreateMessageAndUpdateTopicHistoryMutation(baseOptions?: Apol
 export type CreateMessageAndUpdateTopicHistoryMutationHookResult = ReturnType<typeof useCreateMessageAndUpdateTopicHistoryMutation>;
 export type CreateMessageAndUpdateTopicHistoryMutationResult = Apollo.MutationResult<CreateMessageAndUpdateTopicHistoryMutation>;
 export type CreateMessageAndUpdateTopicHistoryMutationOptions = Apollo.BaseMutationOptions<CreateMessageAndUpdateTopicHistoryMutation, CreateMessageAndUpdateTopicHistoryMutationVariables>;
+export const CreateNewMessageDocument = gql`
+    mutation CreateNewMessage($object: message_insert_input = {}, $session_id: uuid = "") {
+  insert_message_one(object: $object) {
+    id
+  }
+  update_topic_history_by_pk(
+    pk_columns: {id: $session_id}
+    _set: {updated_at: "now()"}
+  ) {
+    updated_at
+  }
+}
+    `;
+export type CreateNewMessageMutationFn = Apollo.MutationFunction<CreateNewMessageMutation, CreateNewMessageMutationVariables>;
+
+/**
+ * __useCreateNewMessageMutation__
+ *
+ * To run a mutation, you first call `useCreateNewMessageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateNewMessageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createNewMessageMutation, { data, loading, error }] = useCreateNewMessageMutation({
+ *   variables: {
+ *      object: // value for 'object'
+ *      session_id: // value for 'session_id'
+ *   },
+ * });
+ */
+export function useCreateNewMessageMutation(baseOptions?: Apollo.MutationHookOptions<CreateNewMessageMutation, CreateNewMessageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateNewMessageMutation, CreateNewMessageMutationVariables>(CreateNewMessageDocument, options);
+      }
+export type CreateNewMessageMutationHookResult = ReturnType<typeof useCreateNewMessageMutation>;
+export type CreateNewMessageMutationResult = Apollo.MutationResult<CreateNewMessageMutation>;
+export type CreateNewMessageMutationOptions = Apollo.BaseMutationOptions<CreateNewMessageMutation, CreateNewMessageMutationVariables>;
 export const CreateNewPromptDocument = gql`
     mutation CreateNewPrompt($object: prompt_hub_insert_input = {}) {
   insert_prompt_hub_one(object: $object) {

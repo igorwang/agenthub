@@ -3048,6 +3048,10 @@ type message {
   id: uuid!
   role: message_role_enum!
   session_id: uuid
+  sources(
+    """JSON select path"""
+    path: String
+  ): jsonb
   status: message_status_enum
   updated_at: timestamptz
 }
@@ -3072,6 +3076,7 @@ type message_aggregate_fields {
 """append existing jsonb value of filtered columns with new jsonb value"""
 input message_append_input {
   attachments: jsonb
+  sources: jsonb
 }
 
 """
@@ -3088,6 +3093,7 @@ input message_bool_exp {
   id: uuid_comparison_exp
   role: message_role_enum_comparison_exp
   session_id: uuid_comparison_exp
+  sources: jsonb_comparison_exp
   status: message_status_enum_comparison_exp
   updated_at: timestamptz_comparison_exp
 }
@@ -3107,6 +3113,7 @@ delete the field or element with specified path (for JSON arrays, negative integ
 """
 input message_delete_at_path_input {
   attachments: [String!]
+  sources: [String!]
 }
 
 """
@@ -3114,6 +3121,7 @@ delete the array element with specified index (negative integers count from the 
 """
 input message_delete_elem_input {
   attachments: Int
+  sources: Int
 }
 
 """
@@ -3121,6 +3129,7 @@ delete key/value pair or string element. key/value pairs are matched based on th
 """
 input message_delete_key_input {
   attachments: String
+  sources: String
 }
 
 """message_feedback"""
@@ -3303,6 +3312,7 @@ input message_insert_input {
   id: uuid
   role: message_role_enum
   session_id: uuid
+  sources: jsonb
   status: message_status_enum
   updated_at: timestamptz
 }
@@ -3354,6 +3364,7 @@ input message_order_by {
   id: order_by
   role: order_by
   session_id: order_by
+  sources: order_by
   status: order_by
   updated_at: order_by
 }
@@ -3366,6 +3377,7 @@ input message_pk_columns_input {
 """prepend existing jsonb value of filtered columns with new jsonb value"""
 input message_prepend_input {
   attachments: jsonb
+  sources: jsonb
 }
 
 """message_role"""
@@ -3566,6 +3578,9 @@ enum message_select_column {
   session_id
 
   """column name"""
+  sources
+
+  """column name"""
   status
 
   """column name"""
@@ -3583,6 +3598,7 @@ input message_set_input {
   id: uuid
   role: message_role_enum
   session_id: uuid
+  sources: jsonb
   status: message_status_enum
   updated_at: timestamptz
 }
@@ -3776,6 +3792,7 @@ input message_stream_cursor_value_input {
   id: uuid
   role: message_role_enum
   session_id: uuid
+  sources: jsonb
   status: message_status_enum
   updated_at: timestamptz
 }
@@ -3804,6 +3821,9 @@ enum message_update_column {
 
   """column name"""
   session_id
+
+  """column name"""
+  sources
 
   """column name"""
   status

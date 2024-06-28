@@ -37,13 +37,13 @@ export const queryAnalyzer = async (
       "user",
       "Ensure the output language is consistent with the input language",
     ],
-    ["user", `HisotryQuestions: ${histryContext}`],
+    // ["user", `HisotryQuestions: ${histryContext}`],
     ["user", `Input: ${latestQuestion}`],
   ]);
 
   const formattedPrompt = await promptTemplate.format({});
 
-  const defaultModel = "mistralai/Mixtral-8x22B-Instruct-v0.1";
+  const defaultModel = "meta-llama/Meta-Llama-3-8B-Instruct";
   const selectedModel = model || defaultModel;
   const response = await fetch("/api/chat", {
     method: "POST",

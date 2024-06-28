@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import FeatureCards from "@/components/Conversation/feature-cards";
 import { PromptTemplateType } from "@/components/PromptFrom";
 import {
+  Message_Role_Enum,
   useGetAgentByIdQuery,
   useGetMessageListSubscription,
 } from "@/graphql/generated/types";
@@ -107,16 +108,25 @@ type MessageWindowProps = {
   isChating?: boolean;
   chatMode?: CHAT_MODE;
   handleChatingStatus?: (stauts: boolean) => void;
+  handleCreateNewMessage?: (params: {
+    content: string;
+    session_id: string;
+    role: Message_Role_Enum;
+    attachments?: any;
+    sources?: any;
+  }) => void;
 };
 
 export default function MessageWindow({
   isChating,
   chatMode,
   handleChatingStatus,
+  handleCreateNewMessage,
 }: MessageWindowProps) {
   const dispatch: AppDispatch = useDispatch();
   const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
+
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [agent, setAgent] = useState<AgentProps>();
   const [refineQuery, setRefineQuery] = useState<string | null>(null);
@@ -125,7 +135,6 @@ export default function MessageWindow({
     useState<PromptTemplateType[]>();
   const [streamingMessage, setStreamingMessage] = useState<string | null>(null);
   const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
-  const lastMessagesRef = useRef(messages);
 
   const session = useSession();
   const user_id = session.data?.user?.id;
@@ -146,6 +155,14 @@ export default function MessageWindow({
     },
     skip: !agent_id,
   });
+
+  useEffect(()=>{
+    setRefineQuery(null)
+    setSearchResults(null)
+    setStreamingMessage(null)
+    setChatStatus(null)
+  },[selectedChatId, selectedSessionId,isChating])
+
   useEffect(() => {
     if (agentData) {
       setAgent({
@@ -194,17 +211,13 @@ export default function MessageWindow({
 
   useEffect(() => {
     if (isChating && messages.length > 0) {
-      console.log("lastMessage", messages[messages.length - 1]);
-
       setChatStatus(CHAT_STATUS_ENUM.Analyzing);
       const fetchRefineQuery = async () => {
         try {
           console.log(messages);
           const result = await queryAnalyzer(messages);
-          console.log("queryAnalyzer", refineQuery, result);
 
           setRefineQuery(result.content);
-          console.log("queryAnalyzer", refineQuery);
 
           console.log(result.content);
         } catch (error) {
@@ -213,14 +226,12 @@ export default function MessageWindow({
         }
       };
       fetchRefineQuery();
-      console.log("refineQuery", refineQuery, "这里结束了吗");
     }
   }, [messages]);
 
   useEffect(() => {
-    if (refineQuery && isChating && chatStatus == CHAT_STATUS_ENUM.Searching) {
+    if (isChating && refineQuery != null && chatStatus == CHAT_STATUS_ENUM.Analyzing) {
       setChatStatus(CHAT_STATUS_ENUM.Searching);
-      console.log("refineQuery", refineQuery);
       const searchLibrary = async () => {
         try {
           const result = await librarySearcher(
@@ -252,10 +263,9 @@ export default function MessageWindow({
 
   useEffect(() => {
     if (
-      refineQuery &&
-      searchResults &&
       isChating &&
-      chatStatus == CHAT_STATUS_ENUM.Generating
+      searchResults != null &&
+      chatStatus == CHAT_STATUS_ENUM.Searching
     ) {
       setChatStatus(CHAT_STATUS_ENUM.Generating);
       console.log("searchResults", searchResults);
@@ -264,11 +274,11 @@ export default function MessageWindow({
           promptTemplates || DEFAULT_TEMPLATES,
           messages,
           searchResults || [],
-          refineQuery,
+          refineQuery || "",
           {},
           4096,
         );
-
+        let answer = ''
         // call llm
         try {
           // Fetch the streaming data from the API
@@ -297,6 +307,7 @@ export default function MessageWindow({
             }
             // Decode the chunk and update the message state
             const chunk = decoder.decode(value, { stream: true });
+            answer += chunk
             setStreamingMessage(
               (prevMessage) => (prevMessage != null ? prevMessage : "") + chunk,
             );
@@ -309,17 +320,19 @@ export default function MessageWindow({
         } catch (error) {
           console.error("Error while streaming:", error);
         }
+        // save results
+        handleCreateNewMessage?.({
+          content: answer,
+          session_id: selectedSessionId || "",
+          role: Message_Role_Enum.Assistant,
+          sources: searchResults 
+        });
+        handleChatingStatus?.(false);
       };
       generateAnswer();
-      console.log(streamingMessage);
-      // reset state
-      // setSearchResults(null);
-      // setStreamingMessage(null);
-      // setRefineQuery(null);
-      handleChatingStatus?.(false);
     }
   }, [searchResults]);
-
+  
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -378,7 +391,7 @@ export default function MessageWindow({
             files={files}
           />
         ))}
-        {/* {isChating && (
+        {isChating && (
           <MessageCard
             aria-label="streaming card"
             avatar={agentAvatarElement}
@@ -387,15 +400,15 @@ export default function MessageWindow({
             chatStatus={chatStatus}
             sourceResults={searchResults || []}
           />
-        )} */}
-        <MessageCard
+        )}
+        {/* <MessageCard
           aria-label="streaming card"
           avatar={agentAvatarElement}
           message={streamingMessage || ""}
           messageClassName={""}
           chatStatus={chatStatus}
           sourceResults={searchResults || []}
-        />
+        /> */}
       </div>
     </ScrollShadow>
   );

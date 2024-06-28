@@ -70,8 +70,6 @@ export async function createPrompt(
   const leftTokenCount = tokenLimit - fixTokenCount - 300;
 
   let promptFromContext = "";
-  console.log("leftTokenCount", leftTokenCount);
-  console.log("contextString", contextString);
 
   if (contextString && leftTokenCount > 0) {
     const textSplitter = new TokenTextSplitter({
@@ -96,8 +94,5 @@ export async function createPrompt(
 
   const promptFromQuery = `${latestMessages[0]}:${latestMessages[1]}`;
   const prompt = `${promptFromTemplate}\n${promptFromContext}\n${promptFromQuery}`;
-
-  console.log("prompt", prompt);
-
   return prompt;
 }
