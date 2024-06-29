@@ -3,6 +3,11 @@
   "trailingComma": "all",
   "semi": true,
   "tabWidth": 2,
+  "singleQuote": false,
   "endOfLine": "auto",
-  "plugins": ["prettier-plugin-tailwindcss", "prettier-plugin-organize-imports"]
+  "jsxBracketSameLine": true,
+  "plugins": [
+    "prettier-plugin-organize-imports",
+    "prettier-plugin-tailwindcss"
+  ]
 }
