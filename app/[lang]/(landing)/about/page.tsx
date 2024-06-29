@@ -6,9 +6,9 @@ export default function AboutPage() {
     avatar: "https://d2u8k2ocievbld.cloudfront.net/memojis/female/3.png",
   };
   return (
-    <div className="flex flex-row h-screen">
-      <div className="flex flex-col bg-red-400 mr-4 w-80 h-full">left</div>
-      <div className="flex flex-col flex-grow overflow-hidden"></div>
+    <div className="flex h-screen flex-row">
+      <div className="mr-4 flex h-full w-80 flex-col bg-red-400">left</div>
+      <div className="flex flex-grow flex-col overflow-hidden"></div>
     </div>
   );
 }

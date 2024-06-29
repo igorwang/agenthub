@@ -1,12 +1,6 @@
 {
-  "extends": [
-    "next/core-web-vitals",
-    "prettier",
-    "plugin:prettier/recommended"
-  ],
-  "plugins": [
-    "graphql"
-  ],
+  "extends": ["next/core-web-vitals", "prettier", "plugin:prettier/recommended"],
+  "plugins": ["graphql"],
   "rules": {
     "graphql/template-strings": [
       "error",

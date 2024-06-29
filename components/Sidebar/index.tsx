@@ -11,12 +11,12 @@ import { sectionItems } from "./sidebar-items";
 
 export default function SideBar() {
   return (
-    <div className="hidden sm:flex relative h-full w-14 flex-col items-center border-r-small border-divider px-2 py-4">
+    <div className="relative hidden h-full w-14 flex-col items-center border-r-small border-divider px-2 py-4 sm:flex">
       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-foreground">
         <AcmeLogo className="text-background" />
       </div>
       <Spacer y={4} />
-      <ScrollShadow className="-mr-2 h-full max-h-full py-2 pr-2 flex flex-col justify-between">
+      <ScrollShadow className="-mr-2 flex h-full max-h-full flex-col justify-between py-2 pr-2">
         <div>
           <div className="flex flex-col items-center gap-4">
             <Avatar
@@ -47,7 +47,7 @@ export default function SideBar() {
               variant="light"
             >
               <Icon
-                className="text-default-500 "
+                className="text-default-500"
                 icon="solar:info-circle-line-duotone"
                 width={24}
               />

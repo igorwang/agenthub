@@ -97,12 +97,12 @@ export const Conversation: React.FC<ConversationProps> = ({
   }
 
   const headerElement = (
-    <div className="relative flex flex-wrap items-center justify-center gap-2 border-b-small border-divider py-1 px-2 sm:justify-between">
+    <div className="relative flex flex-wrap items-center justify-center gap-2 border-b-small border-divider px-2 py-1 sm:justify-between">
       <div className="flex flex-row items-center">
         {agent.avatar ? (
           <Avatar
             alt={agent.name}
-            className="flex-shrink-0 "
+            className="flex-shrink-0"
             size="md"
             src={agent.avatar || ""}
           />
@@ -116,8 +116,8 @@ export const Conversation: React.FC<ConversationProps> = ({
           />
         )}
         <div className="pl-2">
-          <div className="flex flex-row items-center ">
-            <p className="text-3xl font-medium pr-2">{agent.name}</p>
+          <div className="flex flex-row items-center">
+            <p className="pr-2 text-3xl font-medium">{agent.name}</p>
             <Button
               isIconOnly={true}
               startContent={<ConfigIcon size={28} />}
@@ -126,7 +126,7 @@ export const Conversation: React.FC<ConversationProps> = ({
             ></Button>
           </div>
           <Tooltip content={agent.description}>
-            <p className="text-sm font-light overflow-hidden text-nowrap text-ellipsis max-w-sm">
+            <p className="max-w-sm overflow-hidden text-ellipsis text-nowrap text-sm font-light">
               {agent.description}
             </p>
           </Tooltip>
@@ -145,26 +145,26 @@ export const Conversation: React.FC<ConversationProps> = ({
   );
 
   return (
-    <div className="flex flex-col h-full w-full max-w-full overflow-auto">
+    <div className="flex h-full w-full max-w-full flex-col overflow-auto">
       {headerElement}
-      <div className="flex flex-row flex-grow max-w-full overflow-auto">
-        <div className="flex flex-col flex-grow  pt-2 max-w-full overflow-auto items-end">
+      <div className="flex max-w-full flex-grow flex-row overflow-auto">
+        <div className="flex max-w-full flex-grow flex-col items-end overflow-auto pt-2">
           <MessageWindow
             isChating={isChating}
             handleChatingStatus={setIsChating}
             handleCreateNewMessage={handleCreateNewMessage}
           />
-          <div className="flex flex-col w-full max-w-full">
+          <div className="flex w-full max-w-full flex-col">
             <PromptInputWithFaq
               isChating={isChating}
               handleChatingStatus={setIsChating}
             ></PromptInputWithFaq>
-            <p className="px-2 text-tiny text-default-400 ">
+            <p className="px-2 text-tiny text-default-400">
               AI can also make mistakes. Please verify important information.
             </p>
           </div>
         </div>
-        <div className="hidden md:flex w-80 max-w-100 m-2 border-2 rounded-lg">
+        <div className="max-w-100 m-2 hidden w-80 rounded-lg border-2 md:flex">
           <FunctionTab agentId={agentId}></FunctionTab>
         </div>
       </div>

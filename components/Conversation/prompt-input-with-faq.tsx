@@ -222,7 +222,7 @@ export default function PromptInputWithFaq({
   );
 
   return (
-    <div className="flex flex-col w-full  p-2 gap-4 items-center max-w-full overflow-auto">
+    <div className="flex w-full max-w-full flex-col items-center gap-4 overflow-auto p-2">
       {/* <ScrollShadow
         hideScrollBar
         className="flex flex-nowrap gap-2 max-w-full overflow-auto"
@@ -241,9 +241,9 @@ export default function PromptInputWithFaq({
           ))}
         </div>
       </ScrollShadow> */}
-      <form className="flex flex-col w-full items-start rounded-medium bg-default-100 transition-colors hover:bg-default-200/70">
+      <form className="flex w-full flex-col items-start rounded-medium bg-default-100 transition-colors hover:bg-default-200/70">
         <ScrollShadow
-          className="flex flex-row flex-nowrap gap-2 w-full"
+          className="flex w-full flex-row flex-nowrap gap-2"
           orientation="horizontal"
         >
           {uploadFileListElement}
@@ -266,7 +266,7 @@ export default function PromptInputWithFaq({
           variant="flat"
           onValueChange={setPrompt}
         />
-        <div className="flex items-center justify-between  gap-2 overflow-scroll px-4 pb-4">
+        <div className="flex items-center justify-between gap-2 overflow-scroll px-4 pb-4">
           <div className="flex gap-1 md:gap-3">
             <input
               type="file"

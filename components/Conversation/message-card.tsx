@@ -144,11 +144,11 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
 
     if (chatStatus != null && chatStatus != CHAT_STATUS_ENUM.Generating) {
       return (
-        <div className="flex flex-row w-full">
+        <div className="flex w-full flex-row">
           {avatar}
           <Spacer x={4}></Spacer>
-          <div className="flex flex-col w-full mr-10 items-start gap-1">
-            <div className="flex flex-row justify-center gap-1 items-center">
+          <div className="mr-10 flex w-full flex-col items-start gap-1">
+            <div className="flex flex-row items-center justify-center gap-1">
               <Spinner size="md"></Spinner>
               <h4 className="text-slate-400">{getTipString(chatStatus)}</h4>
             </div>
@@ -176,7 +176,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
     );
 
     const userMessageContent = (
-      <div className="flex w-full flex-col gap-2 ml-14">
+      <div className="ml-14 flex w-full flex-col gap-2">
         <div
           className={cn(
             "relative w-full rounded-medium px-4 py-2 text-default-800",
@@ -184,10 +184,10 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
             messageClassName,
           )}
         >
-          <div ref={messageRef} className={"px-1 text-medium flex justify-end"}>
+          <div ref={messageRef} className={"flex justify-end px-1 text-medium"}>
             {hasFailed ? failedMessage : message}
           </div>
-          <div className="flex flex-row flex-wrap w-full ">
+          <div className="flex w-full flex-row flex-wrap">
             {files &&
               files.map((item) => <UploadFile className="flex shrink" {...item} />)}
           </div>
@@ -196,28 +196,28 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
     );
 
     const aiMessageContent = (
-      <div className="flex flex-grow w-full flex-col gap-4 mr-14">
+      <div className="mr-14 flex w-full flex-grow flex-col gap-4">
         <div
           className={cn(
-            "relative flex-grow  w-full rounded-medium bg-content2 px-4 py-1 text-default-600",
+            "relative w-full flex-grow rounded-medium bg-content2 px-4 py-1 text-default-600",
             failedMessageClassName,
             messageClassName,
           )}
         >
-          <div ref={messageRef} className={"px-1 text-medium min-h-8"}>
+          <div ref={messageRef} className={"min-h-8 px-1 text-medium"}>
             {hasFailed ? (
               failedMessage
             ) : (
-              <div className="gap-3 mr-10">
+              <div className="mr-10 gap-3">
                 {sourceResults && sourceResults.length > 0 && (
                   <SourceSection title="Sources" items={sourceResults} />
                 )}
                 <Spacer x={2} />
-                <div className="flex flex-row items-center justify-start gap-1 p-1 ">
+                <div className="flex flex-row items-center justify-start gap-1 p-1">
                   <Icon className="text-lg text-default-600" icon="mdi:idea" />
                   <span className="text-slate-500">Answer:</span>
                 </div>
-                <div className={clsx("flex flex-col w-full max-w-full overflow-hidden")}>
+                <div className={clsx("flex max-w-full flex-col overflow-hidden")}>
                   <MarkdownRenderer
                     content={message?.toString() || ""}
                   ></MarkdownRenderer>
@@ -226,9 +226,9 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
             )}
           </div>
 
-          <div className="flex flex-row justify-between items-center">
+          <div className="flex flex-row items-center justify-between">
             {showFeedback && !hasFailed && (
-              <div className="flex ">
+              <div className="flex">
                 <Button
                   isIconOnly
                   radius="full"

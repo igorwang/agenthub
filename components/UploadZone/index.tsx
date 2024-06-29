@@ -142,9 +142,9 @@ export default function UploadZone({ knowledgeBaseId }: UploadZoneProps) {
   };
 
   return (
-    <div className="flex flex-col items-end w-full p-2 h-full overflow-auto">
+    <div className="flex h-full w-full flex-col items-end overflow-auto p-2">
       <Dropzone
-        className="max-h-full min-h-0 h-full flex-1"
+        className="h-full max-h-full min-h-0 flex-1"
         onChange={updateFiles}
         value={files}
         accept=".doc,.docx,.pdf,.ppt,.pptx,.xls,.xlsx,.txt"
@@ -169,7 +169,7 @@ export default function UploadZone({ knowledgeBaseId }: UploadZoneProps) {
       </Dropzone>
       <div className="justify-self-end">
         <Button
-          className="mt-2 mr-2"
+          className="mr-2 mt-2"
           size="md"
           variant="solid"
           color="primary"

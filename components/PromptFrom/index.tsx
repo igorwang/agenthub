@@ -409,10 +409,10 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
     ));
 
     return (
-      <div className="flex flex-col h-full w-full max-w-full">
+      <div className="flex h-full w-full max-w-full flex-col">
         <div className="flex flex-row p-2">
-          <div className="flex flex-row flex-grow gap-2 pr-2 items-center">
-            <div className=" flex font-bold gap-2 flex-shrink-0  text-xl sm:text-3xl">
+          <div className="flex flex-grow flex-row items-center gap-2 pr-2">
+            <div className="flex flex-shrink-0 gap-2 text-xl font-bold sm:text-3xl">
               Playground
             </div>
             {isEditing ? (
@@ -428,7 +428,7 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
               <PromptSearchBar handleChangePrompt={handleChangePrompt}></PromptSearchBar>
             )}
           </div>
-          <div className="flex flex-row  gap-2">
+          <div className="flex flex-row gap-2">
             {!isEditing && (
               <Button color="primary" onClick={handleAddPrompt}>
                 New
@@ -445,12 +445,12 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
             )}
           </div>
         </div>
-        <div className="flex flex-row p-2 gap-4">
-          <div className="w-1/2 flex flex-col gap-2 justify-start items-start h-full">
+        <div className="flex flex-row gap-4 p-2">
+          <div className="flex h-full w-1/2 flex-col items-start justify-start gap-2">
             <span className="text-1xl font-bold">Template</span>
             {templatesElement}
             <Button
-              className="bg-white p-2 gap-1 m-2"
+              className="m-2 gap-1 bg-white p-2"
               size="sm"
               variant="ghost"
               isDisabled={!isEditing}
@@ -460,7 +460,7 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
               Message
             </Button>
           </div>
-          <div className="w-1/2 flex flex-col gap-2 justify-start">
+          <div className="flex w-1/2 flex-col justify-start gap-2">
             <span className="text-xl font-bold">Inputs</span>
             <PromptVariablesInput
               ref={variableInputRef}
@@ -469,17 +469,17 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
               setVariableInputs={handelVariableInputChange}
             ></PromptVariablesInput>
             <div className="text-xl font-bold">Output</div>
-            <div className="flex flex-col h-full relative  items-baseline border-2 gap-2 p-2">
-              <div className="flex flex-col w-full">
+            <div className="relative flex h-full flex-col items-baseline gap-2 border-2 p-2">
+              <div className="flex w-full flex-col">
                 <ModelSelect onSelectionChange={setSelectedModel}></ModelSelect>
               </div>
-              <div className="w-full overflow-scroll max-h-[600px] pb-8">
+              <div className="max-h-[600px] w-full overflow-scroll pb-8">
                 {message && "Assistant:"}
                 <></>
                 <MarkdownRenderer content={message}></MarkdownRenderer>
               </div>
               <Button
-                className="absolute right-1 bottom-1"
+                className="absolute bottom-1 right-1"
                 color={isChating || selectedModel.length === 0 ? "default" : "primary"}
                 startContent={<StartOutlineIcon size={28} />}
                 isDisabled={isChating || selectedModel.length === 0}

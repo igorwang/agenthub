@@ -369,10 +369,10 @@ export default function MessageWindow({
   return (
     <ScrollShadow
       ref={scrollRef}
-      className="flex flex-grow flex-col gap-6 pb-8 w-full"
+      className="flex w-full flex-grow flex-col gap-6 pb-8"
       hideScrollBar={true}
     >
-      <div className="flex flex-1 flex-grow flex-col px-1 gap-1 " ref={ref}>
+      <div className="flex flex-1 flex-grow flex-col gap-1 px-1" ref={ref}>
         {messages.length === 0 && featureContent}
         {messages.map(({ role, message, files, sources }, index) => (
           <MessageCard

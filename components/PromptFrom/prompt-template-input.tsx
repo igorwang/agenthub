@@ -103,7 +103,7 @@ const PromptTemplateInput = React.forwardRef<
           ref={refTextarea}
           variant={dragging || isDisabled ? "faded" : "bordered"}
           placeholder="Enter your template"
-          className={clsx("relative col-span-12 md:col-span-6 mb-2 md:mb-0 ", {
+          className={clsx("relative col-span-12 mb-2 md:col-span-6 md:mb-0", {
             // "bg-slate-200": dragging,
           })}
           disabled={dragging || isDisabled}
@@ -115,7 +115,7 @@ const PromptTemplateInput = React.forwardRef<
             <Button
               isIconOnly
               variant="light"
-              className="data-[hover=true]:bg-transparent absolute top-0 right-0 group-hover:block hidden hover:cursor-pointer"
+              className="absolute right-0 top-0 hidden hover:cursor-pointer group-hover:block data-[hover=true]:bg-transparent"
               onClick={() => handleDeleteMessage && handleDeleteMessage(template.id)}
               startContent={<DeleteOutlineIcon />}
             ></Button>
@@ -129,9 +129,9 @@ const PromptTemplateInput = React.forwardRef<
                   size="sm"
                   // disableAnimation
                   disableRipple
-                  className="flex items-center justify-start p-0  max-w-full data-[hover=true]:bg-transparent" // 使用 space-x-1 来添加文字和图标之间的间距
+                  className="flex max-w-full items-center justify-start p-0 data-[hover=true]:bg-transparent" // 使用 space-x-1 来添加文字和图标之间的间距
                 >
-                  <div className="flex flex-row justify-center items-center text-slate-400 text-medium">
+                  <div className="flex flex-row items-center justify-center text-medium text-slate-400">
                     {template.role}
                     {<SelectIcon></SelectIcon>}
                   </div>

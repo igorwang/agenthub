@@ -80,7 +80,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
       <DropdownTrigger>
         <Button
           isIconOnly
-          className="max-h-full absolute right-1 top-0.5 "
+          className="absolute right-1 top-0.5 max-h-full"
           variant="light"
           startContent={<OcticonKebabHorizontalIcon />}
         ></Button>
@@ -112,7 +112,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
     );
   });
   return (
-    <div className=" flex flex-col">
+    <div className="flex flex-col">
       {historyItems && (
         <Listbox
           aria-label="TopicHistory"

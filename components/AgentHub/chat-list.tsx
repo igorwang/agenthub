@@ -82,8 +82,8 @@ export const ChatList: React.FC<{ groupedChatList: GroupedChatListDTO[] }> = ({
   const chatListContent = groupedChatList.map((group) => (
     <div className="flex flex-col" key={group.id}>
       {group.name && group.name != "system" && (
-        <div className="flex flex-row justify-between px-2 py-2 items-center hover:bg-slate-200 bg-slate-100 h-12">
-          <div className="text-sm text-nowrap text-ellipsis overflow-hidden">
+        <div className="flex h-12 flex-row items-center justify-between bg-slate-100 px-2 py-2 hover:bg-slate-200">
+          <div className="overflow-hidden text-ellipsis text-nowrap text-sm">
             {group.name}
           </div>
           <div className="flex flex-row items-center">
@@ -122,7 +122,7 @@ export const ChatList: React.FC<{ groupedChatList: GroupedChatListDTO[] }> = ({
               onMouseLeave={() => handleMouseLeave()}
             >
               <div className={"flex justify-between"}>
-                <div className="flex gap-2 items-center">
+                <div className="flex items-center gap-2">
                   <Avatar
                     alt={item.name}
                     className="flex-shrink-0"
@@ -135,7 +135,7 @@ export const ChatList: React.FC<{ groupedChatList: GroupedChatListDTO[] }> = ({
                   <div className="flex flex-col">
                     <span className="text-small">{item.name}</span>
                     {/* <Tooltip content={item.description}> */}
-                    <span className="text-tiny text-default-400 text-nowrap max-w-[120px] truncate">
+                    <span className="max-w-[120px] truncate text-nowrap text-tiny text-default-400">
                       {item.description}
                     </span>
                     {/* </Tooltip> */}
@@ -175,7 +175,7 @@ export const ChatList: React.FC<{ groupedChatList: GroupedChatListDTO[] }> = ({
     );
   }
   return (
-    <ScrollShadow className="-mr-2 h-full max-h-full py-2 pr-2 flex flex-col justify-between">
+    <ScrollShadow className="-mr-2 flex h-full max-h-full flex-col justify-between py-2 pr-2">
       {_renderModal()}
       <div>{chatListContent}</div>
     </ScrollShadow>

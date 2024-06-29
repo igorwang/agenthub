@@ -105,11 +105,11 @@ export default function FunctionTab({ agentId }: FunctionTabProps) {
   );
 
   return (
-    <div className="flex flex-col w-full h-full pt-2 overflow-auto">
+    <div className="flex h-full w-full flex-col overflow-auto pt-2">
       <Tabs aria-label="Options" variant="light" className="flex flex-col">
         <Tab
           key="topic"
-          className="w-full flex flex-col h-full overflow-auto"
+          className="flex h-full w-full flex-col overflow-auto"
           title={
             <div className="flex items-center space-x-2">
               <span>Topic</span>
@@ -117,21 +117,21 @@ export default function FunctionTab({ agentId }: FunctionTabProps) {
           }
         >
           <Button
-            className="flex w-full bg-white max-h-16 hover:bg-slate-100"
+            className="flex max-h-16 w-full bg-white hover:bg-slate-100"
             endContent={<PlusIcon />}
             onClick={() => handleAddTopic({ agent_id: agentId, user_id: userId })}
             disabled={!userId}
           >
             New Topic
           </Button>
-          <ScrollShadow className="flex flex-grow flex-col gap-6 pb-8 max-h-full min-h-10 ">
+          <ScrollShadow className="flex max-h-full min-h-10 flex-grow flex-col gap-6 pb-8">
             {agentId && <TopicHistory agent_id={agentId} />}
           </ScrollShadow>
         </Tab>
         <Tab
           key="library"
           title={
-            <div className="w-full flex flex-col h-full overflow-auto">
+            <div className="flex h-full w-full flex-col overflow-auto">
               {/* <BookIcon /> */}
               <span>Library</span>
             </div>

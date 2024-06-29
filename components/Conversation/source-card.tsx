@@ -36,11 +36,11 @@ export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) =
   };
 
   return (
-    <Card className="basis-1/2 sm:basis-1/4 bg-gray-200 shadow-sm pr-1">
+    <Card className="basis-1/2 bg-gray-200 pr-1 shadow-sm sm:basis-1/4">
       <CardHeader className="justify-between px-1 py-0">
         <div className="flex flex-row">
           <div className="flex flex-col items-start justify-center">
-            <h4 className="text-sm line-clamp-2 ">
+            <h4 className="line-clamp-2 text-sm">
               <Tooltip classNames={{ base: "max-w-[300px]" }} content={source.fileName}>
                 {source.fileName}
               </Tooltip>
@@ -54,7 +54,7 @@ export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) =
         </p>
         <Divider className="my-1"></Divider>
         {source.pages.length > 0 && (
-          <div className="flex flex-row flex-wrap gap-1 items-center px-1">
+          <div className="flex flex-row flex-wrap items-center gap-1 px-1">
             <span className="text-sm text-default-400"># Page</span>
             {source.pages.map((page) => (
               <Button
@@ -62,7 +62,7 @@ export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) =
                 radius="full"
                 variant="bordered"
                 size="sm"
-                className="m-0 p-0 h-[20px] w-[20px]"
+                className="m-0 h-[20px] w-[20px] p-0"
               >
                 {page}
               </Button>
@@ -70,10 +70,10 @@ export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) =
           </div>
         )}
       </CardBody>
-      <CardFooter className="py-0 px-1 gap-1 justify-between flex-wrap">
+      <CardFooter className="flex-wrap justify-between gap-1 px-1 py-0">
         <div className="flex flex-row items-center gap-1">
           <SourceFileIcon size={20}></SourceFileIcon>
-          <p className="font-semibold text-default-400 text-small text-nowrap">
+          <p className="text-nowrap text-small font-semibold text-default-400">
             Source - {index}
           </p>
         </div>

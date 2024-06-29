@@ -62,8 +62,8 @@ export default function Component() {
     <div className="w-full">
       <RightHeader title={"Agent Setting"} callBackUri={`/chat/${id}`} />
       <div className={"flex flex-col items-center"}>
-        <form className={"gap-16 pt-8 px-4 w-full max-w-4xl  "}>
-          <div className={"flex flex-row justify-between items-end pb-1"}>
+        <form className={"w-full max-w-4xl gap-16 px-4 pt-8"}>
+          <div className={"flex flex-row items-end justify-between pb-1"}>
             <span className="relative text-foreground-500">Agent Information</span>
             <Button color={"primary"} onClick={(e) => handleSubmit(e)}>
               Save
@@ -107,7 +107,7 @@ export default function Component() {
             />
           </div>
         </form>
-        <div className={"w-full pt-12 max-w-4xl"}>
+        <div className={"w-full max-w-4xl pt-12"}>
           <span className="relative text-foreground-500">Prompt</span>
           <Divider />
           <PromptFrom agentId={id} defaultPromptId={data?.system_prompt?.id} />

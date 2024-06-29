@@ -53,7 +53,7 @@ const PromptSearchBar: React.FC<{
   };
 
   return (
-    <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
+    <div className="flex w-full flex-wrap gap-4 md:flex-nowrap">
       <Autocomplete
         className="max-w-xs"
         aria-label="Search Prompt"

@@ -2,7 +2,7 @@ import { Card, Skeleton } from "@nextui-org/react";
 
 export const MessageSkeleton = () => {
   return (
-    <Card className="flex flex-grow  max-h-[200px] space-y-5 p-4  w-full" radius="lg">
+    <Card className="flex max-h-[200px] w-full flex-grow space-y-5 p-4" radius="lg">
       <Skeleton className="rounded-lg">
         <div className="h-24 rounded-lg bg-default-300"></div>
       </Skeleton>

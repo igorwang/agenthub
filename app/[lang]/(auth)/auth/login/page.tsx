@@ -7,7 +7,7 @@ export default function LoginPage() {
       <div className="flex flex-col items-center pb-6">
         <AcmeIcon size={60} />
         <p className="text-xl font-medium">Welcome Back</p>
-        <p className="text-small text-default-500 mb-10">
+        <p className="mb-10 text-small text-default-500">
           Log in to your account to continue
         </p>
         <Login></Login>

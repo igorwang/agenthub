@@ -27,7 +27,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
           {String(children).replace(/\n$/, "")}
         </SyntaxHighlighter>
       ) : (
-        <code className="flex-1 overflow-auto max-w-full w-full" {...props}>
+        <code className="w-full max-w-full flex-1 overflow-auto" {...props}>
           {children}
         </code>
       );

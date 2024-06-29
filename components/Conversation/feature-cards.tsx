@@ -37,7 +37,7 @@ const featuresCategories = [
 
 export default function FeatureCards() {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 max-w-[1000px]">
+    <div className="grid max-w-[1000px] grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
       {featuresCategories.map((category) => (
         <FeatureCard
           key={category.key}

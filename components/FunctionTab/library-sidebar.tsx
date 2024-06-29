@@ -41,18 +41,18 @@ const LibrarySideBar: React.FC<{
   const OPTIONS: EmblaOptionsType = { loop: true };
 
   return (
-    <div className="flex flex-col w-full items-center">
-      <h1 className="font-bold text-xl text-nowrap">Knowledge of Agent</h1>
-      <div className="flex embla max-w-full overflow-hidden " ref={emblaRef}>
-        <div className="embla__container flex ">
+    <div className="flex w-full flex-col items-center">
+      <h1 className="text-nowrap text-xl font-bold">Knowledge of Agent</h1>
+      <div className="embla flex max-w-full overflow-hidden" ref={emblaRef}>
+        <div className="embla__container flex">
           {cards.map((item) => (
-            <div key={item.id} className="embla__slide flex shrink-0 basis-full min-w-0">
+            <div key={item.id} className="embla__slide flex min-w-0 shrink-0 basis-full">
               <LibraryCard library={item} />
             </div>
           ))}
         </div>
       </div>
-      <div className="flex flex-row ">
+      <div className="flex flex-row">
         <Button
           aria-label="back"
           onClick={scrollPrev}

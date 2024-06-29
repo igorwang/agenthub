@@ -13,10 +13,10 @@ export default function RightHeader(props: RightHeaderProps) {
 
   return (
     //component needs to be used  with the styling of its parent node
-    <div className="flex w-full flex-wrap  justify-center items-center gap-2 border-b-small border-divider p-2 sm:justify-between ">
-      <div className={"flex flex-row items-center "}>
+    <div className="flex w-full flex-wrap items-center justify-center gap-2 border-b-small border-divider p-2 sm:justify-between">
+      <div className={"flex flex-row items-center"}>
         <IcBaselineArrowBackIosNew
-          className={"cursor-pointer ml-2"}
+          className={"ml-2 cursor-pointer"}
           onClick={() => (callBackUri ? router.push(callBackUri) : router.back())}
         />
         <p className="text-base font-medium">{title}</p>

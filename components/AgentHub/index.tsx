@@ -74,8 +74,8 @@ const ChatHub = () => {
   }
 
   return (
-    <div className="hidden sm:flex h-full min-w-[200px]  flex-col border-r-1 border-b-1">
-      <div className="flex justify-between items-center text-3xl font-semibold leading-7 text-default-foreground px-2 pt-4">
+    <div className="hidden h-full min-w-[200px] flex-col border-b-1 border-r-1 sm:flex">
+      <div className="flex items-center justify-between px-2 pt-4 text-3xl font-semibold leading-7 text-default-foreground">
         <div>AgentHub</div>
         <Tooltip content="Add new agent">
           <Icon

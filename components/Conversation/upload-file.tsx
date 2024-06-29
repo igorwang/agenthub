@@ -69,25 +69,19 @@ export const UploadFile = React.forwardRef<HTMLDivElement, UploadFileProps>(
     return (
       <div
         className={clsx(
-          "relative flex flex-none items-center justify-start  max-w-48 p-2 ml-2 mt-2 bg-white rounded-md group",
+          "group relative ml-2 mt-2 flex max-w-48 flex-none items-center justify-start rounded-md bg-white p-2",
           className,
         )}
       >
         {removeFileHandler && (
           <DeleteIcon
-            className="absolute 
-        top-0 right-0  m-1 rounded-full  
-        border border-gray-400 size-4 hover:border-gray-600
-        transform translate-x-1/2 -translate-y-1/2
-        group-hover:block hidden
-        hover:cursor-pointer
-        "
+            className="absolute right-0 top-0 m-1 hidden size-4 -translate-y-1/2 translate-x-1/2 transform rounded-full border border-gray-400 hover:cursor-pointer hover:border-gray-600 group-hover:block"
             onClick={() => removeFileHandler(key)}
           />
         )}
         {iconElement}
         {fileName && !showImage && (
-          <span className="flex flex-1 ml-2 max-w-full text-nowrap text-ellipsis overflow-auto ">
+          <span className="ml-2 flex max-w-full flex-1 overflow-auto text-ellipsis text-nowrap">
             {fileName}
           </span>
         )}

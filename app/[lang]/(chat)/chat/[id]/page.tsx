@@ -25,7 +25,7 @@ export default function ChatPage() {
   }, [id, sessionId, dispatch]);
 
   return (
-    <div className="flex flex-row  flex-1 overflow-auto">
+    <div className="flex flex-1 flex-row overflow-auto">
       <Conversation agentId={id}></Conversation>
     </div>
   );

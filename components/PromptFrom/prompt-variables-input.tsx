@@ -36,7 +36,7 @@ const PromptVariablesInput = forwardRef<HTMLDivElement, PromptVariabelsInputProp
     };
 
     const defaultElement = (
-      <div className="flex items-center min-h-[60px] border-2 border-dashed p-2 text-slate-400">
+      <div className="flex min-h-[60px] items-center border-2 border-dashed p-2 text-slate-400">
         Add a new variable by wrapping variable name with &#123; and &#125; brackets.
       </div>
     );
