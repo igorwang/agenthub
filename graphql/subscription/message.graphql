@@ -8,5 +8,6 @@ subscription GetMessageList($session_id: uuid, $limit: Int = 100) {
     status
     updated_at
     attachments
+    sources
   }
 }

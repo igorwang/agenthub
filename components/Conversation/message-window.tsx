@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import FeatureCards from "@/components/Conversation/feature-cards";
 import { PromptTemplateType } from "@/components/PromptFrom";
 import {
+  Message_Role_Enum,
   useGetAgentByIdQuery,
   useGetMessageListSubscription,
 } from "@/graphql/generated/types";
@@ -22,8 +23,8 @@ import {
   CHAT_MODE,
   CHAT_STATUS_ENUM,
   MessageType,
-  SOURCE_TYPE_ENUM,
   SourceType,
+  SOURCE_TYPE_ENUM,
 } from "@/types/chatTypes";
 import { Avatar, ScrollShadow } from "@nextui-org/react";
 import MessageCard from "./message-card";
@@ -31,15 +32,13 @@ import MessageCard from "./message-card";
 export const assistantMessages = [
   <div key="1">
     {/* <p className="mb-5"> */}
-    Certainly! Here&apos;s a summary of five creative ways to use your
-    Certainly! Here&apos;s a summary of five creative ways to use your
-    Certainly! Here&apos;s a summary of five creative ways to use your
-    Certainly! Here&apos;s a summary of five creative ways to use your
-    Certainly! Here&apos;s a summary of five creative ways to use your
-    Certainly! Here&apos;s a summary of five creative ways to use your
-    Certainly! Here&apos;s a summary of five creative ways to use your
-    Certainly! Here&apos;s a summary of five creative ways to use your
-    kids&apos; art:
+    Certainly! Here&apos;s a summary of five creative ways to use your Certainly!
+    Here&apos;s a summary of five creative ways to use your Certainly! Here&apos;s a
+    summary of five creative ways to use your Certainly! Here&apos;s a summary of five
+    creative ways to use your Certainly! Here&apos;s a summary of five creative ways to
+    use your Certainly! Here&apos;s a summary of five creative ways to use your Certainly!
+    Here&apos;s a summary of five creative ways to use your Certainly! Here&apos;s a
+    summary of five creative ways to use your kids&apos; art:
     {/* </p> */}
     {/* <ol className="space-y-2">
       <li>
@@ -66,31 +65,29 @@ export const assistantMessages = [
   </div>,
   <div key="2">
     <p className="mb-3">
-      Of course! Here are five more creative suggestions for what to do with
-      your children&apos;s art:
+      Of course! Here are five more creative suggestions for what to do with your
+      children&apos;s art:
     </p>
     <ol className="space-y-2">
       <li>
-        <strong>Create a Digital Archive:</strong> Scan or take photos of the
-        artwork and save it in a digital cloud storage service for easy access
-        and space-saving.
+        <strong>Create a Digital Archive:</strong> Scan or take photos of the artwork and
+        save it in a digital cloud storage service for easy access and space-saving.
       </li>
       <li>
-        <strong>Custom Calendar:</strong> Design a custom calendar with each
-        month showcasing a different piece of your child&apos;s art.
+        <strong>Custom Calendar:</strong> Design a custom calendar with each month
+        showcasing a different piece of your child&apos;s art.
       </li>
       <li>
-        <strong>Storybook Creation:</strong> Compile the artwork into a
-        storybook, possibly with a narrative created by your child, to make a
-        personalized book.
+        <strong>Storybook Creation:</strong> Compile the artwork into a storybook,
+        possibly with a narrative created by your child, to make a personalized book.
       </li>
       <li>
-        <strong>Puzzle Making:</strong> Convert their artwork into a jigsaw
-        puzzle for a fun and unique pastime activity.
+        <strong>Puzzle Making:</strong> Convert their artwork into a jigsaw puzzle for a
+        fun and unique pastime activity.
       </li>
       <li>
-        <strong>Home Decor Items:</strong> Use the artwork to create home decor
-        items like coasters, magnets, or lampshades to decorate your house.
+        <strong>Home Decor Items:</strong> Use the artwork to create home decor items like
+        coasters, magnets, or lampshades to decorate your house.
       </li>
     </ol>
   </div>,
@@ -107,25 +104,35 @@ type MessageWindowProps = {
   isChating?: boolean;
   chatMode?: CHAT_MODE;
   handleChatingStatus?: (stauts: boolean) => void;
+  handleCreateNewMessage?: (params: {
+    content: string;
+    session_id: string;
+    role: Message_Role_Enum;
+    attachments?: any;
+    sources?: any;
+  }) => void;
 };
 
 export default function MessageWindow({
   isChating,
   chatMode,
   handleChatingStatus,
+  handleCreateNewMessage,
 }: MessageWindowProps) {
   const dispatch: AppDispatch = useDispatch();
   const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
+
+  const ref = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(0);
+
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [agent, setAgent] = useState<AgentProps>();
   const [refineQuery, setRefineQuery] = useState<string | null>(null);
   const [searchResults, setSearchResults] = useState<SourceType[] | null>(null);
-  const [promptTemplates, setPromptTemplates] =
-    useState<PromptTemplateType[]>();
+  const [promptTemplates, setPromptTemplates] = useState<PromptTemplateType[]>();
   const [streamingMessage, setStreamingMessage] = useState<string | null>(null);
   const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
-  const lastMessagesRef = useRef(messages);
 
   const session = useSession();
   const user_id = session.data?.user?.id;
@@ -146,6 +153,29 @@ export default function MessageWindow({
     },
     skip: !agent_id,
   });
+
+  useEffect(() => {
+    setRefineQuery(null);
+    setSearchResults(null);
+    setStreamingMessage(null);
+    setChatStatus(null);
+  }, [selectedChatId, selectedSessionId, isChating]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (ref.current) {
+        setWidth(ref.current.offsetWidth);
+      }
+    };
+
+    handleResize(); // Set initial width
+    window.addEventListener("resize", handleResize); // Update width on window resize
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   useEffect(() => {
     if (agentData) {
       setAgent({
@@ -181,12 +211,11 @@ export default function MessageWindow({
           status: item.status,
           feedback: item.feedback,
           files:
-            item.attachments?.map(
-              (attachment: { fileName: string }, index: number) => ({
-                key: index,
-                fileName: attachment.fileName,
-              }),
-            ) || [],
+            item.attachments?.map((attachment: { fileName: string }, index: number) => ({
+              key: index,
+              fileName: attachment.fileName,
+            })) || [],
+          sources: item.sources?.map((item: SourceType) => ({ ...item })),
         })),
       );
     }
@@ -194,17 +223,13 @@ export default function MessageWindow({
 
   useEffect(() => {
     if (isChating && messages.length > 0) {
-      console.log("lastMessage", messages[messages.length - 1]);
-
       setChatStatus(CHAT_STATUS_ENUM.Analyzing);
       const fetchRefineQuery = async () => {
         try {
           console.log(messages);
           const result = await queryAnalyzer(messages);
-          console.log("queryAnalyzer", refineQuery, result);
 
           setRefineQuery(result.content);
-          console.log("queryAnalyzer", refineQuery);
 
           console.log(result.content);
         } catch (error) {
@@ -213,22 +238,15 @@ export default function MessageWindow({
         }
       };
       fetchRefineQuery();
-      console.log("refineQuery", refineQuery, "这里结束了吗");
     }
   }, [messages]);
 
   useEffect(() => {
-    if (refineQuery && isChating && chatStatus == CHAT_STATUS_ENUM.Searching) {
+    if (isChating && refineQuery != null && chatStatus == CHAT_STATUS_ENUM.Analyzing) {
       setChatStatus(CHAT_STATUS_ENUM.Searching);
-      console.log("refineQuery", refineQuery);
       const searchLibrary = async () => {
         try {
-          const result = await librarySearcher(
-            refineQuery,
-            agent_id || "",
-            user_id,
-            5,
-          );
+          const result = await librarySearcher(refineQuery, agent_id || "", user_id, 5);
           setSearchResults(() => {
             return result.map(
               (item: SearchDocumentResultSchema): SourceType => ({
@@ -251,12 +269,7 @@ export default function MessageWindow({
   }, [refineQuery]);
 
   useEffect(() => {
-    if (
-      refineQuery &&
-      searchResults &&
-      isChating &&
-      chatStatus == CHAT_STATUS_ENUM.Generating
-    ) {
+    if (isChating && searchResults != null && chatStatus == CHAT_STATUS_ENUM.Searching) {
       setChatStatus(CHAT_STATUS_ENUM.Generating);
       console.log("searchResults", searchResults);
       const generateAnswer = async () => {
@@ -264,11 +277,11 @@ export default function MessageWindow({
           promptTemplates || DEFAULT_TEMPLATES,
           messages,
           searchResults || [],
-          refineQuery,
+          refineQuery || "",
           {},
           4096,
         );
-
+        let answer = "";
         // call llm
         try {
           // Fetch the streaming data from the API
@@ -297,6 +310,7 @@ export default function MessageWindow({
             }
             // Decode the chunk and update the message state
             const chunk = decoder.decode(value, { stream: true });
+            answer += chunk;
             setStreamingMessage(
               (prevMessage) => (prevMessage != null ? prevMessage : "") + chunk,
             );
@@ -309,14 +323,16 @@ export default function MessageWindow({
         } catch (error) {
           console.error("Error while streaming:", error);
         }
+        // save results
+        handleCreateNewMessage?.({
+          content: answer,
+          session_id: selectedSessionId || "",
+          role: Message_Role_Enum.Assistant,
+          sources: searchResults,
+        });
+        handleChatingStatus?.(false);
       };
       generateAnswer();
-      console.log(streamingMessage);
-      // reset state
-      // setSearchResults(null);
-      // setStreamingMessage(null);
-      // setRefineQuery(null);
-      handleChatingStatus?.(false);
     }
   }, [searchResults]);
 
@@ -324,7 +340,7 @@ export default function MessageWindow({
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, streamingMessage, chatStatus, isChating]);
 
   const agentAvatarElement =
     agent && agent?.avatar ? (
@@ -354,10 +370,11 @@ export default function MessageWindow({
     <ScrollShadow
       ref={scrollRef}
       className="flex flex-grow flex-col gap-6 pb-8 w-full"
+      hideScrollBar={true}
     >
-      <div className="flex flex-1 flex-grow flex-col px-1 gap-1  ">
+      <div className="flex flex-1 flex-grow flex-col px-1 gap-1 " ref={ref}>
         {messages.length === 0 && featureContent}
-        {messages.map(({ role, message, files }, index) => (
+        {messages.map(({ role, message, files, sources }, index) => (
           <MessageCard
             key={index}
             attempts={index === 1 ? 2 : 1}
@@ -372,13 +389,16 @@ export default function MessageWindow({
             message={message || ""}
             isUser={role === "user"}
             messageClassName={
-              role === "user" ? "bg-content3 text-content3-foreground" : ""
+              role === "user" ? "bg-content3 text-content3-foreground" : "bg-slate-50"
             }
             showFeedback={role === "assistant"}
+            sourceResults={sources || []}
             files={files}
+            maxWidth={width}
+            // className="bg-slate-50"
           />
         ))}
-        {/* {isChating && (
+        {isChating && (
           <MessageCard
             aria-label="streaming card"
             avatar={agentAvatarElement}
@@ -386,16 +406,9 @@ export default function MessageWindow({
             messageClassName={""}
             chatStatus={chatStatus}
             sourceResults={searchResults || []}
+            maxWidth={width}
           />
-        )} */}
-        <MessageCard
-          aria-label="streaming card"
-          avatar={agentAvatarElement}
-          message={streamingMessage || ""}
-          messageClassName={""}
-          chatStatus={chatStatus}
-          sourceResults={searchResults || []}
-        />
+        )}
       </div>
     </ScrollShadow>
   );

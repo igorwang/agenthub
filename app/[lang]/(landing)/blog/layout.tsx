@@ -1,10 +1,6 @@
 import { Toaster } from "sonner";
 
-export default function BlogLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function BlogLayout({ children }: { children: React.ReactNode }) {
   return (
     <section className="flex flex-col w-full h-full gap-4 ">
       <Toaster />

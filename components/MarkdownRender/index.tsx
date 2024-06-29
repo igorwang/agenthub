@@ -5,7 +5,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { materialDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import rehypeKatex from "rehype-katex";
 import rehypeRaw from "rehype-raw";
-import gfm from "remark-gfm";
+import { default as gfm, default as remarkGfm } from "remark-gfm";
 import remarkMath from "remark-math";
 
 interface MarkdownRendererProps {
@@ -27,7 +27,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
           {String(children).replace(/\n$/, "")}
         </SyntaxHighlighter>
       ) : (
-        <code className={className} {...props}>
+        <code className="flex-1 overflow-auto max-w-full w-full" {...props}>
           {children}
         </code>
       );
@@ -37,7 +37,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
   return (
     <ReactMarkdown
       children={content}
-      remarkPlugins={[remarkMath, gfm]}
+      remarkPlugins={[remarkMath, remarkGfm, gfm]}
       rehypePlugins={[rehypeKatex, rehypeRaw]}
       components={components} // 使用自定义渲染器
     />

@@ -1,6 +1,6 @@
 import { PromptTemplateType } from "@/components/PromptFrom";
 
-export const DEFAULT_LLM_MODEL = "gpt-4-turbo";
+export const DEFAULT_LLM_MODEL = "mistralai/Mixtral-8x22B-Instruct-v0.1";
 
 export const DEFAULT_TEMPLATES: PromptTemplateType[] = [
   { id: 1, template: "You are a helpful AI.", role: "system", status: "draft" },

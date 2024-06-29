@@ -10,10 +10,7 @@ const edgeToOrientationMap: Record<Edge, Orientation> = {
   right: "vertical",
 };
 
-const orientationStyles: Record<
-  Orientation,
-  HTMLAttributes<HTMLElement>["className"]
-> = {
+const orientationStyles: Record<Orientation, HTMLAttributes<HTMLElement>["className"]> = {
   horizontal:
     "h-[--line-thickness] left-[--terminal-radius] right-0 before:left-[--negative-terminal-size]",
   vertical:

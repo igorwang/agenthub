@@ -17,11 +17,7 @@ type SourceCardProps = {
   onFeedback?: (feedback: "like" | "dislike") => void;
 };
 
-export const SourceCard = ({
-  index = 1,
-  source,
-  onFeedback,
-}: SourceCardProps) => {
+export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) => {
   const [isFollowed, setIsFollowed] = useState(false);
   const [feedback, setFeedback] = useState<"like" | "dislike" | "same">();
   const [selected, setSelected] = useState<boolean>(false);
@@ -40,15 +36,12 @@ export const SourceCard = ({
   };
 
   return (
-    <Card className="basis-1/4 bg-gray-100 shadow-sm pr-1">
+    <Card className="basis-1/2 sm:basis-1/4 bg-gray-200 shadow-sm pr-1">
       <CardHeader className="justify-between px-1 py-0">
         <div className="flex flex-row">
           <div className="flex flex-col items-start justify-center">
             <h4 className="text-sm line-clamp-2 ">
-              <Tooltip
-                classNames={{ base: "max-w-[300px]" }}
-                content={source.fileName}
-              >
+              <Tooltip classNames={{ base: "max-w-[300px]" }} content={source.fileName}>
                 {source.fileName}
               </Tooltip>
             </h4>
@@ -57,9 +50,7 @@ export const SourceCard = ({
       </CardHeader>
       <CardBody className="p-0 text-small text-default-400">
         <p className="line-clamp-1">
-          {source.contents && source.contents.length > 0
-            ? source.contents[0]
-            : ""}
+          {source.contents && source.contents.length > 0 ? source.contents[0] : ""}
         </p>
         <Divider className="my-1"></Divider>
         {source.pages.length > 0 && (
@@ -97,10 +88,7 @@ export const SourceCard = ({
               className="h-[18px]"
             >
               {selected ? (
-                <Icon
-                  className="text-lg text-default-600"
-                  icon="gravity-ui:check"
-                />
+                <Icon className="text-lg text-default-600" icon="gravity-ui:check" />
               ) : (
                 <Icon
                   className="text-lg text-default-600"
@@ -119,15 +107,9 @@ export const SourceCard = ({
               className="h-[18px]"
             >
               {feedback === "like" ? (
-                <Icon
-                  className="text-lg text-primary"
-                  icon="gravity-ui:thumbs-up-fill"
-                />
+                <Icon className="text-lg text-primary" icon="gravity-ui:thumbs-up-fill" />
               ) : (
-                <Icon
-                  className="text-lg text-default-600"
-                  icon="gravity-ui:thumbs-up"
-                />
+                <Icon className="text-lg text-default-600" icon="gravity-ui:thumbs-up" />
               )}
             </Button>
           </Tooltip>
@@ -140,10 +122,7 @@ export const SourceCard = ({
               className="h-[18px]"
               //   onPress={handleSelectSource}
             >
-              <Icon
-                className="text-lg text-default-600"
-                icon="gravity-ui:link"
-              />
+              <Icon className="text-lg text-default-600" icon="gravity-ui:link" />
             </Button>
           </Tooltip>
         </div>

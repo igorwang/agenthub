@@ -12,12 +12,7 @@ import {
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { Button } from "@nextui-org/button";
 import { Textarea } from "@nextui-org/input";
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-} from "@nextui-org/react";
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
 import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
 import invariant from "tiny-invariant";
@@ -121,9 +116,7 @@ const PromptTemplateInput = React.forwardRef<
               isIconOnly
               variant="light"
               className="data-[hover=true]:bg-transparent absolute top-0 right-0 group-hover:block hidden hover:cursor-pointer"
-              onClick={() =>
-                handleDeleteMessage && handleDeleteMessage(template.id)
-              }
+              onClick={() => handleDeleteMessage && handleDeleteMessage(template.id)}
               startContent={<DeleteOutlineIcon />}
             ></Button>
           }
@@ -149,8 +142,7 @@ const PromptTemplateInput = React.forwardRef<
                 disallowEmptySelection
                 selectedKeys={template.role}
                 onAction={(key) =>
-                  handleRoleSelect &&
-                  handleRoleSelect(template.id, key.toString())
+                  handleRoleSelect && handleRoleSelect(template.id, key.toString())
                 }
               >
                 <DropdownItem key="system">system</DropdownItem>
@@ -160,9 +152,7 @@ const PromptTemplateInput = React.forwardRef<
             </Dropdown>
           }
         ></Textarea>
-        {isDraggedOver && (
-          <DropIndicator edge={"bottom"} gap={"8px"}></DropIndicator>
-        )}
+        {isDraggedOver && <DropIndicator edge={"bottom"} gap={"8px"}></DropIndicator>}
       </div>
     );
   },

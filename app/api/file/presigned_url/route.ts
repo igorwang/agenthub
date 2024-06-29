@@ -54,10 +54,7 @@ export async function GET(req: NextRequest) {
   };
 
   try {
-    const presignedPutUrl = await s3Client.getSignedUrlPromise(
-      "putObject",
-      params,
-    );
+    const presignedPutUrl = await s3Client.getSignedUrlPromise("putObject", params);
     const presignedGetUrl = await s3Client.getSignedUrlPromise("getObject", {
       Bucket: bucket,
       Key: s3Key,

@@ -9,38 +9,32 @@ mutation AddNewTopicMutation($title: String, $user_id: uuid, $agent_id: uuid) {
   }
 }
 
-
-mutation CreateOneAgent($object:agent_insert_input!){
-  insert_agent_one(object: $object){
+mutation CreateOneAgent($object: agent_insert_input!) {
+  insert_agent_one(object: $object) {
     id
     name
     description
   }
-
 }
 
-mutation UpdateAgent(
-  $_set: agent_set_input
-  $pk_columns: agent_pk_columns_input!){
-  update_agent_by_pk(_set: $_set,pk_columns: $pk_columns){
+mutation UpdateAgent($_set: agent_set_input, $pk_columns: agent_pk_columns_input!) {
+  update_agent_by_pk(_set: $_set, pk_columns: $pk_columns) {
     ...AgentItem
   }
-
 }
 
 mutation DeleteAgentUserRelation(
-  $agentId:uuid_comparison_exp
-  $userId:uuid_comparison_exp
-){
-  delete_r_agent_user(where: {agent_id: $agentId,user_id: $userId}){
+  $agentId: uuid_comparison_exp
+  $userId: uuid_comparison_exp
+) {
+  delete_r_agent_user(where: { agent_id: $agentId, user_id: $userId }) {
     returning {
       id
     }
   }
-
 }
 
-fragment AgentItem on agent{
+fragment AgentItem on agent {
   id
   name
   description

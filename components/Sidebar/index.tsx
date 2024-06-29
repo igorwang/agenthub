@@ -3,13 +3,7 @@
 import { AcmeLogo } from "../ui/icons";
 
 import { Icon } from "@iconify/react";
-import {
-  Avatar,
-  Button,
-  ScrollShadow,
-  Spacer,
-  Tooltip,
-} from "@nextui-org/react";
+import { Avatar, Button, ScrollShadow, Spacer, Tooltip } from "@nextui-org/react";
 
 import SidebarNav from "./sidebar-nav";
 
@@ -33,11 +27,7 @@ export default function SideBar() {
           </div>
           <Spacer y={2} />
 
-          <SidebarNav
-            isCompact
-            defaultSelectedKey="chat"
-            items={sectionItems}
-          />
+          <SidebarNav isCompact defaultSelectedKey="chat" items={sectionItems} />
         </div>
         <div className="mt-auto flex flex-col items-center">
           <Tooltip content="GitHub" placement="right">
@@ -46,11 +36,7 @@ export default function SideBar() {
               className="data-[hover=true]:text-foreground"
               variant="light"
             >
-              <Icon
-                className="text-default-500"
-                icon="grommet-icons:github"
-                width={24}
-              />
+              <Icon className="text-default-500" icon="grommet-icons:github" width={24} />
             </Button>
           </Tooltip>
 

@@ -168,5 +168,7 @@ dist
 
 .graphqlconfig
 
-./graphql/generated
-./restful/generated
+.vscode
+
+graphql/generated*
+restful/generated*

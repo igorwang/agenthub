@@ -4,15 +4,13 @@ import React, { ReactNode } from "react";
 import { cn } from "@/cn";
 import { MessageSkeleton } from "@/components/Conversation/message-skeleton";
 import { SourceSection } from "@/components/Conversation/source-section";
-import {
-  UploadFile,
-  UploadFileProps,
-} from "@/components/Conversation/upload-file";
+import { UploadFile, UploadFileProps } from "@/components/Conversation/upload-file";
 import MarkdownRenderer from "@/components/MarkdownRender";
 import { CHAT_STATUS_ENUM, SourceType } from "@/types/chatTypes";
 import { Icon } from "@iconify/react";
 import { Badge, Button, Link, Spacer, Spinner } from "@nextui-org/react";
 import { useClipboard } from "@nextui-org/use-clipboard";
+import clsx from "clsx";
 
 export type MessageCardProps = React.HTMLAttributes<HTMLDivElement> & {
   avatar?: ReactNode;
@@ -25,6 +23,7 @@ export type MessageCardProps = React.HTMLAttributes<HTMLDivElement> & {
   status?: "success" | "failed";
   attempts?: number;
   messageClassName?: string;
+  maxWidth?: number;
   chatStatus?: CHAT_STATUS_ENUM | null;
   onAttemptChange?: (attempt: number) => void;
   onMessageCopy?: (content: string | string[]) => void;
@@ -51,6 +50,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       onAttemptFeedback,
       className,
       messageClassName,
+      maxWidth,
       ...props
     },
     ref,
@@ -59,6 +59,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
     const [attemptFeedback, setAttemptFeedback] = React.useState<
       "like" | "dislike" | "same"
     >();
+    const [widthClassname, setWidthClassname] = React.useState<string>("max-w-full");
 
     const messageRef = React.useRef<HTMLDivElement>(null);
 
@@ -70,8 +71,8 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
         : "";
     const failedMessage = (
       <p>
-        Something went wrong, if the issue persists please contact us through
-        our help center at&nbsp;
+        Something went wrong, if the issue persists please contact us through our help
+        center at&nbsp;
         <Link href="mailto:support@acmeai.com" size="sm">
           support@acmeai.com
         </Link>
@@ -79,6 +80,12 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
     );
 
     const hasFailed = status === "failed";
+
+    // useEffect(() => {
+    //   console.log("maxWidth", maxWidth);
+    //   const currentWidth = maxWidth ? maxWidth - 60 : 600;
+    //   setWidthClassname(`w-[${currentWidth}px] max-w-[${currentWidth}px]`);
+    // }, [maxWidth]);
 
     const handleCopy = React.useCallback(() => {
       let stringValue = "";
@@ -89,9 +96,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
         message.forEach((child) => {
           // @ts-ignore
           const childString =
-            typeof child === "string"
-              ? child
-              : child?.props?.children?.toString();
+            typeof child === "string" ? child : child?.props?.children?.toString();
 
           if (childString) {
             stringValue += childString + "\n";
@@ -159,10 +164,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
           isOneChar
           color="danger"
           content={
-            <Icon
-              className="text-background"
-              icon="gravity-ui:circle-exclamation-fill"
-            />
+            <Icon className="text-background" icon="gravity-ui:circle-exclamation-fill" />
           }
           isInvisible={!hasFailed}
           placement="bottom-right"
@@ -177,7 +179,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       <div className="flex w-full flex-col gap-2 ml-14">
         <div
           className={cn(
-            "relative w-full rounded-medium px-4 py-2 text-default-800 ",
+            "relative w-full rounded-medium px-4 py-2 text-default-800",
             failedMessageClassName,
             messageClassName,
           )}
@@ -187,9 +189,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
           </div>
           <div className="flex flex-row flex-wrap w-full ">
             {files &&
-              files.map((item) => (
-                <UploadFile className="flex shrink" {...item} />
-              ))}
+              files.map((item) => <UploadFile className="flex shrink" {...item} />)}
           </div>
         </div>
       </div>
@@ -208,9 +208,21 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
             {hasFailed ? (
               failedMessage
             ) : (
-              <MarkdownRenderer
-                content={message?.toString() || ""}
-              ></MarkdownRenderer>
+              <div className="gap-3 mr-10">
+                {sourceResults && sourceResults.length > 0 && (
+                  <SourceSection title="Sources" items={sourceResults} />
+                )}
+                <Spacer x={2} />
+                <div className="flex flex-row items-center justify-start gap-1 p-1 ">
+                  <Icon className="text-lg text-default-600" icon="mdi:idea" />
+                  <span className="text-slate-500">Answer:</span>
+                </div>
+                <div className={clsx("flex flex-col w-full max-w-full overflow-hidden")}>
+                  <MarkdownRenderer
+                    content={message?.toString() || ""}
+                  ></MarkdownRenderer>
+                </div>
+              </div>
             )}
           </div>
 
@@ -225,15 +237,9 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
                   onPress={handleCopy}
                 >
                   {copied ? (
-                    <Icon
-                      className="text-lg text-default-600"
-                      icon="gravity-ui:check"
-                    />
+                    <Icon className="text-lg text-default-600" icon="gravity-ui:check" />
                   ) : (
-                    <Icon
-                      className="text-lg text-default-600"
-                      icon="gravity-ui:copy"
-                    />
+                    <Icon className="text-lg text-default-600" icon="gravity-ui:copy" />
                   )}
                 </Button>
                 <Button
@@ -280,9 +286,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
               <div className="flex w-full items-center justify-end">
                 <button
                   onClick={() =>
-                    onAttemptChange?.(
-                      currentAttempt > 1 ? currentAttempt - 1 : 1,
-                    )
+                    onAttemptChange?.(currentAttempt > 1 ? currentAttempt - 1 : 1)
                   }
                 >
                   <Icon
@@ -385,11 +389,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
     );
 
     return (
-      <div
-        {...props}
-        ref={ref}
-        className={cn("flex gap-3 max-h-[600px]", className)}
-      >
+      <div {...props} ref={ref} className={cn("flex gap-3", className)}>
         {isUser ? (
           <>
             {userMessageContent}
@@ -398,17 +398,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
         ) : (
           <div className="flex flex-row gap-3">
             {avatarBadgeContent}
-            <div className="gap-3 mr-10">
-              {sourceResults && sourceResults.length > 0 && (
-                <SourceSection title="Sources" items={sourceResults} />
-              )}
-              <Spacer x={2} />
-              <div className="flex flex-row items-center justify-start gap-1 p-1 ">
-                <Icon className="text-lg text-default-600" icon="mdi:idea" />
-                <span className="text-slate-500">Answer:</span>
-              </div>
-              <div className="flex flex-col  pl-2">{aiMessageContent}</div>
-            </div>
+            {aiMessageContent}
           </div>
         )}
       </div>

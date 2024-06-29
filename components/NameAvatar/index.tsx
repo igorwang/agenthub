@@ -1,8 +1,7 @@
-import { useMemo } from "react";
-import { createAvatar } from "@dicebear/core";
 import { initials } from "@dicebear/collection";
+import { createAvatar } from "@dicebear/core";
 import { Avatar, AvatarProps } from "@nextui-org/react";
-
+import { useMemo } from "react";
 
 interface NameAvatarProps {
   name?: string;
@@ -17,5 +16,5 @@ export default function NameAvatar(props: NameAvatarProps) {
     }).toDataUri();
   }, [name]);
 
-  return <Avatar src={avatar}  {...avatarProps} />;
+  return <Avatar src={avatar} {...avatarProps} />;
 }
