@@ -10,6 +10,7 @@ import { CHAT_STATUS_ENUM, SourceType } from "@/types/chatTypes";
 import { Icon } from "@iconify/react";
 import { Badge, Button, Link, Spacer, Spinner } from "@nextui-org/react";
 import { useClipboard } from "@nextui-org/use-clipboard";
+import clsx from "clsx";
 
 export type MessageCardProps = React.HTMLAttributes<HTMLDivElement> & {
   avatar?: ReactNode;
@@ -22,6 +23,7 @@ export type MessageCardProps = React.HTMLAttributes<HTMLDivElement> & {
   status?: "success" | "failed";
   attempts?: number;
   messageClassName?: string;
+  maxWidth?: number;
   chatStatus?: CHAT_STATUS_ENUM | null;
   onAttemptChange?: (attempt: number) => void;
   onMessageCopy?: (content: string | string[]) => void;
@@ -48,6 +50,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       onAttemptFeedback,
       className,
       messageClassName,
+      maxWidth,
       ...props
     },
     ref,
@@ -56,6 +59,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
     const [attemptFeedback, setAttemptFeedback] = React.useState<
       "like" | "dislike" | "same"
     >();
+    const [widthClassname, setWidthClassname] = React.useState<string>("max-w-full");
 
     const messageRef = React.useRef<HTMLDivElement>(null);
 
@@ -76,6 +80,12 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
     );
 
     const hasFailed = status === "failed";
+
+    // useEffect(() => {
+    //   console.log("maxWidth", maxWidth);
+    //   const currentWidth = maxWidth ? maxWidth - 60 : 600;
+    //   setWidthClassname(`w-[${currentWidth}px] max-w-[${currentWidth}px]`);
+    // }, [maxWidth]);
 
     const handleCopy = React.useCallback(() => {
       let stringValue = "";
@@ -169,7 +179,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       <div className="flex w-full flex-col gap-2 ml-14">
         <div
           className={cn(
-            "relative w-full rounded-medium px-4 py-2 text-default-800 ",
+            "relative w-full rounded-medium px-4 py-2 text-default-800",
             failedMessageClassName,
             messageClassName,
           )}
@@ -198,7 +208,21 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
             {hasFailed ? (
               failedMessage
             ) : (
-              <MarkdownRenderer content={message?.toString() || ""}></MarkdownRenderer>
+              <div className="gap-3 mr-10">
+                {sourceResults && sourceResults.length > 0 && (
+                  <SourceSection title="Sources" items={sourceResults} />
+                )}
+                <Spacer x={2} />
+                <div className="flex flex-row items-center justify-start gap-1 p-1 ">
+                  <Icon className="text-lg text-default-600" icon="mdi:idea" />
+                  <span className="text-slate-500">Answer:</span>
+                </div>
+                <div className={clsx("flex flex-col w-full max-w-full overflow-hidden")}>
+                  <MarkdownRenderer
+                    content={message?.toString() || ""}
+                  ></MarkdownRenderer>
+                </div>
+              </div>
             )}
           </div>
 
@@ -365,7 +389,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
     );
 
     return (
-      <div {...props} ref={ref} className={cn("flex gap-3 max-h-[600px]", className)}>
+      <div {...props} ref={ref} className={cn("flex gap-3", className)}>
         {isUser ? (
           <>
             {userMessageContent}
@@ -374,17 +398,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
         ) : (
           <div className="flex flex-row gap-3">
             {avatarBadgeContent}
-            <div className="gap-3 mr-10">
-              {sourceResults && sourceResults.length > 0 && (
-                <SourceSection title="Sources" items={sourceResults} />
-              )}
-              <Spacer x={2} />
-              <div className="flex flex-row items-center justify-start gap-1 p-1 ">
-                <Icon className="text-lg text-default-600" icon="mdi:idea" />
-                <span className="text-slate-500">Answer:</span>
-              </div>
-              <div className="flex flex-col  pl-2">{aiMessageContent}</div>
-            </div>
+            {aiMessageContent}
           </div>
         )}
       </div>

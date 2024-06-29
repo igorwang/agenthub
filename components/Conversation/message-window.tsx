@@ -123,6 +123,9 @@ export default function MessageWindow({
   const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
 
+  const ref = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(0);
+
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [agent, setAgent] = useState<AgentProps>();
   const [refineQuery, setRefineQuery] = useState<string | null>(null);
@@ -157,6 +160,21 @@ export default function MessageWindow({
     setStreamingMessage(null);
     setChatStatus(null);
   }, [selectedChatId, selectedSessionId, isChating]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (ref.current) {
+        setWidth(ref.current.offsetWidth);
+      }
+    };
+
+    handleResize(); // Set initial width
+    window.addEventListener("resize", handleResize); // Update width on window resize
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     if (agentData) {
@@ -197,6 +215,7 @@ export default function MessageWindow({
               key: index,
               fileName: attachment.fileName,
             })) || [],
+          sources: item.sources?.map((item: SourceType) => ({ ...item })),
         })),
       );
     }
@@ -321,7 +340,7 @@ export default function MessageWindow({
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, streamingMessage, chatStatus, isChating]);
 
   const agentAvatarElement =
     agent && agent?.avatar ? (
@@ -348,10 +367,14 @@ export default function MessageWindow({
   );
 
   return (
-    <ScrollShadow ref={scrollRef} className="flex flex-grow flex-col gap-6 pb-8 w-full">
-      <div className="flex flex-1 flex-grow flex-col px-1 gap-1  ">
+    <ScrollShadow
+      ref={scrollRef}
+      className="flex flex-grow flex-col gap-6 pb-8 w-full"
+      hideScrollBar={true}
+    >
+      <div className="flex flex-1 flex-grow flex-col px-1 gap-1 " ref={ref}>
         {messages.length === 0 && featureContent}
-        {messages.map(({ role, message, files }, index) => (
+        {messages.map(({ role, message, files, sources }, index) => (
           <MessageCard
             key={index}
             attempts={index === 1 ? 2 : 1}
@@ -366,10 +389,13 @@ export default function MessageWindow({
             message={message || ""}
             isUser={role === "user"}
             messageClassName={
-              role === "user" ? "bg-content3 text-content3-foreground" : ""
+              role === "user" ? "bg-content3 text-content3-foreground" : "bg-slate-50"
             }
             showFeedback={role === "assistant"}
+            sourceResults={sources || []}
             files={files}
+            maxWidth={width}
+            // className="bg-slate-50"
           />
         ))}
         {isChating && (
@@ -380,16 +406,9 @@ export default function MessageWindow({
             messageClassName={""}
             chatStatus={chatStatus}
             sourceResults={searchResults || []}
+            maxWidth={width}
           />
         )}
-        {/* <MessageCard
-          aria-label="streaming card"
-          avatar={agentAvatarElement}
-          message={streamingMessage || ""}
-          messageClassName={""}
-          chatStatus={chatStatus}
-          sourceResults={searchResults || []}
-        /> */}
       </div>
     </ScrollShadow>
   );

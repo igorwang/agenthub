@@ -1,12 +1,15 @@
 "use client";
 import { ChatList } from "@/components/AgentHub/chat-list";
 import { AppDispatch } from "@/lib/store";
-import { Button, Spacer, Tooltip } from "@nextui-org/react";
+import { Icon } from "@iconify/react";
+import { Spacer, Tooltip } from "@nextui-org/react";
 import { useDispatch } from "react-redux";
 import SearchBar from "./searchbar";
-import { Icon } from "@iconify/react";
 
-import { useCreateOneAgentMutation, useGetAgentListByTypeQuery } from "@/graphql/generated/types";
+import {
+  useCreateOneAgentMutation,
+  useGetAgentListByTypeQuery,
+} from "@/graphql/generated/types";
 
 import {
   selectChatList,
@@ -76,7 +79,7 @@ const ChatHub = () => {
         <div>AgentHub</div>
         <Tooltip content="Add new agent">
           <Icon
-            className={"cursor-pointer"}
+            className={"cursor-pointer pt-1"}
             onClick={() => createAgent()}
             icon="material-symbols-light:chat-add-on-outline"
             width={"1.2em"}
