@@ -209,12 +209,13 @@ export default function MessageWindow({
       const searchLibrary = async () => {
         console.log("Go to search something");
         try {
-          const result = await librarySearcher(
-            `${refineQuery?.refineQuery};${refineQuery?.keywords}`,
-            agent_id || "",
-            user_id,
-            5,
-          );
+          const result = await librarySearcher({
+            query: `${refineQuery?.refineQuery};${refineQuery?.keywords}`,
+            agent_id: agent_id || "",
+            user_id: user_id || "",
+            filter_kb_ids: refineQuery.knowledge_base_ids,
+            limit: 5,
+          });
           setSearchResults(() => {
             return result.map(
               (item: SearchDocumentResultSchema): SourceType => ({
@@ -224,11 +225,14 @@ export default function MessageWindow({
                 pages: item.pages || [],
                 contents: item.contents || [],
                 sourceType: SOURCE_TYPE_ENUM.file,
+                knowledgeBaseId: item.knowledge_base_id || "",
               }),
             );
           });
         } catch (error) {
           console.error("Error searching library:", error);
+          toast.error("Search Error: please try later.");
+          handleChatingStatus?.(false);
         }
       };
       if (refineQuery.isRelated && refineQuery.knowledge_base_ids) {

@@ -1,9 +1,6 @@
-export const librarySearcher = async (
-  query: string,
-  agent_id?: string,
-  user_id?: string,
-  limit: number = 5,
-) => {
+import { SearchRequestSchema } from "@/restful/generated";
+
+export const librarySearcher = async (body: SearchRequestSchema) => {
   // Fetch the streaming data from the API
   const response = await fetch("/api/search", {
     method: "POST",
@@ -11,10 +8,7 @@ export const librarySearcher = async (
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      query: query,
-      agent_id: agent_id,
-      user_id: user_id,
-      limit,
+      ...body,
     }),
   }); // Adjust the endpoint as needed
 
