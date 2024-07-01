@@ -5,6 +5,7 @@ import clsx from "clsx";
 import { Viewport } from "next";
 
 import StoreProvider from "@/app/StoreProvider";
+import SideBar from "@/components/Sidebar";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "sonner";
 
@@ -23,20 +24,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className={clsx(
           "min-h-screen bg-background font-sans antialiased",
           fontSans.variable,
-        )}
-      >
+        )}>
         <Providers themeProps={{ attribute: "class", defaultTheme: "white" }}>
           <StoreProvider>
             <SessionProvider>
               <div className="h-dvh w-dvw">
-                {children}
-                <Toaster
-                  toastOptions={{
-                    classNames: {
-                      error: "text-red-400",
-                    },
-                  }}
-                />
+                <div className="flex h-full w-full flex-row">
+                  <SideBar />
+                  <div>
+                    {children}
+                    <Toaster
+                      toastOptions={{
+                        classNames: {
+                          error: "text-red-400",
+                        },
+                      }}
+                    />
+                  </div>
+                </div>
               </div>
             </SessionProvider>
           </StoreProvider>
