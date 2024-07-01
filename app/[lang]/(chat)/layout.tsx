@@ -31,7 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <div className="h-dvh w-dvw">
                 <div className="flex h-full w-full flex-row">
                   <SideBar />
-                  <div>
+                  <div className="h-full w-full">
                     {children}
                     <Toaster
                       toastOptions={{
