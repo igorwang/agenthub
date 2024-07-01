@@ -26,26 +26,22 @@ export default function SideBar() {
             />
           </div>
           <Spacer y={2} />
-
           <SidebarNav isCompact defaultSelectedKey="chat" items={sectionItems} />
         </div>
         <div className="mt-auto flex flex-col items-center">
           <Tooltip content="GitHub" placement="right">
             <Button
               isIconOnly
-              className="data-[hover=true]:text-foreground"
-              variant="light"
-            >
+              // className="data-[hover=true]:text-foreground"
+              variant="light">
               <Icon className="text-default-500" icon="grommet-icons:github" width={24} />
             </Button>
           </Tooltip>
-
           <Tooltip content="Help & Feedback" placement="right">
             <Button
               isIconOnly
-              className="data-[hover=true]:text-foreground"
-              variant="light"
-            >
+              // className="data-[hover=true]:text-foreground"
+              variant="light">
               <Icon
                 className="text-default-500"
                 icon="solar:info-circle-line-duotone"
@@ -56,9 +52,8 @@ export default function SideBar() {
           <Tooltip content="Log Out" placement="right">
             <Button
               isIconOnly
-              className="data-[hover=true]:text-foreground"
-              variant="light"
-            >
+              // className="data-[hover=true]:text-foreground"
+              variant="light">
               <Icon
                 className="rotate-180 text-default-500"
                 icon="solar:minus-circle-line-duotone"
