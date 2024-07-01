@@ -205,6 +205,7 @@ export default function MessageWindow({
   useEffect(() => {
     setChatStatus(CHAT_STATUS_ENUM.Searching);
     if (isChating && refineQuery != null && chatStatus == CHAT_STATUS_ENUM.Analyzing) {
+      console.log("refineQuery", refineQuery);
       const searchLibrary = async () => {
         console.log("Go to search something");
         try {

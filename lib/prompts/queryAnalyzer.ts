@@ -125,9 +125,6 @@ export async function queryAnalyzer(
     queriesFromContent = null;
   }
 
-  console.log("tool_calls", tool_calls);
-  console.log("queriesFromContent", queriesFromContent);
-
   const structuredQueries =
     tool_calls && tool_calls.length > 0
       ? tool_calls
