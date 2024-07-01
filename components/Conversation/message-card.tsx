@@ -168,8 +168,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
           }
           isInvisible={!hasFailed}
           placement="bottom-right"
-          shape="circle"
-        >
+          shape="circle">
           {avatar}
         </Badge>
       </div>
@@ -182,8 +181,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
             "relative w-full rounded-medium px-4 py-2 text-default-800",
             failedMessageClassName,
             messageClassName,
-          )}
-        >
+          )}>
           <div ref={messageRef} className={"flex justify-end px-1 text-medium"}>
             {hasFailed ? failedMessage : message}
           </div>
@@ -202,8 +200,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
             "relative w-full flex-grow rounded-medium bg-content2 px-4 py-1 text-default-600",
             failedMessageClassName,
             messageClassName,
-          )}
-        >
+          )}>
           <div ref={messageRef} className={"min-h-8 px-1 text-medium"}>
             {hasFailed ? (
               failedMessage
@@ -217,10 +214,9 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
                   <Icon className="text-lg text-default-600" icon="mdi:idea" />
                   <span className="text-slate-500">Answer:</span>
                 </div>
-                <div className={clsx("flex max-w-full flex-col overflow-hidden")}>
+                <div className={clsx("flex max-w-full flex-col overflow-hidden p-1")}>
                   <MarkdownRenderer
-                    content={message?.toString() || ""}
-                  ></MarkdownRenderer>
+                    content={message?.toString() || ""}></MarkdownRenderer>
                 </div>
               </div>
             )}
@@ -234,8 +230,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
                   radius="full"
                   size="sm"
                   variant="light"
-                  onPress={handleCopy}
-                >
+                  onPress={handleCopy}>
                   {copied ? (
                     <Icon className="text-lg text-default-600" icon="gravity-ui:check" />
                   ) : (
@@ -247,8 +242,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
                   radius="full"
                   size="sm"
                   variant="light"
-                  onPress={() => handleFeedback(true)}
-                >
+                  onPress={() => handleFeedback(true)}>
                   {feedback === "like" ? (
                     <Icon
                       className="text-lg text-default-600"
@@ -266,8 +260,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
                   radius="full"
                   size="sm"
                   variant="light"
-                  onPress={() => handleFeedback(false)}
-                >
+                  onPress={() => handleFeedback(false)}>
                   {feedback === "dislike" ? (
                     <Icon
                       className="text-lg text-default-600"
@@ -287,8 +280,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
                 <button
                   onClick={() =>
                     onAttemptChange?.(currentAttempt > 1 ? currentAttempt - 1 : 1)
-                  }
-                >
+                  }>
                   <Icon
                     className="cursor-pointer text-default-400 hover:text-default-500"
                     icon="gravity-ui:circle-arrow-left"
@@ -299,8 +291,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
                     onAttemptChange?.(
                       currentAttempt < attempts ? currentAttempt + 1 : attempts,
                     )
-                  }
-                >
+                  }>
                   <Icon
                     className="cursor-pointer text-default-400 hover:text-default-500"
                     icon="gravity-ui:circle-arrow-right"

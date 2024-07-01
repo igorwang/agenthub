@@ -37,7 +37,7 @@ export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) =
   return (
     <Card
       key={source.fileId}
-      className="bg-card w-1/2 max-w-[260px] rounded-lg border-1 shadow-sm md:w-1/4">
+      className="bg-card w-1/2 min-w-[120px] max-w-[260px] rounded-lg border-1 shadow-sm md:w-1/4">
       <CardHeader className="justify-center px-1 py-0">
         <div className="flex flex-row items-center gap-1">
           {/* <SourceFileIcon size={20}></SourceFileIcon> */}
