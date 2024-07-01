@@ -24,8 +24,8 @@ import {
   CHAT_MODE,
   CHAT_STATUS_ENUM,
   MessageType,
-  SourceType,
   SOURCE_TYPE_ENUM,
+  SourceType,
 } from "@/types/chatTypes";
 import { Avatar, ScrollShadow } from "@nextui-org/react";
 import { toast } from "sonner";
