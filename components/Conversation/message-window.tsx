@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import FeatureCards from "@/components/Conversation/feature-cards";
+import { LibraryCardProps } from "@/components/FunctionTab/libaray-card";
 import { PromptTemplateType } from "@/components/PromptFrom";
 import {
   Message_Role_Enum,
@@ -27,77 +28,21 @@ import {
   SOURCE_TYPE_ENUM,
 } from "@/types/chatTypes";
 import { Avatar, ScrollShadow } from "@nextui-org/react";
+import { toast } from "sonner";
 import MessageCard from "./message-card";
-
-export const assistantMessages = [
-  <div key="1">
-    {/* <p className="mb-5"> */}
-    Certainly! Here&apos;s a summary of five creative ways to use your Certainly!
-    Here&apos;s a summary of five creative ways to use your Certainly! Here&apos;s a
-    summary of five creative ways to use your Certainly! Here&apos;s a summary of five
-    creative ways to use your Certainly! Here&apos;s a summary of five creative ways to
-    use your Certainly! Here&apos;s a summary of five creative ways to use your Certainly!
-    Here&apos;s a summary of five creative ways to use your Certainly! Here&apos;s a
-    summary of five creative ways to use your kids&apos; art:
-    {/* </p> */}
-    {/* <ol className="space-y-2">
-      <li>
-        <strong>Create Art Books:</strong> Turn scanned artwork into custom
-        photo books.
-      </li>
-      <li>
-        <strong>Set Up a Gallery Wall:</strong> Use a dedicated wall with
-        interchangeable frames for displaying art.
-      </li>
-      <li>
-        <strong>Make Functional Items:</strong> Print designs on items like
-        pillows, bags, or mugs.
-      </li>
-      <li>
-        <strong>Implement an Art Rotation System:</strong> Regularly change the
-        displayed art, archiving the older pieces.
-      </li>
-      <li>
-        <strong>Use as Gift Wrap:</strong> Repurpose art as unique wrapping
-        paper for presents.
-      </li>
-    </ol> */}
-  </div>,
-  <div key="2">
-    <p className="mb-3">
-      Of course! Here are five more creative suggestions for what to do with your
-      children&apos;s art:
-    </p>
-    <ol className="space-y-2">
-      <li>
-        <strong>Create a Digital Archive:</strong> Scan or take photos of the artwork and
-        save it in a digital cloud storage service for easy access and space-saving.
-      </li>
-      <li>
-        <strong>Custom Calendar:</strong> Design a custom calendar with each month
-        showcasing a different piece of your child&apos;s art.
-      </li>
-      <li>
-        <strong>Storybook Creation:</strong> Compile the artwork into a storybook,
-        possibly with a narrative created by your child, to make a personalized book.
-      </li>
-      <li>
-        <strong>Puzzle Making:</strong> Convert their artwork into a jigsaw puzzle for a
-        fun and unique pastime activity.
-      </li>
-      <li>
-        <strong>Home Decor Items:</strong> Use the artwork to create home decor items like
-        coasters, magnets, or lampshades to decorate your house.
-      </li>
-    </ol>
-  </div>,
-];
 
 type AgentProps = {
   id: string;
   name?: string;
   avatar?: string;
   defaultModel?: string;
+};
+
+type QueryAnalyzeResultSchema = {
+  isRelated?: boolean;
+  refineQuery?: string;
+  keywords?: string[];
+  knowledge_base_ids?: string[];
 };
 
 type MessageWindowProps = {
@@ -128,11 +73,12 @@ export default function MessageWindow({
 
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [agent, setAgent] = useState<AgentProps>();
-  const [refineQuery, setRefineQuery] = useState<string | null>(null);
+  const [refineQuery, setRefineQuery] = useState<QueryAnalyzeResultSchema | null>(null);
   const [searchResults, setSearchResults] = useState<SourceType[] | null>(null);
   const [promptTemplates, setPromptTemplates] = useState<PromptTemplateType[]>();
   const [streamingMessage, setStreamingMessage] = useState<string | null>(null);
   const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
+  const [libraries, setLibraries] = useState<LibraryCardProps[]>();
 
   const session = useSession();
   const user_id = session.data?.user?.id;
@@ -198,6 +144,17 @@ export default function MessageWindow({
       } else {
         setPromptTemplates(DEFAULT_TEMPLATES);
       }
+      // const knowledge_bases = agentData.agent_by_pk
+      if (agentData.agent_by_pk?.kbs) {
+        setLibraries(
+          agentData.agent_by_pk?.kbs.map((item) => ({
+            id: item.knowledge_base.id,
+            name: item.knowledge_base.name,
+            description: item.knowledge_base.description,
+            base_type: item.knowledge_base.base_type,
+          })),
+        );
+      }
     }
   }, [selectedChatId, agentData]);
 
@@ -227,14 +184,18 @@ export default function MessageWindow({
       const fetchRefineQuery = async () => {
         try {
           console.log(messages);
-          const result = await queryAnalyzer(messages);
-
-          setRefineQuery(result.content);
-
-          console.log(result.content);
+          const result = await queryAnalyzer(
+            messages,
+            null,
+            JSON.stringify(libraries ? libraries : ""),
+          );
+          const structuredQuery = result?.[0];
+          setRefineQuery(structuredQuery || {});
         } catch (error) {
           console.error("Error fetching refine query:", error);
-          setRefineQuery(messages[messages.length - 1].message || "");
+          toast.error("System error, please try later.");
+          handleChatingStatus?.(false);
+          return;
         }
       };
       fetchRefineQuery();
@@ -242,11 +203,17 @@ export default function MessageWindow({
   }, [messages]);
 
   useEffect(() => {
+    setChatStatus(CHAT_STATUS_ENUM.Searching);
     if (isChating && refineQuery != null && chatStatus == CHAT_STATUS_ENUM.Analyzing) {
-      setChatStatus(CHAT_STATUS_ENUM.Searching);
       const searchLibrary = async () => {
+        console.log("Go to search something");
         try {
-          const result = await librarySearcher(refineQuery, agent_id || "", user_id, 5);
+          const result = await librarySearcher(
+            `${refineQuery?.refineQuery};${refineQuery?.keywords}`,
+            agent_id || "",
+            user_id,
+            5,
+          );
           setSearchResults(() => {
             return result.map(
               (item: SearchDocumentResultSchema): SourceType => ({
@@ -263,7 +230,12 @@ export default function MessageWindow({
           console.error("Error searching library:", error);
         }
       };
-      searchLibrary();
+      if (refineQuery.isRelated && refineQuery.knowledge_base_ids) {
+        searchLibrary();
+      } else {
+        console.log("Igonre Search");
+        setSearchResults([]); // empty result
+      }
       setStreamingMessage(""); // new message
     }
   }, [refineQuery]);
@@ -277,7 +249,7 @@ export default function MessageWindow({
           promptTemplates || DEFAULT_TEMPLATES,
           messages,
           searchResults || [],
-          refineQuery || "",
+          `${refineQuery?.refineQuery};${refineQuery?.keywords}` || "",
           {},
           4096,
         );
@@ -370,8 +342,7 @@ export default function MessageWindow({
     <ScrollShadow
       ref={scrollRef}
       className="flex w-full flex-grow flex-col gap-6 pb-8"
-      hideScrollBar={true}
-    >
+      hideScrollBar={true}>
       <div className="flex flex-1 flex-grow flex-col gap-1 px-1" ref={ref}>
         {messages.length === 0 && featureContent}
         {messages.map(({ role, message, files, sources }, index) => (
