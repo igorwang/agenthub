@@ -36,6 +36,7 @@ export type SourceType = {
   fileName: string;
   pages: number[];
   contents: string[];
+  knowledgeBaseId?: string;
 };
 
 export type MessageType = {
