@@ -14,4 +14,25 @@ fragment knowledgeBaseFragment on knowledge_base {
   created_at
   creator_id
   base_type
+  extraction_prompt_id
+}
+
+query KnowledgeBaseDetail(
+  $id:uuid!
+){
+  knowledge_base_by_pk(id:$id){
+    ...knowledgeBaseFragment,
+    type {
+      value
+      comment
+    }
+  }
+
+}
+
+query KnowledgeBaseTypeList{
+  knowledge_base_type{
+    value
+    comment
+  }
 }
