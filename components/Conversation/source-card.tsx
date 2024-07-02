@@ -37,7 +37,7 @@ export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) =
   return (
     <Card
       key={source.fileId}
-      className="bg-card w-1/2 min-w-[120px] max-w-[260px] rounded-lg border-1 shadow-sm md:w-1/4">
+      className="bg-card w-1/2 min-w-[160px] max-w-[260px] rounded-lg border-1 shadow-sm md:w-1/4">
       <CardHeader className="justify-center px-1 py-0">
         <div className="flex flex-row items-center gap-1">
           {/* <SourceFileIcon size={20}></SourceFileIcon> */}
@@ -63,7 +63,7 @@ export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) =
                 isIconOnly
                 variant="light"
                 size="sm"
-                className="my-0 h-[10px] w-[5px] p-0">
+                className="my-0 h-[8px] p-0">
                 <small className="text-default-600">{page}</small>
               </Button>
             ))}
@@ -71,7 +71,7 @@ export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) =
         )}
       </CardBody>
       <Divider></Divider>
-      <CardFooter className="flex-wrap justify-between gap-1 px-1 py-0">
+      <CardFooter className="flex-nowrap justify-between gap-1 px-1 py-0">
         <Tooltip content="Select the source to next chat.">
           <Button
             isIconOnly
