@@ -67,7 +67,7 @@ export const MessageCard: React.FC<MessageCardProps> = ({
   const messageElement = (
     <div className="my-2 flex flex-col gap-1">
       <div className={"flex flex-row items-center justify-start gap-1"}>
-        <Icon className={"text-lg text-default-600"} icon="mdi:idea" />
+        <Icon className={"text-lg text-default-600"} icon="hugeicons:idea-01" />
         <span className="text-slate-500">Answer</span>
       </div>
       <MarkdownRenderer content={message.message || ""}></MarkdownRenderer>
