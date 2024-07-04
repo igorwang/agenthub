@@ -1,7 +1,7 @@
 import { SourceSection } from "@/components/Conversation/source-section";
 import MarkdownRenderer from "@/components/MarkdownRender";
 import { MessageSkeleton } from "@/components/ui/message-skeleton";
-import { CHAT_STATUS_ENUM, MessageType } from "@/types/chatTypes";
+import { CHAT_STATUS_ENUM, MessageType, SOURCE_TYPE_ENUM } from "@/types/chatTypes";
 import { Icon } from "@iconify/react";
 import { Button, Divider, Spacer, Spinner, Textarea } from "@nextui-org/react";
 import { useRef, useState } from "react";
@@ -111,6 +111,14 @@ export const MessageCard: React.FC<MessageCardProps> = ({
         }></Textarea>
     </div>
   );
+
+  const librarySources = message.sources?.filter(
+    (item) => item.sourceType == SOURCE_TYPE_ENUM.file,
+  );
+
+  const webSources = message.sources?.filter(
+    (item) => item.sourceType == SOURCE_TYPE_ENUM.webpage,
+  );
   return (
     <div className={"flex w-full max-w-full flex-col gap-2 pb-10"}>
       {headerElement}
@@ -119,8 +127,11 @@ export const MessageCard: React.FC<MessageCardProps> = ({
       <div className={"flex flex-col" && !isOpen ? "hidden" : "visible"}>
         {isChating && message.status == "draft" && statusElement}
         {!message.sources && !message.message && <MessageSkeleton></MessageSkeleton>}
-        {message.sources && (
-          <SourceSection title="Source" items={message.sources || []}></SourceSection>
+        {librarySources && (
+          <SourceSection title="Source" items={librarySources || []}></SourceSection>
+        )}
+        {webSources && (
+          <SourceSection title="Web Source" items={webSources || []}></SourceSection>
         )}
         {message.message && messageElement}
         {message.status == "success" && followUpElement}

@@ -220,7 +220,7 @@ export default function MessageWindow({
             return result.map(
               (item: SearchDocumentResultSchema): SourceType => ({
                 fileName: item.filename || "",
-                fileId: item.file_id,
+                fileId: item.file_id || "",
                 url: item.url || "",
                 pages: item.pages || [],
                 contents: item.contents || [],

@@ -7,11 +7,24 @@ type SourceSectionProps = {
   items: SourceType[];
 };
 
-export const SourceSection = ({ title = "Sources", items }: SourceSectionProps) => {
+export const SourceSection = ({ title = "Source", items }: SourceSectionProps) => {
+  let iconType: string;
+  switch (title) {
+    case "Source":
+      iconType = "tabler:library";
+      break;
+    case "Web Source":
+      iconType = "iconoir:internet";
+      break;
+    default:
+      iconType = "tabler:library";
+      break;
+  }
+
   return (
     <div className="max-w-full">
       <div className="flex flex-row items-center justify-start gap-1 p-1">
-        <Icon className="text-lg text-default-600" icon="tabler:library" />
+        <Icon className="text-lg text-default-600" icon={iconType} />
         <span className="text-slate-500">{title}</span>
       </div>
       <section className="grid grid-cols-2 gap-1.5 sm:grid-cols-4">
