@@ -211,7 +211,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
                 )}
                 <Spacer x={2} />
                 <div className="flex flex-row items-center justify-start gap-1 p-1">
-                  <Icon className="text-lg text-default-600" icon="mdi:idea" />
+                  <Icon className="text-lg text-default-600" icon="hugeicons:idea-01" />
                   <span className="text-slate-500">Answer:</span>
                 </div>
                 <div className={clsx("flex max-w-full flex-col overflow-hidden p-1")}>

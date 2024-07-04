@@ -7,6 +7,7 @@ import {
   CardFooter,
   CardHeader,
   Divider,
+  Link,
   Tooltip,
 } from "@nextui-org/react";
 import React, { useState } from "react";
@@ -34,16 +35,16 @@ export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) =
     setSelected((prev) => !prev);
   };
 
+  const handleMoveToSource = () => {};
+
   return (
-    <Card
-      key={source.fileId}
-      className="bg-card w-1/2 min-w-[160px] max-w-[260px] rounded-lg border-1 shadow-sm md:w-1/4">
+    <Card key={source.fileId} className="bg-card rounded-lg border-1 shadow-sm">
       <CardHeader className="justify-center px-1 py-0">
         <div className="flex flex-row items-center gap-1">
           {/* <SourceFileIcon size={20}></SourceFileIcon> */}
           <Icon className="text-md text-default-600" icon="mdi:tag-search-outline" />
           <p className="text-nowrap text-small font-semibold text-default-400">
-            Source - {index}
+            Source - {source.index || index}
           </p>
         </div>
       </CardHeader>
@@ -106,16 +107,18 @@ export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) =
           </Button>
         </Tooltip>
         <Tooltip content="View the details of the source.">
-          <Button
-            isIconOnly
-            radius="full"
-            size="sm"
-            variant="light"
-            className="h-[18px]"
-            //   onPress={handleSelectSource}
-          >
-            <Icon className="text-md text-default-600" icon="gravity-ui:link" />
-          </Button>
+          <Link href={source.url} target="_blank">
+            <Button
+              isIconOnly
+              radius="full"
+              size="sm"
+              variant="light"
+              className="h-[18px]"
+              isDisabled={source.url == ""}
+              onClick={handleMoveToSource}>
+              <Icon className="text-md text-default-600" icon="gravity-ui:link" />
+            </Button>
+          </Link>
         </Tooltip>
       </CardFooter>
     </Card>

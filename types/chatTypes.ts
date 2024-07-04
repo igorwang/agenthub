@@ -37,6 +37,7 @@ export type SourceType = {
   pages: number[];
   contents: string[];
   knowledgeBaseId?: string;
+  index?: number;
 };
 
 export type MessageType = {

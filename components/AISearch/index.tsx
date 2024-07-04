@@ -14,7 +14,6 @@ import {
   createRagAnswerPrompt,
 } from "@/lib/prompts/ragAnswerPrompt";
 import { ragQueryAnalyzer } from "@/lib/prompts/ragQueryAnalyzer";
-import { librarySearcher } from "@/lib/searchs/librarySearch";
 import { SearchDocumentResultSchema } from "@/restful/generated";
 import {
   CHAT_STATUS_ENUM,
@@ -150,28 +149,72 @@ export default function AISearch() {
       const searchLibrary = async () => {
         console.log("Go to search something");
         try {
-          const result = await librarySearcher({
+          const searchBody = {
             query: `${refineQuery?.refineQuery};${refineQuery?.keywords}`,
             agent_id: null,
             user_id: userId || null,
             limit: 5,
+          };
+
+          const librarySearchPromise = fetch("/api/search", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(searchBody),
           });
-          const searchResults = result.map(
-            (item: SearchDocumentResultSchema): SourceType => ({
-              fileName: item.filename || "",
-              fileId: item.file_id,
-              url: item.url || "",
-              pages: item.pages || [],
-              contents: item.contents || [],
-              sourceType: SOURCE_TYPE_ENUM.file,
-              knowledgeBaseId: item.knowledge_base_id || "",
-            }),
-          );
-          setSearchResults(() => searchResults || []);
-          setMessages((prev) => [
-            ...prev.slice(0, -1),
-            { ...prev[prev.length - 1], sources: searchResults },
-          ]);
+
+          const webSearchPromise = fetch("/api/search/web", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(searchBody),
+          });
+
+          Promise.all([librarySearchPromise, webSearchPromise])
+            .then(async ([librarySearchResponse, webSearchResponse]) => {
+              const librarySearchResults = await librarySearchResponse.json();
+              const webSearchResults = await webSearchResponse.json();
+              // 在这里处理查询结果
+
+              const libraryResults = librarySearchResults.map(
+                (item: SearchDocumentResultSchema): SourceType => ({
+                  fileName: item.filename || "",
+                  fileId: item.file_id || "",
+                  url: item.url || "",
+                  pages: item.pages || [],
+                  contents: item.contents || [],
+                  sourceType: SOURCE_TYPE_ENUM.file,
+                  knowledgeBaseId: item.knowledge_base_id || "",
+                }),
+              );
+
+              const webResults = webSearchResults.map(
+                (item: SearchDocumentResultSchema): SourceType => ({
+                  fileName: item.filename || "",
+                  fileId: item.file_id || "",
+                  url: item.url || "",
+                  pages: item.pages || [],
+                  contents: item.contents || [],
+                  sourceType: SOURCE_TYPE_ENUM.webpage,
+                  knowledgeBaseId: item.knowledge_base_id || "",
+                }),
+              );
+              const searchResults = [...libraryResults, ...webResults].map(
+                (item, index) => ({ ...item, index: index + 1 }),
+              );
+
+              setSearchResults(() => searchResults || []);
+              setMessages((prev) => [
+                ...prev.slice(0, -1),
+                { ...prev[prev.length - 1], sources: searchResults },
+              ]);
+            })
+            .catch((error) => {
+              toast.error("Error during search requests, please try again");
+              console.error("Error during search requests:", error);
+            });
         } catch (error) {
           console.error("Error searching library:", error);
           toast.error("Search Error: please try later.");
