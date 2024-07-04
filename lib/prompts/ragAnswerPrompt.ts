@@ -1,8 +1,28 @@
 import { PromptTemplateType } from "@/components/PromptFrom";
-import { MessageType, SourceType } from "@/types/chatTypes";
+import { SourceType } from "@/types/chatTypes";
 import { ChatPromptTemplate, PromptTemplate } from "@langchain/core/prompts";
 import { TokenTextSplitter } from "@langchain/textsplitters";
 import { getEncoding } from "js-tiktoken";
+export const DEFAULT_RAG_TEMPLATES: PromptTemplateType[] = [
+  {
+    id: 1,
+    template:
+      "You are a help AI assistant. \
+You are given a user question, and please write clean, concise and accurate answer to the question. \
+You will be given a set of related contexts to the question, each starting with a reference number like [[source:x]], where x is a number. \
+Please use the context and cite the context at the end of each sentence if applicable. \
+Your answer must be correct, accurate and written by an expert using an unbiased and professional tone. \
+Please limit to 1024 tokens. \
+Do not give any information that is not related to the question, and do not repeat. \
+Say 'Sorry, I don't enough information to answer this question, please give me more ditails.' followed by the related topic, if the given context do not provide sufficient information. \
+Please cite the contexts with the reference numbers, in the format [source:x]. \
+If a sentence comes from multiple contexts, please list all applicable citations, like [source:3][source:5]. \
+Other than code and specific names and citations, your answer must be written in the same language as the question.\
+Remember, don't blindly repeat the contexts verbatim.",
+    role: "system",
+    status: "draft",
+  },
+];
 
 async function messageTokenCounter(messages: [string, string][]) {
   const enc = getEncoding("cl100k_base");
@@ -20,14 +40,14 @@ async function createContext(sources: SourceType[]) {
     const chunkText = source.contents
       .map((content, index) => `CHUNK-#${index + 1}:${content}`)
       .join("\n");
-    return `[source:${index}-${source.fileName}]${sourceUrl}\n\n${chunkText}`;
+    return `\n[source:${index + 1}]${sourceUrl}\n${source.fileName}\n\n${chunkText}\n`;
   });
   return context;
 }
 
-export async function createPrompt(
+export async function createRagAnswerPrompt(
   templates: PromptTemplateType[],
-  messages: MessageType[],
+  query: string,
   sources: SourceType[],
   refineQuery?: string,
   variables?: { [key: string]: string },
@@ -48,24 +68,19 @@ export async function createPrompt(
 
   const context = await createContext(sources);
   const contextMessages = ["user", `Context: ${context}`];
-  const historyMessages = messages.slice(0, -1).map((msg) => [msg.role, msg.message]);
 
-  const contextString = [contextMessages, ...historyMessages]
-    .map((msg) => `${msg[0]}:${msg[1]}`)
-    .join("\n");
-
-  const latestQuery = messages.length > 0 ? messages[messages.length - 1].message : "";
   const latestMessageContent = refineQuery
-    ? `Query Context:${refineQuery}\nQuestion:${latestQuery}`
-    : `Question:${latestQuery}`;
+    ? `Query Context:${refineQuery}\nQuestion:${query}`
+    : `Question:${query}`;
   const latestMessages: [string, string] = ["user", latestMessageContent];
 
   const fixTokenCount = await messageTokenCounter([...templateMessages, latestMessages]);
 
   const leftTokenCount = tokenLimit - fixTokenCount - 300;
 
-  let promptFromContext = "";
+  const contextString = [contextMessages].map((msg) => `${msg[0]}:${msg[1]}`).join("\n");
 
+  let promptFromContext = "";
   if (contextString && leftTokenCount > 0) {
     const textSplitter = new TokenTextSplitter({
       chunkSize: leftTokenCount,
@@ -76,6 +91,7 @@ export async function createPrompt(
   }
 
   const promptTemplateFromTemplate = ChatPromptTemplate.fromMessages(templateMessages);
+
   const templateVariables = promptTemplateFromTemplate.inputVariables.map((value) =>
     variables && variables.hasOwnProperty(value)
       ? { value: variables[value] }
@@ -86,5 +102,6 @@ export async function createPrompt(
 
   const promptFromQuery = `${latestMessages[0]}:${latestMessages[1]}`;
   const prompt = `${promptFromTemplate}\n${promptFromContext}\n${promptFromQuery}`;
+  console.log("prompt", prompt);
   return prompt;
 }

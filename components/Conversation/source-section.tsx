@@ -12,7 +12,7 @@ export const SourceSection = ({ title = "Sources", items }: SourceSectionProps) 
     <div className="max-w-full">
       <div className="flex flex-row items-center justify-start gap-1 p-1">
         <Icon className="text-lg text-default-600" icon="solar:documents-bold-duotone" />
-        <span className="text-slate-500">{title}:</span>
+        <span className="text-slate-500">{title}</span>
       </div>
       <section className="flex flex-wrap gap-1.5">
         {items.map((item, index) => (

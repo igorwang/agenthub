@@ -47,4 +47,6 @@ export type MessageType = {
   status?: string | null;
   files?: any;
   sources?: SourceType[];
+  query?: string;
+  sessionId?: string;
 };

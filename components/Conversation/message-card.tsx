@@ -2,10 +2,10 @@
 import React, { ReactNode } from "react";
 
 import { cn } from "@/cn";
-import { MessageSkeleton } from "@/components/Conversation/message-skeleton";
 import { SourceSection } from "@/components/Conversation/source-section";
 import { UploadFile, UploadFileProps } from "@/components/Conversation/upload-file";
 import MarkdownRenderer from "@/components/MarkdownRender";
+import { MessageSkeleton } from "@/components/ui/message-skeleton";
 import { CHAT_STATUS_ENUM, SourceType } from "@/types/chatTypes";
 import { Icon } from "@iconify/react";
 import { Badge, Button, Link, Spacer, Spinner } from "@nextui-org/react";
