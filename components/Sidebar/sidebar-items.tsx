@@ -23,21 +23,8 @@ export const sectionItems: SidebarItem[] = [
       {
         key: "search",
         href: "/search",
-        icon: "material-symbols:search-check",
+        icon: "mingcute:search-3-line",
         title: "搜索",
-        endContent: (
-          <Icon
-            className="text-default-400"
-            icon="solar:add-circle-line-duotone"
-            width={24}
-          />
-        ),
-      },
-      {
-        key: "discover",
-        href: "/discover",
-        icon: "iconamoon:discover",
-        title: "发现",
         endContent: (
           <Icon
             className="text-default-400"
@@ -59,7 +46,19 @@ export const sectionItems: SidebarItem[] = [
           />
         ),
       },
-
+      {
+        key: "discover",
+        href: "/discover",
+        icon: "iconamoon:discover",
+        title: "发现",
+        endContent: (
+          <Icon
+            className="text-default-400"
+            icon="solar:add-circle-line-duotone"
+            width={24}
+          />
+        ),
+      },
       // {
       //   key: "tracker",
       //   href: "#",
