@@ -1,3 +1,15 @@
+fragment messageFragment on message {
+  id
+  role
+  feedback
+  created_at
+  content
+  status
+  updated_at
+  attachments
+  sources
+}
+
 subscription GetMessageList($session_id: uuid, $limit: Int = 100) {
   message(where: { session_id: { _eq: $session_id } }, limit: $limit) {
     id
@@ -9,5 +21,15 @@ subscription GetMessageList($session_id: uuid, $limit: Int = 100) {
     updated_at
     attachments
     sources
+  }
+}
+
+subscription SubscriptionMessageList(
+  $limit: Int = 10
+  $order_by: [message_order_by!] = {}
+  $where: message_bool_exp = {}
+) {
+  message(limit: $limit, order_by: $order_by, where: $where) {
+    ...messageFragment
   }
 }

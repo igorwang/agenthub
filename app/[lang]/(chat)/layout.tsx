@@ -31,14 +31,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <div className="h-dvh w-dvw">
                 <div className={"flex h-full flex-row"}>
                   <SideBar />
-                  {children}
-                  <Toaster
-                    toastOptions={{
-                      classNames: {
-                        error: "text-red-400",
-                      },
-                    }}
-                  />
+                  <div className="h-full w-full">
+                    {children}
+                    <Toaster
+                      toastOptions={{
+                        classNames: {
+                          error: "text-red-400",
+                        },
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             </SessionProvider>

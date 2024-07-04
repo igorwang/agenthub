@@ -122,8 +122,7 @@ export const Conversation: React.FC<ConversationProps> = ({
               isIconOnly={true}
               startContent={<ConfigIcon size={28} />}
               variant="light"
-              onClick={handleConfigCilck}
-            ></Button>
+              onClick={handleConfigCilck}></Button>
           </div>
           <Tooltip content={agent.description}>
             <p className="max-w-sm overflow-hidden text-ellipsis text-nowrap text-sm font-light">
@@ -135,8 +134,7 @@ export const Conversation: React.FC<ConversationProps> = ({
       <Tabs
         className="justify-center"
         selectedKey={chatMode}
-        onSelectionChange={(key) => setChatMode(key.toString())}
-      >
+        onSelectionChange={(key) => setChatMode(key.toString())}>
         <Tab key={CHAT_MODE.simple.toString()} title="simple" />
         <Tab key={CHAT_MODE.deep.toString()} title="deep" />
         <Tab key={CHAT_MODE.creative.toString()} title="creative" />
@@ -157,8 +155,7 @@ export const Conversation: React.FC<ConversationProps> = ({
           <div className="flex w-full max-w-full flex-col">
             <PromptInputWithFaq
               isChating={isChating}
-              handleChatingStatus={setIsChating}
-            ></PromptInputWithFaq>
+              handleChatingStatus={setIsChating}></PromptInputWithFaq>
             <p className="px-2 text-tiny text-default-400">
               AI can also make mistakes. Please verify important information.
             </p>

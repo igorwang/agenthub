@@ -4,6 +4,8 @@ import Negotiator from "negotiator";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "./auth";
 
+const PUBLIC_FILE = /\.(.*)$/;
+
 const protectedRoutes = ["/chat"]; // Add any other protected routes here
 
 const locales = ["en", "tw", "zh"];
@@ -26,7 +28,7 @@ export default async function middleware(request: NextRequest) {
 
   const { pathname, origin } = request.nextUrl;
 
-  const excludePaths = ["/_next", "/static", "/api", "/favicon.ico"];
+  const excludePaths = ["/_next", "/static", "/api", "/favicon.ico", "/public"];
 
   const shouldExclude = excludePaths.some((path) => pathname.startsWith(path));
 

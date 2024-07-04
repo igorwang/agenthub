@@ -24,8 +24,8 @@ import {
   CHAT_MODE,
   CHAT_STATUS_ENUM,
   MessageType,
-  SourceType,
   SOURCE_TYPE_ENUM,
+  SourceType,
 } from "@/types/chatTypes";
 import { Avatar, ScrollShadow } from "@nextui-org/react";
 import { toast } from "sonner";
@@ -203,8 +203,8 @@ export default function MessageWindow({
   }, [messages]);
 
   useEffect(() => {
-    setChatStatus(CHAT_STATUS_ENUM.Searching);
     if (isChating && refineQuery != null && chatStatus == CHAT_STATUS_ENUM.Analyzing) {
+      setChatStatus(CHAT_STATUS_ENUM.Searching);
       console.log("refineQuery", refineQuery);
       const searchLibrary = async () => {
         console.log("Go to search something");

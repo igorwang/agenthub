@@ -55,3 +55,14 @@ query GetTopicHistories($agent_id: uuid!, $user_id: uuid!, $limit: Int = 100) {
     agent_id
   }
 }
+
+query GetTopics($where: topic_history_bool_exp = {}) {
+  topic_history(where: $where) {
+    id
+    short_url
+    title
+    user_id
+    created_at
+    updated_at
+  }
+}

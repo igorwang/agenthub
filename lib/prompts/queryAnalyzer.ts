@@ -6,19 +6,6 @@ import { StructuredOutputParser } from "langchain/output_parsers";
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
-const queryAnalyzerPrompt = `You are an expert at analyzing user questions as an AI. \
-You just have full access to the knowledge bases: {knowledge_bases}
-
-Follow these steps for query analysis:
-
-1. Analyze the user's historical and latest queries to determine the current intent. If the intent has changed, disregard previous queries and focus on the current intent. Use context to infer the ultimate question if unclear.
-2. Refine the query by breaking down the final question into distinct sub-questions that address the original query.
-3. Generate 3-8 keywords based on the overall intent and final query.
-4. Search relevant knowledge bases for answers, ensuring high-precision matching across domain and content. Only search databases with consistent domains.
-
-{format_instructions}
-`;
-
 export const QueryAnalyzeResultSchema = z.object({
   isRelated: z
     .boolean()
@@ -47,6 +34,19 @@ export async function queryAnalyzer(
   model?: string | null,
   knowledge_bases?: string,
 ): Promise<z.infer<typeof QueryAnalyzeResultSchema>[]> {
+  const queryAnalyzerPrompt = `You are an expert at analyzing user questions as an AI. \
+  You just have full access to the knowledge bases: {knowledge_bases}
+  
+  Follow these steps for query analysis:
+  
+  1. Analyze the user's historical and latest queries to determine the current intent. If the intent has changed, disregard previous queries and focus on the current intent. Use context to infer the ultimate question if unclear.
+  2. Refine the query by breaking down the final question into distinct sub-questions that address the original query.
+  3. Generate 3-8 keywords based on the overall intent and final query.
+  4. Search relevant knowledge bases for answers, ensuring high-precision matching across domain and content. Only search databases with consistent domains.
+  
+  {format_instructions}
+  `;
+
   const tools = [
     {
       type: "function",
