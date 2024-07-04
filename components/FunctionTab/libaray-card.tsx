@@ -48,7 +48,7 @@ const LibraryCard: React.FC<{ library: LibraryCardProps }> = ({ library }) => {
       </CardBody>
       <Divider />
       <CardFooter>
-        <Link isExternal showAnchorIcon isDisabled={true}>
+        <Link isExternal showAnchorIcon href={`/library/${library.id}/settings`}>
           Visit more details.
         </Link>
       </CardFooter>

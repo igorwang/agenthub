@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Divider, Input, Select, SelectItem, Textarea } from "@nextui-org/react";
+import { Button, Divider, Input, Textarea } from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -103,7 +103,20 @@ export default function LibrarySetting() {
               onChange={(e) => setData({ ...data, name: e.target.value || "" })}
             />
           </div>
-          <div className={"mt-4"}>
+          <div className={"mt-8"}>
+            <Input
+              isRequired
+              label="Library Type"
+              labelPlacement="outside"
+              disabled={true}
+              // placeholder="Enter library name"
+              type="text"
+              variant={"flat"}
+              value={data?.base_type}
+              // onChange={(e) => setData({ ...data, name: e.target.value || "" })}
+            />
+          </div>
+          {/* <div className={"mt-4"}>
             <Select
               label="Library Type"
               labelPlacement="outside"
@@ -120,7 +133,7 @@ export default function LibrarySetting() {
                 ),
               )}
             </Select>
-          </div>
+          </div> */}
           <div className={"mt-4"}>
             <Textarea
               label="Library Description"
@@ -137,9 +150,13 @@ export default function LibrarySetting() {
         <div className={"w-full max-w-4xl pt-12"}>
           <span className="relative text-foreground-500">Prompt</span>
           <Divider />
-          {data?.extraction_prompt_id ? (
-            <PromptFrom agentId={id} defaultPromptId={data?.extraction_prompt_id} />
-          ) : null}
+          {/* {data?.extraction_prompt_id ? ( */}
+          <PromptFrom
+            agentId={id}
+            defaultPromptId={data?.extraction_prompt_id}
+            konwledgeBaseId={id}
+          />
+          {/* ) : null} */}
         </div>
       </div>
     </div>
