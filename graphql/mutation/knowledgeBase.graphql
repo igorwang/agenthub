@@ -14,3 +14,10 @@ fragment KnowledgeBaseItem on knowledge_base {
   base_type
   extraction_prompt_id
 }
+
+
+mutation CreateOneKnowledgeBase($object: knowledge_base_insert_input!) {
+  insert_knowledge_base_one(object: $object) {
+    ...KnowledgeBaseItem
+  }
+}
