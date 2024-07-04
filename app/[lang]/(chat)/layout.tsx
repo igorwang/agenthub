@@ -29,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <StoreProvider>
             <SessionProvider>
               <div className="h-dvh w-dvw">
-                <div className="flex h-full w-full flex-row">
+                <div className={"flex h-full flex-row"}>
                   <SideBar />
                   <div className="h-full w-full">
                     {children}

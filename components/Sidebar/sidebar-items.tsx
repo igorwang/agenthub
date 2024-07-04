@@ -46,6 +46,19 @@ export const sectionItems: SidebarItem[] = [
           />
         ),
       },
+      {
+        key: "library",
+        href: "/library",
+        icon: "ph:folder",
+        title: "Library",
+        endContent: (
+          <Icon
+            className="text-default-400"
+            icon="solar:add-circle-line-duotone"
+            width={24}
+          />
+        ),
+      },
 
       // {
       //   key: "tracker",

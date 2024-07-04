@@ -1,0 +1,16 @@
+mutation UpdateKnowledgeBase($_set: knowledge_base_set_input, $pk_columns: knowledge_base_pk_columns_input!) {
+  update_knowledge_base_by_pk(_set: $_set, pk_columns: $pk_columns) {
+    ...KnowledgeBaseItem
+  }
+}
+
+fragment KnowledgeBaseItem on knowledge_base {
+  id
+  name
+  description
+  updated_at
+  created_at
+  creator_id
+  base_type
+  extraction_prompt_id
+}

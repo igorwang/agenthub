@@ -8,10 +8,8 @@ export default function AgentLayout({
   return (
     <div className="h-full w-full max-w-full">
       <div className="flex h-full flex-row">
-        {/* <div className="flex flex-row max-w-full overflow-auto"> */}
-        <ChatHub></ChatHub>
+        <ChatHub />
         {children}
-        {/* </div> */}
       </div>
     </div>
   );
