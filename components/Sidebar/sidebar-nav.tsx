@@ -122,8 +122,7 @@ const SidebarNav = React.forwardRef<HTMLElement, SidebarProps>(
                 item.startContent ?? null
               )
             }
-            title={isCompact || isNestType ? null : item.title}
-          >
+            title={isCompact || isNestType ? null : item.title}>
             {isCompact ? (
               <Tooltip content={item.title} placement="right">
                 <div className="flex w-full items-center justify-center">
@@ -170,8 +169,7 @@ const SidebarNav = React.forwardRef<HTMLElement, SidebarProps>(
                     ) : (
                       item.startContent ?? null
                     )
-                  }
-                >
+                  }>
                   {item.items && item.items?.length > 0 ? (
                     <Listbox
                       className={"mt-0.5"}
@@ -179,8 +177,7 @@ const SidebarNav = React.forwardRef<HTMLElement, SidebarProps>(
                         list: cn("border-l border-default-200 pl-4"),
                       }}
                       items={item.items}
-                      variant="flat"
-                    >
+                      variant="flat">
                       {item.items.map(renderItem)}
                     </Listbox>
                   ) : (
@@ -224,8 +221,7 @@ const SidebarNav = React.forwardRef<HTMLElement, SidebarProps>(
               )
             }
             textValue={item.title}
-            title={isCompact ? null : item.title}
-          >
+            title={isCompact ? null : item.title}>
             {isCompact ? (
               <Tooltip content={item.title} placement="right">
                 <div className="flex w-full items-center justify-center">
@@ -283,8 +279,7 @@ const SidebarNav = React.forwardRef<HTMLElement, SidebarProps>(
           setSelected(key as React.Key);
           onSelect?.(key as string);
         }}
-        {...props}
-      >
+        {...props}>
         {(item) => {
           return item.items &&
             item.items?.length > 0 &&
@@ -295,8 +290,7 @@ const SidebarNav = React.forwardRef<HTMLElement, SidebarProps>(
               key={item.key}
               classNames={sectionClasses}
               showDivider={isCompact}
-              title={item.title}
-            >
+              title={item.title}>
               {item.items.map(renderItem)}
             </ListboxSection>
           ) : (
