@@ -150,7 +150,7 @@ export default function MessageWindow({
           agentData.agent_by_pk?.kbs.map((item) => ({
             id: item.knowledge_base.id,
             name: item.knowledge_base.name,
-            description: item.knowledge_base.description,
+            description: item.knowledge_base.description || "",
             base_type: item.knowledge_base.base_type,
           })),
         );

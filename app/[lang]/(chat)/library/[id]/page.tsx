@@ -275,7 +275,7 @@ export default function LibraryPage() {
         const bucket = match[0].substring(0, match[0].length - 1);
         const key = item?.path.substring(match[0].length);
         getSignedUrl(bucket, key).then((res) => {
-          window.open(res?.data?.url);
+          window.open(res?.data?.data.url);
         });
       }
     } else {
