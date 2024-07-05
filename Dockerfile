@@ -32,5 +32,7 @@ COPY --from=base /app/package.json /app/package.json
 # Expose port 3000
 EXPOSE 3000
 
+RUN yarn install
+
 # Start the Next.js application
-CMD ["node_modules/.bin/next", "start"]
+CMD ["yarn", "start"]
