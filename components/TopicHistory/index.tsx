@@ -82,8 +82,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
           isIconOnly
           className="absolute right-1 top-0.5 max-h-full"
           variant="light"
-          startContent={<OcticonKebabHorizontalIcon />}
-        ></Button>
+          startContent={<OcticonKebabHorizontalIcon />}></Button>
       </DropdownTrigger>
       <DropdownMenu aria-label="Static Actions">
         {/* <DropdownItem key="new">New file</DropdownItem> */}
@@ -105,8 +104,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
         startContent={<DiscussionIcon className="hidden" />}
         endContent={dropdownContent}
         shouldHighlightOnFocus={true}
-        onClick={() => handleSelect(item.id)}
-      >
+        onClick={() => handleSelect(item.id)}>
         {item.title}
       </ListboxItem>
     );
@@ -119,8 +117,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
           selectionMode="single"
           className="h-full"
           defaultSelectedKeys={[defaultSelectedKey]}
-          hideSelectedIcon={true}
-        >
+          hideSelectedIcon={true}>
           {historyItems}
         </Listbox>
       )}

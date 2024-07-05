@@ -111,16 +111,14 @@ export const ChatList: React.FC<{ groupedChatList: GroupedChatListDTO[] }> = ({
           selectionMode="single"
           //   onSelectionChange={setValues}
           variant="flat"
-          hideSelectedIcon={true}
-        >
+          hideSelectedIcon={true}>
           {group.agents.map((item) => (
             <ListboxItem
               key={item.id}
               textValue={item.name}
               onClick={() => handleSelectChat(item.id)}
               onMouseEnter={() => handleMouseEnter(item?.id)}
-              onMouseLeave={() => handleMouseLeave()}
-            >
+              onMouseLeave={() => handleMouseLeave()}>
               <div className={"flex justify-between"}>
                 <div className="flex items-center gap-2">
                   <Avatar
@@ -144,8 +142,8 @@ export const ChatList: React.FC<{ groupedChatList: GroupedChatListDTO[] }> = ({
                 {item?.id === showIconId && (
                   <Icon
                     className={"cursor-pointer"}
-                    onClick={(e) => handleUnsubscribe(e, item.id)}
-                    icon="material-symbols-light:add-alert-outline"
+                    // onClick={(e) => handleUnsubscribe(e, item.id)}
+                    icon="material-symbols:delete-outline-rounded"
                     width={"2em"}
                   />
                 )}
