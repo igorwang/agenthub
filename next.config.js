@@ -1,6 +1,9 @@
+const envFile =
+  process.env.NODE_ENV === "production" ? ".env.production.local" : ".env.local";
+require("dotenv").config({ path: envFile });
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "standalone",
   async redirects() {
     return [
       {
