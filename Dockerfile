@@ -17,12 +17,6 @@ ENV NEXT_TELEMETRY_DISABLED 1
 
 ENV NODE_ENV production
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-
-USER nextjs
-
 EXPOSE 3000
 
 # server.js is created by next build from the standalone output
