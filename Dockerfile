@@ -24,15 +24,17 @@ FROM node:20.11-alpine3.19 AS runner
 # Set the working directory
 WORKDIR /app
 
-# Copy the built application and node_modules from the builder stage
-COPY --from=base /app/.next /app/.next
-COPY --from=base /app/node_modules /app/node_modules
-COPY --from=base /app/package.json /app/package.json
-
-# Expose port 3000
-EXPOSE 3000
-
-RUN yarn install && yarn build
-
-# Start the Next.js application
 CMD ["yarn", "start"]
+
+# # Copy the built application and node_modules from the builder stage
+# COPY --from=base /app/.next /app/.next
+# COPY --from=base /app/node_modules /app/node_modules
+# COPY --from=base /app/package.json /app/package.json
+
+# # Expose port 3000
+# EXPOSE 3000
+
+# RUN yarn install && yarn build
+
+# # Start the Next.js application
+# CMD ["yarn", "start"]
