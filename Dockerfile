@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . .
 
 # Build the Next.js application
-RUN yarn build
+RUN yarn install && yarn build
 
 # Use a minimal Node.js image to serve the app
 FROM node:20.11-alpine3.19 AS runner
