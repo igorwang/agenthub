@@ -67,7 +67,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     strategy: "jwt",
   },
   callbacks: {
-    redirect: () => {
+    redirect: ({ url, baseUrl }) => {
+      console.log("console", url, baseUrl);
       return process.env.APP_HOST || "/chat";
     },
     jwt: async ({ token, user, profile }) => {
