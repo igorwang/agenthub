@@ -1,6 +1,5 @@
 "use client";
 
-import { getSignedUrl } from "@/app/apiClient";
 import UploadZone from "@/components/UploadZone";
 import {
   FilesItemFragment,
@@ -11,7 +10,8 @@ import {
   useFilesListLazyQuery,
   useKnowledgeBaseDetailQuery,
 } from "@/graphql/generated/types";
-import { formatTime } from "@/utils/date";
+import { getSignedUrl } from "@/lib/apiBizClient";
+import { formatTime } from "@/lib/utils/date";
 import { Icon } from "@iconify/react";
 import {
   Button,
