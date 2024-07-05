@@ -59,7 +59,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       authorization: {
         params: {
           scope: "openid profile email",
-          redirect_uri: `${process.env.APP_HOST}/api/auth/callback/authentik`,
         },
       },
     }),
@@ -69,9 +68,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     // redirect: ({ url, baseUrl }) => {
-    //   if (url.startsWith("/")) return `${baseUrl}${url}`;
-    //   else if (new URL(url).origin === baseUrl) return url;
-    //   return baseUrl;
+    //   console.log("redirect", url, baseUrl);
+    //   return url;
     // },
     jwt: async ({ token, user, profile }) => {
       if (user) {

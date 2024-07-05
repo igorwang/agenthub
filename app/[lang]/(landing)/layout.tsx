@@ -1,4 +1,5 @@
 import { Providers } from "@/app/providers";
+import { Navbar } from "@/components/navbar";
 import { fontSans } from "@/config/fonts";
 import { siteConfig } from "@/config/site";
 import "@/styles/globals.css";
@@ -32,12 +33,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className={clsx(
           "min-h-screen bg-background font-sans antialiased",
           fontSans.variable,
-        )}
-      >
+        )}>
         <Providers themeProps={{ attribute: "class", defaultTheme: "white" }}>
           <SessionProvider>
             <div className="relative flex h-dvh w-dvw flex-col">
-              {/* <Navbar /> */}
+              <Navbar />
               {/* <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
               {children}
             </main>

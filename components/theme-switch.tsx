@@ -5,7 +5,7 @@ import { useIsSSR } from "@react-aria/ssr";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
 import clsx from "clsx";
 import { useTheme } from "next-themes";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 
 import { MoonFilledIcon, SunFilledIcon } from "@/components/icons";
 
@@ -18,8 +18,12 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({ className, classNames }) => 
   const { theme, setTheme } = useTheme();
   const isSSR = useIsSSR();
 
+  useEffect(() => {
+    setTheme("light");
+  });
+
   const onChange = () => {
-    theme === "light" ? setTheme("dark") : setTheme("light");
+    theme === "light" ? setTheme("light") : setTheme("light");
   };
 
   const { Component, slots, isSelected, getBaseProps, getInputProps, getWrapperProps } =
@@ -37,8 +41,7 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({ className, classNames }) => 
           className,
           classNames?.base,
         ),
-      })}
-    >
+      })}>
       <VisuallyHidden>
         <input {...getInputProps()} />
       </VisuallyHidden>
@@ -59,8 +62,7 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({ className, classNames }) => 
             ],
             classNames?.wrapper,
           ),
-        })}
-      >
+        })}>
         {!isSelected || isSSR ? (
           <SunFilledIcon size={22} />
         ) : (

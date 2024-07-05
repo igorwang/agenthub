@@ -7,6 +7,7 @@ import { Avatar, Button, ScrollShadow, Spacer, Tooltip } from "@nextui-org/react
 
 import SidebarNav from "./sidebar-nav";
 
+import { ThemeSwitch } from "@/components/theme-switch";
 import { sectionItems } from "./sidebar-items";
 
 export default function SideBar() {
@@ -28,7 +29,8 @@ export default function SideBar() {
           <Spacer y={2} />
           <SidebarNav isCompact defaultSelectedKey="chat" items={sectionItems} />
         </div>
-        <div className="mt-auto flex flex-col items-center">
+        <div className="mt-auto flex flex-col items-center gap-1">
+          <ThemeSwitch className="pb-2" />
           <Tooltip content="GitHub" placement="right">
             <Button
               isIconOnly
