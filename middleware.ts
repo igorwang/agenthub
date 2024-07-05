@@ -6,7 +6,7 @@ import { auth } from "./auth";
 
 const PUBLIC_FILE = /\.(.*)$/;
 
-const protectedRoutes = ["/chat"]; // Add any other protected routes here
+const protectedRoutes = ["/chat", "/search", "/library", "/search"]; // Add any other protected routes here
 
 const locales = ["en", "tw", "zh"];
 const defaultLocale = "en";
@@ -59,7 +59,7 @@ export default async function middleware(request: NextRequest) {
   );
 
   if (!session && isProtectedRoute) {
-    return NextResponse.redirect(`${origin}/auth/login`);
+    return NextResponse.redirect(`${origin}/auth/login?redirectUri=${pathname}`);
   }
 
   return NextResponse.next();

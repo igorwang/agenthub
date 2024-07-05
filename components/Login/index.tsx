@@ -1,14 +1,20 @@
 "use client";
 
 import { Icon } from "@iconify/react";
-import { Button, Checkbox, Divider, Input, Link } from "@nextui-org/react";
-import { signIn } from "next-auth/react";
-import React from "react";
+import { Button } from "@nextui-org/react";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useRef } from "react";
 
 export default function Login() {
   const [isVisible, setIsVisible] = React.useState(false);
-
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const session = useSession();
   const toggleVisibility = () => setIsVisible(!isVisible);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const redirectUri = searchParams.get("redirectUri");
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -28,10 +34,26 @@ export default function Login() {
     }
   };
 
+  useEffect(() => {
+    if (session && redirectUri) {
+      router.push(`${redirectUri}`);
+    }
+  }, [session, redirectUri]);
+
+  // useEffect(() => {
+  //   // 页面加载时自动点击按钮
+  //   // 自动选择Authentik
+  //   if (!session) {
+  //     if (buttonRef.current) {
+  //       buttonRef.current.click();
+  //     }
+  //   }
+  // }, []);
+
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
       <div className="mt-2 flex w-full max-w-sm flex-col gap-4 rounded-large bg-content1 px-8 py-6 shadow-small">
-        <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
+        {/* <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
           <Input
             label="Email Address"
             name="email"
@@ -72,14 +94,15 @@ export default function Login() {
           <Button color="primary" type="submit">
             Log In
           </Button>
-        </form>
-        <div className="flex items-center gap-4">
+        </form> */}
+        {/* <div className="flex items-center gap-4">
           <Divider className="flex-1" />
           <p className="shrink-0 text-tiny text-default-500">OR</p>
           <Divider className="flex-1" />
-        </div>
+        </div> */}
         <div className="flex flex-col gap-2">
           <Button
+            ref={buttonRef}
             onClick={() => signIn("authentik")}
             startContent={
               <Icon
@@ -88,31 +111,28 @@ export default function Login() {
                 width={24}
               />
             }
-            variant="bordered"
-          >
+            variant="bordered">
             Continue with Authentik
           </Button>
-          <Button
+          {/* <Button
             startContent={<Icon icon="flat-color-icons:google" width={24} />}
-            variant="bordered"
-          >
+            variant="bordered">
             Continue with Google
           </Button>
           <Button
             startContent={
               <Icon className="text-default-500" icon="fe:github" width={24} />
             }
-            variant="bordered"
-          >
+            variant="bordered">
             Continue with Github
-          </Button>
+          </Button> */}
         </div>
-        <p className="text-center text-small">
+        {/* <p className="text-center text-small">
           Need to create an account?&nbsp;
           <Link href="#" size="sm">
             Sign Up
           </Link>
-        </p>
+        </p> */}
       </div>
     </div>
   );

@@ -2,7 +2,6 @@ import { Providers } from "@/app/providers";
 import { fontSans } from "@/config/fonts";
 import { siteConfig } from "@/config/site";
 import "@/styles/globals.css";
-import { Link } from "@nextui-org/link";
 import clsx from "clsx";
 import { Metadata, Viewport } from "next";
 
@@ -32,25 +31,23 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         className={clsx(
           "min-h-screen bg-background font-sans antialiased",
           fontSans.variable,
-        )}
-      >
-        <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
+        )}>
+        <Providers themeProps={{ attribute: "class", defaultTheme: "white" }}>
           <div className="relative flex h-screen flex-col">
             {/* <Navbar /> */}
             <main className="container mx-auto max-w-7xl flex-grow px-6 pt-16">
               {children}
             </main>
-            <footer className="flex w-full items-center justify-center py-3">
+            {/* <footer className="flex w-full items-center justify-center py-3">
               <Link
                 isExternal
                 className="flex items-center gap-1 text-current"
                 href="https://nextui-docs-v2.vercel.app?utm_source=next-app-template"
-                title="nextui.org homepage"
-              >
+                title="nextui.org homepage">
                 <span className="text-default-600">Powered by</span>
-                <p className="text-primary">NextUI</p>
+                <p className="text-primary">Techower</p>
               </Link>
-            </footer>
+            </footer> */}
           </div>
         </Providers>
       </body>
