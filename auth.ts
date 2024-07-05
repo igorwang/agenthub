@@ -69,8 +69,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     redirect: ({ url, baseUrl }) => {
-      console.log("console", url, baseUrl);
-      return process.env.APP_HOST || "/chat";
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      else if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
     },
     jwt: async ({ token, user, profile }) => {
       if (user) {
