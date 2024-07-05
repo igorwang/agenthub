@@ -46,6 +46,13 @@ public-hoist-pattern[]=*@nextui-org/*
 
 After modifying the `.npmrc` file, you need to run `pnpm install` again to ensure that the dependencies are installed correctly.
 
+## Docker base
+
+docker build -t
+docker build -t your-dockerhub-username/your-repo-name:base -f Dockerfile.base .
+推送基础镜像到 Docker Hub
+docker push your-dockerhub-username/your-repo-name:base
+
 ## License
 
 Licensed under the [MIT license](https://github.com/nextui-org/next-app-template/blob/main/LICENSE).
