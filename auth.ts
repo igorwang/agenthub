@@ -68,11 +68,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     strategy: "jwt",
   },
   callbacks: {
-    redirect: ({ url, baseUrl }) => {
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
-      else if (new URL(url).origin === baseUrl) return url;
-      return baseUrl;
-    },
+    // redirect: ({ url, baseUrl }) => {
+    //   if (url.startsWith("/")) return `${baseUrl}${url}`;
+    //   else if (new URL(url).origin === baseUrl) return url;
+    //   return baseUrl;
+    // },
     jwt: async ({ token, user, profile }) => {
       if (user) {
         // console.log("User logged in:", user);
