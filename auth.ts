@@ -104,6 +104,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       session.access_token = token.access_token as string;
       return session;
     },
+    redirect: () => {
+      return process.env.NEXT_PUBLIC_REDIRECT_URI || process.env.APP_HOST || "";
+    },
   },
   cookies: {
     pkceCodeVerifier: {
