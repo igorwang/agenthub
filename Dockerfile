@@ -5,7 +5,7 @@ WORKDIR /app
 
 COPY . .
 # Set the working directory
-RUN  yarn instll && yarn build
+RUN  yarn install && yarn build
 # Expose port 3000
 EXPOSE 3000
 
