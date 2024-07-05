@@ -6,7 +6,9 @@ const dotenv = require("dotenv");
 const path = require("path");
 
 const envConfig = dotenv.parse(fs.readFileSync(envFile));
+
 console.log(envConfig);
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
