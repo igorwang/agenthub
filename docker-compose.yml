@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     environment:
       NODE_ENV: production
-      # HOSTNAME: chat.techower.com
+      HOSTNAME: 0.0.0.0
       # Uncomment the following line to disable telemetry during runtime
       # NEXT_TELEMETRY_DISABLED: 1
       PORT: 3000
