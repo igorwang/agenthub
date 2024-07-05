@@ -103,7 +103,9 @@ export default function Login() {
         <div className="flex flex-col gap-2">
           <Button
             ref={buttonRef}
-            onClick={() => signIn("authentik", { callbackUrl: "/chat" })}
+            onClick={() =>
+              signIn("authentik", { callbackUrl: "http://127.0.0.1:3000/blog" })
+            }
             startContent={
               <Icon
                 className="text-default-500"

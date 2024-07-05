@@ -59,6 +59,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       authorization: {
         params: {
           scope: "openid profile email",
+          redirect_uri: process.env.APP_HOST,
         },
       },
     }),
