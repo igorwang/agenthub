@@ -23,12 +23,14 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+
 # This will do the trick, use the corresponding env file for each environment.
-COPY .env.production.sample .env.production
-RUN npm run build
+COPY .env.production.local .env.production
+RUN yarn build
 
 # 3. Production image, copy all the files and run next
 FROM base AS runner
+
 WORKDIR /app
 
 ENV NODE_ENV=production
