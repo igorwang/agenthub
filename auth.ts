@@ -9,6 +9,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     endpoint: process.env.HASURA_ENDPOINT ?? "",
     adminSecret: process.env.HASURA_ADMIN_SECRET ?? "",
   }),
+  trustHost: true,
   providers: [
     // Credentials({
     //   name: "Credentials",
