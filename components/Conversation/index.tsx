@@ -11,6 +11,7 @@ import {
 } from "@/graphql/generated/types";
 import { CHAT_MODE } from "@/types/chatTypes";
 import { Avatar, Button, Tab, Tabs, Tooltip } from "@nextui-org/react";
+import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -20,6 +21,7 @@ export type Agent = {
   name: string;
   description?: string;
   avatar?: string;
+  creator_id?: string;
 };
 
 export type ConversationProps = {
@@ -37,6 +39,7 @@ export const Conversation: React.FC<ConversationProps> = ({
 }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const session = useSession();
 
   const [isChating, setIsChating] = useState<boolean>(false);
   const [chatMode, setChatMode] = useState<string>(CHAT_MODE.simple.toString());
@@ -59,6 +62,7 @@ export const Conversation: React.FC<ConversationProps> = ({
         name: data?.agent_by_pk?.name || "",
         description: data?.agent_by_pk?.description || "",
         avatar: data?.agent_by_pk?.avatar || "",
+        creator_id: data?.agent_by_pk?.creator_id || "",
       });
     }
   }, [agentId, data]);
@@ -118,11 +122,13 @@ export const Conversation: React.FC<ConversationProps> = ({
         <div className="pl-2">
           <div className="flex flex-row items-center">
             <p className="pr-2 text-3xl font-medium">{agent.name}</p>
-            <Button
-              isIconOnly={true}
-              startContent={<ConfigIcon size={28} />}
-              variant="light"
-              onClick={handleConfigCilck}></Button>
+            {agent.creator_id === session.data?.user?.id && (
+              <Button
+                isIconOnly={true}
+                startContent={<ConfigIcon size={28} />}
+                variant="light"
+                onClick={handleConfigCilck}></Button>
+            )}
           </div>
           <Tooltip content={agent.description}>
             <p className="max-w-sm overflow-hidden text-ellipsis text-nowrap text-sm font-light">

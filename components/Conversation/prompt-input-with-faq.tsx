@@ -184,8 +184,7 @@ export default function PromptInputWithFaq({
         radius="lg"
         size="md"
         variant="solid"
-        onClick={sendMessageHanlder}
-      >
+        onClick={sendMessageHanlder}>
         <Icon
           className={cn(
             "[&>path]:stroke-[2px]",
@@ -207,8 +206,7 @@ export default function PromptInputWithFaq({
         radius="lg"
         size="md"
         variant="solid"
-        onClick={stopSendMessageHanlder}
-      >
+        onClick={stopSendMessageHanlder}>
         <Icon
           className={cn(
             "[&>path]:stroke-[2px]",
@@ -244,8 +242,7 @@ export default function PromptInputWithFaq({
       <form className="flex w-full flex-col items-start rounded-medium bg-default-100 transition-colors hover:bg-default-200/70">
         <ScrollShadow
           className="flex w-full flex-row flex-nowrap gap-2"
-          orientation="horizontal"
-        >
+          orientation="horizontal">
           {uploadFileListElement}
         </ScrollShadow>
         <PromptInput
@@ -284,8 +281,7 @@ export default function PromptInputWithFaq({
                 />
               }
               variant="flat"
-              onClick={handleFileButtonClick}
-            >
+              onClick={handleFileButtonClick}>
               File
             </Button>
             {/* <Button

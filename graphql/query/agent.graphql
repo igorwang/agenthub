@@ -20,6 +20,7 @@ query GetAgentByID($id: uuid!) {
     description
     avatar
     default_model
+    creator_id
     system_prompt {
       id
       name
