@@ -4,13 +4,17 @@ import { AcmeLogo } from "../ui/icons";
 
 import { Icon } from "@iconify/react";
 import { Avatar, Button, ScrollShadow, Spacer, Tooltip } from "@nextui-org/react";
-
 import SidebarNav from "./sidebar-nav";
 
 import { ThemeSwitch } from "@/components/theme-switch";
+import { signOut } from "next-auth/react";
 import { sectionItems } from "./sidebar-items";
 
 export default function SideBar() {
+  const handleSignOut = async () => {
+    await signOut();
+  };
+
   return (
     <div className="relative hidden h-screen w-14 flex-col items-center border-r-small border-divider px-2 py-4 sm:flex">
       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-foreground">
@@ -54,6 +58,7 @@ export default function SideBar() {
           <Tooltip content="Log Out" placement="right">
             <Button
               isIconOnly
+              onPress={handleSignOut}
               // className="data-[hover=true]:text-foreground"
               variant="light">
               <Icon
