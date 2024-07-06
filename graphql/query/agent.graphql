@@ -66,3 +66,21 @@ query GetTopics($where: topic_history_bool_exp = {}) {
     updated_at
   }
 }
+
+query GetMyAgentList($where: r_agent_user_bool_exp = {}, $limit: Int = 10) {
+  r_agent_user(where: $where, limit: $limit) {
+    id
+    role
+    user_id
+    agent {
+      id
+      name
+      avatar
+      description
+      agent_type {
+        id
+        name
+      }
+    }
+  }
+}

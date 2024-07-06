@@ -8,7 +8,8 @@ import SearchBar from "./searchbar";
 
 import {
   useCreateOneAgentMutation,
-  useGetAgentListByTypeQuery,
+  useDeleteAgentUserRelationMutation,
+  useSubMyAgentListSubscription,
 } from "@/graphql/generated/types";
 
 import {
@@ -27,7 +28,7 @@ const ChatHub = () => {
   const chatList = useSelector(selectChatList);
   const selectedChatId = useSelector(selectSelectedChatId);
   const [createAgentMutation] = useCreateOneAgentMutation();
-
+  const [deleteAgentUserRelationMutation] = useDeleteAgentUserRelationMutation();
   const router = useRouter();
   const params = useParams();
   const pathname = usePathname();
@@ -36,29 +37,51 @@ const ChatHub = () => {
 
   const { data: sessionData, status } = useSession();
   const userId = sessionData?.user?.id;
-  const agentListQuery = useGetAgentListByTypeQuery({
+
+  const agentListQuery = useSubMyAgentListSubscription({
     variables: {
-      user_id: userId,
+      where: {
+        _or: [
+          { user_id: { _eq: userId } },
+          { agent: { agent_type: { name: { _eq: "system" } } } },
+          // { agent: { agent_type: { creator_id: { _eq: userId } } } },
+        ],
+      },
     },
     skip: !userId,
   });
-  const data = agentListQuery.data;
+  const { data: agentListData, loading, error } = agentListQuery;
 
   useEffect(() => {
-    if (data) {
-      const groupedChatList: GroupedChatListDTO[] = data.agent_type.map((group) => ({
-        id: group.id,
-        name: group.name,
-        agents: group.agents.map((agent) => ({
-          id: agent.id,
-          name: agent.name,
-          description: agent.description,
-          avatar: agent.avatar,
-        })),
-      }));
+    if (agentListData) {
+      // toast.info("You have new agent message", { position: "bottom-left" });
+      const groupedChatList: GroupedChatListDTO[] = [];
+      agentListData.r_agent_user.forEach((item) => {
+        const agentType = item.agent?.agent_type;
+        const group = groupedChatList.find((g) => g.name == agentType?.name);
+        if (agentType && agentType.id && agentType?.name) {
+          if (group) {
+            group.agents.push({ ...item.agent });
+          } else {
+            groupedChatList.push({
+              id: agentType.id,
+              name: agentType?.name,
+              agents: [{ ...item.agent }],
+            });
+          }
+        }
+      });
       dispatch(setChatList(groupedChatList));
     }
-  }, [data, dispatch]);
+  }, [agentListData, dispatch]);
+
+  const handleDeleteAgent = (agentId: string) => {
+    deleteAgentUserRelationMutation({
+      variables: {
+        where: { _and: [{ agent_id: { _eq: agentId } }, { user_id: { _eq: userId } }] },
+      },
+    });
+  };
 
   function createAgent() {
     createAgentMutation({
@@ -66,7 +89,7 @@ const ChatHub = () => {
         object: { name: "New Agent", type_id: 2, creator_id: userId },
       },
     }).then((res) => {
-      agentListQuery.refetch();
+      // agentListQuery.refetch();
       const newAgentId = res?.data?.insert_agent_one?.id;
       const path = `/chat/${newAgentId}/settings`;
       router.push(path);
