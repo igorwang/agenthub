@@ -10,6 +10,7 @@ import {
   ModalBody,
   ModalContent,
   ModalFooter,
+  ModalHeader,
   ScrollShadow,
 } from "@nextui-org/react";
 
@@ -22,10 +23,10 @@ import {
 
 import { selectChat } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
-import { GroupedChatListDTO } from "@/types/chatTypes";
+import { ChatDTO, GroupedChatListDTO } from "@/types/chatTypes";
 import { Icon } from "@iconify/react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 
 export const ChatList: React.FC<{ groupedChatList: GroupedChatListDTO[] }> = ({
@@ -33,10 +34,13 @@ export const ChatList: React.FC<{ groupedChatList: GroupedChatListDTO[] }> = ({
 }) => {
   const dispatch: AppDispatch = useDispatch();
   const router = useRouter();
+
   const [showIconId, setShowIconId] = useState("");
   const [openStates, setOpenStates] = useState<Record<number, boolean>>({});
-  const [deleteAgentUserRelation] = useDeleteAgentUserRelationMutation();
+  const [deleteAgentUserRelationMutation] = useDeleteAgentUserRelationMutation();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deleteAgent, setDeleteAgent] = useState<ChatDTO | null>(null);
+  const params = useParams<{ id: string }>();
 
   const session = useSession();
   const userId = session?.data?.user?.id;
@@ -69,15 +73,35 @@ export const ChatList: React.FC<{ groupedChatList: GroupedChatListDTO[] }> = ({
     setShowIconId("");
   }
 
-  function handleUnsubscribe(e: React.MouseEvent<SVGSVGElement>, agentId: string) {
-    e.stopPropagation();
-    deleteAgentUserRelation({
+  const handleUnsubscribeClick = (item: ChatDTO) => {
+    setIsModalOpen(true);
+    setDeleteAgent(item);
+  };
+
+  const handleDeleteAgentRelation = () => {
+    const deletedId = deleteAgent?.id;
+    deleteAgentUserRelationMutation({
       variables: {
-        userId: { _eq: userId },
-        agentId: { _eq: agentId },
+        where: {
+          _and: [{ agent_id: { _eq: deleteAgent?.id } }, { user_id: { _eq: userId } }],
+        },
       },
-    }).then((r) => setIsModalOpen(true));
-  }
+    });
+    setDeleteAgent(null);
+    setIsModalOpen(false);
+    if (deletedId == params.id) {
+      router.push("/chat");
+    }
+  };
+  // function handleUnsubscribe(e: React.MouseEvent<SVGSVGElement>, agentId: string) {
+  //   e.stopPropagation();
+  //   deleteAgentUserRelation({
+  //     variables: {
+  //       userId: { _eq: userId },
+  //       agentId: { _eq: agentId },
+  //     },
+  //   }).then((r) => setIsModalOpen(true));
+  // }
 
   const chatListContent = groupedChatList.map((group) => (
     <div className="flex flex-col" key={group.id}>
@@ -121,15 +145,24 @@ export const ChatList: React.FC<{ groupedChatList: GroupedChatListDTO[] }> = ({
               onMouseLeave={() => handleMouseLeave()}>
               <div className={"flex justify-between"}>
                 <div className="flex items-center gap-2">
-                  <Avatar
-                    alt={item.name}
-                    className="flex-shrink-0"
-                    size="sm"
-                    src={
-                      item.avatar ||
-                      "https://api.dicebear.com/8.x/fun-emoji/svg?seed=Tigger"
-                    }
-                  />
+                  {item.avatar ? (
+                    <Avatar
+                      alt={item.name}
+                      className="flex-shrink-0"
+                      size="sm"
+                      src={
+                        item.avatar ||
+                        "https://api.dicebear.com/8.x/fun-emoji/svg?seed=Tigger"
+                      }
+                    />
+                  ) : (
+                    <Avatar
+                      className="flex-shrink-0 bg-blue-400"
+                      size="sm"
+                      name={item?.name?.charAt(0)}
+                      classNames={{ name: "text-xl" }}
+                    />
+                  )}
                   <div className="flex flex-col">
                     <span className="text-small">{item.name}</span>
                     {/* <Tooltip content={item.description}> */}
@@ -140,12 +173,20 @@ export const ChatList: React.FC<{ groupedChatList: GroupedChatListDTO[] }> = ({
                   </div>
                 </div>
                 {item?.id === showIconId && (
-                  <Icon
-                    className={"cursor-pointer"}
-                    // onClick={(e) => handleUnsubscribe(e, item.id)}
-                    icon="material-symbols:delete-outline-rounded"
-                    width={"2em"}
-                  />
+                  <Button
+                    isIconOnly
+                    // disableAnimation
+                    // disableRipple
+                    onPress={() => handleUnsubscribeClick(item)}
+                    className="bg-transparent data-[hover]:bg-transparent"
+                    startContent={
+                      <Icon
+                        className={"cursor-pointer"}
+                        // onClick={(e) => handleUnsubscribe(e, item.id)}
+                        icon="material-symbols:delete-outline-rounded"
+                        fontSize={20}
+                      />
+                    }></Button>
                 )}
               </div>
             </ListboxItem>
@@ -159,13 +200,21 @@ export const ChatList: React.FC<{ groupedChatList: GroupedChatListDTO[] }> = ({
     return (
       <Modal isOpen={isModalOpen} hideCloseButton={true}>
         <ModalContent>
-          {/*<ModalHeader className="flex flex-col gap-1">Unsubscribe successfully</ModalHeader>*/}
+          <ModalHeader className="flex flex-col gap-1">Unsubscribe Agent</ModalHeader>
           <ModalBody>
-            <p>Unsubscribe successfully!</p>
+            <p>Are you sure you want to unsubscribe this agent : {deleteAgent?.name}?</p>
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" onPress={() => setIsModalOpen(false)}>
+            <Button color="primary" variant="light" onPress={() => setIsModalOpen(false)}>
               Close
+            </Button>
+            <Button
+              color="danger"
+              onPress={() => {
+                // setIsModalOpen(false);
+                handleDeleteAgentRelation();
+              }}>
+              Affirm
             </Button>
           </ModalFooter>
         </ModalContent>

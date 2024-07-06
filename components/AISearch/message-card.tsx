@@ -127,10 +127,10 @@ export const MessageCard: React.FC<MessageCardProps> = ({
       <div className={"flex flex-col" && !isOpen ? "hidden" : "visible"}>
         {isChating && message.status == "draft" && statusElement}
         {!message.sources && !message.message && <MessageSkeleton></MessageSkeleton>}
-        {librarySources && (
+        {librarySources && librarySources.length > 0 && (
           <SourceSection title="Source" items={librarySources || []}></SourceSection>
         )}
-        {webSources && (
+        {webSources && webSources.length > 0 && (
           <SourceSection title="Web Source" items={webSources || []}></SourceSection>
         )}
         {message.message && messageElement}
