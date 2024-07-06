@@ -1,3 +1,5 @@
+"use client";
+
 import "katex/dist/katex.min.css";
 import React from "react";
 import ReactMarkdown from "react-markdown";
@@ -22,8 +24,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
           style={materialDark}
           language={match[1]}
           PreTag="div"
-          {...props}
-        >
+          {...props}>
           {String(children).replace(/\n$/, "")}
         </SyntaxHighlighter>
       ) : (
