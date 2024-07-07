@@ -48,14 +48,13 @@ export default function LibrarySetting() {
   const query = useKnowledgeBaseDetailQuery({ variables: { id: id } });
 
   useEffect(() => {
-    console.log("knowledgeBase", query.data);
-
     if (query.data) {
       setknowledgeBase({ ...query.data?.knowledge_base_by_pk } as KnowledgeBaseItem);
     }
   }, [query]);
 
   function handleSubmit(e: any) {
+    console.log("knowledgeBase", knowledgeBase);
     const input: Knowledge_Base_Set_Input = {
       name: knowledgeBase?.name,
       description: knowledgeBase?.description,
@@ -162,7 +161,9 @@ export default function LibrarySetting() {
               labelPlacement="outside"
               defaultModel={knowledgeBase.model_name}
               onSelectionChange={(model) =>
-                setknowledgeBase((prev) => ({ ...prev, model_name: model }))
+                setknowledgeBase(
+                  (prev) => ({ ...prev, model_name: model }) as KnowledgeBaseItem,
+                )
               }></ModelSelect>
             <Select
               items={animals}
