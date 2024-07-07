@@ -1,9 +1,7 @@
 "use client";
 import MarkdownRenderer from "@/components/MarkdownRender";
 import ModelSelect from "@/components/PromptFrom/model-select";
-import PromptSearchBar from "@/components/PromptFrom/prompt-search";
 import PromptTemplateInput from "@/components/PromptFrom/prompt-template-input";
-import PromptVariablesInput from "@/components/PromptFrom/prompt-variables-input";
 import { PlusIcon, StartOutlineIcon } from "@/components/ui/icons";
 import {
   Message_Role_Enum,
@@ -22,8 +20,7 @@ import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/ad
 import { reorder } from "@atlaskit/pragmatic-drag-and-drop/reorder";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { Button } from "@nextui-org/button";
-import { Input } from "@nextui-org/input";
-import { Spacer } from "@nextui-org/react";
+import { Input, Spacer } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -79,10 +76,11 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
     const [templatesState, setTemplatesState] = useState<PromptTemplateType[]>(templates);
     const [selectedModel, setSelectedModel] = useState<string>("");
     const [isChating, setIsChating] = useState<boolean>(false);
-    const [isEditing, setIsEditing] = useState<boolean>(false);
+    const [isEditing, setIsEditing] = useState<boolean>(true);
     const [isNewPromot, setIsNewPromot] = useState<boolean>(false);
-    const [promptId, setPromptId] = useState<number | null>(defaultPromptId || null);
+    const [promptId, setPromptId] = useState<number | null>(null);
     const [prompt, setPrompt] = useState<Prompt>();
+    // const [value, setValue] = React.useState(new Set([defaultModel || ""]));
 
     const [variableInputs, setVariableInputs] = useState<variableInputsType[]>([]);
     const [message, setMessage] = useState<string>("");
@@ -92,34 +90,45 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
     const session = useSession();
     const userId = session.data?.user?.id;
 
-    const { data, loading, error } = useGetPromptByIdQuery({
-      variables: {
-        id: promptId || 0, // value for 'id'
-      },
-      skip: !promptId || isNewPromot,
-    });
-
-    // create new Prompt
     const [createNewPromptMutation] = useCreateNewPromptMutation();
-
     const [deletePromptTemplateMutation] = useDeletePromptTemplateMutation();
-
     const [upadeAgentPromptMutation] = useUpadeAgentPromptMutation();
 
     const [upadeKnowledgeBasePromptMutation] = useUpadeKnowledgeBasePromptMutation();
 
+    const query = useGetPromptByIdQuery({
+      variables: {
+        id: promptId || 0, // value for 'id'
+      },
+      skip: !promptId,
+    });
+    const { data } = query;
+
     useEffect(() => {
       if (defaultPromptId) {
         setPromptId(defaultPromptId);
+        setIsNewPromot(false);
+      } else {
+        setIsNewPromot(true);
       }
-    }, [defaultPromptId]);
+      if (defaultModel) {
+        setSelectedModel(defaultModel);
+      }
+    }, [defaultPromptId, defaultModel]);
 
     useEffect(() => {
+      query.refetch();
+    }, [promptId]);
+
+    useEffect(() => {
+      console.log("data", data);
       if (data) {
+        console.log();
         setPrompt({
           name: data.prompt_hub_by_pk?.name || "",
         });
         const templates = data.prompt_hub_by_pk?.templates;
+        console.log("templates", templates);
         if (templates) {
           setTemplatesState(
             templates.map((item) => ({
@@ -134,7 +143,7 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
       } else {
         setTemplatesState(defaultTemplates);
       }
-    }, [data, promptId, isNewPromot]);
+    }, [data, isNewPromot]);
 
     const reorderItem = useCallback(
       ({
@@ -200,7 +209,9 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
 
     const handleChangePrompt = (id: number | null) => {
       if (id) {
+        console.log("handleChangePrompt", id);
         setPromptId(id);
+        setIsNewPromot(false);
       } else {
         setPromptId(null);
         setTemplatesState(defaultTemplates);
@@ -349,6 +360,16 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
         const removeIds = templatesState
           .filter((item) => item.status === "saved")
           .map((item) => Number(item.id));
+
+        // delete old prompt
+        if (promptId) {
+          await deletePromptTemplateMutation({
+            variables: {
+              where: { id: { _in: removeIds } },
+            },
+          });
+        }
+
         const { data, errors } = await createNewPromptMutation({
           variables: {
             object: {
@@ -358,14 +379,7 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
             },
           },
         });
-        if (removeIds) {
-          const { data: delteData, errors: delteErrors } =
-            await deletePromptTemplateMutation({
-              variables: {
-                where: { id: { _in: removeIds } },
-              },
-            });
-        }
+
         const newPromptId = data?.insert_prompt_hub_one?.id;
         if (newPromptId && agentId) {
           const { data: updateAgentData, errors: updateAgentErrors } =
@@ -390,15 +404,15 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
       } catch (error) {
         toast.error("Save prompt faild! Please try again!");
         setPromptId(null);
-        setIsNewPromot(true);
+        // setIsNewPromot(true);
       }
-      setIsEditing(false);
+      setIsEditing(true);
     };
 
     const handleAddPrompt = () => {
       setPromptId(null);
       setIsNewPromot(true);
-      setIsEditing(true);
+      // setIsEditing(true);
       setPrompt({ name: "New Prompt" });
     };
 
@@ -412,7 +426,6 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
         handleRoleSelect={handleRoleSelect}></PromptTemplateInput>
     ));
 
-    const defaultKey = "gpt-3.5-turbo";
     return (
       <div className="flex h-full w-full max-w-full flex-col">
         <Spacer y={2} />
@@ -423,7 +436,7 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
                 Playground
               </div>
             )}
-            {isEditing ? (
+            {/* {isEditing ? (
               <Input
                 className="w-1/3"
                 value={prompt?.name}
@@ -433,29 +446,41 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
                 placeholder="Enter prompt name"></Input>
             ) : (
               <PromptSearchBar handleChangePrompt={handleChangePrompt}></PromptSearchBar>
-            )}
+            )} */}
+            {/* <Input
+              className="w-1/3"
+              value={prompt?.name}
+              onValueChange={(value) =>
+                setPrompt((prevPrompt) => ({ ...prevPrompt, name: value }))
+              }
+              placeholder="Enter prompt name"></Input> */}
+            {/* <PromptSearchBar handleChangePrompt={handleChangePrompt}></PromptSearchBar> */}
           </div>
           <div className="flex flex-row gap-2">
-            {!isEditing && (
-              <Button color="primary" onClick={handleAddPrompt}>
-                New
-              </Button>
-            )}
-            {isEditing ? (
-              <Button color="primary" onClick={() => handleSavePrompt()}>
-                Save
-              </Button>
-            ) : (
-              <Button color="primary" onClick={() => setIsEditing(true)}>
-                Edit
-              </Button>
-            )}
+            <Button color="primary" onClick={handleAddPrompt}>
+              New
+            </Button>
+            <Button color="primary" onClick={() => handleSavePrompt()}>
+              Save
+            </Button>
           </div>
         </div>
         <Spacer y={2} />
         <div className="flex flex-row gap-4">
           <div className="flex h-full w-1/2 flex-col items-start justify-start gap-2">
-            <span className="text-1xl font-bold">Template</span>
+            <Input
+              className="w-full"
+              label="Template Name"
+              labelPlacement="outside"
+              classNames={{ label: "text-1xl font-bold" }}
+              value={prompt?.name}
+              onValueChange={(value) =>
+                setPrompt((prevPrompt) => ({ ...prevPrompt, name: value }))
+              }
+              placeholder="Enter prompt name"></Input>
+
+            <span className="text-1xl font-bold">Template Messages</span>
+
             {templatesElement}
             <Button
               className="m-2 gap-1 bg-white p-2"
@@ -468,18 +493,18 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
             </Button>
           </div>
           <div className="flex w-1/2 flex-col justify-start gap-2">
-            <span className="text-xl font-bold">Inputs</span>
+            {/* <span className="text-xl font-bold">Inputs</span>
             <PromptVariablesInput
               ref={variableInputRef}
               templates={templatesState}
               isDisabled={!isEditing}
-              setVariableInputs={handelVariableInputChange}></PromptVariablesInput>
+              setVariableInputs={handelVariableInputChange}></PromptVariablesInput> */}
             <div className="text-xl font-bold">Output</div>
             <div className="relative flex h-full flex-col items-baseline gap-2 border-2 p-2">
               <div className="flex w-full flex-col">
                 <ModelSelect
                   onSelectionChange={setSelectedModel}
-                  defaultModel={defaultModel}></ModelSelect>
+                  defaultModel={selectedModel}></ModelSelect>
               </div>
               <div className="max-h-[600px] w-full overflow-scroll pb-8">
                 {message && "Assistant:"}

@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, Button, Divider, Input, Textarea } from "@nextui-org/react";
+import { Avatar, Button, Divider, Input, Spacer, Textarea } from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -39,7 +39,6 @@ export default function Component() {
 
   useEffect(() => {
     if (query.data) {
-      console.log(query.data);
       setAgent(query?.data?.agent_by_pk);
     }
   }, [query]);
@@ -68,7 +67,7 @@ export default function Component() {
   return (
     <div className="w-full">
       <RightHeader title={"Agent Setting"} callBackUri={`/chat/${id}`} />
-      <div className={"flex flex-col items-center justify-center py-10"}>
+      <div className={"flex flex-col items-center justify-center p-10"}>
         <form className={"w-full max-w-4xl gap-16"}>
           <div className={"flex flex-row items-end justify-between pb-1"}>
             <span className="relative text-foreground-500">Agent Information</span>
@@ -123,7 +122,8 @@ export default function Component() {
             />
           </div>
         </form>
-        <div className={"w-full max-w-4xl pt-12"}>
+        <Spacer y={4} />
+        <div className={"w-full max-w-4xl"}>
           <span className="relative text-foreground-500">Prompt</span>
           <Divider />
           <PromptFrom

@@ -59,7 +59,6 @@ const ChatHub = () => {
   const { data: agentListData, loading, error } = agentListQuery;
 
   useEffect(() => {
-    console.log("agentListData:", agentListData);
     if (agentListData) {
       // toast.info("You have new agent message", { position: "bottom-left" });
       const groupedChatList: GroupedChatListDTO[] = [];

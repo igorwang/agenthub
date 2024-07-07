@@ -13,11 +13,11 @@ interface Prompt {
 const PromptSearchBar: React.FC<{
   defaultPrompt?: Prompt;
   handleChangePrompt?: (id: number | null) => void;
-}> = ({ handleChangePrompt: setSelection, defaultPrompt }) => {
+}> = ({ handleChangePrompt, defaultPrompt }) => {
   const [prompts, setPrompts] = useState<Prompt[]>([]);
 
-  const [value, setValue] = React.useState<string>();
-  const [selectedKey, setSelectedKey] = React.useState<string>();
+  const [value, setValue] = React.useState<string | null>();
+  const [selectedKey, setSelectedKey] = React.useState<string | null>();
 
   const session = useSession();
   const userId = session.data?.user?.id;
@@ -29,8 +29,9 @@ const PromptSearchBar: React.FC<{
         ...(value && { name: { _like: `%${value}%` } }),
       },
       order_by: { created_at: Order_By.DescNullsLast },
+      limit: 10,
     },
-    skip: !userId,
+    skip: !userId || !value,
   });
 
   useEffect(() => {
@@ -45,7 +46,8 @@ const PromptSearchBar: React.FC<{
 
   const onSelectionChange = (id: string) => {
     setSelectedKey(id);
-    setSelection && setSelection(Number(id));
+    setValue("");
+    handleChangePrompt?.(Number(id));
   };
 
   const onInputChange = (value: string) => {
@@ -63,10 +65,9 @@ const PromptSearchBar: React.FC<{
         selectedKey={selectedKey}
         onSelectionChange={(id) => onSelectionChange(id?.toString() || "")}
         onInputChange={onInputChange}
-        disableSelectorIconRotation={true}
-        onKeyUp={() => setSelection && setSelection(null)}
-        selectorIcon={<SearchIcon />}
-      >
+        // disableSelectorIconRotation={true}
+        // onKeyUp={() => setSelection && setSelection(null)}
+        selectorIcon={<SearchIcon />}>
         {(item) => <AutocompleteItem key={item.id}>{item.name}</AutocompleteItem>}
       </Autocomplete>
     </div>
