@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Divider, Input, Textarea } from "@nextui-org/react";
+import { Button, Divider, Input, Select, SelectItem, Textarea } from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import PromptFrom from "@/components/PromptFrom";
 import RightHeader from "@/components/RightHeader";
 import {
+  Chunking_Strategy_Enum,
   Knowledge_Base_Set_Input,
   Knowledge_Base_Type_Enum,
   useKnowledgeBaseDetailQuery,
@@ -20,6 +21,9 @@ interface KnowledgeBaseItem {
   description?: string;
   extraction_prompt_id?: number;
   base_type?: Knowledge_Base_Type_Enum;
+  chunking_strategy?: Chunking_Strategy_Enum;
+  chunking_parameters?: any;
+
   type?: {
     value?: string;
     comment?: string;
@@ -78,6 +82,13 @@ export default function LibrarySetting() {
   if (!data) {
     return <p>Loading...</p>;
   }
+
+  const animals = [
+    { key: "length", label: "length" },
+    { key: "page", label: "markdown" },
+    { key: "markdown", label: "markdown" },
+    { key: "semantic", label: "semantic" },
+  ];
 
   return (
     <div className="w-full">
@@ -146,13 +157,39 @@ export default function LibrarySetting() {
               onChange={(e) => textareaOnChange(e)}
             />
           </div>
+          <div className={"mt-4"}>
+            <Select
+              items={animals}
+              label="chunking strategy"
+              labelPlacement="outside"
+              placeholder="Select an strategy"
+              defaultSelectedKeys={["length"]}
+              className="w-full">
+              {(animal) => <SelectItem key={animal.key}>{animal.label}</SelectItem>}
+            </Select>
+          </div>
+          <div className={"mt-8"}>
+            <Input
+              isRequired
+              label="chunking parameters"
+              labelPlacement="outside"
+              disabled={true}
+              // placeholder="Enter library name"
+              type="text"
+              variant={"flat"}
+              // value={'\{"chunking_length"\}']
+              // onChange={(e) => setData({ ...data, name: e.target.value || "" })}
+            />
+          </div>
         </form>
+
         <div className={"w-full max-w-4xl pt-12"}>
           <span className="relative text-foreground-500">Prompt</span>
           <Divider />
           {/* {data?.extraction_prompt_id ? ( */}
           <PromptFrom
             agentId={id}
+            hiddeTitle={true}
             defaultPromptId={data?.extraction_prompt_id}
             konwledgeBaseId={id}
           />

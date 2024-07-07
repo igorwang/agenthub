@@ -14,44 +14,44 @@ fragment knowledgeBaseFragment on knowledge_base {
   created_at
   creator_id
   base_type
+  model_name
+  is_extraction
   extraction_prompt_id
+  chunking_strategy
+  chunking_parameters
 }
 
-query KnowledgeBaseDetail(
-  $id:uuid!
-){
-  knowledge_base_by_pk(id:$id){
-    ...knowledgeBaseFragment,
+query KnowledgeBaseDetail($id: uuid!) {
+  knowledge_base_by_pk(id: $id) {
+    ...knowledgeBaseFragment
     type {
       value
       comment
     }
   }
-
 }
 
-query KnowledgeBaseTypeList{
-  knowledge_base_type{
+query KnowledgeBaseTypeList {
+  knowledge_base_type {
     value
     comment
   }
 }
 
-
 query KnowledgeBaseList(
   $distinct_on: [knowledge_base_select_column!]
   $limit: Int
   $offset: Int
-  $order_by:[knowledge_base_order_by!]
+  $order_by: [knowledge_base_order_by!]
   $where: knowledge_base_bool_exp
-){
+) {
   knowledge_base(
-    distinct_on: $distinct_on,
-    limit: $limit,
-    offset:$offset,
-    order_by: $order_by ,
-    where:$where
-  ){
+    distinct_on: $distinct_on
+    limit: $limit
+    offset: $offset
+    order_by: $order_by
+    where: $where
+  ) {
     ...knowledgeBaseFragment
   }
 }

@@ -43,6 +43,7 @@ export type PromptFormProps = {
   defualtEditing?: boolean;
   defaultPromptId?: number;
   templates?: PromptTemplateType[];
+  hiddeTitle?: boolean;
 };
 
 export type variableInputsType = {
@@ -62,6 +63,7 @@ const defaultTemplates: PromptTemplateType[] = [
 const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
   (
     {
+      hiddeTitle,
       agentId,
       konwledgeBaseId,
       defaultPromptId,
@@ -404,17 +406,19 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
         isDisabled={!isEditing}
         handleDeleteMessage={handleDeleteMessage}
         handleValueChange={handleValueChange}
-        handleRoleSelect={handleRoleSelect}
-      ></PromptTemplateInput>
+        handleRoleSelect={handleRoleSelect}></PromptTemplateInput>
     ));
 
+    const defaultKey = "gpt-3.5-turbo";
     return (
       <div className="flex h-full w-full max-w-full flex-col">
         <div className="flex flex-row p-2">
           <div className="flex flex-grow flex-row items-center gap-2 pr-2">
-            <div className="flex flex-shrink-0 gap-2 text-xl font-bold sm:text-3xl">
-              Playground
-            </div>
+            {!hiddeTitle && (
+              <div className="flex flex-shrink-0 gap-2 text-xl font-bold sm:text-3xl">
+                Playground
+              </div>
+            )}
             {isEditing ? (
               <Input
                 className="w-1/3"
@@ -422,8 +426,7 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
                 onValueChange={(value) =>
                   setPrompt((prevPrompt) => ({ ...prevPrompt, name: value }))
                 }
-                placeholder="Enter prompt name"
-              ></Input>
+                placeholder="Enter prompt name"></Input>
             ) : (
               <PromptSearchBar handleChangePrompt={handleChangePrompt}></PromptSearchBar>
             )}
@@ -455,8 +458,7 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
               variant="ghost"
               isDisabled={!isEditing}
               startContent={<PlusIcon size={14}></PlusIcon>}
-              onClick={handleAddMessage}
-            >
+              onClick={handleAddMessage}>
               Message
             </Button>
           </div>
@@ -466,8 +468,7 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
               ref={variableInputRef}
               templates={templatesState}
               isDisabled={!isEditing}
-              setVariableInputs={handelVariableInputChange}
-            ></PromptVariablesInput>
+              setVariableInputs={handelVariableInputChange}></PromptVariablesInput>
             <div className="text-xl font-bold">Output</div>
             <div className="relative flex h-full flex-col items-baseline gap-2 border-2 p-2">
               <div className="flex w-full flex-col">
@@ -483,8 +484,7 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
                 color={isChating || selectedModel.length === 0 ? "default" : "primary"}
                 startContent={<StartOutlineIcon size={28} />}
                 isDisabled={isChating || selectedModel.length === 0}
-                onClick={handleStartChat}
-              >
+                onClick={handleStartChat}>
                 Start
               </Button>
             </div>

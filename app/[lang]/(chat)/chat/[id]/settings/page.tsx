@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import PromptFrom from "@/components/PromptFrom";
+import ModelSelect from "@/components/PromptFrom/model-select";
 import RightHeader from "@/components/RightHeader";
 import {
   Agent_Set_Input,
@@ -22,6 +23,7 @@ interface Agent {
   description?: string | null | undefined;
   avatar?: string | null | undefined;
   system_prompt?: SystemPrompt | null | undefined;
+  default_model?: string | null;
 }
 
 export default function Component() {
@@ -106,11 +108,21 @@ export default function Component() {
               onChange={(e) => setData({ ...data, description: e.target.value })}
             />
           </div>
+          <div className={"mt-8"}>
+            <ModelSelect
+              labelPlacement="outside"
+              defaultModel={data?.default_model || ""}
+            />
+          </div>
         </form>
         <div className={"w-full max-w-4xl pt-12"}>
           <span className="relative text-foreground-500">Prompt</span>
           <Divider />
-          <PromptFrom agentId={id} defaultPromptId={data?.system_prompt?.id} />
+          <PromptFrom
+            agentId={id}
+            defaultPromptId={data?.system_prompt?.id}
+            hiddeTitle={true}
+          />
         </div>
       </div>
     </div>

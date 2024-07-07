@@ -1,8 +1,14 @@
-subscription SubMyAgentList($where: r_agent_user_bool_exp = {}, $limit: Int = 10) {
-  r_agent_user(where: $where, limit: $limit) {
+subscription SubMyAgentList(
+  $where: r_agent_user_bool_exp = {}
+  $limit: Int = 10
+  $order_by: [r_agent_user_order_by!] = {}
+) {
+  r_agent_user(where: $where, limit: $limit, order_by: $order_by) {
     id
     role
     user_id
+    created_at
+    updated_at
     agent {
       id
       name
