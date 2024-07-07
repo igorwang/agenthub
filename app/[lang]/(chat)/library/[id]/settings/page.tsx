@@ -155,6 +155,7 @@ export default function LibrarySetting() {
               value={knowledgeBase?.description || ""}
               onChange={(e) => textareaOnChange(e)}
             />
+            <div>isExtract TODO</div>
             <ModelSelect
               labelPlacement="outside"
               defaultModel={knowledgeBase.model_name}
