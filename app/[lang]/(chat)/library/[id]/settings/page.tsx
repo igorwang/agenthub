@@ -51,7 +51,7 @@ export default function LibrarySetting() {
     console.log("knowledgeBase", query.data);
 
     if (query.data) {
-      setknowledgeBase({ ...(query.data.knowledge_base_by_pk as KnowledgeBaseItem) });
+      setknowledgeBase({ ...query.data?.knowledge_base_by_pk } as KnowledgeBaseItem);
     }
   }, [query]);
 
@@ -62,6 +62,7 @@ export default function LibrarySetting() {
       base_type: knowledgeBase?.base_type,
       model_name: knowledgeBase?.model_name,
     };
+    console.log("Knowledge_Base_Set_Input", input);
     updateKnowledgeBaseMutation({
       variables: {
         pk_columns: { id: id },
