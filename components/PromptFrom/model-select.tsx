@@ -9,6 +9,8 @@ export type ModelProps = {
 
 export type ModelSelectProps = {
   // models?: ModelProps[];
+  defaultModel?: string;
+  labelPlacement?: "outside" | "outside-left" | "inside" | undefined;
   onSelectionChange?: (selectedValue: string) => void;
 };
 
@@ -22,11 +24,18 @@ const defaultModels = [
 ];
 
 const ModelSelect = React.forwardRef<HTMLDivElement, ModelSelectProps>(
-  ({ onSelectionChange, ...props }, ref) => {
+  ({ onSelectionChange, labelPlacement, defaultModel, ...props }, ref) => {
     const [models, setModels] = useState<ModelProps[]>(defaultModels);
     const [loading, setLoading] = useState<boolean>(true);
-    const [selectedValuse, setSelectedValuse] = useState<string>("");
+    const [value, setValue] = React.useState(new Set([defaultModel || ""]));
 
+    useEffect(() => {
+      if (defaultModel) {
+        setValue(new Set([defaultModel]));
+      }
+    }, [defaultModel]);
+
+    // const defaultSelectedKey: Key = defaultModel ? defaultModel : "";
     useEffect(() => {
       const fetchModels = async () => {
         try {
@@ -47,24 +56,25 @@ const ModelSelect = React.forwardRef<HTMLDivElement, ModelSelectProps>(
     }, []);
 
     if (loading) {
-      return <Spinner label="Loading..." />;
+      return <Spinner label="Loading model..." />;
     }
 
     const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
       const newValue = e.target.value;
-      setSelectedValuse(newValue);
+      setValue(new Set([newValue]));
       onSelectionChange && onSelectionChange(newValue); // Call the callback function with the new value
     };
 
     return (
       <Select
-        isRequired
-        label="Model"
+        // isRequired
+        label="LLM Model"
+        labelPlacement={labelPlacement}
         placeholder="Select an Model"
-        // defaultSelectedKeys={"gpt-3.5-turbo"}
+        // selectedKeys={value}
+        selectedKeys={value}
         onChange={handleSelectionChange}
-        className="max-w-full"
-      >
+        className="max-w-full">
         {models.map((model) => (
           <SelectItem key={model.name}>{model.name}</SelectItem>
         ))}

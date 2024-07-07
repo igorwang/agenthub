@@ -1,4 +1,7 @@
-mutation UpdateKnowledgeBase($_set: knowledge_base_set_input, $pk_columns: knowledge_base_pk_columns_input!) {
+mutation UpdateKnowledgeBase(
+  $_set: knowledge_base_set_input
+  $pk_columns: knowledge_base_pk_columns_input!
+) {
   update_knowledge_base_by_pk(_set: $_set, pk_columns: $pk_columns) {
     ...KnowledgeBaseItem
   }
@@ -13,8 +16,8 @@ fragment KnowledgeBaseItem on knowledge_base {
   creator_id
   base_type
   extraction_prompt_id
+  model_name
 }
-
 
 mutation CreateOneKnowledgeBase($object: knowledge_base_insert_input!) {
   insert_knowledge_base_one(object: $object) {

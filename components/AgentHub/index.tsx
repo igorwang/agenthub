@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import SearchBar from "./searchbar";
 
 import {
+  Order_By,
   useCreateOneAgentMutation,
   useDeleteAgentUserRelationMutation,
   useSubMyAgentListSubscription,
@@ -40,6 +41,11 @@ const ChatHub = () => {
 
   const agentListQuery = useSubMyAgentListSubscription({
     variables: {
+      limit: 50,
+      order_by: [
+        { agent: { agent_type: { order: Order_By.DescNullsLast } } },
+        { updated_at: Order_By.DescNullsLast },
+      ],
       where: {
         _or: [
           { user_id: { _eq: userId } },

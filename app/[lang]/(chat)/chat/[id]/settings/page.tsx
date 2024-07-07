@@ -1,11 +1,12 @@
 "use client";
 
-import { Avatar, Button, Divider, Input, Textarea } from "@nextui-org/react";
+import { Avatar, Button, Divider, Input, Spacer, Textarea } from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import PromptFrom from "@/components/PromptFrom";
+import ModelSelect from "@/components/PromptFrom/model-select";
 import RightHeader from "@/components/RightHeader";
 import {
   Agent_Set_Input,
@@ -22,10 +23,12 @@ interface Agent {
   description?: string | null | undefined;
   avatar?: string | null | undefined;
   system_prompt?: SystemPrompt | null | undefined;
+  default_model?: string | null;
 }
 
 export default function Component() {
-  const [data, setData] = useState<Agent | null>();
+  const [agent, setAgent] = useState<Agent | null>();
+
   const [updateAgentMutation] = useUpdateAgentMutation();
   const router = useRouter();
   const pathname = usePathname();
@@ -36,16 +39,16 @@ export default function Component() {
 
   useEffect(() => {
     if (query.data) {
-      console.log(query.data);
-      setData(query?.data?.agent_by_pk);
+      setAgent(query?.data?.agent_by_pk);
     }
   }, [query]);
 
   function handleSubmit(e: any) {
     const input: Agent_Set_Input = {
-      name: data?.name,
-      description: data?.description,
-      avatar: data?.avatar,
+      name: agent?.name,
+      description: agent?.description,
+      avatar: agent?.avatar,
+      default_model: agent?.default_model,
     };
     delete input.id;
     updateAgentMutation({
@@ -57,12 +60,15 @@ export default function Component() {
       toast.success("Agent information update succeeded！");
     });
   }
+  if (query.loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="w-full">
       <RightHeader title={"Agent Setting"} callBackUri={`/chat/${id}`} />
-      <div className={"flex flex-col items-center"}>
-        <form className={"w-full max-w-4xl gap-16 px-4 pt-8"}>
+      <div className={"flex flex-col items-center justify-center p-10"}>
+        <form className={"w-full max-w-4xl gap-16"}>
           <div className={"flex flex-row items-end justify-between pb-1"}>
             <span className="relative text-foreground-500">Agent Information</span>
             <Button color={"primary"} onClick={(e) => handleSubmit(e)}>
@@ -72,13 +78,13 @@ export default function Component() {
           <Divider />
           <div className={"mt-4"}>Avatar</div>
           <div className={"flex justify-center"}>
-            {data?.avatar ? (
-              <Avatar src={data?.avatar} />
+            {agent?.avatar ? (
+              <Avatar src={agent?.avatar} />
             ) : (
               <Avatar
                 className="flex-shrink-0 bg-blue-400"
                 size="md"
-                name={data?.name?.charAt(0)}
+                name={agent?.name?.charAt(0)}
                 classNames={{ name: "text-xl" }}
               />
             )}
@@ -91,8 +97,8 @@ export default function Component() {
               placeholder="Enter agent name"
               type="text"
               variant={"flat"}
-              value={data?.name}
-              onChange={(e) => setData({ ...data, name: e.target.value || "" })}
+              value={agent?.name}
+              onChange={(e) => setAgent({ ...agent, name: e.target.value || "" })}
             />
           </div>
           <div className={"mt-4"}>
@@ -102,15 +108,30 @@ export default function Component() {
               placeholder="Enter agent description"
               type="text"
               variant={"flat"}
-              value={data?.description || ""}
-              onChange={(e) => setData({ ...data, description: e.target.value })}
+              value={agent?.description || ""}
+              onChange={(e) => setAgent({ ...agent, description: e.target.value })}
+            />
+          </div>
+          <div className={"mt-8"}>
+            <ModelSelect
+              labelPlacement="outside"
+              defaultModel={agent?.default_model || ""}
+              onSelectionChange={(model) => {
+                setAgent((prev) => ({ ...prev, default_model: model }));
+              }}
             />
           </div>
         </form>
-        <div className={"w-full max-w-4xl pt-12"}>
+        <Spacer y={4} />
+        <div className={"w-full max-w-4xl"}>
           <span className="relative text-foreground-500">Prompt</span>
           <Divider />
-          <PromptFrom agentId={id} defaultPromptId={data?.system_prompt?.id} />
+          <PromptFrom
+            agentId={id}
+            defaultPromptId={agent?.system_prompt?.id}
+            hiddeTitle={true}
+            defaultModel={agent?.default_model || ""}
+          />
         </div>
       </div>
     </div>
