@@ -54,14 +54,12 @@ export default function LibrarySetting() {
   }, [query]);
 
   function handleSubmit(e: any) {
-    console.log("knowledgeBase", knowledgeBase);
     const input: Knowledge_Base_Set_Input = {
       name: knowledgeBase?.name,
       description: knowledgeBase?.description,
       base_type: knowledgeBase?.base_type,
       model_name: knowledgeBase?.model_name,
     };
-    console.log("Knowledge_Base_Set_Input", input);
     updateKnowledgeBaseMutation({
       variables: {
         pk_columns: { id: id },
@@ -94,7 +92,7 @@ export default function LibrarySetting() {
   ];
 
   return (
-    <div className="w-full">
+    <div className="h-full w-full overflow-auto">
       <RightHeader title={"Library Setting"} callBackUri={`/library/${id}`} />
       <div className={"flex flex-col items-center pt-2"}>
         <form className={"w-full max-w-4xl"}>
