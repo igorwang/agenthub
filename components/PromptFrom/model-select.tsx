@@ -1,5 +1,5 @@
 import { Select, SelectItem, Spinner } from "@nextui-org/react";
-import React, { Key, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export type ModelProps = {
   name: string;
@@ -27,11 +27,15 @@ const ModelSelect = React.forwardRef<HTMLDivElement, ModelSelectProps>(
   ({ onSelectionChange, labelPlacement, defaultModel, ...props }, ref) => {
     const [models, setModels] = useState<ModelProps[]>(defaultModels);
     const [loading, setLoading] = useState<boolean>(true);
-    const [selectedValuse, setSelectedValuse] = useState<string>(defaultModel || "");
+    const [value, setValue] = React.useState(new Set([defaultModel || ""]));
 
-    const defaultSelectedKey: Key = defaultModel ? defaultModel : "";
+    useEffect(() => {
+      if (defaultModel) {
+        setValue(new Set([defaultModel]));
+      }
+    }, [defaultModel]);
 
-    console.log("defaultSelectedKeys", defaultSelectedKey);
+    // const defaultSelectedKey: Key = defaultModel ? defaultModel : "";
     useEffect(() => {
       const fetchModels = async () => {
         try {
@@ -52,12 +56,12 @@ const ModelSelect = React.forwardRef<HTMLDivElement, ModelSelectProps>(
     }, []);
 
     if (loading) {
-      return <Spinner label="Loading..." />;
+      return <Spinner label="Loading model..." />;
     }
 
     const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
       const newValue = e.target.value;
-      setSelectedValuse(newValue);
+      setValue(new Set([newValue]));
       onSelectionChange && onSelectionChange(newValue); // Call the callback function with the new value
     };
 
@@ -67,8 +71,8 @@ const ModelSelect = React.forwardRef<HTMLDivElement, ModelSelectProps>(
         label="LLM Model"
         labelPlacement={labelPlacement}
         placeholder="Select an Model"
-        defaultSelectedKeys={[defaultSelectedKey]}
-        value={selectedValuse}
+        // selectedKeys={value}
+        selectedKeys={value}
         onChange={handleSelectionChange}
         className="max-w-full">
         {models.map((model) => (

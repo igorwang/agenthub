@@ -23,6 +23,7 @@ import { reorder } from "@atlaskit/pragmatic-drag-and-drop/reorder";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
+import { Spacer } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -44,6 +45,7 @@ export type PromptFormProps = {
   defaultPromptId?: number;
   templates?: PromptTemplateType[];
   hiddeTitle?: boolean;
+  defaultModel?: string;
 };
 
 export type variableInputsType = {
@@ -67,6 +69,7 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
       agentId,
       konwledgeBaseId,
       defaultPromptId,
+      defaultModel,
       defualtEditing = false,
       templates = defaultTemplates,
       ...props
@@ -412,7 +415,8 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
     const defaultKey = "gpt-3.5-turbo";
     return (
       <div className="flex h-full w-full max-w-full flex-col">
-        <div className="flex flex-row p-2">
+        <Spacer y={2} />
+        <div className="flex flex-row">
           <div className="flex flex-grow flex-row items-center gap-2 pr-2">
             {!hiddeTitle && (
               <div className="flex flex-shrink-0 gap-2 text-xl font-bold sm:text-3xl">
@@ -448,7 +452,8 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
             )}
           </div>
         </div>
-        <div className="flex flex-row gap-4 p-2">
+        <Spacer y={2} />
+        <div className="flex flex-row gap-4">
           <div className="flex h-full w-1/2 flex-col items-start justify-start gap-2">
             <span className="text-1xl font-bold">Template</span>
             {templatesElement}
@@ -472,7 +477,9 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
             <div className="text-xl font-bold">Output</div>
             <div className="relative flex h-full flex-col items-baseline gap-2 border-2 p-2">
               <div className="flex w-full flex-col">
-                <ModelSelect onSelectionChange={setSelectedModel}></ModelSelect>
+                <ModelSelect
+                  onSelectionChange={setSelectedModel}
+                  defaultModel={defaultModel}></ModelSelect>
               </div>
               <div className="max-h-[600px] w-full overflow-scroll pb-8">
                 {message && "Assistant:"}
