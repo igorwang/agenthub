@@ -33,9 +33,10 @@ export default function SearchPanel({
   );
 
   const handleSubmit = () => {
-    setInput("");
     handleStartNewQuery(input);
+    setInput("");
   };
+
   const handleClear = () => {
     router.push("/search");
   };
