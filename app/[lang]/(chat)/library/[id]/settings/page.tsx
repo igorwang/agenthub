@@ -153,14 +153,47 @@ export default function LibrarySetting() {
               value={knowledgeBase?.description || ""}
               onChange={(e) => textareaOnChange(e)}
             />
-            <ModelSelect
-              labelPlacement="outside"
-              defaultModel={knowledgeBase.model_name}
-              onSelectionChange={(model) =>
-                setknowledgeBase(
-                  (prev) => ({ ...prev, model_name: model }) as KnowledgeBaseItem,
-                )
-              }></ModelSelect>
+
+            <div className="flex flex-col gap-2">
+              <Select
+                label="Chunking Strategy"
+                labelPlacement="outside"
+                placeholder="Select your chunking strategy for this library"
+                classNames={{ label: "text-sm" }}
+                variant={"flat"}
+                selectedKeys={new Set([knowledgeBase.chunking_strategy || ""])}
+                // defaultSelectedKeys={[Chunking_Strategy_Enum.Length.toString()]}
+                onSelectionChange={(keys) => {
+                  const selectedValue = Array.from(keys)[0] as Chunking_Strategy_Enum;
+                  setknowledgeBase((prev) => ({
+                    ...prev,
+                    chunking_strategy: selectedValue,
+                  }));
+                }}>
+                {Object.values(Chunking_Strategy_Enum).map((strategy) => (
+                  <SelectItem key={strategy} value={strategy}>
+                    {strategy}
+                  </SelectItem>
+                ))}
+              </Select>
+              <label className="font-sans text-sm text-gray-900 subpixel-antialiased">
+                Chunking Parameters
+              </label>
+              <JsonEditor
+                maxWidth={400}
+                data={
+                  knowledgeBase.chunking_parameters
+                    ? JSON.parse(knowledgeBase.chunking_parameters)
+                    : {}
+                }
+                onUpdate={({ newData }) => {
+                  setknowledgeBase({
+                    ...knowledgeBase,
+                    chunking_parameters: JSON.stringify(newData),
+                  });
+                }}
+                rootName="data"></JsonEditor>
+            </div>
             <Switch
               defaultSelected
               aria-label="Extraction Process Switch"
@@ -176,62 +209,14 @@ export default function LibrarySetting() {
             </Switch>
 
             {knowledgeBase.is_extraction && (
-              <div className="flex flex-col gap-2">
-                <Select
-                  label="Chunking Strategy"
-                  labelPlacement="outside"
-                  placeholder="Select your chunking strategy for this library"
-                  classNames={{ label: "text-sm" }}
-                  variant={"flat"}
-                  selectedKeys={new Set([knowledgeBase.chunking_strategy || ""])}
-                  // defaultSelectedKeys={[Chunking_Strategy_Enum.Length.toString()]}
-                  onSelectionChange={(keys) => {
-                    const selectedValue = Array.from(keys)[0] as Chunking_Strategy_Enum;
-                    setknowledgeBase((prev) => ({
-                      ...prev,
-                      chunking_strategy: selectedValue,
-                    }));
-                  }}>
-                  {Object.values(Chunking_Strategy_Enum).map((strategy) => (
-                    <SelectItem key={strategy} value={strategy}>
-                      {strategy}
-                    </SelectItem>
-                  ))}
-                </Select>
-                {/* <Input
-                  label="Chunking Parameters"
-                  labelPlacement="outside"
-                  placeholder={JSON.stringify({ chunk_size: 100, chunk_overlap: 1000 })}
-                  // placeholder="Enter library name"
-                  type="text"
-                  variant={"flat"}
-                  value={knowledgeBase.chunking_parameters}
-                  // value={'\{"chunking_length"\}']
-                  onChange={(e) =>
-                    setknowledgeBase({
-                      ...knowledgeBase,
-                      chunking_parameters: e.target.value || "",
-                    })
-                  }
-                /> */}
-                <label className="font-sans text-sm text-gray-900 subpixel-antialiased">
-                  Chunking Parameters
-                </label>
-                <JsonEditor
-                  maxWidth={400}
-                  data={
-                    knowledgeBase.chunking_parameters
-                      ? JSON.parse(knowledgeBase.chunking_parameters)
-                      : {}
-                  }
-                  onUpdate={({ newData }) => {
-                    setknowledgeBase({
-                      ...knowledgeBase,
-                      chunking_parameters: JSON.stringify(newData),
-                    });
-                  }}
-                  rootName="data"></JsonEditor>
-              </div>
+              <ModelSelect
+                labelPlacement="outside"
+                defaultModel={knowledgeBase.model_name}
+                onSelectionChange={(model) =>
+                  setknowledgeBase(
+                    (prev) => ({ ...prev, model_name: model }) as KnowledgeBaseItem,
+                  )
+                }></ModelSelect>
             )}
           </div>
         </form>
