@@ -16,6 +16,7 @@ fragment knowledgeBaseFragment on knowledge_base {
   base_type
   model_name
   is_extraction
+  is_publish
   extraction_prompt_id
   chunking_strategy
   chunking_parameters

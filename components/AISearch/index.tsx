@@ -27,13 +27,14 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { v4 } from "uuid";
 
-type topicProps = {
+export type topicProps = {
   id: any;
   short_url?: string | null | undefined;
   title?: string;
   user_id?: any;
-  created_at: any;
-  updated_at: any;
+  created_at?: any;
+  updated_at?: any;
+  status?: "draft" | "saved";
 };
 
 type refineQueryType = { refineQuery: string; keywords: string };
@@ -80,22 +81,15 @@ export default function AISearch() {
     console.log("topic:", topic);
     const fetchOrCreateTopic = async () => {
       if (topicData?.topic_history && topicData.topic_history.length > 0) {
-        setTopic({ ...topicData.topic_history[0] });
+        setTopic({ ...topicData.topic_history[0], status: "saved" });
       } else if (topicData?.topic_history && topicData.topic_history.length == 0) {
-        try {
-          const response = await createNewTopicMutation({
-            variables: {
-              object: { title: query || "New Topic", short_url: id, user_id: userId },
-            },
-          });
-          const data = response.data?.insert_topic_history_one;
-          if (data) {
-            setTopic({ ...data });
-          }
-        } catch (error) {
-          console.log(error);
-          // toast.error("Create new topic failed, please try again.");
-        }
+        setTopic({
+          id: v4(),
+          title: query || "New Topic",
+          short_url: id,
+          user_id: userId,
+          status: "draft",
+        });
       }
     };
     fetchOrCreateTopic();
@@ -316,6 +310,7 @@ export default function AISearch() {
     setIsChating(true);
     setQuery(query);
   };
+
   return (
     <div className="mx-auto flex h-full min-w-[460px] max-w-3xl flex-col space-y-2 px-12 pb-14 pt-6 sm:px-12 md:space-y-4 md:pb-24 md:pt-14">
       <MessagePanel
@@ -324,6 +319,7 @@ export default function AISearch() {
         chatStatus={chatStatus}
         handleStartNewQuery={handleStartNewQuery}></MessagePanel>
       <SearchPanel
+        topic={topic}
         handleStartNewQuery={handleStartNewQuery}
         isChating={isChating}
         messages={messages}></SearchPanel>

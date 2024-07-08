@@ -4,20 +4,25 @@ import { Button, Spacer, Textarea } from "@nextui-org/react";
 import { useRef, useState } from "react";
 // import { faSearchengin } from "@fortawesome/free-regular-svg-icons";
 import { cn } from "@/cn";
+import { topicProps } from "@/components/AISearch";
 import ExamplePanel from "@/components/AISearch/example-panel";
+import SearchSkeleton from "@/components/AISearch/search-skeleton";
 import { MessageType } from "@/types/chatTypes";
 import { faSearchPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
 
 interface SearchPanelProps {
+  topic?: topicProps;
   messages?: MessageType[];
   query?: string;
   isChating: boolean;
+
   handleStartNewQuery: (query: string) => void;
 }
 
 export default function SearchPanel({
+  topic,
   messages,
   query,
   isChating,
@@ -32,6 +37,8 @@ export default function SearchPanel({
     <FontAwesomeIcon icon={faSearchPlus} beatFade size="3x" className="max-w-[60px]" />
   );
 
+  console.log("topic", topic);
+
   const handleSubmit = () => {
     handleStartNewQuery(input);
     setInput("");
@@ -40,6 +47,21 @@ export default function SearchPanel({
   const handleClear = () => {
     router.push("/search");
   };
+
+  if (!topic) {
+    return (
+      <div
+        className={
+          "fixed bottom-8 left-20 right-20 mx-auto flex h-screen max-w-full flex-col items-center justify-center"
+        }>
+        <SearchSkeleton />
+      </div>
+    );
+  }
+
+  if (isChating) {
+    return null;
+  }
 
   if (messages && messages.length > 0) {
     return (
@@ -57,10 +79,6 @@ export default function SearchPanel({
         </Button>
       </div>
     );
-  }
-
-  if (isChating) {
-    return null;
   }
 
   return (

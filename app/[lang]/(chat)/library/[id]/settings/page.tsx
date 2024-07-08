@@ -35,6 +35,7 @@ interface KnowledgeBaseItem {
   chunking_parameters?: any;
   model_name?: string;
   is_extraction?: boolean;
+  is_publish?: boolean;
   type?: {
     value?: string;
     comment?: string;
@@ -72,6 +73,7 @@ export default function LibrarySetting() {
       chunking_parameters: knowledgeBase?.chunking_parameters,
       is_extraction: knowledgeBase?.is_extraction,
       model_name: knowledgeBase?.model_name,
+      is_publish: knowledgeBase?.is_publish,
     };
     console.log("knowledgeBase input", input);
     updateKnowledgeBaseMutation({
@@ -153,7 +155,18 @@ export default function LibrarySetting() {
               value={knowledgeBase?.description || ""}
               onChange={(e) => textareaOnChange(e)}
             />
-
+            <Switch
+              defaultSelected
+              aria-label="Publish the library"
+              isSelected={knowledgeBase.is_publish || false}
+              onChange={() => {
+                setknowledgeBase((prev) => ({
+                  ...prev,
+                  is_publish: knowledgeBase.is_publish ? false : true,
+                }));
+              }}>
+              Publish the library
+            </Switch>
             <div className="flex flex-col gap-2">
               <Select
                 label="Chunking Strategy"
