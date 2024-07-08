@@ -1,4 +1,5 @@
 "use client";
+import ChatHub from "@/components/AgentHub";
 import { Conversation } from "@/components/Conversation";
 import { selectChat, selectChatList, selectSession } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
@@ -26,6 +27,7 @@ export default function ChatPage() {
 
   return (
     <div className="flex flex-1 flex-row overflow-auto">
+      <ChatHub />
       <Conversation agentId={id}></Conversation>
     </div>
   );

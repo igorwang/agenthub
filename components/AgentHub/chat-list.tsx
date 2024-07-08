@@ -140,6 +140,7 @@ export const ChatList: React.FC<{ groupedChatList: GroupedChatListDTO[] }> = ({
             <ListboxItem
               key={item.id}
               textValue={item.name}
+              className={item.id == params?.id ? "bg-blue-200" : ""}
               onClick={() => handleSelectChat(item.id)}
               onMouseEnter={() => handleMouseEnter(item?.id)}
               onMouseLeave={() => handleMouseLeave()}>

@@ -10,7 +10,7 @@ import {
   useGetAgentByIdQuery,
 } from "@/graphql/generated/types";
 import { CHAT_MODE } from "@/types/chatTypes";
-import { Avatar, Button, Tab, Tabs, Tooltip } from "@nextui-org/react";
+import { Avatar, Button, Tooltip } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -137,14 +137,14 @@ export const Conversation: React.FC<ConversationProps> = ({
           </Tooltip>
         </div>
       </div>
-      <Tabs
+      {/* <Tabs
         className="justify-center"
         selectedKey={chatMode}
         onSelectionChange={(key) => setChatMode(key.toString())}>
         <Tab key={CHAT_MODE.simple.toString()} title="simple" />
         <Tab key={CHAT_MODE.deep.toString()} title="deep" />
         <Tab key={CHAT_MODE.creative.toString()} title="creative" />
-      </Tabs>
+      </Tabs> */}
     </div>
   );
 
