@@ -1,6 +1,14 @@
 "use client";
 
-import { Button, Divider, Input, Select, SelectItem, Textarea } from "@nextui-org/react";
+import {
+  Button,
+  Divider,
+  Input,
+  Select,
+  SelectItem,
+  Switch,
+  Textarea,
+} from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -25,6 +33,7 @@ interface KnowledgeBaseItem {
   chunking_strategy?: Chunking_Strategy_Enum;
   chunking_parameters?: any;
   model_name?: string;
+  is_extraction?: boolean;
   type?: {
     value?: string;
     comment?: string;
@@ -58,14 +67,19 @@ export default function LibrarySetting() {
       name: knowledgeBase?.name,
       description: knowledgeBase?.description,
       base_type: knowledgeBase?.base_type,
+      chunking_strategy: knowledgeBase?.chunking_strategy,
+      chunking_parameters: knowledgeBase?.chunking_parameters,
+      is_extraction: knowledgeBase?.is_extraction,
       model_name: knowledgeBase?.model_name,
     };
+    console.log("knowledgeBase input", input);
     updateKnowledgeBaseMutation({
       variables: {
         pk_columns: { id: id },
         _set: input,
       },
     }).then(() => {
+      query.refetch();
       toast.success("Library information update succeeded！");
     });
   }
@@ -83,18 +97,19 @@ export default function LibrarySetting() {
   if (!knowledgeBase) {
     return <p>Loading...</p>;
   }
-
-  const animals = [
-    { key: "length", label: "length" },
-    { key: "page", label: "markdown" },
-    { key: "markdown", label: "markdown" },
-    { key: "semantic", label: "semantic" },
-  ];
+  // const placeholderText =
+  // const handleSelectionChange = () => {
+  //   setknowledgeBase((prev) => ({
+  //     ...prev,
+  //     is_extraction: !prev.is_extraction,
+  //   }));
+  //   return true;
+  // };
 
   return (
     <div className="h-full w-full overflow-auto">
       <RightHeader title={"Library Setting"} callBackUri={`/library/${id}`} />
-      <div className={"flex flex-col items-center pt-2"}>
+      <div className={"mx-auto flex flex-col items-center px-4 pt-2"}>
         <form className={"w-full max-w-4xl"}>
           <div className={"flex flex-row items-end justify-between pb-1"}>
             <span className="relative text-foreground-500">Library Information</span>
@@ -127,24 +142,6 @@ export default function LibrarySetting() {
               value={knowledgeBase?.base_type}
               // onChange={(e) => setData({ ...data, name: e.target.value || "" })}
             />
-            {/* <div className={"mt-4"}>
-            <Select
-              label="Library Type"
-              labelPlacement="outside"
-              onChange={(e) =>
-                setData({
-                  ...data,
-                  base_type: e.target.value as Knowledge_Base_Type_Enum,
-                })
-              }
-              defaultSelectedKeys={[data?.type?.value || ""]}>
-              {(typeListQuery?.data?.knowledge_base_type || []).map((it) =>
-                it.value === "USER_AGENT" || it.value === "AGENT" ? null : (
-                  <SelectItem key={it.value}>{it?.comment}</SelectItem>
-                ),
-              )}
-            </Select>
-          </div> */}
             <Textarea
               label="Library Description"
               labelPlacement="outside"
@@ -155,7 +152,6 @@ export default function LibrarySetting() {
               value={knowledgeBase?.description || ""}
               onChange={(e) => textareaOnChange(e)}
             />
-            <div>isExtract TODO</div>
             <ModelSelect
               labelPlacement="outside"
               defaultModel={knowledgeBase.model_name}
@@ -164,26 +160,60 @@ export default function LibrarySetting() {
                   (prev) => ({ ...prev, model_name: model }) as KnowledgeBaseItem,
                 )
               }></ModelSelect>
-            <Select
-              items={animals}
-              label="chunking strategy"
-              labelPlacement="outside"
-              placeholder="Select an strategy"
-              defaultSelectedKeys={["length"]}
-              className="w-full">
-              {(animal) => <SelectItem key={animal.key}>{animal.label}</SelectItem>}
-            </Select>
-            <Input
-              isRequired
-              label="chunking parameters"
-              labelPlacement="outside"
-              disabled={true}
-              // placeholder="Enter library name"
-              type="text"
-              variant={"flat"}
-              // value={'\{"chunking_length"\}']
-              // onChange={(e) => setData({ ...data, name: e.target.value || "" })}
-            />
+            <Switch
+              defaultSelected
+              aria-label="Extraction Process Switch"
+              isSelected={knowledgeBase.is_extraction || false}
+              onChange={() => {
+                setknowledgeBase((prev) => ({
+                  ...prev,
+                  is_extraction: knowledgeBase.is_extraction ? false : true,
+                }));
+              }}>
+              {/* onChange={()=>{}} */}
+              Extraction Process Switch
+            </Switch>
+
+            {knowledgeBase.is_extraction && (
+              <div className="flex flex-col gap-2">
+                <Select
+                  label="Chunking Strategy"
+                  labelPlacement="outside"
+                  placeholder="Select your chunking strategy for this library"
+                  variant={"flat"}
+                  selectedKeys={new Set([knowledgeBase.chunking_strategy || ""])}
+                  // defaultSelectedKeys={[Chunking_Strategy_Enum.Length.toString()]}
+                  onSelectionChange={(keys) => {
+                    const selectedValue = Array.from(keys)[0] as Chunking_Strategy_Enum;
+                    setknowledgeBase((prev) => ({
+                      ...prev,
+                      chunking_strategy: selectedValue,
+                    }));
+                  }}>
+                  {Object.values(Chunking_Strategy_Enum).map((strategy) => (
+                    <SelectItem key={strategy} value={strategy}>
+                      {strategy}
+                    </SelectItem>
+                  ))}
+                </Select>
+                <Input
+                  label="Chunking Parameters"
+                  labelPlacement="outside"
+                  placeholder={JSON.stringify({ chunk_size: 100, chunk_overlap: 1000 })}
+                  // placeholder="Enter library name"
+                  type="text"
+                  variant={"flat"}
+                  value={knowledgeBase.chunking_parameters}
+                  // value={'\{"chunking_length"\}']
+                  onChange={(e) =>
+                    setknowledgeBase({
+                      ...knowledgeBase,
+                      chunking_parameters: e.target.value || "",
+                    })
+                  }
+                />
+              </div>
+            )}
           </div>
         </form>
         <div className={"w-full max-w-4xl pt-12"}>
