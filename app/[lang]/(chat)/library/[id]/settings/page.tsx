@@ -110,7 +110,7 @@ export default function LibrarySetting() {
   return (
     <div className="h-full w-full overflow-auto">
       <RightHeader title={"Library Setting"} callBackUri={`/library/${id}`} />
-      <div className={"mx-auto flex flex-col items-center px-4 pt-2"}>
+      <div className={"mx-auto flex flex-col items-center px-4 py-2"}>
         <form className={"w-full max-w-4xl"}>
           <div className={"flex flex-row items-end justify-between pb-1"}>
             <span className="relative text-foreground-500">Library Information</span>
