@@ -9,6 +9,7 @@ import {
   Switch,
   Textarea,
 } from "@nextui-org/react";
+import { JsonEditor } from "json-edit-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -180,6 +181,7 @@ export default function LibrarySetting() {
                   label="Chunking Strategy"
                   labelPlacement="outside"
                   placeholder="Select your chunking strategy for this library"
+                  classNames={{ label: "text-sm" }}
                   variant={"flat"}
                   selectedKeys={new Set([knowledgeBase.chunking_strategy || ""])}
                   // defaultSelectedKeys={[Chunking_Strategy_Enum.Length.toString()]}
@@ -196,7 +198,7 @@ export default function LibrarySetting() {
                     </SelectItem>
                   ))}
                 </Select>
-                <Input
+                {/* <Input
                   label="Chunking Parameters"
                   labelPlacement="outside"
                   placeholder={JSON.stringify({ chunk_size: 100, chunk_overlap: 1000 })}
@@ -211,7 +213,24 @@ export default function LibrarySetting() {
                       chunking_parameters: e.target.value || "",
                     })
                   }
-                />
+                /> */}
+                <label className="font-sans text-sm text-gray-900 subpixel-antialiased">
+                  Chunking Parameters
+                </label>
+                <JsonEditor
+                  maxWidth={400}
+                  data={
+                    knowledgeBase.chunking_parameters
+                      ? JSON.parse(knowledgeBase.chunking_parameters)
+                      : {}
+                  }
+                  onUpdate={({ newData }) => {
+                    setknowledgeBase({
+                      ...knowledgeBase,
+                      chunking_parameters: JSON.stringify(newData),
+                    });
+                  }}
+                  rootName="data"></JsonEditor>
               </div>
             )}
           </div>
