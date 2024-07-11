@@ -8,11 +8,13 @@ import React, { useRef, useState } from "react";
 import { UploadFile, UploadFileProps } from "@/components/Conversation/upload-file";
 import {
   Message_Role_Enum,
+  useAddNewTopicMutationMutation,
   useCreateMessageAndUpdateTopicHistoryMutation,
 } from "@/graphql/generated/types";
 import {
   selectSelectedChatId,
   selectSelectedSessionId,
+  selectSession,
 } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
 import { useSession } from "next-auth/react";
@@ -39,6 +41,7 @@ export default function PromptInputWithFaq({
 
   const [createMessageAndUpdateTopicHistoryMutation, { data, loading, error }] =
     useCreateMessageAndUpdateTopicHistoryMutation();
+  const [addNewTopicMutation] = useAddNewTopicMutationMutation();
 
   const session = useSession();
   const user_id = session.data?.user?.id;
@@ -138,23 +141,42 @@ export default function PromptInputWithFaq({
     handleChatingStatus?.(false);
   };
 
-  const sendMessageHanlder = () => {
-    handleChatingStatus && handleChatingStatus(true);
+  const sendMessageHanlder = async () => {
+    let data;
+    handleChatingStatus?.(true);
     if (!selectedSessionId) {
-      toast.error("Please choose a topic to start the conversation.");
-      return null;
+      try {
+        const response = await addNewTopicMutation({
+          variables: {
+            title: prompt.slice(0, 15),
+            user_id: user_id,
+            agent_id: agent_id,
+          },
+        });
+        data = response.data;
+        console.log("selectedSessionIdrequest", data);
+        if (data?.insert_topic_history_one) {
+          dispatch(dispatch(selectSession(data?.insert_topic_history_one?.id)));
+        }
+      } catch (error) {
+        console.error("Error adding topic:", error);
+        toast.error("System error, please try later.", {
+          position: "bottom-left",
+        });
+        handleChatingStatus?.(false);
+      }
     }
+
     const attachments = files.map((item) => ({
       // key: item.key,
       fileName: item.fileName,
       bucket: item.bucket,
       fileKey: item.fileKey,
     }));
-
     createMessageAndUpdateTopicHistoryMutation({
       variables: {
         content: prompt,
-        session_id: selectedSessionId,
+        session_id: selectedSessionId || data?.insert_topic_history_one?.id,
         role: Message_Role_Enum.User,
         attachments: attachments,
       },
@@ -257,7 +279,7 @@ export default function PromptInputWithFaq({
               {isChating ? stopButton : sendButton}
             </div>
           }
-          minRows={3}
+          minRows={2}
           radius="lg"
           value={prompt}
           variant="flat"

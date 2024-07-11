@@ -50,6 +50,11 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   });
   const { data, loading, error } = getTopicListQuery;
   useEffect(() => {
+    console.log("change selectedSessionId", selectedSessionId);
+    getTopicListQuery.refetch();
+  }, [selectedSessionId]);
+
+  useEffect(() => {
     if (data && data.topic_history && data.topic_history.length > 0) {
       const session_id = data.topic_history[0].id;
       // dispatch(selectSession(session_id));

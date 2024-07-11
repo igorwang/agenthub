@@ -151,7 +151,7 @@ export const Conversation: React.FC<ConversationProps> = ({
     <div className="flex h-full w-full max-w-full flex-col overflow-auto">
       {headerElement}
       <div className="flex max-w-full flex-grow flex-row overflow-auto">
-        <div className="flex max-w-full flex-grow flex-col items-end overflow-auto pt-2">
+        <div className="min-[400px] mx-auto flex max-w-7xl flex-grow flex-col items-center overflow-auto pt-4">
           <MessageWindow
             isChating={isChating}
             handleChatingStatus={setIsChating}
