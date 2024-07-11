@@ -8,6 +8,7 @@ import SearchBar from "./searchbar";
 
 import {
   Order_By,
+  Role_Enum,
   useCreateOneAgentMutation,
   useDeleteAgentUserRelationMutation,
   useSubMyAgentListSubscription,
@@ -33,6 +34,13 @@ const ChatHub = () => {
   const router = useRouter();
   const params = useParams();
   const pathname = usePathname();
+  const session = useSession();
+  const userRoles = session.data?.user?.roles;
+  const isCreatorView =
+    userRoles &&
+    userRoles.some((role) =>
+      [Role_Enum.Admin, Role_Enum.Creator].includes(role as Role_Enum),
+    );
 
   const { id: chatId } = params;
 
@@ -106,14 +114,16 @@ const ChatHub = () => {
     <div className="hidden h-full w-[260px] max-w-sm flex-col border-b-1 border-r-1 sm:flex">
       <div className="flex items-center justify-between px-2 pt-4 text-3xl font-semibold leading-7 text-default-foreground">
         <div>AgentHub</div>
-        <Tooltip content="Add new agent">
-          <Icon
-            className={"cursor-pointer pt-1"}
-            onClick={() => createAgent()}
-            icon="material-symbols-light:chat-add-on-outline"
-            width={"1.2em"}
-          />
-        </Tooltip>
+        {isCreatorView && (
+          <Tooltip content="Add new agent">
+            <Icon
+              className={"cursor-pointer pt-1"}
+              onClick={() => createAgent()}
+              icon="material-symbols-light:chat-add-on-outline"
+              width={"1.2em"}
+            />
+          </Tooltip>
+        )}
       </div>
       <Spacer y={4} />
       <SearchBar></SearchBar>

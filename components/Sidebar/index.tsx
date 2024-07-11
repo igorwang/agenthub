@@ -7,10 +7,19 @@ import { Avatar, Button, ScrollShadow, Spacer, Tooltip } from "@nextui-org/react
 import SidebarNav from "./sidebar-nav";
 
 import { ThemeSwitch } from "@/components/theme-switch";
-import { signOut } from "next-auth/react";
-import { sectionItems } from "./sidebar-items";
+import { Role_Enum } from "@/graphql/generated/types";
+import { signOut, useSession } from "next-auth/react";
+import { sectionItems, userSectionItems } from "./sidebar-items";
 
 export default function SideBar() {
+  const session = useSession();
+  const userRoles = session.data?.user?.roles;
+  const isCreatorView =
+    userRoles &&
+    userRoles.some((role) =>
+      [Role_Enum.Admin, Role_Enum.Creator].includes(role as Role_Enum),
+    );
+
   const handleSignOut = async () => {
     await signOut();
   };
@@ -24,14 +33,25 @@ export default function SideBar() {
       <ScrollShadow className="-mr-2 flex h-full max-h-full flex-col justify-between py-2 pr-2">
         <div>
           <div className="flex flex-col items-center gap-4">
-            <Avatar
-              isBordered
-              size="sm"
-              src="https://i.pravatar.cc/150?u=a04258114e29026708c"
-            />
+            <Tooltip content="User" placement="right">
+              <Button
+                isIconOnly
+                // className="data-[hover=true]:text-foreground"
+                variant="light">
+                <Avatar
+                  isBordered
+                  size="sm"
+                  src="https://i.pravatar.cc/150?u=a04258114e29026708c"
+                />
+              </Button>
+            </Tooltip>
           </div>
           <Spacer y={2} />
-          <SidebarNav isCompact defaultSelectedKey="chat" items={sectionItems} />
+          <SidebarNav
+            isCompact
+            defaultSelectedKey="chat"
+            items={isCreatorView ? sectionItems : userSectionItems}
+          />
         </div>
         <div className="mt-auto flex flex-col items-center gap-1">
           <ThemeSwitch className="pb-2" />

@@ -11,7 +11,7 @@ export const sectionItems: SidebarItem[] = [
         key: "chat",
         href: "/chat",
         icon: "tabler:message-2-plus",
-        title: "会话",
+        title: "Chat",
         endContent: (
           <Icon
             className="text-default-400"
@@ -24,7 +24,7 @@ export const sectionItems: SidebarItem[] = [
         key: "search",
         href: "/search",
         icon: "mingcute:search-3-line",
-        title: "搜索",
+        title: "Search",
         endContent: (
           <Icon
             className="text-default-400"
@@ -50,7 +50,7 @@ export const sectionItems: SidebarItem[] = [
         key: "discover",
         href: "/discover",
         icon: "iconamoon:discover",
-        title: "发现",
+        title: "Discover",
         endContent: (
           <Icon
             className="text-default-400"
@@ -59,17 +59,28 @@ export const sectionItems: SidebarItem[] = [
           />
         ),
       },
-      // {
-      //   key: "tracker",
-      //   href: "#",
-      //   icon: "solar:sort-by-time-linear",
-      //   title: "Tracker",
-      //   endContent: (
-      //     <Chip size="sm" variant="flat">
-      //       New
-      //     </Chip>
-      //   ),
-      // },
+    ],
+  },
+];
+
+export const userSectionItems: SidebarItem[] = [
+  {
+    key: "overview",
+    title: "Overview",
+    items: [
+      {
+        key: "chat",
+        href: "/chat",
+        icon: "tabler:message-2-plus",
+        title: "Chat",
+        endContent: (
+          <Icon
+            className="text-default-400"
+            icon="solar:add-circle-line-duotone"
+            width={24}
+          />
+        ),
+      },
     ],
   },
   //   {
