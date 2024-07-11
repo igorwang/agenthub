@@ -86,6 +86,10 @@ const ChatHub = () => {
         }
       });
       dispatch(setChatList(groupedChatList));
+      if (!chatId || chatId == "default") {
+        const defaultChatId = agentListData.r_agent_user?.[0].agent?.id;
+        router.push(`/chat/${defaultChatId}`);
+      }
     }
   }, [agentListData, dispatch]);
 

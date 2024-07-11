@@ -19,7 +19,6 @@ export default function SideBar() {
     userRoles.some((role) =>
       [Role_Enum.Admin, Role_Enum.Creator].includes(role as Role_Enum),
     );
-
   const handleSignOut = async () => {
     await signOut();
   };
