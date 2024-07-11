@@ -2,7 +2,7 @@
 import { ChatList } from "@/components/AgentHub/chat-list";
 import { AppDispatch } from "@/lib/store";
 import { Icon } from "@iconify/react";
-import { ScrollShadow, Spacer, Tooltip } from "@nextui-org/react";
+import { Divider, ScrollShadow, Spacer, Tooltip } from "@nextui-org/react";
 import { useDispatch } from "react-redux";
 import SearchBar from "./searchbar";
 
@@ -140,6 +140,7 @@ const ChatHub = () => {
         setChatListOpenStatus={(stauts: boolean) => {
           setChatListOpenStatus(stauts);
         }}></ChatList>
+      <Divider />
       {!chatListOpenStatus && (
         <ScrollShadow>
           <TopicHistory></TopicHistory>

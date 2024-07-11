@@ -24,6 +24,7 @@ export type MessageCardProps = React.HTMLAttributes<HTMLDivElement> & {
   attempts?: number;
   messageClassName?: string;
   maxWidth?: number;
+  isChating?: boolean;
   chatStatus?: CHAT_STATUS_ENUM | null;
   onAttemptChange?: (attempt: number) => void;
   onMessageCopy?: (content: string | string[]) => void;
@@ -35,6 +36,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
   (
     {
       avatar,
+      isChating,
       chatStatus,
       message,
       showFeedback,

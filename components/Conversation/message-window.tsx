@@ -374,7 +374,7 @@ export default function MessageWindow({
             // className="bg-slate-50"
           />
         ))}
-        {isChating && (
+        {isChating && chatStatus != null && (
           <MessageCard
             aria-label="streaming card"
             avatar={agentAvatarElement}
@@ -383,6 +383,7 @@ export default function MessageWindow({
             chatStatus={chatStatus}
             sourceResults={searchResults || []}
             maxWidth={width}
+            isChating={isChating}
           />
         )}
       </div>
