@@ -2,7 +2,6 @@
 
 import MessageWindow from "@/components/Conversation/message-window";
 import PromptInputWithFaq from "@/components/Conversation/prompt-input-with-faq";
-import FunctionTab from "@/components/FunctionTab";
 import { ConfigIcon } from "@/components/ui/icons";
 import {
   Message_Role_Enum,
@@ -167,9 +166,9 @@ export const Conversation: React.FC<ConversationProps> = ({
             </p>
           </div>
         </div>
-        <div className="max-w-100 m-2 hidden w-80 rounded-lg border-2 md:flex">
+        {/* <div className="max-w-100 m-2 hidden w-80 rounded-lg border-2 md:flex">
           <FunctionTab agentId={agentId}></FunctionTab>
-        </div>
+        </div> */}
       </div>
     </div>
   );

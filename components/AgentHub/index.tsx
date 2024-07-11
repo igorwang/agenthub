@@ -21,17 +21,13 @@ import {
 } from "@/lib/features/chatListSlice";
 import { GroupedChatListDTO } from "@/types/chatTypes";
 import { useSession } from "next-auth/react";
-import { useParams, usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 const ChatHub = () => {
-  const dispatch: AppDispatch = useDispatch();
-  const chatList = useSelector(selectChatList);
-  const selectedChatId = useSelector(selectSelectedChatId);
-  const [createAgentMutation] = useCreateOneAgentMutation();
-  const [deleteAgentUserRelationMutation] = useDeleteAgentUserRelationMutation();
   const router = useRouter();
+  const searcParams = useSearchParams();
   const params = useParams();
   const pathname = usePathname();
   const session = useSession();
@@ -41,9 +37,15 @@ const ChatHub = () => {
     userRoles.some((role) =>
       [Role_Enum.Admin, Role_Enum.Creator].includes(role as Role_Enum),
     );
-
   const { id: chatId } = params;
-
+  const dispatch: AppDispatch = useDispatch();
+  const chatList = useSelector(selectChatList);
+  const selectedChatId = useSelector(selectSelectedChatId);
+  const [createAgentMutation] = useCreateOneAgentMutation();
+  const [deleteAgentUserRelationMutation] = useDeleteAgentUserRelationMutation();
+  const [chatListOpenStatus, setChatListOpenStatus] = useState<boolean>(
+    searcParams.get("openStatus") === "1",
+  );
   const { data: sessionData, status } = useSession();
   const userId = sessionData?.user?.id;
 
@@ -88,7 +90,7 @@ const ChatHub = () => {
       dispatch(setChatList(groupedChatList));
       if (!chatId || chatId == "default") {
         const defaultChatId = agentListData.r_agent_user?.[0].agent?.id;
-        router.push(`/chat/${defaultChatId}`);
+        router.push(`/chat/${defaultChatId}?openStatus=1`);
       }
     }
   }, [agentListData, dispatch]);
@@ -132,7 +134,12 @@ const ChatHub = () => {
       <Spacer y={4} />
       <SearchBar></SearchBar>
       <Spacer y={4} />
-      <ChatList groupedChatList={chatList}></ChatList>
+      <ChatList
+        groupedChatList={chatList}
+        chatListOpenStatus={chatListOpenStatus}
+        setChatListOpenStatus={(stauts: boolean) => {
+          setChatListOpenStatus(stauts);
+        }}></ChatList>
     </div>
   );
 };
