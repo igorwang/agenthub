@@ -91,6 +91,7 @@ export const ChatList: React.FC<ChatListProps> = ({
       .filter((group) => group.agents.length > 0);
     setChatListOpenStatus?.(false);
     setFixedChatList(shortList);
+    console.log("push", selectId);
     router.push(`/chat/${selectId}?openStatus=0`);
   };
 
@@ -219,12 +220,14 @@ export const ChatList: React.FC<ChatListProps> = ({
                     onPress={() => handleUnsubscribeClick(item)}
                     className="bg-transparent data-[hover]:bg-transparent"
                     startContent={
-                      <Icon
-                        className={"cursor-pointer"}
-                        // onClick={(e) => handleUnsubscribe(e, item.id)}
-                        icon="material-symbols:delete-outline-rounded"
-                        fontSize={20}
-                      />
+                      chatListOpenStatus && (
+                        <Icon
+                          className={"cursor-pointer"}
+                          // onClick={(e) => handleUnsubscribe(e, item.id)}
+                          icon="material-symbols:delete-outline-rounded"
+                          fontSize={20}
+                        />
+                      )
                     }></Button>
                 )}
               </div>
@@ -261,7 +264,9 @@ export const ChatList: React.FC<ChatListProps> = ({
     );
   }
   return (
-    <ScrollShadow className="-mr-2 flex h-full max-h-full flex-col justify-between py-2 pr-2">
+    <ScrollShadow
+      className={"flex max-h-full min-h-[60px] flex-col justify-between py-2"}
+      size={0}>
       {_renderModal()}
       <div>{chatListContent}</div>
     </ScrollShadow>
