@@ -8,6 +8,7 @@ import SearchBar from "./searchbar";
 
 import {
   Order_By,
+  Role_Enum,
   useCreateOneAgentMutation,
   useDeleteAgentUserRelationMutation,
   useSubMyAgentListSubscription,
@@ -20,22 +21,31 @@ import {
 } from "@/lib/features/chatListSlice";
 import { GroupedChatListDTO } from "@/types/chatTypes";
 import { useSession } from "next-auth/react";
-import { useParams, usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 const ChatHub = () => {
+  const router = useRouter();
+  const searcParams = useSearchParams();
+  const params = useParams();
+  const pathname = usePathname();
+  const session = useSession();
+  const userRoles = session.data?.user?.roles;
+  const isCreatorView =
+    userRoles &&
+    userRoles.some((role) =>
+      [Role_Enum.Admin, Role_Enum.Creator].includes(role as Role_Enum),
+    );
+  const { id: chatId } = params;
   const dispatch: AppDispatch = useDispatch();
   const chatList = useSelector(selectChatList);
   const selectedChatId = useSelector(selectSelectedChatId);
   const [createAgentMutation] = useCreateOneAgentMutation();
   const [deleteAgentUserRelationMutation] = useDeleteAgentUserRelationMutation();
-  const router = useRouter();
-  const params = useParams();
-  const pathname = usePathname();
-
-  const { id: chatId } = params;
-
+  const [chatListOpenStatus, setChatListOpenStatus] = useState<boolean>(
+    searcParams.get("openStatus") === "1",
+  );
   const { data: sessionData, status } = useSession();
   const userId = sessionData?.user?.id;
 
@@ -78,6 +88,10 @@ const ChatHub = () => {
         }
       });
       dispatch(setChatList(groupedChatList));
+      if (!chatId || chatId == "default") {
+        const defaultChatId = agentListData.r_agent_user?.[0].agent?.id;
+        router.push(`/chat/${defaultChatId}?openStatus=1`);
+      }
     }
   }, [agentListData, dispatch]);
 
@@ -103,22 +117,29 @@ const ChatHub = () => {
   }
 
   return (
-    <div className="hidden h-full max-w-[240px] flex-col border-b-1 border-r-1 sm:flex">
+    <div className="hidden h-full w-[260px] max-w-sm flex-col border-b-1 border-r-1 sm:flex">
       <div className="flex items-center justify-between px-2 pt-4 text-3xl font-semibold leading-7 text-default-foreground">
         <div>AgentHub</div>
-        <Tooltip content="Add new agent">
-          <Icon
-            className={"cursor-pointer pt-1"}
-            onClick={() => createAgent()}
-            icon="material-symbols-light:chat-add-on-outline"
-            width={"1.2em"}
-          />
-        </Tooltip>
+        {isCreatorView && (
+          <Tooltip content="Add new agent">
+            <Icon
+              className={"cursor-pointer pt-1"}
+              onClick={() => createAgent()}
+              icon="material-symbols-light:chat-add-on-outline"
+              width={"1.2em"}
+            />
+          </Tooltip>
+        )}
       </div>
       <Spacer y={4} />
       <SearchBar></SearchBar>
       <Spacer y={4} />
-      <ChatList groupedChatList={chatList}></ChatList>
+      <ChatList
+        groupedChatList={chatList}
+        chatListOpenStatus={chatListOpenStatus}
+        setChatListOpenStatus={(stauts: boolean) => {
+          setChatListOpenStatus(stauts);
+        }}></ChatList>
     </div>
   );
 };

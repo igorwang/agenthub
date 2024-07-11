@@ -2,7 +2,6 @@
 
 import MessageWindow from "@/components/Conversation/message-window";
 import PromptInputWithFaq from "@/components/Conversation/prompt-input-with-faq";
-import FunctionTab from "@/components/FunctionTab";
 import { ConfigIcon } from "@/components/ui/icons";
 import {
   Message_Role_Enum,
@@ -10,7 +9,7 @@ import {
   useGetAgentByIdQuery,
 } from "@/graphql/generated/types";
 import { CHAT_MODE } from "@/types/chatTypes";
-import { Avatar, Button, Tab, Tabs, Tooltip } from "@nextui-org/react";
+import { Avatar, Button, Tooltip } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -137,14 +136,14 @@ export const Conversation: React.FC<ConversationProps> = ({
           </Tooltip>
         </div>
       </div>
-      <Tabs
+      {/* <Tabs
         className="justify-center"
         selectedKey={chatMode}
         onSelectionChange={(key) => setChatMode(key.toString())}>
         <Tab key={CHAT_MODE.simple.toString()} title="simple" />
         <Tab key={CHAT_MODE.deep.toString()} title="deep" />
         <Tab key={CHAT_MODE.creative.toString()} title="creative" />
-      </Tabs>
+      </Tabs> */}
     </div>
   );
 
@@ -167,9 +166,9 @@ export const Conversation: React.FC<ConversationProps> = ({
             </p>
           </div>
         </div>
-        <div className="max-w-100 m-2 hidden w-80 rounded-lg border-2 md:flex">
+        {/* <div className="max-w-100 m-2 hidden w-80 rounded-lg border-2 md:flex">
           <FunctionTab agentId={agentId}></FunctionTab>
-        </div>
+        </div> */}
       </div>
     </div>
   );

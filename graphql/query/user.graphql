@@ -1,0 +1,6 @@
+query GetUserRoles($where: r_user_role_bool_exp = {}) {
+  r_user_role(where: $where) {
+    id
+    role
+  }
+}

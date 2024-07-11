@@ -7,6 +7,7 @@ declare module "next-auth" {
     email?: string;
     groups?: string[];
     avatar?: string;
+    roles?: string[];
   }
 
   interface Session {
@@ -28,5 +29,6 @@ declare module "next-auth/jwt" {
     /** OpenID ID Token */
     access_token?: string;
     uid?: string;
+    roles?: string[];
   }
 }
