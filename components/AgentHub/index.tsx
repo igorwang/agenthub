@@ -2,7 +2,7 @@
 import { ChatList } from "@/components/AgentHub/chat-list";
 import { AppDispatch } from "@/lib/store";
 import { Icon } from "@iconify/react";
-import { Spacer, Tooltip } from "@nextui-org/react";
+import { ScrollShadow, Spacer, Tooltip } from "@nextui-org/react";
 import { useDispatch } from "react-redux";
 import SearchBar from "./searchbar";
 
@@ -14,6 +14,7 @@ import {
   useSubMyAgentListSubscription,
 } from "@/graphql/generated/types";
 
+import { TopicHistory } from "@/components/TopicHistory";
 import {
   selectChatList,
   selectSelectedChatId,
@@ -28,7 +29,7 @@ import { useSelector } from "react-redux";
 const ChatHub = () => {
   const router = useRouter();
   const searcParams = useSearchParams();
-  const params = useParams();
+  const params = useParams<{ id: string }>();
   const pathname = usePathname();
   const session = useSession();
   const userRoles = session.data?.user?.roles;
@@ -37,7 +38,6 @@ const ChatHub = () => {
     userRoles.some((role) =>
       [Role_Enum.Admin, Role_Enum.Creator].includes(role as Role_Enum),
     );
-  const { id: chatId } = params;
   const dispatch: AppDispatch = useDispatch();
   const chatList = useSelector(selectChatList);
   const selectedChatId = useSelector(selectSelectedChatId);
@@ -88,7 +88,7 @@ const ChatHub = () => {
         }
       });
       dispatch(setChatList(groupedChatList));
-      if (!chatId || chatId == "default") {
+      if (!params.id || params.id == "default") {
         const defaultChatId = agentListData.r_agent_user?.[0].agent?.id;
         router.push(`/chat/${defaultChatId}?openStatus=1`);
       }
@@ -140,6 +140,11 @@ const ChatHub = () => {
         setChatListOpenStatus={(stauts: boolean) => {
           setChatListOpenStatus(stauts);
         }}></ChatList>
+      {!chatListOpenStatus && (
+        <ScrollShadow>
+          <TopicHistory></TopicHistory>
+        </ScrollShadow>
+      )}
     </div>
   );
 };

@@ -1,7 +1,14 @@
 "use client";
 
-import { DiscussionIcon, OcticonKebabHorizontalIcon } from "@/components/ui/icons";
-import { useGetTopicHistoriesQuery } from "@/graphql/generated/types";
+import {
+  DiscussionIcon,
+  OcticonKebabHorizontalIcon,
+  PlusIcon,
+} from "@/components/ui/icons";
+import {
+  useAddNewTopicMutationMutation,
+  useGetTopicHistoriesQuery,
+} from "@/graphql/generated/types";
 import { selectSelectedSessionId, selectSession } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
 import {
@@ -17,6 +24,7 @@ import { useSession } from "next-auth/react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 
 interface TopicHistoryProps {
   agent_id?: string;
@@ -30,29 +38,26 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
 
   const router = useRouter();
   const pathname = usePathname();
-  const { id: chatId } = useParams();
-
-  const { data, loading, error } = useGetTopicHistoriesQuery({
+  const params: { id: string } = useParams();
+  const [addNewTopicMutation] = useAddNewTopicMutationMutation();
+  const getTopicListQuery = useGetTopicHistoriesQuery({
     variables: {
-      agent_id: agent_id,
+      agent_id: params.id,
       user_id: userId || "",
-      //  limit: 100
+      limit: 100,
     },
-    skip: !agent_id || !userId,
+    skip: !params.id || !userId,
   });
-
+  const { data, loading, error } = getTopicListQuery;
   useEffect(() => {
     if (data && data.topic_history && data.topic_history.length > 0) {
       const session_id = data.topic_history[0].id;
-      dispatch(selectSession(session_id));
-      if (session_id) {
-        router.push(`${pathname}?session_id=${session_id}`);
-      }
-      // if (chatId && chatId != "default") {
+      // dispatch(selectSession(session_id));
+      // if (session_id) {
       //   router.push(`${pathname}?session_id=${session_id}`);
       // }
     }
-  }, [data, dispatch]);
+  }, [data, params.id, dispatch]);
 
   if (!status) {
     return <div></div>;
@@ -109,8 +114,47 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
       </ListboxItem>
     );
   });
+
+  const handleAddTopic = async ({ agent_id, user_id }: AddTopicParams) => {
+    try {
+      const { data, errors } = await addNewTopicMutation({
+        variables: {
+          title: "New Topic",
+          user_id: user_id,
+          agent_id: agent_id,
+        },
+      });
+      if (errors) {
+        console.error(errors);
+      } else {
+        toast.success("Add success!", {
+          duration: 1000,
+          position: "bottom-left",
+        });
+        const new_sid = data?.insert_topic_history_one?.id;
+        if (new_sid) {
+          dispatch(selectSession(new_sid));
+        }
+        getTopicListQuery.refetch();
+      }
+    } catch (error) {
+      console.error("Error adding topic:", error);
+      toast.success("系统错误请稍后重试", {
+        duration: 1000,
+        position: "bottom-left",
+      });
+    }
+  };
+
   return (
     <div className="flex flex-col">
+      <Button
+        className="flex w-full bg-white hover:bg-slate-100"
+        endContent={<PlusIcon />}
+        onClick={() => handleAddTopic({ agent_id: params.id, user_id: userId })}
+        disabled={!userId}>
+        New Topic
+      </Button>
       {historyItems && (
         <Listbox
           aria-label="TopicHistory"
