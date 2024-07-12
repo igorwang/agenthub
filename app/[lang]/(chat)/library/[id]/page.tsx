@@ -296,7 +296,6 @@ export default function LibraryPage() {
     if (selectedKeys !== "all") {
       const ids: string[] = [];
       selectedKeys.forEach((value: Key) => {
-        console.log(value.toString());
         ids.push(value.toString());
       });
       setModalProps({ ids: ids });
@@ -325,6 +324,7 @@ export default function LibraryPage() {
         bottomContentPlacement="outside"
         classNames={{
           wrapper: "max-h-full",
+          base: "px-4",
         }}
         selectedKeys={selectedKeys}
         selectionMode="multiple"

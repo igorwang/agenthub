@@ -84,8 +84,8 @@ export default function LibraryLayout({
             <Icon
               className={"cursor-pointer pt-1"}
               onClick={() => handleCreateOneKnowledgeBase()}
-              icon="material-symbols-light:chat-add-on-outline"
-              width={"1.2em"}
+              icon="material-symbols-light:library-add-outline"
+              fontSize={36}
             />
           </Tooltip>
         </div>

@@ -120,7 +120,6 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
     useImperativeHandle(ref, () => ({
       clickButton: () => {
         if (saveButtonRef.current) {
-          console.log("buttonRef");
           saveButtonRef.current.click();
         }
       },
@@ -370,7 +369,6 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
     };
 
     const handleSavePrompt = async () => {
-      console.log(handleSavePrompt);
       setIsEditing(false);
       try {
         const newTemplates = templatesState.map((item, index) => ({

@@ -36,9 +36,6 @@ export default function SearchPanel({
   const iconElement = (
     <FontAwesomeIcon icon={faSearchPlus} beatFade size="3x" className="max-w-[60px]" />
   );
-
-  console.log("topic", topic);
-
   const handleSubmit = () => {
     handleStartNewQuery(input);
     setInput("");
