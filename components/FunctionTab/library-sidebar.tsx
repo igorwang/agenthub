@@ -1,5 +1,5 @@
 "use client";
-import LibraryCard, { LibraryCardProps } from "@/components/FunctionTab/libaray-card";
+import LibraryCard, { LibraryCardType } from "@/components/FunctionTab/libaray-card";
 import { ArrowBackIcon, ArrowForwardIcon } from "@/components/ui/icons";
 import { Button } from "@nextui-org/button";
 import { Spacer } from "@nextui-org/react";
@@ -8,8 +8,8 @@ import useEmblaCarousel from "embla-carousel-react";
 import { useCallback, useEffect, useState } from "react";
 
 const LibrarySideBar: React.FC<{
-  cards: LibraryCardProps[];
-  setSelectedLibrary: (item: LibraryCardProps) => void;
+  cards: LibraryCardType[];
+  setSelectedLibrary: (item: LibraryCardType) => void;
 }> = ({ cards, setSelectedLibrary }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false,
@@ -61,8 +61,7 @@ const LibrarySideBar: React.FC<{
           variant={hasPrev ? "flat" : "faded"}
           radius="full"
           isIconOnly
-          isDisabled={!hasPrev}
-        ></Button>
+          isDisabled={!hasPrev}></Button>
         <Spacer />
         <Button
           aria-label="forward"
@@ -71,8 +70,7 @@ const LibrarySideBar: React.FC<{
           startContent={<ArrowForwardIcon size={30} />}
           isIconOnly
           radius="full"
-          isDisabled={!hasNext}
-        ></Button>
+          isDisabled={!hasNext}></Button>
       </div>
     </div>
   );
