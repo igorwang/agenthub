@@ -89,7 +89,7 @@ export default function LibrarySetting() {
 
   function textareaOnChange(e: any) {
     const value = e.target.value;
-    if (value.length <= 200) {
+    if (value.length <= 500) {
       setknowledgeBase({ ...knowledgeBase, description: value });
     } else {
       toast.error("Library description limit 200 characters ");
@@ -241,6 +241,7 @@ export default function LibrarySetting() {
             agentId={id}
             hiddeTitle={true}
             defaultPromptId={knowledgeBase?.extraction_prompt_id}
+            defaultModel={knowledgeBase?.model_name}
             konwledgeBaseId={id}
           />
           {/* ) : null} */}
