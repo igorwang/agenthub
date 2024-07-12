@@ -132,7 +132,6 @@ export default function UploadZone({ knowledgeBaseId }: UploadZoneProps) {
         toast.success(
           "Files uploaded successfully! AI will take a little time to process.",
         );
-        console.log("Files uploaded successfully:", updatedFiles);
       })
       .catch((error) => {
         console.error("Error uploading files:", error);
@@ -152,8 +151,7 @@ export default function UploadZone({ knowledgeBaseId }: UploadZoneProps) {
         maxFiles={5}
         maxFileSize={10 * 1024 * 1024}
         footer={false}
-        header={false}
-      >
+        header={false}>
         {files.map((file, index) => (
           <FileMosaic
             key={file.id}
@@ -173,8 +171,7 @@ export default function UploadZone({ knowledgeBaseId }: UploadZoneProps) {
           size="md"
           variant="solid"
           color="primary"
-          onClick={handleClear}
-        >
+          onClick={handleClear}>
           Clear
         </Button>
         <Button
@@ -183,8 +180,7 @@ export default function UploadZone({ knowledgeBaseId }: UploadZoneProps) {
           variant="solid"
           color="primary"
           onClick={handleUploadStart}
-          disabled={isUploading || !files.length}
-        >
+          disabled={isUploading || !files.length}>
           Upload
         </Button>
       </div>

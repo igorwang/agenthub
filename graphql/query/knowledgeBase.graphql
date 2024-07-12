@@ -1,5 +1,8 @@
 query GetKbList($where: r_agent_kb_bool_exp = {}) {
   r_agent_kb(where: $where) {
+    id
+    kb_id
+    agent_id
     knowledge_base {
       ...knowledgeBaseFragment
     }
