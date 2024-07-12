@@ -86,8 +86,6 @@ export async function queryAnalyzer(
     format_instructions: parser.getFormatInstructions(),
   });
 
-  console.log("formattedPrompt", formattedPrompt);
-
   const selectedModel = model || DEFAULT_LLM_MODEL;
   const response = await fetch("/api/chat", {
     method: "POST",

@@ -6,6 +6,7 @@ import { Button } from "@nextui-org/react";
 import React from "react";
 
 import { cn } from "@/cn";
+import { selectedLibrariesType } from "@/components/LibraryCart";
 import { LibraryCardType } from "@/types/chatTypes";
 
 export type LibraryListItemColor = {
@@ -17,14 +18,28 @@ export type LibraryListItemProps = Omit<React.HTMLAttributes<HTMLDivElement>, "i
   isPopular?: boolean;
   removeWrapper?: boolean;
   library?: LibraryCardType;
+  selectedLibraries?: selectedLibrariesType[];
+  onAddLibrary?: (libraryId: string) => void;
+  onRemoveLibrary?: (libraryId: string) => void;
 };
 
 const LibraryListItem = React.forwardRef<HTMLDivElement, LibraryListItemProps>(
-  ({ isPopular, removeWrapper, library, className, ...props }, ref) => {
+  (
+    {
+      isPopular,
+      removeWrapper,
+      library,
+      className,
+      onAddLibrary,
+      onRemoveLibrary,
+      selectedLibraries,
+      ...props
+    },
+    ref,
+  ) => {
     const [isStarred, setIsStarred] = React.useState(false);
-    // const hasColors = availableColors && availableColors?.length > 0;
-    console.log("library", library?.updatedAt, typeof library?.updatedAt);
-    // const formattedDate = format(updatedAt, 'MMMM dd, yyyy');
+
+    const isSelected = selectedLibraries?.some((item) => item.libraryId === library?.id);
 
     const formattedDate = library?.updatedAt
       ? format(parseISO(library.updatedAt), "MMMM dd, yyyy")
@@ -115,14 +130,31 @@ const LibraryListItem = React.forwardRef<HTMLDivElement, LibraryListItemProps>(
                 Save{" "}
               </Button>
             ) : null} */}
-            <Button
-              fullWidth
-              className="font-medium"
-              color="primary"
-              radius="lg"
-              variant={isPopular ? "flat" : "solid"}>
-              Add to Agent{" "}
-            </Button>
+            {isSelected ? (
+              <Button
+                fullWidth
+                className="font-medium"
+                color="danger"
+                radius="lg"
+                onClick={() => {
+                  library && onRemoveLibrary?.(library?.id);
+                }}
+                variant={isPopular ? "flat" : "solid"}>
+                Remove From Agent{" "}
+              </Button>
+            ) : (
+              <Button
+                fullWidth
+                className="font-medium"
+                color="primary"
+                radius="lg"
+                onClick={() => {
+                  library && onAddLibrary?.(library?.id);
+                }}
+                variant={isPopular ? "flat" : "solid"}>
+                Add to Agent{" "}
+              </Button>
+            )}
           </div>
         </div>
       </div>

@@ -1,26 +1,44 @@
 "use client";
 import LibraryGrid from "@/components/LibraryCart/library-grid";
-import { useGetKbListQuery, useKnowledgeBaseListQuery } from "@/graphql/generated/types";
+import {
+  useAddALibraryToAgentMutation,
+  useGetKbListQuery,
+  useKnowledgeBaseListQuery,
+  useRemoveALibraryFromAgentMutation,
+} from "@/graphql/generated/types";
 import { LibraryCardType } from "@/types/chatTypes";
 import { cn } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface LibraryCartProps {
   agentId?: string;
   className?: string;
 }
 
+export type selectedLibrariesType = {
+  id: number;
+  agentId: string;
+  libraryId: string;
+};
+
 function LibraryCart({ agentId, className }: LibraryCartProps) {
   const session = useSession();
   const [libraries, setLibraries] = useState<LibraryCardType[]>();
+  const [selectedLibraries, setSelectedLibraries] = useState<selectedLibrariesType[]>([]);
+
+  useAddALibraryToAgentMutation;
+  const [addALibraryToAgentMutation, addResponse] = useAddALibraryToAgentMutation();
+  const [removeALibraryFromAgentMutation, removeResponse] =
+    useRemoveALibraryFromAgentMutation();
+
   const selectedLibrariesQuery = useGetKbListQuery({
     variables: {
       where: { agent_id: { _eq: agentId } },
     },
     skip: !agentId,
   });
-
   const publicLibrariesQuery = useKnowledgeBaseListQuery({
     variables: {
       //    distinct_on: // value for 'distinct_on'
@@ -45,10 +63,64 @@ function LibraryCart({ agentId, className }: LibraryCartProps) {
     }
   }, [publicLibrariesQuery.data]);
 
-  //   const { data, loading, error } = selectedLibrariesQuery;
-  //   if (publicLibrariesQuery.loading) {
-  //     return <div>Loading...</div>;
-  //   }
+  useEffect(() => {
+    if (selectedLibrariesQuery.data?.r_agent_kb) {
+      const libraries = selectedLibrariesQuery.data?.r_agent_kb.map((item) => ({
+        id: item.id,
+        agentId: item.agent_id,
+        libraryId: item.kb_id,
+      }));
+      setSelectedLibraries(libraries);
+    }
+  }, [selectedLibrariesQuery.data]);
+
+  const handleAddLibrary = async (libraryId: string) => {
+    if (agentId) {
+      try {
+        const response = await addALibraryToAgentMutation({
+          variables: { object: { agent_id: agentId, kb_id: libraryId } },
+        });
+        toast.info("Add successed");
+        setSelectedLibraries((prev) => {
+          // 检查 response.data 是否存在以及所需的数据是否存在
+          const newLibraryId = response.data?.insert_r_agent_kb_one?.id;
+          if (newLibraryId) {
+            // 如果新的 libraryId 存在，更新状态
+            return [
+              ...prev,
+              {
+                id: newLibraryId,
+                libraryId: libraryId,
+                agentId: agentId,
+              },
+            ];
+          } else {
+            // 如果新的 libraryId 不存在，返回原始状态
+            return prev;
+          }
+        });
+      } catch (error) {
+        toast.error("System error. Please try later.");
+      }
+    }
+  };
+
+  const handleRemoveLibrary = async (libraryId: string) => {
+    const removeLibrary = selectedLibraries?.find((item) => item.libraryId === libraryId);
+    if (removeLibrary) {
+      try {
+        const response = await removeALibraryFromAgentMutation({
+          variables: { id: removeLibrary.id },
+        });
+        setSelectedLibraries((prev) =>
+          prev?.filter((item) => item.id != removeLibrary.id),
+        );
+        toast.info("Remove successed");
+      } catch (erro) {
+        toast.error("System error. Please try later.");
+      }
+    }
+  };
 
   return (
     <div
@@ -56,7 +128,12 @@ function LibraryCart({ agentId, className }: LibraryCartProps) {
         "my-auto flex w-full max-w-7xl flex-col items-start gap-2",
         className,
       )}>
-      <LibraryGrid libraries={libraries} />
+      <LibraryGrid
+        libraries={libraries}
+        selectedLibraries={selectedLibraries}
+        onAddLibrary={handleAddLibrary}
+        onRemoveLibrary={handleRemoveLibrary}
+      />
     </div>
   );
 }

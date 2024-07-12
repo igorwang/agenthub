@@ -50,7 +50,6 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   });
   const { data, loading, error } = getTopicListQuery;
   useEffect(() => {
-    console.log("change selectedSessionId", selectedSessionId);
     getTopicListQuery.refetch();
   }, [selectedSessionId]);
 

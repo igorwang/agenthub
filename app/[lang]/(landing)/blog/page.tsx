@@ -15,7 +15,7 @@ export default function Blog() {
       {/* <UploadZone></UploadZone> */}
       {/* <SourceSection title="Sources"></SourceSection> */}
       {/* <MarkdownRenderer content={content}></MarkdownRenderer> */}
-      <LibraryCart></LibraryCart>
+      <LibraryCart agentId={"8434fd80-1f07-43b9-af55-2fee55314d59"}></LibraryCart>
     </div>
   );
 }

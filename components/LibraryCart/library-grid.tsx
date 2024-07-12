@@ -1,5 +1,6 @@
 "use client";
 
+import { selectedLibrariesType } from "@/components/LibraryCart";
 import LibraryListItem from "@/components/LibraryCart/library-item";
 import { LibraryCardType } from "@/types/chatTypes";
 import { cn } from "@nextui-org/react";
@@ -8,10 +9,24 @@ import React from "react";
 export type LibraryGridProps = React.HTMLAttributes<HTMLDivElement> & {
   itemClassName?: string;
   libraries?: LibraryCardType[];
+  selectedLibraries?: selectedLibrariesType[];
+  onAddLibrary?: (libraryId: string) => void;
+  onRemoveLibrary?: (libraryId: string) => void;
 };
 
 const LibraryGrid = React.forwardRef<HTMLDivElement, LibraryGridProps>(
-  ({ itemClassName, className, libraries, ...props }, ref) => {
+  (
+    {
+      itemClassName,
+      className,
+      onAddLibrary,
+      onRemoveLibrary,
+      selectedLibraries,
+      libraries,
+      ...props
+    },
+    ref,
+  ) => {
     return (
       <div
         ref={ref}
@@ -25,6 +40,9 @@ const LibraryGrid = React.forwardRef<HTMLDivElement, LibraryGridProps>(
             <LibraryListItem
               key={library.id}
               library={library}
+              selectedLibraries={selectedLibraries}
+              onAddLibrary={onAddLibrary}
+              onRemoveLibrary={onRemoveLibrary}
               className={cn("w-full snap-start", itemClassName)}
             />
           ))}

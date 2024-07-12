@@ -121,14 +121,11 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
     }, [promptId]);
 
     useEffect(() => {
-      console.log("data", data);
       if (data) {
-        console.log();
         setPrompt({
           name: data.prompt_hub_by_pk?.name || "",
         });
         const templates = data.prompt_hub_by_pk?.templates;
-        console.log("templates", templates);
         if (templates) {
           setTemplatesState(
             templates.map((item) => ({
@@ -209,7 +206,6 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
 
     const handleChangePrompt = (id: number | null) => {
       if (id) {
-        console.log("handleChangePrompt", id);
         setPromptId(id);
         setIsNewPromot(false);
       } else {
