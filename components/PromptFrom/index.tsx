@@ -479,7 +479,7 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
           <div className="flex flex-row gap-2">
             <Tooltip content="Add new prompt">
               <Button isIconOnly variant="bordered" onClick={handleAddPrompt}>
-                <Icon icon={"ic:outline-add"} fontSize={30}></Icon>
+                <Icon icon={"ic:outline-add"} fontSize={30} color={"slate-200"}></Icon>
               </Button>
             </Tooltip>
             <Button
