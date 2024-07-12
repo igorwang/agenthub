@@ -18,9 +18,10 @@ import {
 import { getReorderDestinationIndex } from "@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index";
 import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { reorder } from "@atlaskit/pragmatic-drag-and-drop/reorder";
+import { Icon } from "@iconify/react";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { Button } from "@nextui-org/button";
-import { Input, Spacer } from "@nextui-org/react";
+import { Input, Spacer, Tooltip } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import React, {
   useCallback,
@@ -118,8 +119,8 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
 
     useImperativeHandle(ref, () => ({
       clickButton: () => {
-        console.log("buttonRef");
         if (saveButtonRef.current) {
+          console.log("buttonRef");
           saveButtonRef.current.click();
         }
       },
@@ -369,6 +370,7 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
     };
 
     const handleSavePrompt = async () => {
+      console.log(handleSavePrompt);
       setIsEditing(false);
       try {
         const newTemplates = templatesState.map((item, index) => ({
@@ -388,7 +390,6 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
             },
           });
         }
-
         const { data, errors } = await createNewPromptMutation({
           variables: {
             object: {
@@ -476,17 +477,18 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
             {/* <PromptSearchBar handleChangePrompt={handleChangePrompt}></PromptSearchBar> */}
           </div>
           <div className="flex flex-row gap-2">
-            <Button color="primary" onClick={handleAddPrompt}>
-              New
-            </Button>
-            {!hiddenSaveButton && (
-              <Button
-                color="primary"
-                ref={saveButtonRef}
-                onClick={() => handleSavePrompt()}>
-                Save
+            <Tooltip content="Add new prompt">
+              <Button isIconOnly variant="bordered" onClick={handleAddPrompt}>
+                <Icon icon={"ic:outline-add"} fontSize={30}></Icon>
               </Button>
-            )}
+            </Tooltip>
+            <Button
+              color="primary"
+              className={hiddenSaveButton ? "hidden" : "visible"}
+              ref={saveButtonRef}
+              onClick={() => handleSavePrompt()}>
+              Save
+            </Button>
           </div>
         </div>
         <Spacer y={2} />
