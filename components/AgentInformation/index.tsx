@@ -24,30 +24,19 @@ interface Agent {
   default_model?: string | null;
 }
 
-const AgentInformation = forwardRef(({ id }: { id: string }, ref) => {
+export interface AgentInfoRef {
+  handleSubmit: () => void;
+}
+
+interface AgentInfoProps {
+  agentId: string;
+  isHiddenSaveButton?: boolean;
+}
+
+const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) => {
   const [agent, setAgent] = useState<Agent | null>();
   const [updateAgentMutation] = useUpdateAgentMutation();
-  const query = useGetAgentByIdQuery({ variables: { id: id } });
-
-  useImperativeHandle(ref, () => ({
-    triggerEvent: () => {
-      const input: Agent_Set_Input = {
-        name: agent?.name,
-        description: agent?.description,
-        avatar: agent?.avatar,
-        default_model: agent?.default_model,
-      };
-      delete input.id;
-      updateAgentMutation({
-        variables: {
-          pk_columns: { id: id },
-          _set: input,
-        },
-      }).then(() => {
-        toast.success("Agent information update succeeded！");
-      });
-    },
-  }));
+  const query = useGetAgentByIdQuery({ variables: { id: props?.agentId } });
 
   useEffect(() => {
     if (query.data) {
@@ -55,7 +44,7 @@ const AgentInformation = forwardRef(({ id }: { id: string }, ref) => {
     }
   }, [query]);
 
-  function handleSubmit(e: any) {
+  function handleSubmit() {
     const input: Agent_Set_Input = {
       name: agent?.name,
       description: agent?.description,
@@ -65,13 +54,17 @@ const AgentInformation = forwardRef(({ id }: { id: string }, ref) => {
     delete input.id;
     updateAgentMutation({
       variables: {
-        pk_columns: { id: id },
+        pk_columns: { id: props?.agentId },
         _set: input,
       },
     }).then(() => {
       toast.success("Agent information update succeeded！");
     });
   }
+
+  useImperativeHandle(ref, () => ({
+    handleSubmit,
+  }));
 
   if (query.loading) {
     return <div>Loading...</div>;
@@ -82,7 +75,10 @@ const AgentInformation = forwardRef(({ id }: { id: string }, ref) => {
       <form className={"w-full gap-16"}>
         <div className={"flex flex-row items-end justify-between pb-1"}>
           <span className="relative text-foreground-500">Agent Information</span>
-          <Button color={"primary"} onClick={(e) => handleSubmit(e)}>
+          <Button
+            color={"primary"}
+            className={props?.isHiddenSaveButton ? "hidden" : "visible"}
+            onClick={() => handleSubmit()}>
             Save
           </Button>
         </div>
