@@ -1,4 +1,3 @@
-import { Tab, Tabs } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { IcBaselineArrowBackIosNew } from "../ui/icons";
 
@@ -21,11 +20,11 @@ export default function RightHeader(props: RightHeaderProps) {
         />
         <p className="text-base font-medium">{title}</p>
       </div>
-      <Tabs className="justify-center">
-        <Tab key="simple" title="Simple" />
-        <Tab key="deep" title="Deep" />
-        <Tab key="creative" title="Creative" />
-      </Tabs>
+      {/*<Tabs className="justify-center">*/}
+      {/*  <Tab key="simple" title="Simple" />*/}
+      {/*  <Tab key="deep" title="Deep" />*/}
+      {/*  <Tab key="creative" title="Creative" />*/}
+      {/*</Tabs>*/}
     </div>
   );
 }
