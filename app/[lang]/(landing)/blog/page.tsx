@@ -25,6 +25,7 @@ export default function Blog() {
       <PromptForm
         agentId="eb216259-9a28-4c1e-bb5e-ece9534b8a51"
         hiddenSaveButton={true}
+        hiddeTitle={true}
         ref={promptFormRef}></PromptForm>
       {/* <PromptTemplateInput></PromptTemplateInput> */}
       {/* <LibrarySideBar></LibrarySideBar> */}
