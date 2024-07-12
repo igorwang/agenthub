@@ -22,7 +22,13 @@ import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { Button } from "@nextui-org/button";
 import { Input, Spacer } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { toast } from "sonner";
 
 type TemplateStatus = "draft" | "saved";
@@ -43,6 +49,7 @@ export type PromptFormProps = {
   templates?: PromptTemplateType[];
   hiddeTitle?: boolean;
   defaultModel?: string;
+  hiddenSaveButton?: boolean;
 };
 
 export type variableInputsType = {
@@ -59,9 +66,13 @@ const defaultTemplates: PromptTemplateType[] = [
   { id: 2, template: "", role: "user", status: "draft" },
 ];
 
-const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
+export interface PromptFormHandle extends HTMLDivElement {
+  clickButton: () => void;
+}
+const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
   (
     {
+      hiddenSaveButton,
       hiddeTitle,
       agentId,
       konwledgeBaseId,
@@ -86,6 +97,7 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
     const [message, setMessage] = useState<string>("");
 
     const variableInputRef = useRef<HTMLDivElement>(null);
+    const saveButtonRef = useRef<HTMLButtonElement>(null);
 
     const session = useSession();
     const userId = session.data?.user?.id;
@@ -104,6 +116,17 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
     });
     const { data } = query;
 
+    useImperativeHandle(ref, () => ({
+      clickButton: () => {
+        console.log("buttonRef");
+        if (saveButtonRef.current) {
+          saveButtonRef.current.click();
+        }
+      },
+      // 将其余的 HTMLDivElement 属性透传
+      ...(saveButtonRef.current?.parentElement as HTMLDivElement),
+    }));
+
     useEffect(() => {
       if (defaultPromptId) {
         setPromptId(defaultPromptId);
@@ -121,14 +144,11 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
     }, [promptId]);
 
     useEffect(() => {
-      console.log("data", data);
       if (data) {
-        console.log();
         setPrompt({
           name: data.prompt_hub_by_pk?.name || "",
         });
         const templates = data.prompt_hub_by_pk?.templates;
-        console.log("templates", templates);
         if (templates) {
           setTemplatesState(
             templates.map((item) => ({
@@ -209,7 +229,6 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
 
     const handleChangePrompt = (id: number | null) => {
       if (id) {
-        console.log("handleChangePrompt", id);
         setPromptId(id);
         setIsNewPromot(false);
       } else {
@@ -427,7 +446,7 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
     ));
 
     return (
-      <div className="flex h-full w-full max-w-full flex-col">
+      <div ref={ref} className="flex h-full w-full max-w-full flex-col">
         <Spacer y={2} />
         <div className="flex flex-row">
           <div className="flex flex-grow flex-row items-center gap-2 pr-2">
@@ -460,9 +479,14 @@ const PromptForm = React.forwardRef<HTMLDivElement, PromptFormProps>(
             <Button color="primary" onClick={handleAddPrompt}>
               New
             </Button>
-            <Button color="primary" onClick={() => handleSavePrompt()}>
-              Save
-            </Button>
+            {!hiddenSaveButton && (
+              <Button
+                color="primary"
+                ref={saveButtonRef}
+                onClick={() => handleSavePrompt()}>
+                Save
+              </Button>
+            )}
           </div>
         </div>
         <Spacer y={2} />

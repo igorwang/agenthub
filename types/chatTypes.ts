@@ -1,3 +1,5 @@
+import { Knowledge_Base_Type_Enum } from "@/graphql/generated/types";
+
 export enum CHAT_STATUS_ENUM {
   Analyzing,
   Searching,
@@ -50,4 +52,16 @@ export type MessageType = {
   sources?: SourceType[];
   query?: string;
   sessionId?: string;
+};
+
+export type LibraryCardType = {
+  id: string;
+  base_type: Knowledge_Base_Type_Enum;
+  name?: string;
+  from?: string;
+  avatar?: string;
+  description?: string;
+  creator?: string;
+  isNew?: boolean;
+  updatedAt?: string;
 };

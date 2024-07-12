@@ -1,8 +1,16 @@
 import NextAuth from "next-auth";
 
+import { GetUserRolesDocument } from "@/graphql/generated/types";
+import { initializeApollo } from "@/lib/apolloClient";
 import { HasuraAdapter } from "@auth/hasura-adapter";
 import jwt from "jsonwebtoken";
 import Authentik from "next-auth/providers/authentik";
+
+// remeber it's a server admin client
+const client = initializeApollo(
+  {},
+  { "x-hasura-admin-secret": `${process.env.HASURA_ADMIN_SECRET}` },
+);
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: HasuraAdapter({
@@ -75,15 +83,29 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         // console.log("User logged in:", user);
         // console.log("User profile:", profile);
+
+        // call role data
+        const { data } = await client.query({
+          query: GetUserRolesDocument,
+          variables: {
+            where: { user_id: { _eq: user.id } },
+          },
+        });
+
+        const defaultRoles = ["user"];
+        const additionalRoles = data.r_user_role?.map((item: any) => item.role) || [];
+        const roles = Array.from(new Set([...defaultRoles, ...additionalRoles]));
+
         const payload = {
           "https://hasura.io/jwt/claims": {
             "x-hasura-user-id": user.id,
             "x-hasura-role": "user",
             "x-hasura-default-role": "user",
-            "x-hasura-allowed-roles": ["authentik Admins", "admin", "user"],
+            "x-hasura-allowed-roles": roles,
           },
           ...user,
         };
+
         const accessToken = jwt.sign(
           { ...payload },
           process.env.HASURA_API_SECRET as string,
@@ -95,6 +117,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.uid = user.id;
         }
         token.access_token = accessToken;
+        token.roles = roles;
       }
       return token;
     },
@@ -104,6 +127,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.avatar =
           token.picture ||
           "https://api.dicebear.com/8.x/adventurer-neutral/svg?seed=Jasmine";
+        session.user.roles = token.roles;
       }
       session.access_token = token.access_token as string;
       return session;

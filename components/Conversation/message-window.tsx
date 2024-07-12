@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import FeatureCards from "@/components/Conversation/feature-cards";
-import { LibraryCardProps } from "@/components/FunctionTab/libaray-card";
+import { LibraryCardType } from "@/components/FunctionTab/libaray-card";
 import { PromptTemplateType } from "@/components/PromptFrom";
 import {
   Message_Role_Enum,
@@ -78,7 +78,7 @@ export default function MessageWindow({
   const [promptTemplates, setPromptTemplates] = useState<PromptTemplateType[]>();
   const [streamingMessage, setStreamingMessage] = useState<string | null>(null);
   const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
-  const [libraries, setLibraries] = useState<LibraryCardProps[]>();
+  const [libraries, setLibraries] = useState<LibraryCardType[]>();
 
   const session = useSession();
   const user_id = session.data?.user?.id;
@@ -374,7 +374,7 @@ export default function MessageWindow({
             // className="bg-slate-50"
           />
         ))}
-        {isChating && (
+        {isChating && chatStatus != null && (
           <MessageCard
             aria-label="streaming card"
             avatar={agentAvatarElement}
@@ -383,6 +383,7 @@ export default function MessageWindow({
             chatStatus={chatStatus}
             sourceResults={searchResults || []}
             maxWidth={width}
+            isChating={isChating}
           />
         )}
       </div>

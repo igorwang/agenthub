@@ -1,5 +1,3 @@
-import ChatHub from "@/components/AgentHub";
-
 export default function AgentLayout({
   children, // will be a page or nested layout
 }: {
@@ -7,10 +5,7 @@ export default function AgentLayout({
 }) {
   return (
     <div className="h-full w-full max-w-full">
-      <div className="flex h-full flex-row">
-        <ChatHub />
-        {children}
-      </div>
+      <div className="flex h-full flex-row">{children}</div>
     </div>
   );
 }

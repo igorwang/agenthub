@@ -1,6 +1,6 @@
 "use client";
 
-import { LibraryCardProps } from "@/components/FunctionTab/libaray-card";
+import { LibraryCardType } from "@/components/FunctionTab/libaray-card";
 import LibrarySideBar from "@/components/FunctionTab/library-sidebar";
 import { TopicHistory } from "@/components/TopicHistory";
 import { PlusIcon } from "@/components/ui/icons";
@@ -29,8 +29,8 @@ export default function FunctionTab({ agentId }: FunctionTabProps) {
   const dispatch: AppDispatch = useDispatch();
   const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
-  const [libraries, setLibraries] = useState<LibraryCardProps[]>();
-  const [selectedLibrary, setSelectedLibrary] = useState<LibraryCardProps>();
+  const [libraries, setLibraries] = useState<LibraryCardType[]>();
+  const [selectedLibrary, setSelectedLibrary] = useState<LibraryCardType>();
   const [knowledgeBaseId, setKnowledgeBaseId] = useState(selectedLibrary?.id);
 
   const session = useSession();
@@ -114,14 +114,12 @@ export default function FunctionTab({ agentId }: FunctionTabProps) {
             <div className="flex items-center space-x-2">
               <span>Topic</span>
             </div>
-          }
-        >
+          }>
           <Button
             className="flex max-h-16 w-full bg-white hover:bg-slate-100"
             endContent={<PlusIcon />}
             onClick={() => handleAddTopic({ agent_id: agentId, user_id: userId })}
-            disabled={!userId}
-          >
+            disabled={!userId}>
             New Topic
           </Button>
           <ScrollShadow className="flex max-h-full min-h-10 flex-grow flex-col gap-6 pb-8">
@@ -135,18 +133,15 @@ export default function FunctionTab({ agentId }: FunctionTabProps) {
               {/* <BookIcon /> */}
               <span>Library</span>
             </div>
-          }
-        >
+          }>
           <LibrarySideBar
             cards={libraries || []}
-            setSelectedLibrary={setSelectedLibrary}
-          ></LibrarySideBar>
+            setSelectedLibrary={setSelectedLibrary}></LibrarySideBar>
           <Divider className="mt-2" />
           {selectedLibrary?.creator === userId && knowledgeBaseId && (
             <UploadZone
               key={knowledgeBaseId}
-              knowledgeBaseId={knowledgeBaseId}
-            ></UploadZone>
+              knowledgeBaseId={knowledgeBaseId}></UploadZone>
           )}
         </Tab>
         <Tab

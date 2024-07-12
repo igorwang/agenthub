@@ -1,0 +1,11 @@
+mutation AddALibraryToAgent($object: r_agent_kb_insert_input = {}) {
+  insert_r_agent_kb_one(object: $object) {
+    id
+  }
+}
+
+mutation RemoveALibraryFromAgent($id: Int = 10) {
+  delete_r_agent_kb_by_pk(id: $id) {
+    id
+  }
+}

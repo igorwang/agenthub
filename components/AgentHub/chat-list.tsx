@@ -12,6 +12,7 @@ import {
   ModalFooter,
   ModalHeader,
   ScrollShadow,
+  Tooltip,
 } from "@nextui-org/react";
 
 import { useDeleteAgentUserRelationMutation } from "@/graphql/generated/types";
@@ -29,8 +30,16 @@ import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 
-export const ChatList: React.FC<{ groupedChatList: GroupedChatListDTO[] }> = ({
+interface ChatListProps {
+  chatListOpenStatus: boolean;
+  setChatListOpenStatus?: (status: boolean) => void;
+  groupedChatList: GroupedChatListDTO[];
+}
+
+export const ChatList: React.FC<ChatListProps> = ({
+  chatListOpenStatus = false,
   groupedChatList,
+  setChatListOpenStatus,
 }) => {
   const dispatch: AppDispatch = useDispatch();
   const router = useRouter();
@@ -40,6 +49,7 @@ export const ChatList: React.FC<{ groupedChatList: GroupedChatListDTO[] }> = ({
   const [deleteAgentUserRelationMutation] = useDeleteAgentUserRelationMutation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [deleteAgent, setDeleteAgent] = useState<ChatDTO | null>(null);
+  const [fixedChatList, setFixedChatList] = useState<GroupedChatListDTO[] | null>(null);
   const params = useParams<{ id: string }>();
 
   const session = useSession();
@@ -51,7 +61,18 @@ export const ChatList: React.FC<{ groupedChatList: GroupedChatListDTO[] }> = ({
       initialOpenStates[group.id] = true;
     });
     setOpenStates(initialOpenStates);
-  }, [groupedChatList]);
+    const shortList = groupedChatList
+      .map((group) => ({
+        ...group,
+        agents: group.agents.filter((agent) => agent.id === params.id),
+      }))
+      .filter((group) => group.agents.length > 0);
+    if (shortList && !chatListOpenStatus) {
+      setFixedChatList(shortList);
+    } else {
+      setFixedChatList(groupedChatList);
+    }
+  }, [groupedChatList, chatListOpenStatus]);
 
   const toggleListbox = (id: number) => {
     setOpenStates((prevStates) => ({
@@ -62,7 +83,16 @@ export const ChatList: React.FC<{ groupedChatList: GroupedChatListDTO[] }> = ({
 
   const handleSelectChat = (selectId: string) => {
     dispatch(selectChat(selectId));
-    router.push(`/chat/${selectId}`);
+    const shortList = groupedChatList
+      .map((group) => ({
+        ...group,
+        agents: group.agents.filter((agent) => agent.id === selectId),
+      }))
+      .filter((group) => group.agents.length > 0);
+    setChatListOpenStatus?.(false);
+    setFixedChatList(shortList);
+    console.log("push", selectId);
+    router.push(`/chat/${selectId}?openStatus=0`);
   };
 
   function handleMouseEnter(id: string) {
@@ -93,19 +123,24 @@ export const ChatList: React.FC<{ groupedChatList: GroupedChatListDTO[] }> = ({
       router.push("/chat");
     }
   };
-  // function handleUnsubscribe(e: React.MouseEvent<SVGSVGElement>, agentId: string) {
-  //   e.stopPropagation();
-  //   deleteAgentUserRelation({
-  //     variables: {
-  //       userId: { _eq: userId },
-  //       agentId: { _eq: agentId },
-  //     },
-  //   }).then((r) => setIsModalOpen(true));
-  // }
-
-  const chatListContent = groupedChatList.map((group) => (
+  const backElement = (
+    <Tooltip content="Back">
+      <Button
+        isIconOnly
+        size="sm"
+        variant="light"
+        onClick={() => {
+          setChatListOpenStatus?.(true);
+          setFixedChatList(groupedChatList);
+        }}
+        startContent={
+          <Icon icon={"weui:back-filled"} className="ml-0 pl-0" fontSize={24}></Icon>
+        }></Button>
+    </Tooltip>
+  );
+  const chatListContent = (fixedChatList || []).map((group) => (
     <div className="flex flex-col" key={group.id}>
-      {group.name && group.name != "system" && (
+      {group.name && group.name != "system" && chatListOpenStatus && (
         <div className="flex h-12 flex-row items-center justify-between bg-slate-100 px-2 py-2 hover:bg-slate-200">
           <div className="overflow-hidden text-ellipsis text-nowrap text-sm">
             {group.name}
@@ -140,9 +175,14 @@ export const ChatList: React.FC<{ groupedChatList: GroupedChatListDTO[] }> = ({
             <ListboxItem
               key={item.id}
               textValue={item.name}
-              onClick={() => handleSelectChat(item.id)}
+              className={item.id == params?.id ? "bg-blue-200" : ""}
+              onClick={() => {
+                handleSelectChat(item.id);
+                setChatListOpenStatus?.(false);
+              }}
               onMouseEnter={() => handleMouseEnter(item?.id)}
-              onMouseLeave={() => handleMouseLeave()}>
+              onMouseLeave={() => handleMouseLeave()}
+              startContent={!chatListOpenStatus && backElement}>
               <div className={"flex justify-between"}>
                 <div className="flex items-center gap-2">
                   {item.avatar ? (
@@ -180,12 +220,14 @@ export const ChatList: React.FC<{ groupedChatList: GroupedChatListDTO[] }> = ({
                     onPress={() => handleUnsubscribeClick(item)}
                     className="bg-transparent data-[hover]:bg-transparent"
                     startContent={
-                      <Icon
-                        className={"cursor-pointer"}
-                        // onClick={(e) => handleUnsubscribe(e, item.id)}
-                        icon="material-symbols:delete-outline-rounded"
-                        fontSize={20}
-                      />
+                      chatListOpenStatus && (
+                        <Icon
+                          className={"cursor-pointer"}
+                          // onClick={(e) => handleUnsubscribe(e, item.id)}
+                          icon="material-symbols:delete-outline-rounded"
+                          fontSize={20}
+                        />
+                      )
                     }></Button>
                 )}
               </div>
@@ -222,7 +264,9 @@ export const ChatList: React.FC<{ groupedChatList: GroupedChatListDTO[] }> = ({
     );
   }
   return (
-    <ScrollShadow className="-mr-2 flex h-full max-h-full flex-col justify-between py-2 pr-2">
+    <ScrollShadow
+      className={"flex max-h-full min-h-[60px] flex-col justify-between py-2"}
+      size={0}>
       {_renderModal()}
       <div>{chatListContent}</div>
     </ScrollShadow>
