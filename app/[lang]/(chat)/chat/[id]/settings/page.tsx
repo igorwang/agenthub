@@ -3,7 +3,7 @@
 import HorizontalSteps from "@/app/[lang]/(chat)/chat/[id]/settings/horizontal-steps";
 import AgentInformation, { AgentInfoRef } from "@/components/AgentInformation";
 import { LibraryCart } from "@/components/LibraryCart";
-import LibraryFile from "@/components/LibraryFile";
+import LibraryFile, { LibraryFileHandle } from "@/components/LibraryFile";
 import PromptFrom, { PromptFormHandle } from "@/components/PromptFrom";
 import RightHeader from "@/components/RightHeader";
 import {
@@ -40,6 +40,7 @@ export default function AgentSettings() {
 
   const promptFormRef = useRef<PromptFormHandle>(null);
   const agentRef = useRef<AgentInfoRef>(null);
+  const libraryRef = useRef<LibraryFileHandle>(null);
 
   const handleUpdateAgent = () => {
     query.refetch();
@@ -74,7 +75,7 @@ export default function AgentSettings() {
           />
         );
       case 2:
-        return <LibraryFile id={libraryId || ""} />;
+        return <LibraryFile id={libraryId || ""} ref={libraryRef} />;
       case 3:
         return <LibraryCart agentId={id} />;
       default:
@@ -95,6 +96,10 @@ export default function AgentSettings() {
         if (promptFormRef.current) {
           promptFormRef.current.clickButton();
         }
+      case 2:
+        if (libraryRef.current) {
+          libraryRef?.current?.saveLibraryInfo();
+        }
       default:
         break;
     }
@@ -103,7 +108,7 @@ export default function AgentSettings() {
   return (
     <div className={"flex h-full w-full flex-col gap-4"}>
       <RightHeader title={"Agent Setting"} callBackUri={`/chat/${id}`} />
-      <div className={"mx-auto mt-20 flex w-full flex-col items-center px-4"}>
+      <div className={"mx-auto mt-10 flex w-full flex-col items-center px-4"}>
         <HorizontalSteps
           // defaultStep={step}
           currentStep={step}

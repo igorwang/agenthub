@@ -2,19 +2,24 @@
 
 import UploadZone from "@/components/UploadZone";
 import {
+  Chunking_Strategy_Enum,
   FilesItemFragment,
   FilesListQueryVariables,
+  Knowledge_Base_Set_Input,
+  Knowledge_Base_Type_Enum,
   Order_By,
   useBatchDeleteFilesMutation,
   useDeleteFileByIdMutation,
   useFilesListLazyQuery,
   useKnowledgeBaseDetailQuery,
+  useUpdateKnowledgeBaseMutation,
 } from "@/graphql/generated/types";
 import { getSignedUrl } from "@/lib/apiBizClient";
 import { formatTime } from "@/lib/utils/date";
 import { Icon } from "@iconify/react";
 import {
   Button,
+  Divider,
   Input,
   Modal,
   ModalBody,
@@ -30,9 +35,17 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
+  Textarea,
   Tooltip,
 } from "@nextui-org/react";
-import React, { Key, useEffect, useMemo, useState } from "react";
+import React, {
+  forwardRef,
+  Key,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useState,
+} from "react";
 import { toast } from "sonner";
 
 type Condition = {
@@ -56,12 +69,38 @@ const columns = [
   { name: "Action", uid: "action" },
 ];
 
+interface KnowledgeBaseItem {
+  id?: string;
+  name?: string;
+  description?: string;
+  extraction_prompt_id?: number;
+  base_type?: Knowledge_Base_Type_Enum;
+  chunking_strategy?: Chunking_Strategy_Enum;
+  chunking_parameters?: any;
+  model_name?: string;
+  is_extraction?: boolean;
+  is_publish?: boolean;
+  type?: {
+    value?: string;
+    comment?: string;
+  };
+}
+
 interface ModalPropsItem {
   ids: string[];
   name?: string;
 }
 
-export default function LibraryFile({ id }: { id: string }) {
+interface LibraryFileProps {
+  id: string;
+}
+
+export interface LibraryFileHandle {
+  saveLibraryInfo: () => void;
+}
+
+const LibraryFile = forwardRef<LibraryFileHandle, LibraryFileProps>(({ id }, ref) => {
+  const [knowledgeBase, setknowledgeBase] = useState<KnowledgeBaseItem | null>();
   const [filterValue, setFilterValue] = useState("");
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -78,14 +117,46 @@ export default function LibraryFile({ id }: { id: string }) {
   });
   const [page, setPage] = useState(1);
   const [filesQuery, { data, refetch }] = useFilesListLazyQuery();
+  const [updateKnowledgeBaseMutation] = useUpdateKnowledgeBaseMutation();
 
-  const { data: knowledgeBase } = useKnowledgeBaseDetailQuery({ variables: { id: id } });
+  const query = useKnowledgeBaseDetailQuery({ variables: { id: id } });
   const pages = Math.ceil((data?.files_aggregate?.aggregate?.count || 0) / rowsPerPage);
   const onNextPage = React.useCallback(() => {
     if (page < pages) {
       setPage(page + 1);
     }
   }, [page, pages]);
+
+  useImperativeHandle(ref, () => ({
+    saveLibraryInfo() {
+      console.log(`Saving library info for id: ${id}`);
+      // Add your save logic here
+      handleSaveLibraryInfo();
+    },
+  }));
+
+  const handleSaveLibraryInfo = () => {
+    const input: Knowledge_Base_Set_Input = {
+      name: knowledgeBase?.name,
+      description: knowledgeBase?.description,
+    };
+    console.log("knowledgeBase input", input);
+    updateKnowledgeBaseMutation({
+      variables: {
+        pk_columns: { id: id },
+        _set: input,
+      },
+    }).then(() => {
+      query.refetch();
+      toast.success("Library information update succeeded！");
+    });
+  };
+
+  useEffect(() => {
+    if (query.data) {
+      setknowledgeBase({ ...query.data?.knowledge_base_by_pk } as KnowledgeBaseItem);
+    }
+  }, [query]);
 
   const onPreviousPage = React.useCallback(() => {
     if (page > 1) {
@@ -115,12 +186,48 @@ export default function LibraryFile({ id }: { id: string }) {
     setPage(1);
   }, []);
 
+  const editContent = (
+    <div className="flex flex-col gap-4 pt-2">
+      <Input
+        isRequired
+        label="Library Name"
+        labelPlacement="outside"
+        placeholder="Enter library name"
+        type="text"
+        variant={"flat"}
+        value={knowledgeBase?.name}
+        onChange={(e) =>
+          setknowledgeBase({ ...knowledgeBase, name: e.target.value || "" })
+        }
+      />
+      <Textarea
+        label="Library Description"
+        labelPlacement="outside"
+        placeholder="Enter library description"
+        description="Maximum 200 characters"
+        type="text"
+        variant={"flat"}
+        value={knowledgeBase?.description || ""}
+        onChange={(e) => textareaOnChange(e)}
+      />
+    </div>
+  );
+
+  function textareaOnChange(e: any) {
+    const value = e.target.value;
+    if (value.length <= 500) {
+      setknowledgeBase({ ...knowledgeBase, description: value });
+    } else {
+      toast.error("Library description limit 200 characters ");
+    }
+  }
+
   const topContent = useMemo(() => {
     return (
       <div className="mx-2">
-        <div className="my-10 text-xl">
-          {knowledgeBase?.knowledge_base_by_pk?.name || "-"}
-        </div>
+        {/* <div className="text-xl">{knowledgeBase?.name || "-"}</div> */}
+        {editContent}
+        <Divider className="my-2" />
         <div className="flex flex-col gap-4">
           <div className="flex items-end justify-between gap-3">
             <Input
@@ -313,7 +420,7 @@ export default function LibraryFile({ id }: { id: string }) {
       <Modal isOpen={isUploadOpen} onClose={() => onCloseUploadModal()} className="p-6">
         <ModalContent>
           {/* 这里放入你要显示在 Modal 中的内容组件 */}
-          <UploadZone knowledgeBaseId={knowledgeBase?.knowledge_base_by_pk?.id} />
+          <UploadZone knowledgeBaseId={knowledgeBase?.id} />
         </ModalContent>
       </Modal>
       <Table
@@ -411,4 +518,6 @@ export default function LibraryFile({ id }: { id: string }) {
       </Modal>
     );
   }
-}
+});
+LibraryFile.displayName = "LibraryFile";
+export default LibraryFile;
