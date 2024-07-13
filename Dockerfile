@@ -26,7 +26,6 @@ COPY . .
 
 # This will do the trick, use the corresponding env file for each environment.
 COPY .env.production.local .env.production
-COPY yarn.lock ./
 
 RUN yarn build
 
