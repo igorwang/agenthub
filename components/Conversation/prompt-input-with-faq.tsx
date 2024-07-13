@@ -154,7 +154,6 @@ export default function PromptInputWithFaq({
           },
         });
         data = response.data;
-        console.log("selectedSessionIdrequest", data);
         if (data?.insert_topic_history_one) {
           dispatch(dispatch(selectSession(data?.insert_topic_history_one?.id)));
         }

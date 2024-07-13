@@ -50,7 +50,6 @@ function LibraryCart({ agentId, className }: LibraryCartProps) {
   });
 
   useEffect(() => {
-    console.log("publicLibrariesQuery", publicLibrariesQuery.data?.knowledge_base);
     if (publicLibrariesQuery.data?.knowledge_base) {
       const libraries = publicLibrariesQuery.data?.knowledge_base.map((item) => ({
         id: item.id,

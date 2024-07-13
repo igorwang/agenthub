@@ -91,7 +91,6 @@ export const ChatList: React.FC<ChatListProps> = ({
       .filter((group) => group.agents.length > 0);
     setChatListOpenStatus?.(false);
     setFixedChatList(shortList);
-    console.log("push", selectId);
     router.push(`/chat/${selectId}?openStatus=0`);
   };
 

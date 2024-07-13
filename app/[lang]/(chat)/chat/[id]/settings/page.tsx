@@ -3,30 +3,60 @@
 import HorizontalSteps from "@/app/[lang]/(chat)/chat/[id]/settings/horizontal-steps";
 import AgentInformation, { AgentInfoRef } from "@/components/AgentInformation";
 import { LibraryCart } from "@/components/LibraryCart";
-import LibraryFile from "@/components/LibraryFile";
+import LibraryFile, { LibraryFileHandle } from "@/components/LibraryFile";
 import PromptFrom, { PromptFormHandle } from "@/components/PromptFrom";
 import RightHeader from "@/components/RightHeader";
 import {
+  Knowledge_Base_Type_Enum,
   useGetAgentByIdQuery,
-  useKnowledgeBaseDetailLazyQuery,
 } from "@/graphql/generated/types";
 import { Button } from "@nextui-org/react";
-import { usePathname, useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+
+interface SystemPrompt {
+  id: number;
+}
+interface Agent {
+  id?: string;
+  name?: string;
+  description?: string | null | undefined;
+  avatar?: string | null | undefined;
+  system_prompt?: SystemPrompt | null | undefined;
+  default_model?: string | null;
+}
 
 export default function AgentSettings() {
-  const pathname = usePathname();
-  const pathList = pathname.split("/");
-  const id = pathList[pathList.length - 2];
+  const [agent, setAgent] = useState<Agent | null>();
+  const [libraryId, setLibraryId] = useState<string | null>();
+
   const [step, setStep] = useState<number>(0);
+  const params = useParams<{ id: string }>();
+  const { id } = params;
   const query = useGetAgentByIdQuery({ variables: { id: id } });
-  const agent = query?.data?.agent_by_pk;
-  const libraryId = query?.data?.agent_by_pk?.kbs[0]?.knowledge_base?.id;
-  const [knowledgeBaseDetailQuery] = useKnowledgeBaseDetailLazyQuery();
-  const ref = useRef();
   const router = useRouter();
+  // const agent = query?.data?.agent_by_pk;
+  // const libraryId = query?.data?.agent_by_pk?.kbs[0]?.knowledge_base?.id;
+
   const promptFormRef = useRef<PromptFormHandle>(null);
-  const agentRef = useRef<AgentInfoRef | undefined>();
+  const agentRef = useRef<AgentInfoRef>(null);
+  const libraryRef = useRef<LibraryFileHandle>(null);
+
+  const handleUpdateAgent = () => {
+    query.refetch();
+  };
+
+  useEffect(() => {
+    if (query.data) {
+      const defautlLibrary = query?.data.agent_by_pk?.kbs.find(
+        (item) => item.knowledge_base.base_type == Knowledge_Base_Type_Enum.Agent,
+      );
+      if (defautlLibrary) {
+        setLibraryId(defautlLibrary.knowledge_base?.id);
+      }
+      setAgent(query?.data?.agent_by_pk);
+    }
+  }, [query]);
 
   const _renderContent = (currentStep: Number) => {
     switch (currentStep) {
@@ -41,10 +71,11 @@ export default function AgentSettings() {
             hiddenSaveButton={true}
             defaultModel={agent?.default_model || ""}
             ref={promptFormRef}
+            onUpdateAgent={handleUpdateAgent}
           />
         );
       case 2:
-        return <LibraryFile id={agent?.kbs[0].knowledge_base?.id} ref={agentRef} />;
+        return <LibraryFile id={libraryId || ""} ref={libraryRef} />;
       case 3:
         return <LibraryCart agentId={id} />;
       default:
@@ -54,6 +85,7 @@ export default function AgentSettings() {
 
   function onClickNext() {
     const currentStep = step;
+    console.log("currentStep", currentStep);
     setStep(currentStep + 1);
     switch (currentStep) {
       case 0:
@@ -64,16 +96,19 @@ export default function AgentSettings() {
         if (promptFormRef.current) {
           promptFormRef.current.clickButton();
         }
+      case 2:
+        if (libraryRef.current) {
+          libraryRef?.current?.saveLibraryInfo();
+        }
       default:
         break;
     }
   }
 
-  console.log(agent?.kbs[0].knowledge_base?.id);
   return (
-    <div className={"h-dvh w-dvw"}>
+    <div className={"flex h-full w-full flex-col gap-4"}>
       <RightHeader title={"Agent Setting"} callBackUri={`/chat/${id}`} />
-      <div className={"mt-8 flex w-full flex-col items-center space-y-8 px-24"}>
+      <div className={"mx-auto mt-10 flex w-full flex-col items-center px-4"}>
         <HorizontalSteps
           // defaultStep={step}
           currentStep={step}
@@ -94,7 +129,7 @@ export default function AgentSettings() {
           ]}
         />
         {_renderContent(step)}
-        <div className={"flex items-start justify-start space-x-8"}>
+        <div className={"flex items-start justify-start space-x-8 pt-4"}>
           {step === 0 ? null : (
             <Button color={"primary"} onClick={() => setStep(step - 1)}>
               Previous

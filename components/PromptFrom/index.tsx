@@ -51,6 +51,8 @@ export type PromptFormProps = {
   hiddeTitle?: boolean;
   defaultModel?: string;
   hiddenSaveButton?: boolean;
+  onUpdateAgent?: () => void;
+  onUpdateKnowledge?: () => void;
 };
 
 export type variableInputsType = {
@@ -70,6 +72,7 @@ const defaultTemplates: PromptTemplateType[] = [
 export interface PromptFormHandle extends HTMLDivElement {
   clickButton: () => void;
 }
+
 const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
   (
     {
@@ -81,6 +84,8 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
       defaultModel,
       defualtEditing = false,
       templates = defaultTemplates,
+      onUpdateAgent,
+      onUpdateKnowledge,
       ...props
     },
     ref,
@@ -97,7 +102,6 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
     const [variableInputs, setVariableInputs] = useState<variableInputsType[]>([]);
     const [message, setMessage] = useState<string>("");
 
-    const variableInputRef = useRef<HTMLDivElement>(null);
     const saveButtonRef = useRef<HTMLButtonElement>(null);
 
     const session = useSession();
@@ -120,7 +124,6 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
     useImperativeHandle(ref, () => ({
       clickButton: () => {
         if (saveButtonRef.current) {
-          console.log("buttonRef");
           saveButtonRef.current.click();
         }
       },
@@ -145,12 +148,13 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
     }, [promptId]);
 
     useEffect(() => {
+      console.log("data", data);
       if (data) {
         setPrompt({
           name: data.prompt_hub_by_pk?.name || "",
         });
         const templates = data.prompt_hub_by_pk?.templates;
-        if (templates) {
+        if (templates && templates.length > 0) {
           setTemplatesState(
             templates.map((item) => ({
               id: item.id,
@@ -370,7 +374,6 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
     };
 
     const handleSavePrompt = async () => {
-      console.log(handleSavePrompt);
       setIsEditing(false);
       try {
         const newTemplates = templatesState.map((item, index) => ({
@@ -390,6 +393,7 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
             },
           });
         }
+
         const { data, errors } = await createNewPromptMutation({
           variables: {
             object: {
@@ -401,6 +405,7 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
         });
 
         const newPromptId = data?.insert_prompt_hub_one?.id;
+        console.log("newPromptId", newPromptId);
         if (newPromptId && agentId) {
           const { data: updateAgentData, errors: updateAgentErrors } =
             await upadeAgentPromptMutation({
@@ -409,6 +414,7 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
                 _set: { system_prompt_id: newPromptId },
               },
             });
+          onUpdateAgent?.();
         }
         if (newPromptId && konwledgeBaseId) {
           const { data: updateKBData, errors: updateKBErrors } =
@@ -418,7 +424,9 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
                 _set: { extraction_prompt_id: newPromptId },
               },
             });
+          onUpdateKnowledge?.();
         }
+
         setPromptId(newPromptId || null);
         setIsNewPromot(false);
       } catch (error) {
