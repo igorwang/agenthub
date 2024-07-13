@@ -1,6 +1,5 @@
 "use client";
 
-import { LibraryCardType } from "@/components/FunctionTab/libaray-card";
 import LibrarySideBar from "@/components/FunctionTab/library-sidebar";
 import { TopicHistory } from "@/components/TopicHistory";
 import { PlusIcon } from "@/components/ui/icons";
@@ -11,6 +10,7 @@ import {
   selectSession,
 } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
+import { LibraryCardType } from "@/types/chatTypes";
 import { Button, Divider, ScrollShadow, Tab, Tabs } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -21,7 +21,6 @@ import {
   useGetKbListQuery,
   useGetTopicHistoriesQuery,
 } from "../../graphql/generated/types";
-
 export type FunctionTabProps = {
   agentId: string;
 };
