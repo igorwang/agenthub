@@ -179,8 +179,6 @@ export const ChatList: React.FC<ChatListProps> = ({
                 handleSelectChat(item.id);
                 setChatListOpenStatus?.(false);
               }}
-              onMouseEnter={() => handleMouseEnter(item?.id)}
-              onMouseLeave={() => handleMouseLeave()}
               startContent={!chatListOpenStatus && backElement}>
               <div className={"flex justify-between"}>
                 <div className="flex items-center gap-2">
