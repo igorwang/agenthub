@@ -156,7 +156,21 @@ export default function AISearch() {
               "Content-Type": "application/json",
             },
             body: JSON.stringify(searchBody),
-          });
+          })
+            .then((response) => {
+              if (!response.ok) {
+                // If response is not ok, throw an error
+                console.log(`Library search failed: ${response.statusText}`);
+                toast.error(`Library search failed.`);
+                return [];
+              }
+              return response.json();
+            })
+            .catch((error) => {
+              console.error(error);
+              // Return empty result on error
+              return [];
+            });
 
           const webSearchPromise = fetch("/api/search/web", {
             method: "POST",
@@ -168,7 +182,7 @@ export default function AISearch() {
 
           Promise.all([librarySearchPromise, webSearchPromise])
             .then(async ([librarySearchResponse, webSearchResponse]) => {
-              const librarySearchResults = await librarySearchResponse.json();
+              const librarySearchResults = await librarySearchResponse;
               const webSearchResults = await webSearchResponse.json();
               // 在这里处理查询结果
 
