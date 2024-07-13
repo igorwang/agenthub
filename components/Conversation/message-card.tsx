@@ -277,7 +277,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
                 </Button>
               </div>
             )}
-            {attempts > 1 && !hasFailed && (
+            {/* {attempts > 1 && !hasFailed && (
               <div className="flex w-full items-center justify-end">
                 <button
                   onClick={() =>
@@ -303,7 +303,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
                   {currentAttempt}/{attempts}
                 </p>
               </div>
-            )}
+            )} */}
           </div>
         </div>
         {/* {showFeedback && attempts > 1 && (
