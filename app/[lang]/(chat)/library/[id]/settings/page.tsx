@@ -34,6 +34,7 @@ interface KnowledgeBaseItem {
   chunking_strategy?: Chunking_Strategy_Enum;
   chunking_parameters?: any;
   model_name?: string;
+  embedding_model?: string;
   is_extraction?: boolean;
   is_publish?: boolean;
   type?: {
@@ -73,6 +74,7 @@ export default function LibrarySetting() {
       is_extraction: knowledgeBase?.is_extraction,
       model_name: knowledgeBase?.model_name,
       is_publish: knowledgeBase?.is_publish,
+      embedding_model: knowledgeBase?.embedding_model,
     };
     console.log("knowledgeBase input", input);
     updateKnowledgeBaseMutation({
@@ -230,6 +232,16 @@ export default function LibrarySetting() {
                   )
                 }></ModelSelect>
             )}
+            <ModelSelect
+              label="Embedding model"
+              modelType="embedding"
+              labelPlacement="outside"
+              defaultModel={knowledgeBase.embedding_model}
+              onSelectionChange={(model) =>
+                setknowledgeBase(
+                  (prev) => ({ ...prev, embedding_model: model }) as KnowledgeBaseItem,
+                )
+              }></ModelSelect>
           </div>
         </form>
         <div className={"w-full max-w-4xl pt-12"}>
