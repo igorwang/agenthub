@@ -10,7 +10,7 @@ import {
   Textarea,
 } from "@nextui-org/react";
 import { JsonEditor } from "json-edit-react";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -53,9 +53,8 @@ export default function LibrarySetting() {
   const [updateKnowledgeBaseMutation] = useUpdateKnowledgeBaseMutation();
   const router = useRouter();
   const typeListQuery = useKnowledgeBaseTypeListQuery({ variables: {} });
-  const pathname = usePathname();
-  const pathList = pathname.split("/");
-  const id = pathList[pathList.length - 2];
+  const params = useParams<{ id: string }>();
+  const { id } = params;
   const query = useKnowledgeBaseDetailQuery({ variables: { id: id } });
 
   useEffect(() => {
