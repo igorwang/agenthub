@@ -38,7 +38,7 @@ export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) =
   const handleMoveToSource = () => {};
 
   return (
-    <Card key={source.fileId} className="bg-card rounded-lg border-1 shadow-sm">
+    <Card key={source.fileId} className="rounded-lg border-1 bg-card shadow-sm">
       <CardHeader className="justify-center px-1 py-0">
         <div className="flex flex-row items-center gap-1">
           {/* <SourceFileIcon size={20}></SourceFileIcon> */}
@@ -72,7 +72,7 @@ export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) =
         )}
       </CardBody>
       <Divider></Divider>
-      <CardFooter className="flex-nowrap justify-between gap-1 px-1 py-0">
+      <CardFooter className="flex-nowrap justify-center py-0">
         <Tooltip content="Select the source to next chat.">
           <Button
             isIconOnly
