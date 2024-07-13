@@ -1,6 +1,7 @@
 "use client";
-import LibraryCard, { LibraryCardType } from "@/components/FunctionTab/libaray-card";
+import LibraryCard from "@/components/FunctionTab/libaray-card";
 import { ArrowBackIcon, ArrowForwardIcon } from "@/components/ui/icons";
+import { LibraryCardType } from "@/types/chatTypes";
 import { Button } from "@nextui-org/button";
 import { Spacer } from "@nextui-org/react";
 import { EmblaOptionsType } from "embla-carousel";

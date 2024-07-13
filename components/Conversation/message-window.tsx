@@ -8,7 +8,6 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import FeatureCards from "@/components/Conversation/feature-cards";
-import { LibraryCardType } from "@/components/FunctionTab/libaray-card";
 import { PromptTemplateType } from "@/components/PromptFrom";
 import {
   Message_Role_Enum,
@@ -23,6 +22,7 @@ import { SearchDocumentResultSchema } from "@/restful/generated";
 import {
   CHAT_MODE,
   CHAT_STATUS_ENUM,
+  LibraryCardType,
   MessageType,
   SOURCE_TYPE_ENUM,
   SourceType,
