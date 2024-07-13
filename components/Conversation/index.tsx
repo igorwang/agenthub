@@ -122,11 +122,13 @@ export const Conversation: React.FC<ConversationProps> = ({
           <div className="flex flex-row items-center">
             <p className="pr-2 text-3xl font-medium">{agent.name}</p>
             {agent.creator_id === session.data?.user?.id && (
-              <Button
-                isIconOnly={true}
-                startContent={<ConfigIcon size={28} />}
-                variant="light"
-                onClick={handleConfigCilck}></Button>
+              <Tooltip content="Configure Agent">
+                <Button
+                  isIconOnly={true}
+                  startContent={<ConfigIcon size={28} />}
+                  variant="light"
+                  onClick={handleConfigCilck}></Button>
+              </Tooltip>
             )}
           </div>
           <Tooltip content={agent.description}>

@@ -225,7 +225,7 @@ const LibraryFile = forwardRef<LibraryFileHandle, LibraryFileProps>(({ id }, ref
   const topContent = useMemo(() => {
     return (
       <div className="mx-2">
-        {/* <div className="text-xl">{knowledgeBase?.name || "-"}</div> */}
+        <div className="text-xl font-medium">{knowledgeBase?.name || "-"}</div>
         {editContent}
         <Divider className="my-2" />
         <div className="flex flex-col gap-4">
