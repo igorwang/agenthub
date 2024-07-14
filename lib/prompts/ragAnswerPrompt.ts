@@ -35,12 +35,12 @@ async function createContext(sources: SourceType[]) {
   if (!sources || sources.length == 0) {
     return "";
   }
-  const context = sources.map((source, index) => {
+  const context = sources.map((source) => {
     const sourceUrl = source.url ? `(${source.url})` : "";
     const chunkText = source.contents
       .map((content, index) => `CHUNK-#${index + 1}:${content}`)
       .join("\n");
-    return `\n[source:${index + 1}]${sourceUrl}\n${source.fileName}\n\n${chunkText}\n`;
+    return `\n[source:${source}]${sourceUrl}\n${source.fileName}\n\n${chunkText}\n`;
   });
   return context;
 }

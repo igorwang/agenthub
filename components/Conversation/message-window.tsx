@@ -146,6 +146,7 @@ export default function MessageWindow({
       }
       // const knowledge_bases = agentData.agent_by_pk
       if (agentData.agent_by_pk?.kbs) {
+        console.log("agentData", agentData);
         setLibraries(
           agentData.agent_by_pk?.kbs.map((item) => ({
             id: item.knowledge_base.id,
@@ -181,6 +182,7 @@ export default function MessageWindow({
   useEffect(() => {
     if (isChating && messages.length > 0) {
       setChatStatus(CHAT_STATUS_ENUM.Analyzing);
+      console.log("libraries", libraries);
       const fetchRefineQuery = async () => {
         try {
           console.log(messages);
@@ -214,11 +216,11 @@ export default function MessageWindow({
             agent_id: agent_id || "",
             user_id: user_id || "",
             filter_kb_ids: refineQuery.knowledge_base_ids,
-            limit: 5,
+            limit: 10,
           });
           setSearchResults(() => {
             return result.map(
-              (item: SearchDocumentResultSchema): SourceType => ({
+              (item: SearchDocumentResultSchema, index: number): SourceType => ({
                 fileName: item.filename || "",
                 fileId: item.file_id || "",
                 url: item.url || "",
@@ -226,6 +228,8 @@ export default function MessageWindow({
                 contents: item.contents || [],
                 sourceType: SOURCE_TYPE_ENUM.file,
                 knowledgeBaseId: item.knowledge_base_id || "",
+                index: index + 1,
+                metadata: item.metadata,
               }),
             );
           });
