@@ -196,7 +196,7 @@ export default function MessageWindow({
           console.log(messages);
           const result = await queryAnalyzer(
             messages,
-            null,
+            agent?.defaultModel,
             JSON.stringify(libraries ? libraries : ""),
           );
           const structuredQuery = result?.[0];
