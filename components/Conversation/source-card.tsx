@@ -1,4 +1,4 @@
-import { SourceType } from "@/types/chatTypes";
+import { SOURCE_TYPE_ENUM, SourceType } from "@/types/chatTypes";
 import { Icon } from "@iconify/react";
 import {
   Button,
@@ -10,6 +10,7 @@ import {
   Link,
   Tooltip,
 } from "@nextui-org/react";
+import clsx from "clsx";
 import React, { useState } from "react";
 type SourceCardProps = {
   source: SourceType;
@@ -42,7 +43,8 @@ export const SourceCard = ({
   };
 
   const handleMoveToSource = () => {};
-
+  const canSelectSource = source.sourceType == SOURCE_TYPE_ENUM.file;
+  const hasSource = source?.url != null;
   return (
     <Card key={source.fileId} className="rounded-lg border-1 bg-card shadow-sm">
       <CardHeader className="justify-center px-1 py-0">
@@ -79,14 +81,23 @@ export const SourceCard = ({
       </CardBody>
       <Divider></Divider>
       <CardFooter className="flex-nowrap justify-center py-0">
-        <Tooltip content="Select the source to next chat.">
+        <Tooltip
+          content={
+            canSelectSource
+              ? "Select the source to next chat."
+              : "This source cann't be selected"
+          }>
           <Button
             isIconOnly
             radius="full"
             // size="sm"
             variant="light"
+            disabled={!canSelectSource}
             onPress={handleSelectSource}
-            className="h-[18px]">
+            className={clsx("h-[18px]", {
+              visible: canSelectSource,
+              hidden: !canSelectSource,
+            })}>
             <Icon className="text-md text-default-600" icon="gravity-ui:chevrons-down" />{" "}
             {/* {selected ? (
               <Icon className="text-lg text-default-600" icon="gravity-ui:check" />
@@ -120,7 +131,10 @@ export const SourceCard = ({
               radius="full"
               size="sm"
               variant="light"
-              className="h-[18px]"
+              className={clsx("h-[18px]", {
+                visible: hasSource,
+                hidden: !hasSource,
+              })}
               isDisabled={source.url == ""}
               onClick={handleMoveToSource}>
               <Icon className="text-md text-default-600" icon="gravity-ui:link" />

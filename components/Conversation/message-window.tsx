@@ -37,6 +37,7 @@ type AgentProps = {
   avatar?: string;
   defaultModel?: string;
   token_limit?: number;
+  enable_search?: boolean | null;
 };
 
 type QueryAnalyzeResultSchema = {
@@ -135,6 +136,7 @@ export default function MessageWindow({
         avatar: agentData.agent_by_pk?.avatar || "",
         defaultModel: agentData.agent_by_pk?.default_model || DEFAULT_LLM_MODEL,
         token_limit: agentData.agent_by_pk?.token_limit || 4096,
+        enable_search: agentData.agent_by_pk?.enable_search || false,
       });
       const templates = agentData.agent_by_pk?.system_prompt?.templates;
       if (templates) {
@@ -225,7 +227,7 @@ export default function MessageWindow({
       const searchLibrary = async () => {
         console.log("Go to search something");
         try {
-          const result = await librarySearcher({
+          const librarySearchPromise = librarySearcher({
             query: `${refineQuery?.refineQuery};${refineQuery?.keywords}`,
             agent_id: agent_id || "",
             user_id: user_id || "",
@@ -233,21 +235,69 @@ export default function MessageWindow({
             filter_file_ids: filter_file_ids || null,
             limit: 10,
           });
-          setSearchResults(() => {
-            return result.map(
-              (item: SearchDocumentResultSchema, index: number): SourceType => ({
-                fileName: item.filename || "",
-                fileId: item.file_id || "",
-                url: item.url || "",
-                pages: item.pages || [],
-                contents: item.contents || [],
-                sourceType: SOURCE_TYPE_ENUM.file,
-                knowledgeBaseId: item.knowledge_base_id || "",
-                index: index + 1,
-                metadata: item.metadata,
-              }),
-            );
-          });
+
+          const searchBody = {
+            query: `${refineQuery?.refineQuery};${refineQuery?.keywords}`,
+            agent_id: null,
+            user_id: user_id || null,
+            limit: 5,
+          };
+
+          const webSearchPromise = agent?.enable_search
+            ? fetch("/api/search/web", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(searchBody),
+              })
+            : null;
+
+          const searchPromises = [librarySearchPromise, webSearchPromise];
+
+          Promise.all(searchPromises)
+            .then(async ([librarySearchResponse, webSearchResponse]) => {
+              console.log(agent?.enable_search);
+              const librarySearchResults = await librarySearchResponse;
+              const webSearchResults = webSearchResponse
+                ? await webSearchResponse.json()
+                : [];
+              const libraryResults = librarySearchResults.map(
+                (item: SearchDocumentResultSchema): SourceType => ({
+                  fileName: item.filename || "",
+                  fileId: item.file_id || "",
+                  url: item.url || "",
+                  pages: item.pages || [],
+                  contents: item.contents || [],
+                  sourceType: SOURCE_TYPE_ENUM.file,
+                  knowledgeBaseId: item.knowledge_base_id || "",
+                }),
+              );
+
+              const webResults =
+                webSearchResults.map(
+                  (item: SearchDocumentResultSchema): SourceType => ({
+                    fileName: item.filename || "",
+                    fileId: item.file_id || "",
+                    url: item.url || "",
+                    pages: item.pages || [],
+                    contents: item.contents || [],
+                    sourceType: SOURCE_TYPE_ENUM.webpage,
+                    knowledgeBaseId: item.knowledge_base_id || "",
+                  }),
+                ) || [];
+              const searchResults = [...libraryResults, ...webResults].map(
+                (item, index) => ({ ...item, index: index + 1 }),
+              );
+              console.log("searchResults:", searchResults);
+              setSearchResults(() => searchResults || []);
+            })
+            .catch((error) => {
+              console.error(error);
+              console.error("Error searching library:", error);
+              toast.error("Search Error: please try later.");
+              handleChatingStatus?.(false);
+            });
         } catch (error) {
           console.error("Error searching library:", error);
           toast.error("Search Error: please try later.");
