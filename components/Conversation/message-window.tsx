@@ -49,6 +49,7 @@ type MessageWindowProps = {
   isChating?: boolean;
   chatMode?: CHAT_MODE;
   handleChatingStatus?: (stauts: boolean) => void;
+  onSelectedSource?: (source: SourceType, selected: boolean) => void;
   handleCreateNewMessage?: (params: {
     content: string;
     session_id: string;
@@ -63,6 +64,7 @@ export default function MessageWindow({
   chatMode,
   handleChatingStatus,
   handleCreateNewMessage,
+  onSelectedSource,
 }: MessageWindowProps) {
   const dispatch: AppDispatch = useDispatch();
   const selectedChatId = useSelector(selectSelectedChatId);
@@ -375,6 +377,7 @@ export default function MessageWindow({
             sourceResults={sources || []}
             files={files}
             maxWidth={width}
+            onSelectedSource={onSelectedSource}
             // className="bg-slate-50"
           />
         ))}

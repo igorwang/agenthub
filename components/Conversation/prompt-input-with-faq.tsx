@@ -17,6 +17,7 @@ import {
   selectSession,
 } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
+import { SourceType } from "@/types/chatTypes";
 import { useSession } from "next-auth/react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
@@ -25,11 +26,16 @@ import PromptInput from "./prompt-input";
 type PromptInputWithFaqProps = {
   isChating?: boolean;
   handleChatingStatus?: (stauts: boolean) => void;
+  onSelectedSource?: (source: SourceType, selected: boolean) => void;
+
+  selectedSources?: SourceType[];
 };
 
 export default function PromptInputWithFaq({
   isChating: isChating,
   handleChatingStatus,
+  onSelectedSource,
+  selectedSources,
 }: PromptInputWithFaqProps) {
   const dispatch: AppDispatch = useDispatch();
 
@@ -242,24 +248,39 @@ export default function PromptInputWithFaq({
 
   return (
     <div className="flex w-full max-w-full flex-col items-center gap-4 overflow-auto p-2">
-      {/* <ScrollShadow
+      <ScrollShadow
         hideScrollBar
-        className="flex flex-nowrap gap-2 max-w-full overflow-auto"
-        orientation="horizontal"
-      >
+        className="flex max-w-full flex-nowrap gap-2 overflow-auto"
+        orientation="horizontal">
         <div className="flex gap-2">
-          {ideas.map(({ title, description }, index) => (
-            <Button
-              key={index}
-              className="flex h-14 flex-col items-start gap-0 w-full"
-              variant="flat"
-            >
-              <p>{title}</p>
-              <p className="text-default-500">{description}</p>
-            </Button>
+          {selectedSources?.map((item, index) => (
+            <Tooltip content={item.fileName}>
+              <Button
+                disableRipple
+                disableAnimation
+                key={index}
+                className="flex h-14 w-full flex-row items-center justify-between gap-2"
+                variant="flat"
+                // disabled={true}
+                endContent={
+                  <Icon
+                    icon={"clarity:remove-line"}
+                    onClick={() => {
+                      console.log("click");
+                      onSelectedSource?.(item, false);
+                    }}
+                    className="cursor-pointer"
+                    fontSize={20}></Icon>
+                }>
+                <p className="max-w-[200px] overflow-hidden text-ellipsis text-nowrap">
+                  {item.fileName}
+                </p>
+                {/* <p className="text-default-500">{description}</p> */}
+              </Button>
+            </Tooltip>
           ))}
         </div>
-      </ScrollShadow> */}
+      </ScrollShadow>
       <form className="flex w-full flex-col items-start rounded-medium bg-default-100 transition-colors hover:bg-default-200/70">
         <ScrollShadow
           className="flex w-full flex-row flex-nowrap gap-2"

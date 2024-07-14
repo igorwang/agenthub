@@ -30,6 +30,7 @@ export type MessageCardProps = React.HTMLAttributes<HTMLDivElement> & {
   onMessageCopy?: (content: string | string[]) => void;
   onFeedback?: (feedback: "like" | "dislike") => void;
   onAttemptFeedback?: (feedback: "like" | "dislike" | "same") => void;
+  onSelectedSource?: (source: SourceType, selected: boolean) => void;
 };
 
 const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
@@ -50,6 +51,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       onAttemptChange,
       onFeedback,
       onAttemptFeedback,
+      onSelectedSource,
       className,
       messageClassName,
       maxWidth,
@@ -209,7 +211,11 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
             ) : (
               <div className="mr-10 gap-3">
                 {sourceResults && sourceResults.length > 0 && (
-                  <SourceSection title="Sources" items={sourceResults} />
+                  <SourceSection
+                    title="Sources"
+                    items={sourceResults}
+                    onSelectedSource={onSelectedSource}
+                  />
                 )}
                 <Spacer x={2} />
                 <div className="flex flex-row items-center justify-start gap-1 p-1">

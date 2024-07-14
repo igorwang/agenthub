@@ -15,9 +15,15 @@ type SourceCardProps = {
   source: SourceType;
   index?: number;
   onFeedback?: (feedback: "like" | "dislike") => void;
+  onSelectedSource?: (source: SourceType, selected: boolean) => void;
 };
 
-export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) => {
+export const SourceCard = ({
+  index = 1,
+  source,
+  onFeedback,
+  onSelectedSource,
+}: SourceCardProps) => {
   const [isFollowed, setIsFollowed] = useState(false);
   const [feedback, setFeedback] = useState<"like" | "dislike" | "same">();
   const [selected, setSelected] = useState<boolean>(false);
@@ -25,13 +31,13 @@ export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) =
   const handleFeedback = React.useCallback(
     (liked: boolean) => {
       setFeedback(liked ? "like" : "dislike");
-
       onFeedback?.(liked ? "like" : "dislike");
     },
     [onFeedback],
   );
 
   const handleSelectSource = () => {
+    onSelectedSource?.(source, !selected);
     setSelected((prev) => !prev);
   };
 
@@ -81,14 +87,15 @@ export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) =
             variant="light"
             onPress={handleSelectSource}
             className="h-[18px]">
-            {selected ? (
+            <Icon className="text-md text-default-600" icon="gravity-ui:chevrons-down" />{" "}
+            {/* {selected ? (
               <Icon className="text-lg text-default-600" icon="gravity-ui:check" />
             ) : (
               <Icon
                 className="text-md text-default-600"
                 icon="gravity-ui:chevrons-down"
               />
-            )}
+            )} */}
           </Button>
         </Tooltip>
         <Tooltip content="Is good Source?">

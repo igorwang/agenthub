@@ -5,9 +5,14 @@ import { Icon } from "@iconify/react";
 type SourceSectionProps = {
   title: string;
   items: SourceType[];
+  onSelectedSource?: (source: SourceType, selected: boolean) => void;
 };
 
-export const SourceSection = ({ title = "Source", items }: SourceSectionProps) => {
+export const SourceSection = ({
+  title = "Source",
+  items,
+  onSelectedSource,
+}: SourceSectionProps) => {
   let iconType: string;
   switch (title) {
     case "Source":
@@ -29,7 +34,12 @@ export const SourceSection = ({ title = "Source", items }: SourceSectionProps) =
       </div>
       <section className="grid grid-cols-2 gap-1.5 sm:grid-cols-4">
         {items.map((item, index) => (
-          <SourceCard key={index + 1} index={index + 1} source={item} />
+          <SourceCard
+            key={index + 1}
+            index={index + 1}
+            source={item}
+            onSelectedSource={onSelectedSource}
+          />
         ))}
       </section>
     </div>
