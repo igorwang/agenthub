@@ -11,7 +11,7 @@ import {
 import { CHAT_MODE, SourceType } from "@/types/chatTypes";
 import { Avatar, Button, Tooltip } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -38,11 +38,14 @@ export const Conversation: React.FC<ConversationProps> = ({
 }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const session = useSession();
 
   const [isChating, setIsChating] = useState<boolean>(false);
   const [chatMode, setChatMode] = useState<string>(CHAT_MODE.simple.toString());
   const [selectedSources, setSelectedSources] = useState<SourceType[]>([]);
+
+  const selectedSessionId = searchParams.get("session_id");
 
   const [agent, setAgent] = useState<Agent>();
   const { data, loading, error } = useGetAgentByIdQuery({
@@ -54,6 +57,10 @@ export const Conversation: React.FC<ConversationProps> = ({
 
   const [createNewMessageMutation, { error: createError }] =
     useCreateNewMessageMutation();
+
+  useEffect(() => {
+    setSelectedSources([]);
+  }, [selectedSessionId]);
 
   useEffect(() => {
     if (data) {
@@ -187,6 +194,7 @@ export const Conversation: React.FC<ConversationProps> = ({
             handleChatingStatus={setIsChating}
             handleCreateNewMessage={handleCreateNewMessage}
             onSelectedSource={handleSelectedSource}
+            selectedSources={selectedSources}
           />
           <div className="flex w-full max-w-full flex-col">
             {/* {selectedSourceContent} */}

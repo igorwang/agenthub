@@ -49,6 +49,7 @@ type MessageWindowProps = {
   isChating?: boolean;
   chatMode?: CHAT_MODE;
   handleChatingStatus?: (stauts: boolean) => void;
+  selectedSources?: SourceType[];
   onSelectedSource?: (source: SourceType, selected: boolean) => void;
   handleCreateNewMessage?: (params: {
     content: string;
@@ -62,6 +63,7 @@ type MessageWindowProps = {
 export default function MessageWindow({
   isChating,
   chatMode,
+  selectedSources,
   handleChatingStatus,
   handleCreateNewMessage,
   onSelectedSource,
