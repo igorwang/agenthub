@@ -78,7 +78,6 @@ export default function AISearch() {
   });
 
   useEffect(() => {
-    console.log("topic:", topic);
     const fetchOrCreateTopic = async () => {
       if (topicData?.topic_history && topicData.topic_history.length > 0) {
         setTopic({ ...topicData.topic_history[0], status: "saved" });

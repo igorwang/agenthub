@@ -254,7 +254,7 @@ export default function PromptInputWithFaq({
         orientation="horizontal">
         <div className="flex gap-2">
           {selectedSources?.map((item, index) => (
-            <Tooltip content={item.fileName}>
+            <Tooltip key={index} content={item.fileName}>
               <Button
                 disableRipple
                 disableAnimation
