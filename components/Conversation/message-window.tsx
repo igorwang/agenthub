@@ -36,6 +36,7 @@ type AgentProps = {
   name?: string;
   avatar?: string;
   defaultModel?: string;
+  token_limit?: number;
 };
 
 type QueryAnalyzeResultSchema = {
@@ -133,6 +134,7 @@ export default function MessageWindow({
         name: agentData.agent_by_pk?.name,
         avatar: agentData.agent_by_pk?.avatar || "",
         defaultModel: agentData.agent_by_pk?.default_model || DEFAULT_LLM_MODEL,
+        token_limit: agentData.agent_by_pk?.token_limit || 4096,
       });
       const templates = agentData.agent_by_pk?.system_prompt?.templates;
       if (templates) {
@@ -273,7 +275,7 @@ export default function MessageWindow({
           searchResults || [],
           `${refineQuery?.refineQuery};${refineQuery?.keywords}` || "",
           {},
-          4096,
+          agent?.token_limit,
         );
         let answer = "";
         // call llm

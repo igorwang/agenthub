@@ -42,8 +42,6 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
 
   useEffect(() => {
     if (query.data) {
-      console.log("query.data", query.data);
-
       setAgent(query?.data?.agent_by_pk);
     }
   }, [query]);
@@ -56,7 +54,6 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
       default_model: agent?.default_model,
       token_limit: agent?.token_limit,
     };
-    console.log("input", input);
     delete input.id;
     updateAgentMutation({
       variables: {
