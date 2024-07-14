@@ -212,6 +212,14 @@ export default function MessageWindow({
     if (isChating && refineQuery != null && chatStatus == CHAT_STATUS_ENUM.Analyzing) {
       setChatStatus(CHAT_STATUS_ENUM.Searching);
       console.log("refineQuery", refineQuery);
+
+      const filter_kb_ids = selectedSources
+        ?.map((item) => item.knowledgeBaseId || null)
+        .filter((id) => id !== null);
+      const filter_file_ids = selectedSources?.map((item) => item.fileId);
+      console.log("filter_kb_ids", filter_kb_ids);
+      console.log("filter_file_ids", filter_file_ids);
+
       const searchLibrary = async () => {
         console.log("Go to search something");
         try {
@@ -219,7 +227,8 @@ export default function MessageWindow({
             query: `${refineQuery?.refineQuery};${refineQuery?.keywords}`,
             agent_id: agent_id || "",
             user_id: user_id || "",
-            filter_kb_ids: refineQuery.knowledge_base_ids,
+            filter_kb_ids: filter_kb_ids ? filter_kb_ids : refineQuery.knowledge_base_ids,
+            filter_file_ids: filter_file_ids || null,
             limit: 10,
           });
           setSearchResults(() => {
