@@ -8,7 +8,7 @@ import {
 } from "@/graphql/generated/types";
 import { formatTokenLimit } from "@/lib/utils/formatTokenLimit";
 import { Input } from "@nextui-org/input";
-import { Avatar, Button, Divider, Textarea } from "@nextui-org/react";
+import { Avatar, Button, Divider, Switch, Textarea } from "@nextui-org/react";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { toast } from "sonner";
 
@@ -24,6 +24,7 @@ interface Agent {
   system_prompt?: SystemPrompt | null | undefined;
   default_model?: string | null;
   token_limit?: number | null;
+  enable_search?: boolean | null;
 }
 
 export interface AgentInfoRef {
@@ -42,6 +43,7 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
 
   useEffect(() => {
     if (query.data) {
+      console.log("query.data", query.data);
       setAgent(query?.data?.agent_by_pk);
     }
   }, [query]);
@@ -53,6 +55,7 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
       avatar: agent?.avatar,
       default_model: agent?.default_model,
       token_limit: agent?.token_limit,
+      enable_search: agent?.enable_search,
     };
     delete input.id;
     updateAgentMutation({
@@ -138,6 +141,20 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
               }));
             }}
           />
+        </div>
+        <div className={"mt-8"}>
+          <Switch
+            defaultSelected
+            aria-label="Enable Web Search"
+            isSelected={agent?.enable_search || false}
+            onChange={() => {
+              setAgent((prev) => ({
+                ...prev,
+                enable_search: agent?.enable_search ? false : true,
+              }));
+            }}>
+            Enable Web Search
+          </Switch>
         </div>
       </form>
     </div>

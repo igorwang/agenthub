@@ -22,6 +22,7 @@ query GetAgentByID($id: uuid!) {
     default_model
     token_limit
     creator_id
+    enable_search
     system_prompt {
       id
       name
