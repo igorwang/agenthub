@@ -9,9 +9,11 @@ export type ModelProps = {
 
 export type ModelSelectProps = {
   // models?: ModelProps[];
+  modelType?: "llm" | "embedding";
+  label?: string;
   defaultModel?: string;
   labelPlacement?: "outside" | "outside-left" | "inside" | undefined;
-  onSelectionChange?: (selectedValue: string) => void;
+  onSelectionChange?: (modelName: string, limit?: number) => void;
 };
 
 const defaultModels = [
@@ -24,7 +26,17 @@ const defaultModels = [
 ];
 
 const ModelSelect = React.forwardRef<HTMLDivElement, ModelSelectProps>(
-  ({ onSelectionChange, labelPlacement, defaultModel, ...props }, ref) => {
+  (
+    {
+      onSelectionChange,
+      label = "LLM model",
+      labelPlacement,
+      defaultModel,
+      modelType = "llm",
+      ...props
+    },
+    ref,
+  ) => {
     const [models, setModels] = useState<ModelProps[]>(defaultModels);
     const [loading, setLoading] = useState<boolean>(true);
     const [value, setValue] = React.useState(new Set([defaultModel || ""]));
@@ -39,7 +51,7 @@ const ModelSelect = React.forwardRef<HTMLDivElement, ModelSelectProps>(
     useEffect(() => {
       const fetchModels = async () => {
         try {
-          const response = await fetch("/api/models");
+          const response = await fetch(`/api/models?type=${modelType}`);
           if (!response.ok) {
             throw new Error("Network response was not ok");
           }
@@ -61,14 +73,17 @@ const ModelSelect = React.forwardRef<HTMLDivElement, ModelSelectProps>(
 
     const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
       const newValue = e.target.value;
-      setValue(new Set([newValue]));
-      onSelectionChange && onSelectionChange(newValue); // Call the callback function with the new value
+      const model = models.find((item) => item.name === newValue);
+      if (model) {
+        setValue(new Set([newValue]));
+        onSelectionChange?.(model?.name, model.max_tokens || 4096); // Call the callback function with the new value
+      }
     };
 
     return (
       <Select
         // isRequired
-        label="LLM Model"
+        label={label}
         labelPlacement={labelPlacement}
         placeholder="Select an Model"
         // selectedKeys={value}

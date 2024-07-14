@@ -40,6 +40,7 @@ export type SourceType = {
   contents: string[];
   knowledgeBaseId?: string;
   index?: number;
+  metadata?: string | null;
 };
 
 export type MessageType = {

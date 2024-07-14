@@ -6,7 +6,7 @@ import { SourceSection } from "@/components/Conversation/source-section";
 import { UploadFile, UploadFileProps } from "@/components/Conversation/upload-file";
 import MarkdownRenderer from "@/components/MarkdownRender";
 import { MessageSkeleton } from "@/components/ui/message-skeleton";
-import { CHAT_STATUS_ENUM, SourceType } from "@/types/chatTypes";
+import { CHAT_STATUS_ENUM, SOURCE_TYPE_ENUM, SourceType } from "@/types/chatTypes";
 import { Icon } from "@iconify/react";
 import { Badge, Button, Link, Spacer, Spinner } from "@nextui-org/react";
 import { useClipboard } from "@nextui-org/use-clipboard";
@@ -30,6 +30,7 @@ export type MessageCardProps = React.HTMLAttributes<HTMLDivElement> & {
   onMessageCopy?: (content: string | string[]) => void;
   onFeedback?: (feedback: "like" | "dislike") => void;
   onAttemptFeedback?: (feedback: "like" | "dislike" | "same") => void;
+  onSelectedSource?: (source: SourceType, selected: boolean) => void;
 };
 
 const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
@@ -50,6 +51,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       onAttemptChange,
       onFeedback,
       onAttemptFeedback,
+      onSelectedSource,
       className,
       messageClassName,
       maxWidth,
@@ -195,6 +197,14 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       </div>
     );
 
+    const librarySources = sourceResults?.filter(
+      (item) => item.sourceType == SOURCE_TYPE_ENUM.file,
+    );
+
+    const webSources = sourceResults?.filter(
+      (item) => item.sourceType == SOURCE_TYPE_ENUM.webpage,
+    );
+
     const aiMessageContent = (
       <div className="mr-14 flex w-full flex-grow flex-col gap-4">
         <div
@@ -209,7 +219,17 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
             ) : (
               <div className="mr-10 gap-3">
                 {sourceResults && sourceResults.length > 0 && (
-                  <SourceSection title="Sources" items={sourceResults} />
+                  <SourceSection
+                    title="library Sources"
+                    items={librarySources || []}
+                    onSelectedSource={onSelectedSource}
+                  />
+                )}
+                <Spacer x={2} />
+                {webSources && webSources.length > 0 && (
+                  <SourceSection
+                    title="Web Sources"
+                    items={webSources || []}></SourceSection>
                 )}
                 <Spacer x={2} />
                 <div className="flex flex-row items-center justify-start gap-1 p-1">
@@ -277,7 +297,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
                 </Button>
               </div>
             )}
-            {attempts > 1 && !hasFailed && (
+            {/* {attempts > 1 && !hasFailed && (
               <div className="flex w-full items-center justify-end">
                 <button
                   onClick={() =>
@@ -303,7 +323,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
                   {currentAttempt}/{attempts}
                 </p>
               </div>
-            )}
+            )} */}
           </div>
         </div>
         {/* {showFeedback && attempts > 1 && (

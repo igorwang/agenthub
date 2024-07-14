@@ -68,7 +68,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   }
 
   if (loading) {
-    return <div>加载中...</div>;
+    return <div>Loading...</div>;
   }
 
   const histories = data?.topic_history.map((item) => ({
@@ -96,9 +96,9 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
       <DropdownMenu aria-label="Static Actions">
         {/* <DropdownItem key="new">New file</DropdownItem> */}
         {/* <DropdownItem key="copy">Copy link</DropdownItem> */}
-        <DropdownItem key="edit">重命名</DropdownItem>
+        <DropdownItem key="edit">Rename</DropdownItem>
         <DropdownItem key="delete" className="text-danger" color="danger">
-          删除
+          Delete
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>
@@ -123,7 +123,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
     try {
       const { data, errors } = await addNewTopicMutation({
         variables: {
-          title: "New Topic",
+          title: "New Chat",
           user_id: user_id,
           agent_id: agent_id,
         },
@@ -157,7 +157,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
         endContent={<PlusIcon />}
         onClick={() => handleAddTopic({ agent_id: params.id, user_id: userId })}
         disabled={!userId}>
-        New Topic
+        New Chat
       </Button>
       {historyItems && (
         <Listbox

@@ -537,7 +537,7 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
             <div className="relative flex h-full flex-col items-baseline gap-2 border-2 p-2">
               <div className="flex w-full flex-col">
                 <ModelSelect
-                  onSelectionChange={setSelectedModel}
+                  onSelectionChange={(modelName, limit) => setSelectedModel(modelName)}
                   defaultModel={selectedModel}></ModelSelect>
               </div>
               <div className="max-h-[600px] w-full overflow-scroll pb-8">

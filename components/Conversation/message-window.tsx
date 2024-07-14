@@ -36,6 +36,8 @@ type AgentProps = {
   name?: string;
   avatar?: string;
   defaultModel?: string;
+  token_limit?: number;
+  enable_search?: boolean | null;
 };
 
 type QueryAnalyzeResultSchema = {
@@ -49,6 +51,8 @@ type MessageWindowProps = {
   isChating?: boolean;
   chatMode?: CHAT_MODE;
   handleChatingStatus?: (stauts: boolean) => void;
+  selectedSources?: SourceType[];
+  onSelectedSource?: (source: SourceType, selected: boolean) => void;
   handleCreateNewMessage?: (params: {
     content: string;
     session_id: string;
@@ -61,8 +65,10 @@ type MessageWindowProps = {
 export default function MessageWindow({
   isChating,
   chatMode,
+  selectedSources,
   handleChatingStatus,
   handleCreateNewMessage,
+  onSelectedSource,
 }: MessageWindowProps) {
   const dispatch: AppDispatch = useDispatch();
   const selectedChatId = useSelector(selectSelectedChatId);
@@ -129,6 +135,8 @@ export default function MessageWindow({
         name: agentData.agent_by_pk?.name,
         avatar: agentData.agent_by_pk?.avatar || "",
         defaultModel: agentData.agent_by_pk?.default_model || DEFAULT_LLM_MODEL,
+        token_limit: agentData.agent_by_pk?.token_limit || 4096,
+        enable_search: agentData.agent_by_pk?.enable_search || false,
       });
       const templates = agentData.agent_by_pk?.system_prompt?.templates;
       if (templates) {
@@ -146,6 +154,7 @@ export default function MessageWindow({
       }
       // const knowledge_bases = agentData.agent_by_pk
       if (agentData.agent_by_pk?.kbs) {
+        console.log("agentData", agentData);
         setLibraries(
           agentData.agent_by_pk?.kbs.map((item) => ({
             id: item.knowledge_base.id,
@@ -181,6 +190,7 @@ export default function MessageWindow({
   useEffect(() => {
     if (isChating && messages.length > 0) {
       setChatStatus(CHAT_STATUS_ENUM.Analyzing);
+      console.log("libraries", libraries);
       const fetchRefineQuery = async () => {
         try {
           console.log(messages);
@@ -206,29 +216,88 @@ export default function MessageWindow({
     if (isChating && refineQuery != null && chatStatus == CHAT_STATUS_ENUM.Analyzing) {
       setChatStatus(CHAT_STATUS_ENUM.Searching);
       console.log("refineQuery", refineQuery);
+
+      const filter_kb_ids = selectedSources
+        ?.map((item) => item.knowledgeBaseId || null)
+        .filter((id) => id !== null);
+      const filter_file_ids = selectedSources?.map((item) => item.fileId);
+      console.log("filter_kb_ids", filter_kb_ids);
+      console.log("filter_file_ids", filter_file_ids);
+
       const searchLibrary = async () => {
         console.log("Go to search something");
         try {
-          const result = await librarySearcher({
+          const librarySearchPromise = librarySearcher({
             query: `${refineQuery?.refineQuery};${refineQuery?.keywords}`,
             agent_id: agent_id || "",
             user_id: user_id || "",
-            filter_kb_ids: refineQuery.knowledge_base_ids,
+            filter_kb_ids: filter_kb_ids ? filter_kb_ids : refineQuery.knowledge_base_ids,
+            filter_file_ids: filter_file_ids || null,
+            limit: 10,
+          });
+
+          const searchBody = {
+            query: `${refineQuery?.refineQuery};${refineQuery?.keywords}`,
+            agent_id: null,
+            user_id: user_id || null,
             limit: 5,
-          });
-          setSearchResults(() => {
-            return result.map(
-              (item: SearchDocumentResultSchema): SourceType => ({
-                fileName: item.filename || "",
-                fileId: item.file_id || "",
-                url: item.url || "",
-                pages: item.pages || [],
-                contents: item.contents || [],
-                sourceType: SOURCE_TYPE_ENUM.file,
-                knowledgeBaseId: item.knowledge_base_id || "",
-              }),
-            );
-          });
+          };
+
+          const webSearchPromise = agent?.enable_search
+            ? fetch("/api/search/web", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(searchBody),
+              })
+            : null;
+
+          const searchPromises = [librarySearchPromise, webSearchPromise];
+
+          Promise.all(searchPromises)
+            .then(async ([librarySearchResponse, webSearchResponse]) => {
+              console.log(agent?.enable_search);
+              const librarySearchResults = await librarySearchResponse;
+              const webSearchResults = webSearchResponse
+                ? await webSearchResponse.json()
+                : [];
+              const libraryResults = librarySearchResults.map(
+                (item: SearchDocumentResultSchema): SourceType => ({
+                  fileName: item.filename || "",
+                  fileId: item.file_id || "",
+                  url: item.url || "",
+                  pages: item.pages || [],
+                  contents: item.contents || [],
+                  sourceType: SOURCE_TYPE_ENUM.file,
+                  knowledgeBaseId: item.knowledge_base_id || "",
+                }),
+              );
+
+              const webResults =
+                webSearchResults.map(
+                  (item: SearchDocumentResultSchema): SourceType => ({
+                    fileName: item.filename || "",
+                    fileId: item.file_id || "",
+                    url: item.url || "",
+                    pages: item.pages || [],
+                    contents: item.contents || [],
+                    sourceType: SOURCE_TYPE_ENUM.webpage,
+                    knowledgeBaseId: item.knowledge_base_id || "",
+                  }),
+                ) || [];
+              const searchResults = [...libraryResults, ...webResults].map(
+                (item, index) => ({ ...item, index: index + 1 }),
+              );
+              console.log("searchResults:", searchResults);
+              setSearchResults(() => searchResults || []);
+            })
+            .catch((error) => {
+              console.error(error);
+              console.error("Error searching library:", error);
+              toast.error("Search Error: please try later.");
+              handleChatingStatus?.(false);
+            });
         } catch (error) {
           console.error("Error searching library:", error);
           toast.error("Search Error: please try later.");
@@ -256,7 +325,7 @@ export default function MessageWindow({
           searchResults || [],
           `${refineQuery?.refineQuery};${refineQuery?.keywords}` || "",
           {},
-          4096,
+          agent?.token_limit,
         );
         let answer = "";
         // call llm
@@ -371,6 +440,7 @@ export default function MessageWindow({
             sourceResults={sources || []}
             files={files}
             maxWidth={width}
+            onSelectedSource={onSelectedSource}
             // className="bg-slate-50"
           />
         ))}

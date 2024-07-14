@@ -8,10 +8,10 @@ import {
   useCreateNewMessageMutation,
   useGetAgentByIdQuery,
 } from "@/graphql/generated/types";
-import { CHAT_MODE } from "@/types/chatTypes";
+import { CHAT_MODE, SourceType } from "@/types/chatTypes";
 import { Avatar, Button, Tooltip } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -38,10 +38,14 @@ export const Conversation: React.FC<ConversationProps> = ({
 }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const session = useSession();
 
   const [isChating, setIsChating] = useState<boolean>(false);
   const [chatMode, setChatMode] = useState<string>(CHAT_MODE.simple.toString());
+  const [selectedSources, setSelectedSources] = useState<SourceType[]>([]);
+
+  const selectedSessionId = searchParams.get("session_id");
 
   const [agent, setAgent] = useState<Agent>();
   const { data, loading, error } = useGetAgentByIdQuery({
@@ -53,6 +57,10 @@ export const Conversation: React.FC<ConversationProps> = ({
 
   const [createNewMessageMutation, { error: createError }] =
     useCreateNewMessageMutation();
+
+  useEffect(() => {
+    setSelectedSources([]);
+  }, [selectedSessionId]);
 
   useEffect(() => {
     if (data) {
@@ -93,6 +101,18 @@ export const Conversation: React.FC<ConversationProps> = ({
 
   const handleConfigCilck = () => {
     router.push(`${pathname}/settings`);
+  };
+
+  const handleSelectedSource = (source: SourceType, selected: boolean) => {
+    console.log("handleAddSource", source, selected);
+    if (selected) {
+      const hasThisSource = selectedSources.some((item) => item.fileId == source.fileId);
+      if (!hasThisSource) {
+        setSelectedSources((prev) => [...prev, source]);
+      }
+    } else {
+      setSelectedSources((prev) => prev.filter((item) => item.fileId != source.fileId));
+    }
   };
 
   if (!agent || loading) {
@@ -149,6 +169,21 @@ export const Conversation: React.FC<ConversationProps> = ({
     </div>
   );
 
+  // const selectedSourceContent = (
+  //   <ScrollShadow
+  //     orientation="horizontal"
+  //     className="flex flex-row flex-nowrap gap-2 overflow-auto"
+  //     hideScrollBar={true}>
+  //     {selectedSources.map((item) => {
+  //       return (
+  //         <div key={item.fileId} className="max-w-[160px] text-ellipsis text-nowrap">
+  //           {item.fileName}
+  //         </div>
+  //       );
+  //     })}
+  //   </ScrollShadow>
+  // );
+
   return (
     <div className="flex h-full w-full max-w-full flex-col overflow-auto">
       {headerElement}
@@ -158,10 +193,15 @@ export const Conversation: React.FC<ConversationProps> = ({
             isChating={isChating}
             handleChatingStatus={setIsChating}
             handleCreateNewMessage={handleCreateNewMessage}
+            onSelectedSource={handleSelectedSource}
+            selectedSources={selectedSources}
           />
           <div className="flex w-full max-w-full flex-col">
+            {/* {selectedSourceContent} */}
             <PromptInputWithFaq
               isChating={isChating}
+              selectedSources={selectedSources}
+              onSelectedSource={handleSelectedSource}
               handleChatingStatus={setIsChating}></PromptInputWithFaq>
             <p className="px-2 text-tiny text-default-400">
               AI can also make mistakes. Please verify important information.

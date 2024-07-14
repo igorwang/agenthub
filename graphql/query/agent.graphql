@@ -20,7 +20,9 @@ query GetAgentByID($id: uuid!) {
     description
     avatar
     default_model
+    token_limit
     creator_id
+    enable_search
     system_prompt {
       id
       name

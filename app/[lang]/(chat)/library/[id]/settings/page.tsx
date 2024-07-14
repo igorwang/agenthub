@@ -34,6 +34,7 @@ interface KnowledgeBaseItem {
   chunking_strategy?: Chunking_Strategy_Enum;
   chunking_parameters?: any;
   model_name?: string;
+  embedding_model?: string;
   is_extraction?: boolean;
   is_publish?: boolean;
   type?: {
@@ -73,6 +74,7 @@ export default function LibrarySetting() {
       is_extraction: knowledgeBase?.is_extraction,
       model_name: knowledgeBase?.model_name,
       is_publish: knowledgeBase?.is_publish,
+      embedding_model: knowledgeBase?.embedding_model,
     };
     console.log("knowledgeBase input", input);
     updateKnowledgeBaseMutation({
@@ -113,7 +115,7 @@ export default function LibrarySetting() {
       <RightHeader title={"Library Setting"} callBackUri={`/library/${id}`} />
       <div className={"mx-auto flex flex-col items-center px-4 py-2"}>
         <form className={"w-full max-w-4xl"}>
-          <div className={"flex flex-row items-end justify-between pb-1"}>
+          <div className={"flex max-h-full flex-row items-end justify-between pb-1"}>
             <span className="relative text-foreground-500">Library Information</span>
             <Button color={"primary"} onClick={(e) => handleSubmit(e)}>
               Save
@@ -224,12 +226,23 @@ export default function LibrarySetting() {
               <ModelSelect
                 labelPlacement="outside"
                 defaultModel={knowledgeBase.model_name}
-                onSelectionChange={(model) =>
+                onSelectionChange={(modelName, limit) =>
                   setknowledgeBase(
-                    (prev) => ({ ...prev, model_name: model }) as KnowledgeBaseItem,
+                    (prev) => ({ ...prev, model_name: modelName }) as KnowledgeBaseItem,
                   )
                 }></ModelSelect>
             )}
+            <ModelSelect
+              label="Embedding model"
+              modelType="embedding"
+              labelPlacement="outside"
+              defaultModel={knowledgeBase.embedding_model}
+              onSelectionChange={(modelName, limit) =>
+                setknowledgeBase(
+                  (prev) =>
+                    ({ ...prev, embedding_model: modelName }) as KnowledgeBaseItem,
+                )
+              }></ModelSelect>
           </div>
         </form>
         <div className={"w-full max-w-4xl pt-12"}>

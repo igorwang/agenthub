@@ -23,6 +23,7 @@ fragment knowledgeBaseFragment on knowledge_base {
   extraction_prompt_id
   chunking_strategy
   chunking_parameters
+  embedding_model
 }
 
 query KnowledgeBaseDetail($id: uuid!) {
