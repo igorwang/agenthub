@@ -13,7 +13,7 @@ export type ModelSelectProps = {
   label?: string;
   defaultModel?: string;
   labelPlacement?: "outside" | "outside-left" | "inside" | undefined;
-  onSelectionChange?: (selectedValue: string) => void;
+  onSelectionChange?: (modelName: string, limit?: number) => void;
 };
 
 const defaultModels = [
@@ -73,8 +73,11 @@ const ModelSelect = React.forwardRef<HTMLDivElement, ModelSelectProps>(
 
     const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
       const newValue = e.target.value;
-      setValue(new Set([newValue]));
-      onSelectionChange && onSelectionChange(newValue); // Call the callback function with the new value
+      const model = models.find((item) => item.name === newValue);
+      if (model) {
+        setValue(new Set([newValue]));
+        onSelectionChange?.(model?.name, model.max_tokens || 4096); // Call the callback function with the new value
+      }
     };
 
     return (

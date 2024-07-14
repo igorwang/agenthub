@@ -20,7 +20,7 @@ async function createContext(sources: SourceType[]) {
     const chunkText = source.contents
       .map((content, index) => `CHUNK-#${index + 1}:${content}`)
       .join("\n");
-    return `[source:${index}-${source.fileName}]${sourceUrl}\n\n${chunkText}`;
+    return `\n[source:${source.index}]${sourceUrl}\n${source.metadata}\n\n${chunkText}\n`;
   });
   return context;
 }
@@ -86,5 +86,6 @@ export async function createPrompt(
 
   const promptFromQuery = `${latestMessages[0]}:${latestMessages[1]}`;
   const prompt = `${promptFromTemplate}\n${promptFromContext}\n${promptFromQuery}`;
+  console.log("prompt:", prompt);
   return prompt;
 }

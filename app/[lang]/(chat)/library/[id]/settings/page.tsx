@@ -226,9 +226,9 @@ export default function LibrarySetting() {
               <ModelSelect
                 labelPlacement="outside"
                 defaultModel={knowledgeBase.model_name}
-                onSelectionChange={(model) =>
+                onSelectionChange={(modelName, limit) =>
                   setknowledgeBase(
-                    (prev) => ({ ...prev, model_name: model }) as KnowledgeBaseItem,
+                    (prev) => ({ ...prev, model_name: modelName }) as KnowledgeBaseItem,
                   )
                 }></ModelSelect>
             )}
@@ -237,9 +237,10 @@ export default function LibrarySetting() {
               modelType="embedding"
               labelPlacement="outside"
               defaultModel={knowledgeBase.embedding_model}
-              onSelectionChange={(model) =>
+              onSelectionChange={(modelName, limit) =>
                 setknowledgeBase(
-                  (prev) => ({ ...prev, embedding_model: model }) as KnowledgeBaseItem,
+                  (prev) =>
+                    ({ ...prev, embedding_model: modelName }) as KnowledgeBaseItem,
                 )
               }></ModelSelect>
           </div>
