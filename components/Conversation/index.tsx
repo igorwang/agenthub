@@ -202,7 +202,7 @@ export const Conversation: React.FC<ConversationProps> = ({
               isChating={isChating}
               selectedSources={selectedSources}
               onSelectedSource={handleSelectedSource}
-              handleChatingStatus={setIsChating}></PromptInputWithFaq>
+              onChatingStatus={setIsChating}></PromptInputWithFaq>
             <p className="px-2 text-tiny text-default-400">
               AI can also make mistakes. Please verify important information.
             </p>

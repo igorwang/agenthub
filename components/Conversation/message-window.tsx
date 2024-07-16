@@ -43,7 +43,7 @@ type AgentProps = {
 type QueryAnalyzeResultSchema = {
   isRelated?: boolean;
   refineQuery?: string;
-  keywords?: string[];
+  keywords?: string;
   knowledge_base_ids?: string[];
 };
 
@@ -199,7 +199,7 @@ export default function MessageWindow({
             agent?.defaultModel,
             JSON.stringify(libraries ? libraries : ""),
           );
-          const structuredQuery = result?.[0];
+          const structuredQuery = result;
           setRefineQuery(structuredQuery || {});
         } catch (error) {
           console.error("Error fetching refine query:", error);
@@ -304,7 +304,11 @@ export default function MessageWindow({
           handleChatingStatus?.(false);
         }
       };
-      if (refineQuery.isRelated && refineQuery.knowledge_base_ids) {
+      if (
+        refineQuery.isRelated &&
+        refineQuery.knowledge_base_ids &&
+        refineQuery.knowledge_base_ids.length > 0
+      ) {
         searchLibrary();
       } else {
         console.log("Igonre Search");
@@ -369,6 +373,7 @@ export default function MessageWindow({
         } catch (error) {
           console.error("Error while streaming:", error);
         }
+
         // save results
         handleCreateNewMessage?.({
           content: answer,

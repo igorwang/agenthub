@@ -25,7 +25,7 @@ import PromptInput from "./prompt-input";
 
 type PromptInputWithFaqProps = {
   isChating?: boolean;
-  handleChatingStatus?: (stauts: boolean) => void;
+  onChatingStatus?: (stauts: boolean) => void;
   onSelectedSource?: (source: SourceType, selected: boolean) => void;
 
   selectedSources?: SourceType[];
@@ -33,7 +33,7 @@ type PromptInputWithFaqProps = {
 
 export default function PromptInputWithFaq({
   isChating: isChating,
-  handleChatingStatus,
+  onChatingStatus: handleChatingStatus,
   onSelectedSource,
   selectedSources,
 }: PromptInputWithFaqProps) {
@@ -313,7 +313,7 @@ export default function PromptInputWithFaq({
               ref={fileInputRef}
               onChange={handleFileChange}
             />
-            <Button
+            {/* <Button
               size="sm"
               startContent={
                 <Icon
@@ -325,7 +325,7 @@ export default function PromptInputWithFaq({
               variant="flat"
               onClick={handleFileButtonClick}>
               File
-            </Button>
+            </Button> */}
             {/* <Button
               size="sm"
               startContent={
@@ -340,7 +340,7 @@ export default function PromptInputWithFaq({
               Voice
             </Button> */}
           </div>
-          <p className="py-1 text-tiny text-default-400">{prompt.length}/4000</p>
+          {/* <p className="py-1 text-tiny text-default-400">{prompt.length}/4000</p> */}
         </div>
       </form>
     </div>
