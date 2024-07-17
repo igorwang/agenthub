@@ -6,7 +6,6 @@ import {
   Input,
   Select,
   SelectItem,
-  Spacer,
   Switch,
   Textarea,
 } from "@nextui-org/react";
@@ -20,6 +19,7 @@ import ModelSelect from "@/components/PromptFrom/model-select";
 import RightHeader from "@/components/RightHeader";
 import {
   Chunking_Strategy_Enum,
+  Knowledge_Base_Mode_Enum,
   Knowledge_Base_Set_Input,
   Knowledge_Base_Type_Enum,
   useKnowledgeBaseDetailQuery,
@@ -39,6 +39,7 @@ interface KnowledgeBaseItem {
   is_extraction?: boolean;
   is_publish?: boolean;
   doc_schema?: object;
+  mode?: Knowledge_Base_Mode_Enum;
   type?: {
     value?: string;
     comment?: string;
@@ -78,6 +79,7 @@ export default function LibrarySetting() {
       is_publish: knowledgeBase?.is_publish,
       embedding_model: knowledgeBase?.embedding_model,
       doc_schema: knowledgeBase?.doc_schema,
+      mode: knowledgeBase?.mode,
     };
     console.log("knowledgeBase input", input);
     updateKnowledgeBaseMutation({
@@ -247,31 +249,59 @@ export default function LibrarySetting() {
             )}
           </div>
           {knowledgeBase.is_extraction && (
-            <div className={"w-full max-w-4xl pb-8 pt-4"}>
-              <label className="font-sans text-sm text-gray-900 subpixel-antialiased">
-                Document Schema
-              </label>
-              <JsonEditor
-                maxWidth={400}
-                data={knowledgeBase?.doc_schema || {}}
-                onUpdate={({ newData }) => {
-                  setknowledgeBase({
-                    ...knowledgeBase,
-                    doc_schema: newData,
-                  });
-                }}
-                rootName="data"></JsonEditor>
-              <span className="relative text-foreground-500">Prompt</span>
-              <Spacer y={2} />
-              <Divider />
-              {/* {data?.extraction_prompt_id ? ( */}
-              <PromptFrom
-                agentId={id}
-                hiddeTitle={true}
-                defaultPromptId={knowledgeBase?.extraction_prompt_id}
-                defaultModel={knowledgeBase?.model_name}
-                konwledgeBaseId={id}
-              />
+            <div className={"flex w-full max-w-4xl flex-col gap-2 pb-8 pt-4"}>
+              <Select
+                label="Library Document Structure"
+                labelPlacement="outside"
+                placeholder="Select your structure of document for this library"
+                classNames={{ label: "text-sm" }}
+                variant={"flat"}
+                selectedKeys={new Set([knowledgeBase?.mode || ""])}
+                // defaultSelectedKeys={[Chunking_Strategy_Enum.Length.toString()]}
+                onSelectionChange={(keys) => {
+                  const selectedValue = Array.from(keys)[0] as Knowledge_Base_Mode_Enum;
+                  setknowledgeBase((prev) => ({
+                    ...prev,
+                    mode: selectedValue,
+                  }));
+                }}>
+                {Object.values(Knowledge_Base_Mode_Enum).map((mode) => (
+                  <SelectItem key={mode} value={mode}>
+                    {mode}
+                  </SelectItem>
+                ))}
+              </Select>
+
+              {knowledgeBase.mode == Knowledge_Base_Mode_Enum.Jsondoc ? (
+                <div>
+                  <label className="font-sans text-sm text-gray-900 subpixel-antialiased">
+                    Document Schema
+                  </label>
+                  <JsonEditor
+                    maxWidth={400}
+                    data={knowledgeBase?.doc_schema || {}}
+                    onUpdate={({ newData }) => {
+                      setknowledgeBase({
+                        ...knowledgeBase,
+                        doc_schema: newData,
+                      });
+                    }}
+                    rootName="data"></JsonEditor>
+                </div>
+              ) : (
+                <div>
+                  <span className="relative text-foreground-500">Prompt</span>
+                  <Divider />
+                  {/* {data?.extraction_prompt_id ? ( */}
+                  <PromptFrom
+                    agentId={id}
+                    hiddeTitle={true}
+                    defaultPromptId={knowledgeBase?.extraction_prompt_id}
+                    defaultModel={knowledgeBase?.model_name}
+                    konwledgeBaseId={id}
+                  />
+                </div>
+              )}
             </div>
           )}
         </form>
