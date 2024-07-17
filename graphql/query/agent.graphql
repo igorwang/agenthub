@@ -23,6 +23,7 @@ query GetAgentByID($id: uuid!) {
     token_limit
     creator_id
     enable_search
+    force_search
     system_prompt {
       id
       name
