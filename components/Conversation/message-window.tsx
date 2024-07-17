@@ -4,15 +4,16 @@ import {
 } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
 import { useSession } from "next-auth/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import FeatureCards from "@/components/Conversation/feature-cards";
 import { PromptTemplateType } from "@/components/PromptFrom";
 import {
   Message_Role_Enum,
+  Order_By,
   useGetAgentByIdQuery,
-  useGetMessageListSubscription,
+  useSubscriptionMessageListSubscription,
 } from "@/graphql/generated/types";
 import { DEFAULT_LLM_MODEL, DEFAULT_TEMPLATES } from "@/lib/models";
 import { createPrompt } from "@/lib/prompts";
@@ -29,6 +30,7 @@ import {
 } from "@/types/chatTypes";
 import { Avatar, ScrollShadow } from "@nextui-org/react";
 import { toast } from "sonner";
+import { v4 } from "uuid";
 import MessageCard from "./message-card";
 
 type AgentProps = {
@@ -82,7 +84,6 @@ export default function MessageWindow({
   const [refineQuery, setRefineQuery] = useState<QueryAnalyzeResultSchema | null>(null);
   const [searchResults, setSearchResults] = useState<SourceType[] | null>(null);
   const [promptTemplates, setPromptTemplates] = useState<PromptTemplateType[]>();
-  const [streamingMessage, setStreamingMessage] = useState<string | null>(null);
   const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
   const [libraries, setLibraries] = useState<LibraryCardType[]>();
 
@@ -91,11 +92,13 @@ export default function MessageWindow({
   const agent_id = selectedChatId;
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const { data, loading, error } = useGetMessageListSubscription({
+  const { data, loading, error } = useSubscriptionMessageListSubscription({
     variables: {
-      session_id: selectedSessionId || "", // Provide a default value
-      limit: 50,
+      where: { session_id: { _eq: selectedSessionId } },
+      order_by: { created_at: Order_By.AscNullsLast },
+      limit: 100,
     },
+
     skip: !selectedSessionId, // Skip the query if session_id is not provided
   });
 
@@ -109,8 +112,9 @@ export default function MessageWindow({
   useEffect(() => {
     setRefineQuery(null);
     setSearchResults(null);
-    setStreamingMessage(null);
     setChatStatus(null);
+    if (isChating === false) {
+    }
   }, [selectedChatId, selectedSessionId, isChating]);
 
   useEffect(() => {
@@ -152,9 +156,7 @@ export default function MessageWindow({
       } else {
         setPromptTemplates(DEFAULT_TEMPLATES);
       }
-      // const knowledge_bases = agentData.agent_by_pk
       if (agentData.agent_by_pk?.kbs) {
-        console.log("agentData", agentData);
         setLibraries(
           agentData.agent_by_pk?.kbs.map((item) => ({
             id: item.knowledge_base.id,
@@ -169,6 +171,7 @@ export default function MessageWindow({
 
   useEffect(() => {
     if (data && data.message) {
+      console.log("New message:", data.message);
       setMessages(
         data.message.map((item) => ({
           id: item.id,
@@ -188,12 +191,42 @@ export default function MessageWindow({
   }, [data]);
 
   useEffect(() => {
-    if (isChating && messages.length > 0) {
+    if (
+      isChating &&
+      messages.length > 0 &&
+      messages[messages.length - 1].status != "draft"
+    ) {
+      const newMessageId = v4();
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: newMessageId,
+          role: Message_Role_Enum.Assistant,
+          message: "",
+          // sources: searchResults,
+          status: "draft",
+          sessionId: selectedSessionId || "",
+          // query: query,
+        },
+      ]);
+      setChatStatus(CHAT_STATUS_ENUM.New);
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    if (
+      isChating &&
+      chatStatus === CHAT_STATUS_ENUM.New &&
+      messages.length > 0 &&
+      messages[messages.length - 1].status == "draft"
+    ) {
+      console.log("Analyzing:messages", messages);
       setChatStatus(CHAT_STATUS_ENUM.Analyzing);
-      console.log("libraries", libraries);
       const fetchRefineQuery = async () => {
+        const historyMessage = messages.filter((item) => item.status != "draft");
+        console.log("libraries:", libraries);
         try {
-          console.log(messages);
+          console.log(historyMessage);
           const result = await queryAnalyzer(
             messages,
             agent?.defaultModel,
@@ -210,20 +243,16 @@ export default function MessageWindow({
       };
       fetchRefineQuery();
     }
-  }, [messages]);
+  }, [chatStatus, messages]);
 
   useEffect(() => {
     if (isChating && refineQuery != null && chatStatus == CHAT_STATUS_ENUM.Analyzing) {
       setChatStatus(CHAT_STATUS_ENUM.Searching);
       console.log("refineQuery", refineQuery);
-
       const filter_kb_ids = selectedSources
         ?.map((item) => item.knowledgeBaseId || null)
         .filter((id) => id !== null);
       const filter_file_ids = selectedSources?.map((item) => item.fileId);
-      console.log("filter_kb_ids", filter_kb_ids);
-      console.log("filter_file_ids", filter_file_ids);
-
       const searchLibrary = async () => {
         console.log("Go to search something");
         try {
@@ -242,7 +271,6 @@ export default function MessageWindow({
             user_id: user_id || null,
             limit: 5,
           };
-
           const webSearchPromise = agent?.enable_search
             ? fetch("/api/search/web", {
                 method: "POST",
@@ -291,6 +319,10 @@ export default function MessageWindow({
               );
               console.log("searchResults:", searchResults);
               setSearchResults(() => searchResults || []);
+              setMessages((prev) => [
+                ...prev.slice(0, -1),
+                { ...prev[prev.length - 1], sources: searchResults || [] },
+              ]);
             })
             .catch((error) => {
               console.error(error);
@@ -304,28 +336,26 @@ export default function MessageWindow({
           handleChatingStatus?.(false);
         }
       };
-      if (
-        refineQuery.isRelated &&
-        refineQuery.knowledge_base_ids &&
-        refineQuery.knowledge_base_ids.length > 0
-      ) {
+      if (refineQuery.knowledge_base_ids && refineQuery.knowledge_base_ids.length > 0) {
         searchLibrary();
       } else {
         console.log("Igonre Search");
         setSearchResults([]); // empty result
       }
-      setStreamingMessage(""); // new message
     }
   }, [refineQuery]);
 
   useEffect(() => {
     if (isChating && searchResults != null && chatStatus == CHAT_STATUS_ENUM.Searching) {
+      const controller = new AbortController(); // Create a new AbortController
+      const signal = controller.signal; // Get the signal from the controller
+
       setChatStatus(CHAT_STATUS_ENUM.Generating);
-      console.log("searchResults", searchResults);
       const generateAnswer = async () => {
+        const historyMessage = messages.filter((item) => item.status != "draft");
         const prompt = await createPrompt(
           promptTemplates || DEFAULT_TEMPLATES,
-          messages,
+          historyMessage,
           searchResults || [],
           `${refineQuery?.refineQuery};${refineQuery?.keywords}` || "",
           {},
@@ -344,6 +374,7 @@ export default function MessageWindow({
               model: agent?.defaultModel || DEFAULT_LLM_MODEL,
               prompt: prompt,
             }),
+            signal: signal,
           }); // Adjust the endpoint as needed
 
           if (!response.body) {
@@ -361,9 +392,16 @@ export default function MessageWindow({
             // Decode the chunk and update the message state
             const chunk = decoder.decode(value, { stream: true });
             answer += chunk;
-            setStreamingMessage(
-              (prevMessage) => (prevMessage != null ? prevMessage : "") + chunk,
-            );
+            setMessages((prev) => {
+              if (prev.length == 1) {
+                return [{ ...prev[0], message: prev[0].message + chunk }];
+              }
+              const draftMessage = prev[prev.length - 1];
+              return [
+                ...prev.slice(0, -1),
+                { ...draftMessage, message: draftMessage.message + chunk },
+              ];
+            });
 
             // Continue reading the stream
             await readStream();
@@ -372,8 +410,8 @@ export default function MessageWindow({
           await readStream();
         } catch (error) {
           console.error("Error while streaming:", error);
+          return;
         }
-
         // save results
         handleCreateNewMessage?.({
           content: answer,
@@ -384,6 +422,14 @@ export default function MessageWindow({
         handleChatingStatus?.(false);
       };
       generateAnswer();
+      return () => {
+        console.log("abort");
+        setMessages((prev) => {
+          const newMessages = prev.filter((item) => item.status != "draft");
+          return newMessages;
+        });
+        controller.abort(); // Abort the fetch when the component unmounts or dependencies change
+      };
     }
   }, [searchResults]);
 
@@ -391,7 +437,7 @@ export default function MessageWindow({
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages, streamingMessage, chatStatus, isChating]);
+  }, [messages, chatStatus, isChating]);
 
   const agentAvatarElement =
     agent && agent?.avatar ? (
@@ -417,6 +463,32 @@ export default function MessageWindow({
     </div>
   );
 
+  // Calculate props for each message outside the map to ensure consistent hook calls
+  const messageCardPropsList = useMemo(() => {
+    return messages.map((msg, index) => ({
+      key: index,
+      isChating: msg.status === "draft" ? isChating : false,
+      chatStatus: msg.status === "draft" ? chatStatus : null,
+      attempts: index === 1 ? 2 : 1,
+      avatar:
+        msg.role === "assistant" ? (
+          agentAvatarElement
+        ) : (
+          <Avatar src="https://d2u8k2ocievbld.cloudfront.net/memojis/male/6.png" />
+        ),
+      currentAttempt: index === 1 ? 2 : 1,
+      message: msg.message || "",
+      isUser: msg.role === "user",
+      messageClassName:
+        msg.role === "user" ? "bg-content3 text-content3-foreground" : "bg-slate-50",
+      showFeedback: msg.role === "assistant",
+      sourceResults: msg.sources || [],
+      files: msg.files,
+      maxWidth: width,
+      onSelectedSource: onSelectedSource,
+    }));
+  }, [messages, isChating, chatStatus, agentAvatarElement, width, onSelectedSource]);
+
   return (
     <ScrollShadow
       ref={scrollRef}
@@ -424,32 +496,10 @@ export default function MessageWindow({
       hideScrollBar={true}>
       <div className="flex flex-1 flex-grow flex-col gap-1 px-1" ref={ref}>
         {messages.length === 0 && featureContent}
-        {messages.map(({ role, message, files, sources }, index) => (
-          <MessageCard
-            key={index}
-            attempts={index === 1 ? 2 : 1}
-            avatar={
-              role === "assistant" ? (
-                agentAvatarElement
-              ) : (
-                <Avatar src="https://d2u8k2ocievbld.cloudfront.net/memojis/male/6.png" />
-              )
-            }
-            currentAttempt={index === 1 ? 2 : 1}
-            message={message || ""}
-            isUser={role === "user"}
-            messageClassName={
-              role === "user" ? "bg-content3 text-content3-foreground" : "bg-slate-50"
-            }
-            showFeedback={role === "assistant"}
-            sourceResults={sources || []}
-            files={files}
-            maxWidth={width}
-            onSelectedSource={onSelectedSource}
-            // className="bg-slate-50"
-          />
+        {messageCardPropsList.map((props) => (
+          <MessageCard {...props} />
         ))}
-        {isChating && chatStatus != null && (
+        {/* {isChating && chatStatus != null && (
           <MessageCard
             aria-label="streaming card"
             avatar={agentAvatarElement}
@@ -460,7 +510,7 @@ export default function MessageWindow({
             maxWidth={width}
             isChating={isChating}
           />
-        )}
+        )} */}
       </div>
     </ScrollShadow>
   );

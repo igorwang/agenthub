@@ -1,6 +1,7 @@
 import { Knowledge_Base_Type_Enum } from "@/graphql/generated/types";
 
 export enum CHAT_STATUS_ENUM {
+  New,
   Analyzing,
   Searching,
   Generating,

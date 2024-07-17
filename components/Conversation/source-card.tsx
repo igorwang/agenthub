@@ -63,7 +63,7 @@ export const SourceCard = ({
             {source.fileName}
           </Tooltip>
         </h4>
-        {source.pages.length > 0 && (
+        {/* {source.pages.length > 0 && (
           <div className="my-0 flex flex-row flex-nowrap items-center py-0">
             <small className="text-nowrap text-default-500"># Page</small>
             {source.pages.map((page, index) => (
@@ -77,7 +77,7 @@ export const SourceCard = ({
               </Button>
             ))}
           </div>
-        )}
+        )} */}
       </CardBody>
       <Divider></Divider>
       <CardFooter className="flex-nowrap justify-center py-0">
