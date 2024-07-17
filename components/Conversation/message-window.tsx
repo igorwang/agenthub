@@ -419,6 +419,7 @@ export default function MessageWindow({
           role: Message_Role_Enum.Assistant,
           sources: searchResults,
         });
+
         handleChatingStatus?.(false);
       };
       generateAnswer();
@@ -429,6 +430,7 @@ export default function MessageWindow({
           return newMessages;
         });
         controller.abort(); // Abort the fetch when the component unmounts or dependencies change
+        return;
       };
     }
   }, [searchResults]);
