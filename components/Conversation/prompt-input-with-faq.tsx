@@ -2,7 +2,7 @@
 
 import { cn } from "@/cn";
 import { Icon } from "@iconify/react";
-import { Button, ScrollShadow, Tooltip } from "@nextui-org/react";
+import { Button, ScrollShadow, Switch, Tooltip } from "@nextui-org/react";
 import React, { useRef, useState } from "react";
 
 import { UploadFile, UploadFileProps } from "@/components/Conversation/upload-file";
@@ -12,9 +12,11 @@ import {
   useCreateMessageAndUpdateTopicHistoryMutation,
 } from "@/graphql/generated/types";
 import {
+  selectIsFollowUp,
   selectSelectedChatId,
   selectSelectedSessionId,
   selectSession,
+  setIsFollowUp,
 } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
 import { SourceType } from "@/types/chatTypes";
@@ -22,6 +24,38 @@ import { useSession } from "next-auth/react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import PromptInput from "./prompt-input";
+
+// TODO 默认推荐 与用户的聊天内容相关的推荐
+const ideas = [
+  {
+    title: "Create a blog post about NextUI ",
+    description: "explain it in simple terms",
+  },
+  {
+    title: "Give me 10 ideas for my next blog post",
+    description: "include only the best ideas",
+  },
+  {
+    title: "Compare NextUI with other UI libraries",
+    description: "be as objective as possible",
+  },
+  {
+    title: "Write a text message to my friend",
+    description: "be polite and friendly",
+  },
+  {
+    title: "Write a text message to my friend",
+    description: "be polite and friendly",
+  },
+  {
+    title: "Write a text message to my friend",
+    description: "be polite and friendly",
+  },
+  {
+    title: "Write a text message to my friend",
+    description: "be polite and friendly",
+  },
+];
 
 type PromptInputWithFaqProps = {
   isChating?: boolean;
@@ -38,9 +72,9 @@ export default function PromptInputWithFaq({
   selectedSources,
 }: PromptInputWithFaqProps) {
   const dispatch: AppDispatch = useDispatch();
-
   const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
+  const isFollowUp = useSelector(selectIsFollowUp);
 
   const [files, setFiles] = useState<UploadFileProps[]>([]);
   const [prompt, setPrompt] = useState<string>("");
@@ -53,39 +87,16 @@ export default function PromptInputWithFaq({
   const user_id = session.data?.user?.id;
   const agent_id = selectedChatId;
 
-  // TODO 默认推荐 与用户的聊天内容相关的推荐
-  const ideas = [
-    {
-      title: "Create a blog post about NextUI ",
-      description: "explain it in simple terms",
-    },
-    {
-      title: "Give me 10 ideas for my next blog post",
-      description: "include only the best ideas",
-    },
-    {
-      title: "Compare NextUI with other UI libraries",
-      description: "be as objective as possible",
-    },
-    {
-      title: "Write a text message to my friend",
-      description: "be polite and friendly",
-    },
-    {
-      title: "Write a text message to my friend",
-      description: "be polite and friendly",
-    },
-    {
-      title: "Write a text message to my friend",
-      description: "be polite and friendly",
-    },
-    {
-      title: "Write a text message to my friend",
-      description: "be polite and friendly",
-    },
-  ];
-
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  // useEffect(() => {
+  //   console.log("isFollowUp", isFollowUp);
+  //   if (isFollowUp) {
+  //     setPrompt((prev) => `/FollowUp ${prev}`);
+  //   } else {
+  //     setPrompt((prev) => prev.replace("/FollowUp", ""));
+  //   }
+  // }, [isFollowUp]);
 
   const handleFileButtonClick = () => {
     if (fileInputRef.current) {
@@ -313,6 +324,13 @@ export default function PromptInputWithFaq({
               ref={fileInputRef}
               onChange={handleFileChange}
             />
+            <Switch
+              isSelected={isFollowUp}
+              onValueChange={(value) => {
+                dispatch(setIsFollowUp(value));
+              }}>
+              Follow-up
+            </Switch>
             {/* <Button
               size="sm"
               startContent={

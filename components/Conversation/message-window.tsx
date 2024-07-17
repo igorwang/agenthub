@@ -1,4 +1,5 @@
 import {
+  selectIsFollowUp,
   selectSelectedChatId,
   selectSelectedSessionId,
 } from "@/lib/features/chatListSlice";
@@ -40,6 +41,7 @@ type AgentProps = {
   defaultModel?: string;
   token_limit?: number;
   enable_search?: boolean | null;
+  force_search?: boolean | null;
 };
 
 type QueryAnalyzeResultSchema = {
@@ -75,6 +77,7 @@ export default function MessageWindow({
   const dispatch: AppDispatch = useDispatch();
   const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
+  const isFollowUp = useSelector(selectIsFollowUp);
 
   const ref = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
@@ -141,6 +144,7 @@ export default function MessageWindow({
         defaultModel: agentData.agent_by_pk?.default_model || DEFAULT_LLM_MODEL,
         token_limit: agentData.agent_by_pk?.token_limit || 4096,
         enable_search: agentData.agent_by_pk?.enable_search || false,
+        force_search: agentData.agent_by_pk?.force_search || false,
       });
       const templates = agentData.agent_by_pk?.system_prompt?.templates;
       if (templates) {
@@ -171,7 +175,6 @@ export default function MessageWindow({
 
   useEffect(() => {
     if (data && data.message) {
-      console.log("New message:", data.message);
       setMessages(
         data.message.map((item) => ({
           id: item.id,
@@ -253,6 +256,7 @@ export default function MessageWindow({
         ?.map((item) => item.knowledgeBaseId || null)
         .filter((id) => id !== null);
       const filter_file_ids = selectedSources?.map((item) => item.fileId);
+
       const searchLibrary = async () => {
         console.log("Go to search something");
         try {
@@ -336,7 +340,17 @@ export default function MessageWindow({
           handleChatingStatus?.(false);
         }
       };
-      if (refineQuery.knowledge_base_ids && refineQuery.knowledge_base_ids.length > 0) {
+
+      const latestSources = messages?.filter(
+        (item) => item.role == Message_Role_Enum.Assistant && item.sources,
+      );
+      if (isFollowUp && latestSources) {
+        console.log("use prev sources");
+        setSearchResults(latestSources[latestSources.length - 1].sources || []);
+      } else if (
+        (refineQuery.knowledge_base_ids && refineQuery.knowledge_base_ids.length > 0) ||
+        agent?.force_search
+      ) {
         searchLibrary();
       } else {
         console.log("Igonre Search");
@@ -424,7 +438,6 @@ export default function MessageWindow({
       };
       generateAnswer();
       return () => {
-        console.log("abort");
         setMessages((prev) => {
           const newMessages = prev.filter((item) => item.status != "draft");
           return newMessages;
@@ -468,7 +481,7 @@ export default function MessageWindow({
   // Calculate props for each message outside the map to ensure consistent hook calls
   const messageCardPropsList = useMemo(() => {
     return messages.map((msg, index) => ({
-      key: index,
+      key: msg.id,
       isChating: msg.status === "draft" ? isChating : false,
       chatStatus: msg.status === "draft" ? chatStatus : null,
       attempts: index === 1 ? 2 : 1,
