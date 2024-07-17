@@ -32,11 +32,12 @@ interface KnowledgeBaseItem {
   extraction_prompt_id?: number;
   base_type?: Knowledge_Base_Type_Enum;
   chunking_strategy?: Chunking_Strategy_Enum;
-  chunking_parameters?: any;
+  chunking_parameters?: object;
   model_name?: string;
   embedding_model?: string;
   is_extraction?: boolean;
   is_publish?: boolean;
+  doc_schema?: object;
   type?: {
     value?: string;
     comment?: string;
@@ -75,6 +76,7 @@ export default function LibrarySetting() {
       model_name: knowledgeBase?.model_name,
       is_publish: knowledgeBase?.is_publish,
       embedding_model: knowledgeBase?.embedding_model,
+      doc_schema: knowledgeBase?.doc_schema,
     };
     console.log("knowledgeBase input", input);
     updateKnowledgeBaseMutation({
@@ -197,17 +199,28 @@ export default function LibrarySetting() {
                 maxWidth={400}
                 data={
                   knowledgeBase.chunking_parameters
-                    ? JSON.parse(knowledgeBase.chunking_parameters)
+                    ? knowledgeBase.chunking_parameters
                     : {}
                 }
                 onUpdate={({ newData }) => {
                   setknowledgeBase({
                     ...knowledgeBase,
-                    chunking_parameters: JSON.stringify(newData),
+                    chunking_parameters: newData,
                   });
                 }}
                 rootName="data"></JsonEditor>
             </div>
+            <ModelSelect
+              label="Embedding model"
+              modelType="embedding"
+              labelPlacement="outside"
+              defaultModel={knowledgeBase.embedding_model}
+              onSelectionChange={(modelName, limit) =>
+                setknowledgeBase(
+                  (prev) =>
+                    ({ ...prev, embedding_model: modelName }) as KnowledgeBaseItem,
+                )
+              }></ModelSelect>
             <Switch
               defaultSelected
               aria-label="Extraction Process Switch"
@@ -221,7 +234,6 @@ export default function LibrarySetting() {
               {/* onChange={()=>{}} */}
               Extraction Process Switch
             </Switch>
-
             {knowledgeBase.is_extraction && (
               <ModelSelect
                 labelPlacement="outside"
@@ -232,32 +244,34 @@ export default function LibrarySetting() {
                   )
                 }></ModelSelect>
             )}
-            <ModelSelect
-              label="Embedding model"
-              modelType="embedding"
-              labelPlacement="outside"
-              defaultModel={knowledgeBase.embedding_model}
-              onSelectionChange={(modelName, limit) =>
-                setknowledgeBase(
-                  (prev) =>
-                    ({ ...prev, embedding_model: modelName }) as KnowledgeBaseItem,
-                )
-              }></ModelSelect>
           </div>
+          {knowledgeBase.is_extraction && (
+            <div className={"w-full max-w-4xl pt-12"}>
+              <span className="relative text-foreground-500">Prompt</span>
+              <Divider />
+              {/* {data?.extraction_prompt_id ? ( */}
+              <PromptFrom
+                agentId={id}
+                hiddeTitle={true}
+                defaultPromptId={knowledgeBase?.extraction_prompt_id}
+                defaultModel={knowledgeBase?.model_name}
+                konwledgeBaseId={id}
+              />
+            </div>
+          )}
+          {knowledgeBase.is_extraction && (
+            <JsonEditor
+              maxWidth={400}
+              data={knowledgeBase?.doc_schema || {}}
+              // onUpdate={({ newData }) => {
+              //   setknowledgeBase({
+              //     ...knowledgeBase,
+              //     doc_schema: JSON.stringify(newData),
+              //   });
+              // }}
+              rootName="data"></JsonEditor>
+          )}
         </form>
-        <div className={"w-full max-w-4xl pt-12"}>
-          <span className="relative text-foreground-500">Prompt</span>
-          <Divider />
-          {/* {data?.extraction_prompt_id ? ( */}
-          <PromptFrom
-            agentId={id}
-            hiddeTitle={true}
-            defaultPromptId={knowledgeBase?.extraction_prompt_id}
-            defaultModel={knowledgeBase?.model_name}
-            konwledgeBaseId={id}
-          />
-          {/* ) : null} */}
-        </div>
       </div>
     </div>
   );

@@ -24,6 +24,7 @@ fragment knowledgeBaseFragment on knowledge_base {
   chunking_strategy
   chunking_parameters
   embedding_model
+  doc_schema
 }
 
 query KnowledgeBaseDetail($id: uuid!) {
