@@ -6,6 +6,7 @@ import {
   Input,
   Select,
   SelectItem,
+  Spacer,
   Switch,
   Textarea,
 } from "@nextui-org/react";
@@ -246,8 +247,22 @@ export default function LibrarySetting() {
             )}
           </div>
           {knowledgeBase.is_extraction && (
-            <div className={"w-full max-w-4xl pt-12"}>
+            <div className={"w-full max-w-4xl pb-8 pt-4"}>
+              <label className="font-sans text-sm text-gray-900 subpixel-antialiased">
+                Document Schema
+              </label>
+              <JsonEditor
+                maxWidth={400}
+                data={knowledgeBase?.doc_schema || {}}
+                onUpdate={({ newData }) => {
+                  setknowledgeBase({
+                    ...knowledgeBase,
+                    doc_schema: newData,
+                  });
+                }}
+                rootName="data"></JsonEditor>
               <span className="relative text-foreground-500">Prompt</span>
+              <Spacer y={2} />
               <Divider />
               {/* {data?.extraction_prompt_id ? ( */}
               <PromptFrom
@@ -258,18 +273,6 @@ export default function LibrarySetting() {
                 konwledgeBaseId={id}
               />
             </div>
-          )}
-          {knowledgeBase.is_extraction && (
-            <JsonEditor
-              maxWidth={400}
-              data={knowledgeBase?.doc_schema || {}}
-              // onUpdate={({ newData }) => {
-              //   setknowledgeBase({
-              //     ...knowledgeBase,
-              //     doc_schema: JSON.stringify(newData),
-              //   });
-              // }}
-              rootName="data"></JsonEditor>
           )}
         </form>
       </div>
