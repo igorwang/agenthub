@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
 
   const llm = new ChatOpenAI({
     model: model,
-    apiKey: "anykey",
+    apiKey: process.env.LITELLM_APIKEY,
     configuration: {
       baseURL: process.env.LITELLM_ENDPOINT,
     },

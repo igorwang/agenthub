@@ -44,7 +44,7 @@ export async function queryAnalyzer(
   3. Generate 3-8 keywords based on the overall intent and final query.
   4. Search relevant knowledge bases for answers, ensuring high-precision matching across domain and content. Only search databases with consistent domains.
   
-  Please ouput strictly in JSON format, for example:
+  Please output strictly in JSON format, for example:
   {{"isRelated":boolean,"refineQuery":String | [String], "keywords":[String], "knowledge_base_ids":[String]}}
   `;
 
