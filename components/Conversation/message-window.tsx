@@ -487,7 +487,8 @@ export default function MessageWindow({
   // Calculate props for each message outside the map to ensure consistent hook calls
   const messageCardPropsList = useMemo(() => {
     return messages.map((msg, index) => ({
-      key: msg.id,
+      // key: msg.id,
+      messageId: msg.id,
       isChating: msg.status === "draft" ? isChating : false,
       chatStatus: msg.status === "draft" ? chatStatus : null,
       attempts: index === 1 ? 2 : 1,
@@ -507,6 +508,8 @@ export default function MessageWindow({
       files: msg.files,
       maxWidth: width,
       onSelectedSource: onSelectedSource,
+      tools: agent?.tools,
+      agentId: agent?.id,
     }));
   }, [messages, isChating, chatStatus, agentAvatarElement, width, onSelectedSource]);
 
@@ -518,7 +521,7 @@ export default function MessageWindow({
       <div className="flex flex-1 flex-grow flex-col gap-1 px-1" ref={ref}>
         {messages.length === 0 && featureContent}
         {messageCardPropsList.map((props) => (
-          <MessageCard {...props} />
+          <MessageCard key={props.messageId} {...props} />
         ))}
         {/* {isChating && chatStatus != null && (
           <MessageCard

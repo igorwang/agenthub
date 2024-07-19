@@ -79,3 +79,17 @@ export type ToolType = {
   run_type: Run_Type_Enum;
   output_schema?: object | null;
 };
+
+export type SchemaPropertyType = {
+  type: string;
+  title: string;
+};
+
+export type SchemaType = {
+  type: string;
+  title: string;
+  properties: {
+    [key: string]: SchemaPropertyType;
+  };
+  description: string;
+};
