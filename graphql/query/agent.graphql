@@ -42,6 +42,15 @@ query GetAgentByID($id: uuid!) {
         description
       }
     }
+    tools {
+      tool {
+        id
+        name
+        output_schema
+        run_type
+        tool_type
+      }
+    }
   }
 }
 

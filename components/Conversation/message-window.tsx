@@ -28,6 +28,7 @@ import {
   MessageType,
   SOURCE_TYPE_ENUM,
   SourceType,
+  ToolType,
 } from "@/types/chatTypes";
 import { Avatar, ScrollShadow } from "@nextui-org/react";
 import { toast } from "sonner";
@@ -42,6 +43,7 @@ type AgentProps = {
   token_limit?: number;
   enable_search?: boolean | null;
   force_search?: boolean | null;
+  tools?: ToolType[];
 };
 
 type QueryAnalyzeResultSchema = {
@@ -138,6 +140,7 @@ export default function MessageWindow({
 
   useEffect(() => {
     if (agentData) {
+      console.log("agentData", agentData);
       setAgent({
         id: agentData.agent_by_pk?.id,
         name: agentData.agent_by_pk?.name,
@@ -146,6 +149,7 @@ export default function MessageWindow({
         token_limit: agentData.agent_by_pk?.token_limit || 4096,
         enable_search: agentData.agent_by_pk?.enable_search || false,
         force_search: agentData.agent_by_pk?.force_search || false,
+        tools: agentData.agent_by_pk?.tools?.map((item) => item.tool),
       });
       const templates = agentData.agent_by_pk?.system_prompt?.templates;
       if (templates) {
