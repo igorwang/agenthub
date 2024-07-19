@@ -58,6 +58,7 @@ type MessageWindowProps = {
   selectedSources?: SourceType[];
   onSelectedSource?: (source: SourceType, selected: boolean) => void;
   handleCreateNewMessage?: (params: {
+    query: string;
     content: string;
     session_id: string;
     role: Message_Role_Enum;
@@ -428,6 +429,7 @@ export default function MessageWindow({
         }
         // save results
         handleCreateNewMessage?.({
+          query: historyMessage[historyMessage.length - 1].message || "",
           content: answer,
           session_id: selectedSessionId || "",
           role: Message_Role_Enum.Assistant,

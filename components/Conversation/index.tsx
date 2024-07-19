@@ -75,16 +75,19 @@ export const Conversation: React.FC<ConversationProps> = ({
   }, [agentId, data]);
 
   const handleCreateNewMessage = (params: {
+    query: string;
     content: string;
     session_id: string;
     role: Message_Role_Enum;
     attachments?: any;
     sources?: any;
   }) => {
+    console.log("handleCreateNewMessage", params);
     try {
       createNewMessageMutation({
         variables: {
           object: {
+            query: params.query,
             content: params.content,
             role: params.role,
             session_id: params.session_id,
