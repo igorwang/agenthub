@@ -124,21 +124,6 @@ export default function MessageWindow({
   }, [selectedChatId, selectedSessionId, isChating]);
 
   useEffect(() => {
-    const handleResize = () => {
-      if (ref.current) {
-        setWidth(ref.current.offsetWidth);
-      }
-    };
-
-    handleResize(); // Set initial width
-    window.addEventListener("resize", handleResize); // Update width on window resize
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  useEffect(() => {
     if (agentData) {
       console.log("agentData", agentData);
       setAgent({
@@ -523,18 +508,6 @@ export default function MessageWindow({
         {messageCardPropsList.map((props) => (
           <MessageCard key={props.messageId} {...props} />
         ))}
-        {/* {isChating && chatStatus != null && (
-          <MessageCard
-            aria-label="streaming card"
-            avatar={agentAvatarElement}
-            message={streamingMessage || ""}
-            messageClassName={""}
-            chatStatus={chatStatus}
-            sourceResults={searchResults || []}
-            maxWidth={width}
-            isChating={isChating}
-          />
-        )} */}
       </div>
     </ScrollShadow>
   );

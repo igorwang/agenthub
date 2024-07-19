@@ -146,6 +146,21 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       [onAttemptFeedback],
     );
 
+    const featureToolComponent = useMemo(() => {
+      if (tool?.id && agentId) {
+        return (
+          <FeatureTool
+            messageId={messageId}
+            agentId={agentId}
+            toolId={tool?.id}
+            schema={tool?.output_schema as SchemaType}
+            onLoadingChange={(value) => setIsToolRuning(value)}
+          />
+        );
+      }
+      return null;
+    }, [tool, agentId, messageId]);
+
     const getTipString = (status: CHAT_STATUS_ENUM) => {
       switch (status) {
         case CHAT_STATUS_ENUM.Analyzing:
@@ -439,21 +454,6 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
         )} */}
       </div>
     );
-
-    const featureToolComponent = useMemo(() => {
-      if (tool?.id && agentId) {
-        return (
-          <FeatureTool
-            messageId={messageId}
-            agentId={agentId}
-            toolId={tool?.id}
-            schema={tool?.output_schema as SchemaType}
-            onLoadingChange={(value) => setIsToolRuning(value)}
-          />
-        );
-      }
-      return null;
-    }, [tool, agentId, messageId]);
 
     return (
       <div {...props} ref={ref} className={cn("flex gap-3", className)}>
