@@ -82,7 +82,6 @@ export const Conversation: React.FC<ConversationProps> = ({
     attachments?: any;
     sources?: any;
   }) => {
-    console.log("handleCreateNewMessage", params);
     try {
       createNewMessageMutation({
         variables: {
