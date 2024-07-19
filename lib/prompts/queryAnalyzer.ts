@@ -12,12 +12,12 @@ export const QueryAnalyzeResultSchema = z.object({
     .default(false)
     .describe("Does the given database contain information relevant to the query?"),
   refineQuery: z
-    .string()
+    .union([z.string(), z.array(z.string())])
     .describe(
       `Redefine and create subqueries based on a user's current intent to enhance precision and relevance.`,
     ),
   keywords: z
-    .array(z.string())
+    .union([z.string(), z.array(z.string())])
     .describe("3-8 search keywords that refine and improve the search results."),
   knowledge_base_ids: z
     .array(z.string())
@@ -33,7 +33,7 @@ export async function queryAnalyzer(
   messages: MessageType[],
   model?: string | null,
   knowledge_bases?: string,
-): Promise<z.infer<typeof QueryAnalyzeResultSchema>[]> {
+) {
   const queryAnalyzerPrompt = `You are an expert at analyzing user questions as an AI. \
   You just have full access to the knowledge bases: {knowledge_bases}
   
@@ -44,7 +44,8 @@ export async function queryAnalyzer(
   3. Generate 3-8 keywords based on the overall intent and final query.
   4. Search relevant knowledge bases for answers, ensuring high-precision matching across domain and content. Only search databases with consistent domains.
   
-  {format_instructions}
+  Please output strictly in JSON format, for example:
+  {{"isRelated":boolean,"refineQuery":String | [String], "keywords":[String], "knowledge_base_ids":[String]}}
   `;
 
   const tools = [
@@ -59,9 +60,9 @@ export async function queryAnalyzer(
   ];
 
   const modelParams = {
-    tools: tools,
-    tool_choice: knowledge_bases ? "auto" : "none",
-    stop: ["```", "} ```"],
+    // tools: tools,
+    // tool_choice: knowledge_bases ? "auto" : "none",
+    // stop: ["```", "} ```"],
   };
 
   const userMessages = messages.filter((message) => message.role == "user");
@@ -83,7 +84,7 @@ export async function queryAnalyzer(
   ]);
   const formattedPrompt = await promptTemplate.format({
     knowledge_bases: knowledge_bases || "",
-    format_instructions: parser.getFormatInstructions(),
+    // format_instructions: parser.getFormatInstructions(),
   });
 
   const selectedModel = model || DEFAULT_LLM_MODEL;
@@ -107,27 +108,40 @@ export async function queryAnalyzer(
   const data = await response.json();
   const message: AIMessage = data.kwargs;
 
-  const tool_calls = message.tool_calls
-    ?.filter((item) => {
-      const parseArguments = QueryAnalyzeResultSchema.safeParse(item.args);
-      console.log(parseArguments.data, parseArguments.success);
-      return item.name == "search_library" && parseArguments.success;
-    })
-    .map((item) => QueryAnalyzeResultSchema.parse(item.args));
+  // console.log("tool_calls", message.tool_calls);
+  // const tool_calls = message.tool_calls
+  //   ?.filter((item) => {
+  //     const parseArguments = QueryAnalyzeResultSchema.safeParse(item.args);
+  //     console.log(parseArguments.data, parseArguments.success);
+  //     return item.name == "search_library" && parseArguments.success;
+  //   })
+  //   .map((item) => QueryAnalyzeResultSchema.parse(item.args));
 
   let queriesFromContent = null;
   try {
-    queriesFromContent = await parser.parse(message.content?.toString());
+    const response = await parser.parse(message.content?.toString());
+    queriesFromContent = {
+      isRelated: response.isRelated,
+      refineQuery: response.refineQuery.toString(),
+      keywords: response.keywords.toString(),
+      knowledge_base_ids: response.knowledge_base_ids || [],
+    };
   } catch (error) {
     console.error(`parse error:${error}`);
-    queriesFromContent = null;
+    queriesFromContent = {
+      isRelated: false,
+      refineQuery: "",
+      keywords: "",
+      knowledge_base_ids: [],
+    };
   }
 
-  const structuredQueries =
-    tool_calls && tool_calls.length > 0
-      ? tool_calls
-      : queriesFromContent
-        ? [queriesFromContent]
-        : [];
-  return structuredQueries;
+  // const structuredQueries =
+  //   tool_calls && tool_calls.length > 0
+  //     ? tool_calls
+  //     : queriesFromContent
+  //       ? [queriesFromContent]
+  //       : [];
+
+  return queriesFromContent;
 }

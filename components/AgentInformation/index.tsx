@@ -25,6 +25,7 @@ interface Agent {
   default_model?: string | null;
   token_limit?: number | null;
   enable_search?: boolean | null;
+  force_search?: boolean | null;
 }
 
 export interface AgentInfoRef {
@@ -56,6 +57,7 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
       default_model: agent?.default_model,
       token_limit: agent?.token_limit,
       enable_search: agent?.enable_search,
+      force_search: agent?.force_search,
     };
     delete input.id;
     updateAgentMutation({
@@ -154,6 +156,20 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
               }));
             }}>
             Enable Web Search
+          </Switch>
+        </div>
+        <div className={"mt-8"}>
+          <Switch
+            defaultSelected
+            aria-label="Force Search"
+            isSelected={agent?.force_search || false}
+            onChange={() => {
+              setAgent((prev) => ({
+                ...prev,
+                force_search: agent?.force_search ? false : true,
+              }));
+            }}>
+            Force Library Search
           </Switch>
         </div>
       </form>

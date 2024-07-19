@@ -19,6 +19,7 @@ import ModelSelect from "@/components/PromptFrom/model-select";
 import RightHeader from "@/components/RightHeader";
 import {
   Chunking_Strategy_Enum,
+  Knowledge_Base_Mode_Enum,
   Knowledge_Base_Set_Input,
   Knowledge_Base_Type_Enum,
   useKnowledgeBaseDetailQuery,
@@ -32,11 +33,13 @@ interface KnowledgeBaseItem {
   extraction_prompt_id?: number;
   base_type?: Knowledge_Base_Type_Enum;
   chunking_strategy?: Chunking_Strategy_Enum;
-  chunking_parameters?: any;
+  chunking_parameters?: object;
   model_name?: string;
   embedding_model?: string;
   is_extraction?: boolean;
   is_publish?: boolean;
+  doc_schema?: object;
+  mode?: Knowledge_Base_Mode_Enum;
   type?: {
     value?: string;
     comment?: string;
@@ -75,6 +78,8 @@ export default function LibrarySetting() {
       model_name: knowledgeBase?.model_name,
       is_publish: knowledgeBase?.is_publish,
       embedding_model: knowledgeBase?.embedding_model,
+      doc_schema: knowledgeBase?.doc_schema,
+      mode: knowledgeBase?.mode,
     };
     console.log("knowledgeBase input", input);
     updateKnowledgeBaseMutation({
@@ -197,17 +202,28 @@ export default function LibrarySetting() {
                 maxWidth={400}
                 data={
                   knowledgeBase.chunking_parameters
-                    ? JSON.parse(knowledgeBase.chunking_parameters)
+                    ? knowledgeBase.chunking_parameters
                     : {}
                 }
                 onUpdate={({ newData }) => {
                   setknowledgeBase({
                     ...knowledgeBase,
-                    chunking_parameters: JSON.stringify(newData),
+                    chunking_parameters: newData,
                   });
                 }}
                 rootName="data"></JsonEditor>
             </div>
+            <ModelSelect
+              label="Embedding model"
+              modelType="embedding"
+              labelPlacement="outside"
+              defaultModel={knowledgeBase.embedding_model}
+              onSelectionChange={(modelName, limit) =>
+                setknowledgeBase(
+                  (prev) =>
+                    ({ ...prev, embedding_model: modelName }) as KnowledgeBaseItem,
+                )
+              }></ModelSelect>
             <Switch
               defaultSelected
               aria-label="Extraction Process Switch"
@@ -221,7 +237,6 @@ export default function LibrarySetting() {
               {/* onChange={()=>{}} */}
               Extraction Process Switch
             </Switch>
-
             {knowledgeBase.is_extraction && (
               <ModelSelect
                 labelPlacement="outside"
@@ -232,32 +247,64 @@ export default function LibrarySetting() {
                   )
                 }></ModelSelect>
             )}
-            <ModelSelect
-              label="Embedding model"
-              modelType="embedding"
-              labelPlacement="outside"
-              defaultModel={knowledgeBase.embedding_model}
-              onSelectionChange={(modelName, limit) =>
-                setknowledgeBase(
-                  (prev) =>
-                    ({ ...prev, embedding_model: modelName }) as KnowledgeBaseItem,
-                )
-              }></ModelSelect>
           </div>
+          {knowledgeBase.is_extraction && (
+            <div className={"flex w-full max-w-4xl flex-col gap-2 pb-8 pt-4"}>
+              <Select
+                label="Library Document Structure"
+                labelPlacement="outside"
+                placeholder="Select your structure of document for this library"
+                classNames={{ label: "text-sm" }}
+                variant={"flat"}
+                selectedKeys={new Set([knowledgeBase?.mode || ""])}
+                // defaultSelectedKeys={[Chunking_Strategy_Enum.Length.toString()]}
+                onSelectionChange={(keys) => {
+                  const selectedValue = Array.from(keys)[0] as Knowledge_Base_Mode_Enum;
+                  setknowledgeBase((prev) => ({
+                    ...prev,
+                    mode: selectedValue,
+                  }));
+                }}>
+                {Object.values(Knowledge_Base_Mode_Enum).map((mode) => (
+                  <SelectItem key={mode} value={mode}>
+                    {mode}
+                  </SelectItem>
+                ))}
+              </Select>
+
+              {knowledgeBase.mode == Knowledge_Base_Mode_Enum.Jsondoc ? (
+                <div>
+                  <label className="font-sans text-sm text-gray-900 subpixel-antialiased">
+                    Document Schema
+                  </label>
+                  <JsonEditor
+                    maxWidth={400}
+                    data={knowledgeBase?.doc_schema || {}}
+                    onUpdate={({ newData }) => {
+                      setknowledgeBase({
+                        ...knowledgeBase,
+                        doc_schema: newData,
+                      });
+                    }}
+                    rootName="data"></JsonEditor>
+                </div>
+              ) : (
+                <div>
+                  <span className="relative text-foreground-500">Prompt</span>
+                  <Divider />
+                  {/* {data?.extraction_prompt_id ? ( */}
+                  <PromptFrom
+                    agentId={id}
+                    hiddeTitle={true}
+                    defaultPromptId={knowledgeBase?.extraction_prompt_id}
+                    defaultModel={knowledgeBase?.model_name}
+                    konwledgeBaseId={id}
+                  />
+                </div>
+              )}
+            </div>
+          )}
         </form>
-        <div className={"w-full max-w-4xl pt-12"}>
-          <span className="relative text-foreground-500">Prompt</span>
-          <Divider />
-          {/* {data?.extraction_prompt_id ? ( */}
-          <PromptFrom
-            agentId={id}
-            hiddeTitle={true}
-            defaultPromptId={knowledgeBase?.extraction_prompt_id}
-            defaultModel={knowledgeBase?.model_name}
-            konwledgeBaseId={id}
-          />
-          {/* ) : null} */}
-        </div>
       </div>
     </div>
   );

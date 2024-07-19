@@ -75,6 +75,7 @@ export const Conversation: React.FC<ConversationProps> = ({
   }, [agentId, data]);
 
   const handleCreateNewMessage = (params: {
+    query: string;
     content: string;
     session_id: string;
     role: Message_Role_Enum;
@@ -85,6 +86,7 @@ export const Conversation: React.FC<ConversationProps> = ({
       createNewMessageMutation({
         variables: {
           object: {
+            query: params.query,
             content: params.content,
             role: params.role,
             session_id: params.session_id,
@@ -202,7 +204,7 @@ export const Conversation: React.FC<ConversationProps> = ({
               isChating={isChating}
               selectedSources={selectedSources}
               onSelectedSource={handleSelectedSource}
-              handleChatingStatus={setIsChating}></PromptInputWithFaq>
+              onChatingStatus={setIsChating}></PromptInputWithFaq>
             <p className="px-2 text-tiny text-default-400">
               AI can also make mistakes. Please verify important information.
             </p>

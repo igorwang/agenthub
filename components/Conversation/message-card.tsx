@@ -1,12 +1,19 @@
 "use client";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useMemo } from "react";
 
 import { cn } from "@/cn";
 import { SourceSection } from "@/components/Conversation/source-section";
+import FeatureTool from "@/components/Conversation/tool-card";
 import { UploadFile, UploadFileProps } from "@/components/Conversation/upload-file";
 import MarkdownRenderer from "@/components/MarkdownRender";
 import { MessageSkeleton } from "@/components/ui/message-skeleton";
-import { CHAT_STATUS_ENUM, SOURCE_TYPE_ENUM, SourceType } from "@/types/chatTypes";
+import {
+  CHAT_STATUS_ENUM,
+  SchemaType,
+  SOURCE_TYPE_ENUM,
+  SourceType,
+  ToolType,
+} from "@/types/chatTypes";
 import { Icon } from "@iconify/react";
 import { Badge, Button, Link, Spacer, Spinner } from "@nextui-org/react";
 import { useClipboard } from "@nextui-org/use-clipboard";
@@ -26,6 +33,9 @@ export type MessageCardProps = React.HTMLAttributes<HTMLDivElement> & {
   maxWidth?: number;
   isChating?: boolean;
   chatStatus?: CHAT_STATUS_ENUM | null;
+  tools?: ToolType[] | null;
+  agentId?: string;
+  messageId: string;
   onAttemptChange?: (attempt: number) => void;
   onMessageCopy?: (content: string | string[]) => void;
   onFeedback?: (feedback: "like" | "dislike") => void;
@@ -38,6 +48,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
     {
       avatar,
       isChating,
+      messageId,
       chatStatus,
       message,
       showFeedback,
@@ -47,28 +58,30 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       status,
       files,
       sourceResults,
+      tools,
+      agentId,
+      className,
+      messageClassName,
+      maxWidth,
       onMessageCopy,
       onAttemptChange,
       onFeedback,
       onAttemptFeedback,
       onSelectedSource,
-      className,
-      messageClassName,
-      maxWidth,
+
       ...props
     },
     ref,
   ) => {
     const [feedback, setFeedback] = React.useState<"like" | "dislike">();
+    const [isToolRuning, setIsToolRuning] = React.useState<boolean>(false);
+    const [tool, setTool] = React.useState<ToolType | null>();
     const [attemptFeedback, setAttemptFeedback] = React.useState<
       "like" | "dislike" | "same"
     >();
     const [widthClassname, setWidthClassname] = React.useState<string>("max-w-full");
-
     const messageRef = React.useRef<HTMLDivElement>(null);
-
     const { copied, copy } = useClipboard();
-
     const failedMessageClassName =
       status === "failed"
         ? "bg-danger-100/50 border border-danger-100 text-foreground"
@@ -162,6 +175,15 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       );
     }
 
+    const handleRunTool = (newTool: ToolType) => {
+      if (!tool) {
+        setIsToolRuning(true);
+        setTool(newTool);
+      } else {
+        setTool(null);
+      }
+    };
+
     const avatarBadgeContent = (
       <div className="relative flex-shrink">
         <Badge
@@ -205,6 +227,22 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       (item) => item.sourceType == SOURCE_TYPE_ENUM.webpage,
     );
 
+    const toolsContent = (
+      <div className="flex flex-grow-0">
+        {tools?.map((item) => (
+          <Button
+            isLoading={isToolRuning}
+            className="flex-grow-0"
+            variant="bordered"
+            key={item.id}
+            onClick={() => handleRunTool(item)}
+            startContent={<Icon icon={"octicon:tools-24"} fontSize={20} />}>
+            Run {item.name}
+          </Button>
+        ))}
+      </div>
+    );
+
     const aiMessageContent = (
       <div className="mr-14 flex w-full flex-grow flex-col gap-4">
         <div
@@ -244,7 +282,8 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
             )}
           </div>
 
-          <div className="flex flex-row items-center justify-between">
+          <div className="flex flex-row items-center justify-between pt-1">
+            {sourceResults && toolsContent}
             {showFeedback && !hasFailed && (
               <div className="flex">
                 <Button
@@ -401,6 +440,21 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       </div>
     );
 
+    const featureToolComponent = useMemo(() => {
+      if (tool?.id && agentId) {
+        return (
+          <FeatureTool
+            messageId={messageId}
+            agentId={agentId}
+            toolId={tool?.id}
+            schema={tool?.output_schema as SchemaType}
+            onLoadingChange={(value) => setIsToolRuning(value)}
+          />
+        );
+      }
+      return null;
+    }, [tool, agentId, messageId]);
+
     return (
       <div {...props} ref={ref} className={cn("flex gap-3", className)}>
         {isUser ? (
@@ -411,7 +465,10 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
         ) : (
           <div className="flex flex-row gap-3">
             {avatarBadgeContent}
-            {aiMessageContent}
+            <div className="relative flex flex-col gap-2">
+              {aiMessageContent}
+              {tool?.id && featureToolComponent}
+            </div>
           </div>
         )}
       </div>

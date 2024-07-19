@@ -6,6 +6,7 @@ interface ChatListState {
   chatList: GroupedChatListDTO[];
   selectedChatId: string | null;
   selectedSessionId: string | null;
+  isFollowUp: boolean;
 }
 
 const initialState: ChatListState = {
@@ -18,6 +19,7 @@ const initialState: ChatListState = {
   ],
   selectedChatId: null,
   selectedSessionId: null,
+  isFollowUp: false,
 };
 
 const chatListSlice = createSlice({
@@ -38,9 +40,15 @@ const chatListSlice = createSlice({
     selectSession: (state, action: PayloadAction<string | null>) => {
       state.selectedSessionId = action.payload;
     },
+    setIsFollowUp: (state, action: PayloadAction<boolean>) => {
+      console.log("setIsFollowUp");
+      state.isFollowUp = action.payload;
+    },
   },
 });
-export const { setChatList, selectChat, selectSession } = chatListSlice.actions;
+
+export const { setChatList, selectChat, selectSession, setIsFollowUp } =
+  chatListSlice.actions;
 
 export const selectChatList = (state: RootState): GroupedChatListDTO[] =>
   state.chatList.chatList;
@@ -48,5 +56,6 @@ export const selectSelectedChatId = (state: RootState): string | null =>
   state.chatList.selectedChatId;
 export const selectSelectedSessionId = (state: RootState): string | null =>
   state.chatList.selectedSessionId;
+export const selectIsFollowUp = (state: RootState): boolean => state.chatList.isFollowUp;
 
 export default chatListSlice.reducer;

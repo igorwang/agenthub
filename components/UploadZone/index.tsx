@@ -146,7 +146,7 @@ export default function UploadZone({ knowledgeBaseId }: UploadZoneProps) {
         className="h-full max-h-full min-h-0 flex-1"
         onChange={updateFiles}
         value={files}
-        accept=".doc,.docx,.pdf,.ppt,.pptx,.xls,.xlsx,.txt"
+        accept=".doc,.docx,.pdf,.ppt,.pptx,.xls,.xlsx,.txt,.json"
         label="Drop or Click to upload your files"
         maxFiles={5}
         maxFileSize={10 * 1024 * 1024}

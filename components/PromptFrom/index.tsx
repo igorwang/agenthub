@@ -376,24 +376,24 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
     const handleSavePrompt = async () => {
       setIsEditing(false);
       try {
-        const newTemplates = templatesState.map((item, index) => ({
-          template: item.template,
-          role: item.role as Message_Role_Enum,
-          order: index,
-        }));
-        const removeIds = templatesState
-          .filter((item) => item.status === "saved")
-          .map((item) => Number(item.id));
-
+        const newTemplates = templatesState
+          .filter((item) => item.template && item.template.length > 0)
+          .map((item, index) => ({
+            template: item.template,
+            role: item.role as Message_Role_Enum,
+            order: index,
+          }));
+        // const removeIds = templatesState
+        //   .filter((item) => item.status === "saved")
+        //   .map((item) => Number(item.id));
         // delete old prompt
-        if (promptId) {
-          await deletePromptTemplateMutation({
-            variables: {
-              where: { id: { _in: removeIds } },
-            },
-          });
-        }
-
+        // if (promptId) {
+        //   await deletePromptTemplateMutation({
+        //     variables: {
+        //       where: { id: { _in: removeIds } },
+        //     },
+        //   });
+        // }
         const { data, errors } = await createNewPromptMutation({
           variables: {
             object: {
