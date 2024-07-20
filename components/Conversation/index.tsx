@@ -75,6 +75,7 @@ export const Conversation: React.FC<ConversationProps> = ({
   }, [agentId, data]);
 
   const handleCreateNewMessage = (params: {
+    id: string;
     query: string;
     content: string;
     session_id: string;
@@ -86,6 +87,7 @@ export const Conversation: React.FC<ConversationProps> = ({
       createNewMessageMutation({
         variables: {
           object: {
+            id: params.id,
             query: params.query,
             content: params.content,
             role: params.role,

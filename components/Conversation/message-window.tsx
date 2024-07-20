@@ -13,8 +13,8 @@ import { PromptTemplateType } from "@/components/PromptFrom";
 import {
   Message_Role_Enum,
   Order_By,
+  useFetchAllMessageListQuery,
   useGetAgentByIdQuery,
-  useSubscriptionMessageListSubscription,
 } from "@/graphql/generated/types";
 import { DEFAULT_LLM_MODEL, DEFAULT_TEMPLATES } from "@/lib/models";
 import { createPrompt } from "@/lib/prompts";
@@ -60,6 +60,7 @@ type MessageWindowProps = {
   selectedSources?: SourceType[];
   onSelectedSource?: (source: SourceType, selected: boolean) => void;
   handleCreateNewMessage?: (params: {
+    id: string;
     query: string;
     content: string;
     session_id: string;
@@ -97,7 +98,7 @@ export default function MessageWindow({
   const agent_id = selectedChatId;
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const { data, loading, error } = useSubscriptionMessageListSubscription({
+  const query = useFetchAllMessageListQuery({
     variables: {
       where: { session_id: { _eq: selectedSessionId } },
       order_by: { created_at: Order_By.AscNullsLast },
@@ -106,6 +107,7 @@ export default function MessageWindow({
 
     skip: !selectedSessionId, // Skip the query if session_id is not provided
   });
+  const { data, loading, error } = query;
 
   const { data: agentData } = useGetAgentByIdQuery({
     variables: {
@@ -121,6 +123,7 @@ export default function MessageWindow({
     if (!selectedSessionId) {
       setMessages([]);
     }
+    query.refetch();
   }, [selectedChatId, selectedSessionId, isChating]);
 
   useEffect(() => {
@@ -421,21 +424,22 @@ export default function MessageWindow({
         }
         // save results
         handleCreateNewMessage?.({
+          id: messages[messages.length - 1].id,
           query: historyMessage[historyMessage.length - 1].message || "",
           content: answer,
           session_id: selectedSessionId || "",
           role: Message_Role_Enum.Assistant,
           sources: searchResults,
         });
-
+        console.log("handleCreateNewMessage");
         handleChatingStatus?.(false);
       };
       generateAnswer();
       return () => {
-        setMessages((prev) => {
-          const newMessages = prev.filter((item) => item.status != "draft");
-          return newMessages;
-        });
+        // setMessages((prev) => {
+        //   const newMessages = prev.filter((item) => item.status != "draft");
+        //   return newMessages;
+        // });
         controller.abort(); // Abort the fetch when the component unmounts or dependencies change
         return;
       };

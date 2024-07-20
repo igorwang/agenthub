@@ -73,6 +73,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
     },
     ref,
   ) => {
+    console.log("MessageCard render");
     const [feedback, setFeedback] = React.useState<"like" | "dislike">();
     const [isToolRuning, setIsToolRuning] = React.useState<boolean>(false);
     const [tool, setTool] = React.useState<ToolType | null>();
