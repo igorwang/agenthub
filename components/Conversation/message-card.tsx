@@ -148,6 +148,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
 
     const featureToolComponent = useMemo(() => {
       if (tool?.id && agentId) {
+        console.log("featureToolComponent", sourceResults);
         return (
           <FeatureTool
             messageId={messageId}
@@ -298,7 +299,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
           </div>
 
           <div className="flex flex-row items-center justify-between pt-1">
-            {sourceResults && toolsContent}
+            {sourceResults && sourceResults.length > 1 && toolsContent}
             {showFeedback && !hasFailed && (
               <div className="flex">
                 <Button
