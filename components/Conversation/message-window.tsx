@@ -83,7 +83,6 @@ export default function MessageWindow({
   const isFollowUp = useSelector(selectIsFollowUp);
 
   const ref = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState(0);
 
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [agent, setAgent] = useState<AgentProps>();
@@ -119,7 +118,8 @@ export default function MessageWindow({
     setRefineQuery(null);
     setSearchResults(null);
     setChatStatus(null);
-    if (isChating === false) {
+    if (!selectedSessionId) {
+      setMessages([]);
     }
   }, [selectedChatId, selectedSessionId, isChating]);
 
@@ -356,7 +356,10 @@ export default function MessageWindow({
 
       setChatStatus(CHAT_STATUS_ENUM.Generating);
       const generateAnswer = async () => {
-        const historyMessage = messages.filter((item) => item.status != "draft");
+        const historyMessage = selectedSources
+          ? messages.filter((item) => item.status != "draft").slice(-1) // only last message need to generation
+          : messages.filter((item) => item.status != "draft");
+
         const prompt = await createPrompt(
           promptTemplates || DEFAULT_TEMPLATES,
           historyMessage,
@@ -491,12 +494,11 @@ export default function MessageWindow({
       showFeedback: msg.role === "assistant",
       sourceResults: msg.sources || [],
       files: msg.files,
-      maxWidth: width,
       onSelectedSource: onSelectedSource,
       tools: agent?.tools,
       agentId: agent?.id,
     }));
-  }, [messages, isChating, chatStatus, agentAvatarElement, width, onSelectedSource]);
+  }, [messages, isChating, chatStatus, agentAvatarElement, onSelectedSource]);
 
   return (
     <ScrollShadow

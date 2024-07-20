@@ -24,7 +24,6 @@ import { useSession } from "next-auth/react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "sonner";
 
 interface TopicHistoryProps {
   agent_id?: string;
@@ -120,34 +119,36 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   });
 
   const handleAddTopic = async ({ agent_id, user_id }: AddTopicParams) => {
-    try {
-      const { data, errors } = await addNewTopicMutation({
-        variables: {
-          title: "New Chat",
-          user_id: user_id,
-          agent_id: agent_id,
-        },
-      });
-      if (errors) {
-        console.error(errors);
-      } else {
-        toast.success("Add success!", {
-          duration: 1000,
-          position: "bottom-left",
-        });
-        const new_sid = data?.insert_topic_history_one?.id;
-        if (new_sid) {
-          dispatch(selectSession(new_sid));
-        }
-        getTopicListQuery.refetch();
-      }
-    } catch (error) {
-      console.error("Error adding topic:", error);
-      toast.success("系统错误请稍后重试", {
-        duration: 1000,
-        position: "bottom-left",
-      });
-    }
+    console.log("pathname", pathname);
+    dispatch(selectSession(null));
+    // try {
+    //   const { data, errors } = await addNewTopicMutation({
+    //     variables: {
+    //       title: "New Chat",
+    //       user_id: user_id,
+    //       agent_id: agent_id,
+    //     },
+    //   });
+    //   if (errors) {
+    //     console.error(errors);
+    //   } else {
+    //     toast.success("Add success!", {
+    //       duration: 1000,
+    //       position: "bottom-left",
+    //     });
+    //     const new_sid = data?.insert_topic_history_one?.id;
+    //     if (new_sid) {
+    //       dispatch(selectSession(new_sid));
+    //     }
+    //     getTopicListQuery.refetch();
+    //   }
+    // } catch (error) {
+    //   console.error("Error adding topic:", error);
+    //   toast.success("系统错误请稍后重试", {
+    //     duration: 1000,
+    //     position: "bottom-left",
+    //   });
+    // }
   };
 
   return (
