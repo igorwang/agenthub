@@ -83,6 +83,7 @@ export type ToolType = {
 export type SchemaPropertyType = {
   type: string;
   title: string;
+  order?: number;
 };
 
 export type SchemaType = {

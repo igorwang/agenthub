@@ -90,10 +90,17 @@ const FeatureTool: React.FC<FeatureToolProps> = ({
     return <div>Error: {error}</div>;
   }
 
-  const columns = Object.entries(schema?.properties).map(([key, value]) => ({
-    key,
-    label: value.title,
-  }));
+  const columns = Object.entries(schema.properties)
+    .map(([key, value]) => ({
+      key,
+      label: value.title,
+      order: value.order !== undefined ? value.order : Number.MAX_SAFE_INTEGER,
+    }))
+    .sort((a, b) => a.order - b.order)
+    .map(({ key, label }) => ({ key, label }));
+
+  console.log("schema", schema);
+  console.log("columns:", columns);
 
   return (
     <div className="flex w-full flex-grow-0 overflow-hidden">
