@@ -3,7 +3,7 @@
 import { AcmeLogo } from "../ui/icons";
 
 import { Icon } from "@iconify/react";
-import { Avatar, Button, ScrollShadow, Spacer, Tooltip } from "@nextui-org/react";
+import { Avatar, Button, Link, ScrollShadow, Spacer, Tooltip } from "@nextui-org/react";
 import SidebarNav from "./sidebar-nav";
 
 import { ThemeSwitch } from "@/components/theme-switch";
@@ -36,6 +36,9 @@ export default function SideBar() {
               <Button
                 isIconOnly
                 // className="data-[hover=true]:text-foreground"
+                href={process.env.AUTH_AUTHENTIK_HOST}
+                target="_blank"
+                as={Link}
                 variant="light">
                 <Avatar
                   isBordered
