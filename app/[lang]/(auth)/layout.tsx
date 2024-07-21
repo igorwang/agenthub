@@ -7,7 +7,7 @@ import { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {
   title: {
-    default: siteConfig.name,
+    default: "Auth",
     template: `%s - ${siteConfig.name}`,
   },
   description: siteConfig.description,

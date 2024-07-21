@@ -1,5 +1,10 @@
 "use client";
 
+// export const metadata: Metadata = {
+//   title: "Library",
+//   description: "Library...",
+// };
+
 import {
   Knowledge_Base_Type_Enum,
   KnowledgeBaseItemFragment,

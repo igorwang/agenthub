@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Chat",
+  description: "Chat...",
+};
+
 export default function AgentLayout({
   children, // will be a page or nested layout
 }: {

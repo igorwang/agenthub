@@ -73,7 +73,6 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
     },
     ref,
   ) => {
-    console.log("MessageCard render");
     const [feedback, setFeedback] = React.useState<"like" | "dislike">();
     const [isToolRuning, setIsToolRuning] = React.useState<boolean>(false);
     const [tool, setTool] = React.useState<ToolType | null>();
@@ -218,7 +217,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
     );
 
     const userMessageContent = (
-      <div className="ml-14 flex w-full flex-col gap-2">
+      <div className="w-8/10 ml-14 flex flex-grow flex-col gap-2">
         <div
           className={cn(
             "relative w-full rounded-medium px-4 py-2 text-default-800",
@@ -261,7 +260,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
     );
 
     const aiMessageContent = (
-      <div className="mr-14 flex w-full flex-grow flex-col gap-4">
+      <div className="mr-14 flex max-w-full flex-grow flex-col gap-4">
         <div
           className={cn(
             "relative w-full flex-grow rounded-medium bg-content2 px-4 py-1 text-default-600",
