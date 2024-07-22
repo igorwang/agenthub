@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { DocumentNode } from "@apollo/client";
+import { DocumentNode, OperationVariables } from "@apollo/client";
 import { initializeApollo } from "./apolloClient";
 
 async function getSessionHeaders(): Promise<{ Authorization: string }> {
@@ -14,14 +14,17 @@ async function getSessionHeaders(): Promise<{ Authorization: string }> {
   }
 }
 
-export async function fetchData(query: DocumentNode) {
+export async function fetchData<
+  TData,
+  TVariables extends OperationVariables = OperationVariables,
+>(query: DocumentNode, variables?: TVariables): Promise<TData | null> {
   const headers = await getSessionHeaders();
-
   const client = initializeApollo({}, headers);
 
   try {
-    const { data } = await client.query({
+    const { data } = await client.query<TData, TVariables>({
       query,
+      variables,
     });
     return data;
   } catch (error) {
@@ -30,16 +33,31 @@ export async function fetchData(query: DocumentNode) {
   }
 }
 
-export async function performMutation(mutation: DocumentNode, variables: object) {
+export async function performMutation<
+  TData = any,
+  TVariables extends OperationVariables = OperationVariables,
+>(mutation: DocumentNode, variables?: TVariables): Promise<TData | null> {
   const headers = await getSessionHeaders();
 
-  const client = initializeApollo({}, headers);
-
   try {
-    const { data } = await client.mutate({
-      mutation,
-      variables,
+    const response = await fetch("/graphql", {
+      method: "POST",
+      headers: {
+        ...headers,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query: mutation.loc?.source.body,
+        variables,
+      }),
     });
+
+    if (!response.ok) {
+      console.error("Network response was not ok");
+      return null;
+    }
+
+    const data: TData = await response.json();
 
     return data;
   } catch (error) {
