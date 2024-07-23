@@ -20,7 +20,9 @@ export default function LibraryFileList({
   const [page, setPage] = useState(1);
   const pageSize = 10;
   const [files, setFiles] = useState<FilesListQuery["files"]>(initialFiles?.files || []);
-
+  const pages = Math.ceil(
+    (initialFiles?.files_aggregate.aggregate?.count || 0) / pageSize,
+  );
   const [fetchFiles, { loading, error }] = useFilesListLazyQuery({
     variables: {
       order_by: { updated_at: Order_By.DescNullsLast },
@@ -30,13 +32,14 @@ export default function LibraryFileList({
     },
     onCompleted: (data) => {
       if (data && data.files) {
-        setFiles((prevFiles) => [...prevFiles, ...data.files]);
+        setFiles((prevFiles) => [...data.files]);
       }
     },
   });
 
-  const handleLoadMore = () => {
-    setPage((prevPage) => prevPage + 1);
+  const handleSetPage = (page: number) => {
+    setPage(page);
+    fetchFiles();
   };
 
   const handleViewFile = useCallback((file: FileDTO) => {
@@ -57,21 +60,24 @@ export default function LibraryFileList({
   console.log("files", files, initialFiles);
 
   return (
-    <div>
-      <FileTable
-        files={files.map((file) => ({
-          ...{
-            id: file.id,
-            name: file.name,
-            size: file.size,
-            status: file.status as Status_Enum,
-            updateTime: file.updated_at,
-          }, // 确保状态与 Status_Enum 兼容
-        }))}
-        onView={handleViewFile}
-        onEdit={handleEditFile}
-        onDelete={handleDeleteFile}
-      />
-    </div>
+    // <div className="mx-auto flex h-full w-full max-w-full items-center justify-center overflow-auto">
+    <FileTable
+      files={files.map((file) => ({
+        ...{
+          id: file.id,
+          name: file.name,
+          size: file.size,
+          status: file.status as Status_Enum,
+          updateTime: file.updated_at,
+        }, // 确保状态与 Status_Enum 兼容
+      }))}
+      page={page}
+      pages={pages}
+      onPage={handleSetPage}
+      onView={handleViewFile}
+      onEdit={handleEditFile}
+      onDelete={handleDeleteFile}
+    />
+    // </div>
   );
 }

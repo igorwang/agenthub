@@ -2,6 +2,7 @@ import { Status_Enum } from "@/graphql/generated/types";
 import { Icon } from "@iconify/react";
 import {
   Chip,
+  Pagination,
   SortDescriptor,
   Table,
   TableBody,
@@ -23,9 +24,13 @@ export interface FileDTO {
 
 interface FileTableProps {
   files: FileDTO[];
+  page: number;
+  pages: number;
   onView: (file: FileDTO) => void;
   onEdit: (file: FileDTO) => void;
   onDelete: (file: FileDTO) => void;
+  onPage: (page: number) => void;
+  maxWidth?: string; // New prop for maximum width
 }
 
 const columns = [
@@ -46,7 +51,16 @@ const statusColorMap: Record<
   [Status_Enum.Uploaded]: "success",
 };
 
-const FileTable: FC<FileTableProps> = ({ files, onView, onEdit, onDelete }) => {
+const FileTable: FC<FileTableProps> = ({
+  files,
+  page,
+  pages,
+  onView,
+  onEdit,
+  onDelete,
+  onPage,
+  maxWidth = "1000px", // Default value if not provided
+}) => {
   const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
     column: "updateTime",
     direction: "descending",
@@ -65,7 +79,11 @@ const FileTable: FC<FileTableProps> = ({ files, onView, onEdit, onDelete }) => {
     (file: FileDTO, columnKey: React.Key) => {
       switch (columnKey) {
         case "name":
-          return <div>{file.name}</div>;
+          return (
+            <div className="max-w-[200px] truncate" title={file.name}>
+              {file.name}
+            </div>
+          );
         case "size":
           return `${(file.size / 1024 / 1024).toFixed(2)} MB`;
         case "status":
@@ -79,7 +97,13 @@ const FileTable: FC<FileTableProps> = ({ files, onView, onEdit, onDelete }) => {
             </Chip>
           );
         case "updateTime":
-          return new Date(file.updateTime).toLocaleString();
+          return (
+            <div
+              className="max-w-[150px] truncate"
+              title={new Date(file.updateTime).toLocaleString()}>
+              {new Date(file.updateTime).toLocaleString()}
+            </div>
+          );
         case "actions":
           return (
             <div className="relative flex items-center gap-2">
@@ -117,7 +141,24 @@ const FileTable: FC<FileTableProps> = ({ files, onView, onEdit, onDelete }) => {
     <Table
       aria-label="File table with custom cells"
       sortDescriptor={sortDescriptor}
-      onSortChange={setSortDescriptor}>
+      onSortChange={setSortDescriptor}
+      classNames={{
+        base: `max-w-[${maxWidth}]`,
+        // table: "min-w-full",
+      }}
+      bottomContent={
+        <div className="flex w-full justify-center">
+          <Pagination
+            isCompact
+            showControls
+            showShadow
+            color="secondary"
+            page={page}
+            total={pages}
+            onChange={(page) => onPage(page)}
+          />
+        </div>
+      }>
       <TableHeader columns={columns}>
         {(column) => (
           <TableColumn
@@ -128,7 +169,7 @@ const FileTable: FC<FileTableProps> = ({ files, onView, onEdit, onDelete }) => {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody items={sortedFiles}>
+      <TableBody items={sortedFiles} emptyContent={"No files found"}>
         {(file) => (
           <TableRow key={file.id}>
             {(columnKey) => <TableCell>{renderCell(file, columnKey)}</TableCell>}
