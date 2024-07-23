@@ -6,7 +6,7 @@ import { auth } from "./auth";
 
 const PUBLIC_FILE = /\.(.*)$/;
 
-const protectedRoutes = ["/chat", "/search", "/library", "/search"]; // Add any other protected routes here
+const protectedRoutes = ["/chat", "/search", "/library", "/discover"]; // Add any other protected routes here
 
 const locales = ["en", "tw", "zh"];
 const defaultLocale = "en";

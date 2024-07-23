@@ -1,13 +1,23 @@
 "use client";
 import FileTable, { FileDTO } from "@/components/LibraryFileList/file-table";
+import { PlusIcon } from "@/components/ui/icons";
 import UploadZone from "@/components/UploadZone";
 import {
   FilesListQuery,
   Order_By,
   Status_Enum,
-  useFilesListLazyQuery,
+  useFilesListQuery,
 } from "@/graphql/generated/types";
-import { useCallback, useState } from "react";
+import { Icon } from "@iconify/react";
+import {
+  Button,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+} from "@nextui-org/react";
+import { useCallback, useEffect, useState } from "react";
 
 interface FilesListProps {
   initialFiles: FilesListQuery | null;
@@ -24,23 +34,26 @@ export default function LibraryFileList({
   const pages = Math.ceil(
     (initialFiles?.files_aggregate.aggregate?.count || 0) / pageSize,
   );
-  const [fetchFiles, { loading, error }] = useFilesListLazyQuery({
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
+
+  const { loading, error, data, refetch } = useFilesListQuery({
     variables: {
       order_by: { updated_at: Order_By.DescNullsLast },
       where: { knowledge_base_id: { _eq: knowledgeBaseId } },
       limit: pageSize,
       offset: (page - 1) * pageSize,
     },
-    onCompleted: (data) => {
-      if (data && data.files) {
-        setFiles((prevFiles) => [...data.files]);
-      }
-    },
   });
+
+  useEffect(() => {
+    if (data && data.files) {
+      setFiles(data.files);
+    }
+  }, [data]);
 
   const handleSetPage = (page: number) => {
     setPage(page);
-    fetchFiles();
+    refetch();
   };
 
   const handleViewFile = useCallback((file: FileDTO) => {
@@ -61,15 +74,39 @@ export default function LibraryFileList({
   const handleAfterUploadFile = useCallback(() => {
     console.log("handleAfterUploadFile");
     setPage(1);
-    fetchFiles();
   }, []);
 
+  const openUploadModal = useCallback(() => {
+    setIsUploadOpen(true);
+  }, []);
+
+  const closeUploadModal = () => {
+    setIsUploadOpen(false);
+    refetch();
+  };
+
   return (
-    <div className="flex h-full w-full max-w-7xl flex-col items-center gap-2">
-      <UploadZone
-        knowledgeBaseId={knowledgeBaseId}
-        onAfterUpload={handleAfterUploadFile}
-      />
+    <div className="flex h-full w-full max-w-7xl flex-col items-start gap-2 p-4">
+      <div className="flex w-full justify-between">
+        <Input
+          fullWidth
+          aria-label="search"
+          className="w-full max-w-sm px-1"
+          labelPlacement="outside"
+          placeholder="Search..."
+          startContent={
+            <Icon
+              className="text-default-500 [&>g]:stroke-[2px]"
+              icon="solar:magnifer-linear"
+              width={18}
+            />
+          }
+        />
+        <Button color="primary" endContent={<PlusIcon />} onClick={openUploadModal}>
+          Add New
+        </Button>
+      </div>
+
       <FileTable
         files={files.map((file) => ({
           ...{
@@ -87,6 +124,27 @@ export default function LibraryFileList({
         onEdit={handleEditFile}
         onDelete={handleDeleteFile}
       />
+      <Modal
+        isOpen={isUploadOpen}
+        onClose={closeUploadModal}
+        className="rounded-lg bg-white shadow-lg"
+        size="2xl">
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1 border-b pb-4 text-2xl font-semibold text-gray-700">
+                Upload Files
+              </ModalHeader>
+              <ModalBody className="py-6">
+                <UploadZone
+                  knowledgeBaseId={knowledgeBaseId}
+                  onAfterUpload={handleAfterUploadFile}
+                />
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 }
