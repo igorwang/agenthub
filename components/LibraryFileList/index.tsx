@@ -60,24 +60,24 @@ export default function LibraryFileList({
   console.log("files", files, initialFiles);
 
   return (
-    // <div className="mx-auto flex h-full w-full max-w-full items-center justify-center overflow-auto">
-    <FileTable
-      files={files.map((file) => ({
-        ...{
-          id: file.id,
-          name: file.name,
-          size: file.size,
-          status: file.status as Status_Enum,
-          updateTime: file.updated_at,
-        }, // 确保状态与 Status_Enum 兼容
-      }))}
-      page={page}
-      pages={pages}
-      onPage={handleSetPage}
-      onView={handleViewFile}
-      onEdit={handleEditFile}
-      onDelete={handleDeleteFile}
-    />
-    // </div>
+    <div className="flex h-full w-full">
+      <FileTable
+        files={files.map((file) => ({
+          ...{
+            id: file.id,
+            name: file.name,
+            size: file.size,
+            status: file.status as Status_Enum,
+            updateTime: file.updated_at,
+          }, // 确保状态与 Status_Enum 兼容
+        }))}
+        page={page}
+        pages={pages}
+        onPage={handleSetPage}
+        onView={handleViewFile}
+        onEdit={handleEditFile}
+        onDelete={handleDeleteFile}
+      />
+    </div>
   );
 }

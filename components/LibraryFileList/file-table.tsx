@@ -30,7 +30,7 @@ interface FileTableProps {
   onEdit: (file: FileDTO) => void;
   onDelete: (file: FileDTO) => void;
   onPage: (page: number) => void;
-  maxWidth?: string; // New prop for maximum width
+  maxWidth?: string;
 }
 
 const columns = [
@@ -59,7 +59,7 @@ const FileTable: FC<FileTableProps> = ({
   onEdit,
   onDelete,
   onPage,
-  maxWidth = "1000px", // Default value if not provided
+  maxWidth = "1000px",
 }) => {
   const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
     column: "updateTime",
@@ -80,33 +80,37 @@ const FileTable: FC<FileTableProps> = ({
       switch (columnKey) {
         case "name":
           return (
-            <div className="max-w-[200px] truncate" title={file.name}>
+            <div className="max-w-[200px] truncate text-center" title={file.name}>
               {file.name}
             </div>
           );
         case "size":
-          return `${(file.size / 1024 / 1024).toFixed(2)} MB`;
+          return (
+            <div className="text-center">{`${(file.size / 1024 / 1024).toFixed(2)} MB`}</div>
+          );
         case "status":
           return (
-            <Chip
-              className="capitalize"
-              color={statusColorMap[file.status]}
-              size="sm"
-              variant="flat">
-              {file.status}
-            </Chip>
+            <div className="flex justify-center">
+              <Chip
+                className="capitalize"
+                color={statusColorMap[file.status]}
+                size="sm"
+                variant="flat">
+                {file.status}
+              </Chip>
+            </div>
           );
         case "updateTime":
           return (
             <div
-              className="max-w-[150px] truncate"
+              className="max-w-[150px] truncate text-center"
               title={new Date(file.updateTime).toLocaleString()}>
               {new Date(file.updateTime).toLocaleString()}
             </div>
           );
         case "actions":
           return (
-            <div className="relative flex items-center gap-2">
+            <div className="flex items-center justify-center gap-2">
               <Tooltip content="View">
                 <span
                   className="cursor-pointer text-lg text-default-400 active:opacity-50"
@@ -131,7 +135,7 @@ const FileTable: FC<FileTableProps> = ({
             </div>
           );
         default:
-          return file[columnKey as keyof FileDTO];
+          return <div className="text-center">{file[columnKey as keyof FileDTO]}</div>;
       }
     },
     [onView, onEdit, onDelete],
@@ -144,7 +148,6 @@ const FileTable: FC<FileTableProps> = ({
       onSortChange={setSortDescriptor}
       classNames={{
         base: `max-w-[${maxWidth}]`,
-        // table: "min-w-full",
       }}
       bottomContent={
         <div className="flex w-full justify-center">
@@ -161,10 +164,7 @@ const FileTable: FC<FileTableProps> = ({
       }>
       <TableHeader columns={columns}>
         {(column) => (
-          <TableColumn
-            key={column.uid}
-            align={column.uid === "actions" ? "center" : "start"}
-            allowsSorting={column.sortable}>
+          <TableColumn key={column.uid} align="center" allowsSorting={column.sortable}>
             {column.name}
           </TableColumn>
         )}
