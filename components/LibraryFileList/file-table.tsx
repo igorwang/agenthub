@@ -59,7 +59,7 @@ const FileTable: FC<FileTableProps> = ({
   onEdit,
   onDelete,
   onPage,
-  maxWidth = "1000px",
+  maxWidth = "1280px",
 }) => {
   const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
     column: "updateTime",

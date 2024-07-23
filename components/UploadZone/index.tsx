@@ -9,9 +9,10 @@ import { v4 } from "uuid";
 
 export type UploadZoneProps = {
   knowledgeBaseId?: string;
+  onAfterUpload?: () => void;
 };
 
-export default function UploadZone({ knowledgeBaseId }: UploadZoneProps) {
+export default function UploadZone({ knowledgeBaseId, onAfterUpload }: UploadZoneProps) {
   const [files, setFiles] = useState<ExtFile[]>([]);
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
@@ -52,6 +53,7 @@ export default function UploadZone({ knowledgeBaseId }: UploadZoneProps) {
     setFiles([]);
   };
   const handleUploadStart = async () => {
+    console.log("handleUploadStart");
     setIsUploading(true);
     setFiles(
       files.map((file) => ({
@@ -127,6 +129,7 @@ export default function UploadZone({ knowledgeBaseId }: UploadZoneProps) {
       );
       return updatedFiles;
     };
+
     handleUploadFiles(files)
       .then((updatedFiles) => {
         toast.success(
@@ -136,12 +139,12 @@ export default function UploadZone({ knowledgeBaseId }: UploadZoneProps) {
       .catch((error) => {
         console.error("Error uploading files:", error);
       });
-
+    onAfterUpload?.();
     setIsUploading(false);
   };
 
   return (
-    <div className="flex h-full w-full flex-col items-end overflow-auto p-2">
+    <div className="flex h-full w-full flex-col items-end overflow-auto">
       <Dropzone
         className="h-full max-h-full min-h-0 flex-1"
         onChange={updateFiles}

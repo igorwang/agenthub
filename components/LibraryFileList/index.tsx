@@ -1,5 +1,6 @@
 "use client";
 import FileTable, { FileDTO } from "@/components/LibraryFileList/file-table";
+import UploadZone from "@/components/UploadZone";
 import {
   FilesListQuery,
   Order_By,
@@ -57,10 +58,18 @@ export default function LibraryFileList({
     // 实现删除文件的逻辑
   }, []);
 
-  console.log("files", files, initialFiles);
+  const handleAfterUploadFile = useCallback(() => {
+    console.log("handleAfterUploadFile");
+    setPage(1);
+    fetchFiles();
+  }, []);
 
   return (
-    <div className="flex h-full w-full">
+    <div className="flex h-full w-full max-w-7xl flex-col items-center gap-2">
+      <UploadZone
+        knowledgeBaseId={knowledgeBaseId}
+        onAfterUpload={handleAfterUploadFile}
+      />
       <FileTable
         files={files.map((file) => ({
           ...{
