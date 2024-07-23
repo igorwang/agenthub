@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
 import LibraryFileList from "@/components/LibraryFileList";
-import LibraryHeader from "@/components/LibraryHeader";
 import {
   FilesListDocument,
   FilesListQuery,
@@ -11,6 +10,7 @@ import {
   Order_By,
 } from "@/graphql/generated/types";
 import { fetchData } from "@/lib/apolloRequest";
+import { Suspense } from "react";
 
 async function fetchFileListData(id: string) {
   const session = await auth();
@@ -44,22 +44,12 @@ async function fetchLibraryData(id: string) {
 
 export default async function LibraryMainPage({ params }: { params: { id: string } }) {
   const files = await fetchFileListData(params.id);
-  const library = await fetchLibraryData(params.id);
 
-  console.log("library", library);
   return (
-    <div className="flex h-full w-full flex-col">
-      <div className="w-full bg-white shadow">
-        <div className="w-full px-2">
-          <LibraryHeader library={library?.knowledge_base_by_pk} />
-        </div>
-      </div>
-      <div className="mx-auto flex h-full w-full flex-col items-center justify-center bg-gray-50 px-2">
+    <div className="mx-auto flex w-full flex-col items-center">
+      <Suspense fallback={<div className="text-center">Loading...</div>}>
         <LibraryFileList initialFiles={files} knowledgeBaseId={params.id} />
-      </div>
-      {/* <Suspense fallback={<div className="text-center">Loading...</div>}> */}
-
-      {/* </Suspense> */}
+      </Suspense>
     </div>
   );
 }
