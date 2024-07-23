@@ -1,13 +1,19 @@
 "use client";
 
 import { KnowledgeBaseFragmentFragment } from "@/graphql/generated/types";
-import { Listbox, ListboxItem, ScrollShadow } from "@nextui-org/react";
+import { cn, Listbox, ListboxItem, ScrollShadow } from "@nextui-org/react";
 
 interface LibraryListProps {
   items: KnowledgeBaseFragmentFragment[];
+  selectedItemId: string | null;
+  onItemClick: (id: string) => void;
 }
 
-const LibraryList: React.FC<LibraryListProps> = ({ items }) => {
+const LibraryList: React.FC<LibraryListProps> = ({
+  items,
+  selectedItemId,
+  onItemClick,
+}) => {
   return (
     <div>
       <ScrollShadow className="w-full max-w-[260px] border-default-200 px-1">
@@ -18,11 +24,17 @@ const LibraryList: React.FC<LibraryListProps> = ({ items }) => {
           {items.map((item) => (
             <ListboxItem
               key={item?.id}
-              //   endContent={
-              //     <Icon icon="ep:edit" onClick={(e) => onClickEditIcon(e, item?.id)} />
-              //   }
-            >
+              onClick={() => onItemClick(item.id)}
+              className={cn(
+                "cursor-pointer p-2",
+                "max-w-[200px] overflow-hidden text-ellipsis",
+                selectedItemId === item.id ? "bg-blue-100" : "",
+              )}>
+              {/* <Tooltip content={item?.name}> */}
+              {/* <p className="max-w-[180px] overflow-hidden text-ellipsis"> */}
               {item?.name || "-"}
+              {/* </p> */}
+              {/* </Tooltip> */}
             </ListboxItem>
           ))}
         </Listbox>

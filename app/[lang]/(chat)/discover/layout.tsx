@@ -1,3 +1,4 @@
+import LibrarySideBarContainer from "@/components/LibrarySideBar";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -12,7 +13,10 @@ export default function LibraryLayout({
 }) {
   return (
     <div className="h-full w-full max-w-full">
-      <div className="flex h-full flex-row">{children}</div>
+      <div className="flex h-full flex-row">
+        <LibrarySideBarContainer />
+        {children}
+      </div>
     </div>
   );
 }
