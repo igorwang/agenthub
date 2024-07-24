@@ -38,17 +38,17 @@ export default async function LibraryLayout({
   const library = await fetchLibraryData(params.id);
 
   return (
-    <div className="flex h-full w-full flex-col">
+    <div className="flex h-full w-full max-w-full flex-col">
       <div className="w-full bg-white shadow">
-        <div className="w-full px-2">
+        <div className="w-full justify-normal px-2">
           <LibraryHeader library={library?.knowledge_base_by_pk} />
         </div>
       </div>
-      <div className="relative mx-auto flex h-full w-full flex-col items-center justify-center bg-gray-50 px-2">
-        <div className="absolute top-1">
+      <div className="relative flex h-full w-full flex-col gap-2 bg-gray-50 px-2">
+        <div className="flex justify-center">
           <LibraryBreadcrumbs libraryId={params.id} />
         </div>
-        {children}
+        <div className="flex h-full w-full">{children}</div>
       </div>
     </div>
   );

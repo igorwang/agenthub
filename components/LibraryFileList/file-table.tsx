@@ -27,7 +27,7 @@ interface FileTableProps {
   page: number;
   pages: number;
   onView: (file: FileDTO) => void;
-  onEdit: (file: FileDTO) => void;
+  onRedo: (file: FileDTO) => void;
   onDelete: (file: FileDTO) => void;
   onPage: (page: number) => void;
   maxWidth?: string;
@@ -56,7 +56,7 @@ const FileTable: FC<FileTableProps> = ({
   page,
   pages,
   onView,
-  onEdit,
+  onRedo,
   onDelete,
   onPage,
   maxWidth = "1280px",
@@ -118,11 +118,11 @@ const FileTable: FC<FileTableProps> = ({
                   <Icon icon={"lets-icons:view"} />
                 </span>
               </Tooltip>
-              <Tooltip content="Edit">
+              <Tooltip content="Reprocess">
                 <span
                   className="cursor-pointer text-lg text-default-400 active:opacity-50"
-                  onClick={() => onEdit(file)}>
-                  <Icon icon={"bx:edit"} />
+                  onClick={() => onRedo(file)}>
+                  <Icon icon={"fad:redo"} />
                 </span>
               </Tooltip>
               <Tooltip color="danger" content="Delete">
@@ -138,7 +138,7 @@ const FileTable: FC<FileTableProps> = ({
           return <div className="text-center">{file[columnKey as keyof FileDTO]}</div>;
       }
     },
-    [onView, onEdit, onDelete],
+    [onView, onRedo, onDelete],
   );
 
   return (

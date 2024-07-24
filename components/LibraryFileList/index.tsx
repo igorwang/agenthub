@@ -17,7 +17,7 @@ import {
   ModalContent,
   ModalHeader,
 } from "@nextui-org/react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 interface FilesListProps {
   initialFiles: FilesListQuery | null;
@@ -28,7 +28,9 @@ export default function LibraryFileList({
   initialFiles,
   knowledgeBaseId,
 }: FilesListProps) {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState<number>(1);
+  const [searchValue, setSearchValue] = useState("");
+
   const pageSize = 10;
   const [files, setFiles] = useState<FilesListQuery["files"]>(initialFiles?.files || []);
   const pages = Math.ceil(
@@ -36,13 +38,29 @@ export default function LibraryFileList({
   );
   const [isUploadOpen, setIsUploadOpen] = useState(false);
 
-  const { loading, error, data, refetch } = useFilesListQuery({
-    variables: {
+  const queryVariables = useMemo(
+    () => ({
       order_by: { updated_at: Order_By.DescNullsLast },
-      where: { knowledge_base_id: { _eq: knowledgeBaseId } },
+      where: {
+        knowledge_base_id: { _eq: knowledgeBaseId },
+        // Add search condition if searchValue is not empty
+        ...(searchValue
+          ? {
+              _or: [
+                { name: { _ilike: `%${searchValue}%` } },
+                // Add more fields to search as needed
+              ],
+            }
+          : {}),
+      },
       limit: pageSize,
       offset: (page - 1) * pageSize,
-    },
+    }),
+    [knowledgeBaseId, searchValue, page, pageSize],
+  );
+
+  const { loading, error, data, refetch } = useFilesListQuery({
+    variables: queryVariables,
   });
 
   useEffect(() => {
@@ -61,7 +79,7 @@ export default function LibraryFileList({
     // 实现查看文件的逻辑
   }, []);
 
-  const handleEditFile = useCallback((file: FileDTO) => {
+  const handleRedoFile = useCallback((file: FileDTO) => {
     console.log("Editing file:", file.name);
     // 实现编辑文件的逻辑
   }, []);
@@ -94,6 +112,8 @@ export default function LibraryFileList({
           className="w-full max-w-sm px-1"
           labelPlacement="outside"
           placeholder="Search..."
+          value={searchValue}
+          onValueChange={setSearchValue}
           startContent={
             <Icon
               className="text-default-500 [&>g]:stroke-[2px]"
@@ -121,7 +141,7 @@ export default function LibraryFileList({
         pages={pages}
         onPage={handleSetPage}
         onView={handleViewFile}
-        onEdit={handleEditFile}
+        onRedo={handleRedoFile}
         onDelete={handleDeleteFile}
       />
       <Modal
