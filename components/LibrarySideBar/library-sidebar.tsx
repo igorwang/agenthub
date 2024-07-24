@@ -27,7 +27,7 @@ export default function LibrarySideBar({ items }: LibrarySideBarProps) {
   useEffect(() => {
     if (listItems.length > 0 && selectedItemId === null) {
       setSelectedItemId(listItems[0].id);
-      router.push(`/discover/${listItems[0].id}`);
+      // router.push(`/discover/${listItems[0].id}`);
     }
   }, [listItems, selectedItemId]);
 

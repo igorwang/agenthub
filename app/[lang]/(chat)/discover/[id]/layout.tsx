@@ -40,12 +40,12 @@ export default async function LibraryLayout({
   return (
     <div className="flex h-full w-full max-w-full flex-col">
       <div className="w-full bg-white shadow">
-        <div className="w-full justify-normal px-2">
+        <div className="sticky w-full justify-normal px-2">
           <LibraryHeader library={library?.knowledge_base_by_pk} />
         </div>
       </div>
-      <div className="relative flex h-full w-full flex-col gap-2 bg-gray-50 px-2">
-        <div className="flex justify-center">
+      <div className="flex h-full w-full flex-col gap-2 overflow-auto bg-gray-50 px-2">
+        <div className="sticky top-0 z-10 flex justify-center bg-gray-50 px-2 py-2">
           <LibraryBreadcrumbs libraryId={params.id} />
         </div>
         <div className="flex h-full w-full">{children}</div>
