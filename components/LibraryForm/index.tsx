@@ -7,6 +7,12 @@ import {
   KnowledgeBaseDetailQuery,
   useUpdateKnowledgeBaseMutation,
 } from "@/graphql/generated/types";
+import {
+  chunkingParamsSchema,
+  defaultChunkingParams,
+  defaultDocumentSchemaExample,
+  documentSchema,
+} from "@/lib/jsonSchema";
 import { Icon } from "@iconify/react";
 import {
   Accordion,
@@ -19,6 +25,7 @@ import {
   Switch,
   Textarea,
 } from "@nextui-org/react";
+import Ajv from "ajv";
 import { JsonEditor } from "json-edit-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -33,21 +40,37 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
   const router = useRouter();
   const [updateKnowledgeBaseMutation] = useUpdateKnowledgeBaseMutation();
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(true);
+  console.log("initLibrary", initLibrary);
+  const ajv = new Ajv();
+  const chunkingStrategyValidate = ajv.compile(chunkingParamsSchema);
 
-  const { control, handleSubmit } = useForm<Knowledge_Base_Set_Input>({
+  const documemtSchemaValidate = ajv.compile(documentSchema);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    trigger,
+  } = useForm<Knowledge_Base_Set_Input>({
     defaultValues: {
       name: initLibrary?.name || "",
       description: initLibrary?.description || "",
       base_type: initLibrary?.base_type,
       chunking_strategy: initLibrary?.chunking_strategy,
-      chunking_parameters: initLibrary?.chunking_parameters || {},
+      chunking_parameters: Object.keys(initLibrary?.chunking_parameters || {}).length
+        ? initLibrary?.chunking_parameters
+        : defaultChunkingParams,
       is_extraction: initLibrary?.is_extraction || false,
       model_name: initLibrary?.model_name || "",
       is_publish: initLibrary?.is_publish || false,
       embedding_model: initLibrary?.embedding_model || "",
-      doc_schema: initLibrary?.doc_schema || {},
+
+      doc_schema: Object.keys(initLibrary?.doc_schema || {}).length
+        ? initLibrary?.doc_schema
+        : defaultDocumentSchemaExample,
       mode: initLibrary?.mode,
     },
+    mode: "onChange",
   });
 
   const onSubmit = async (data: Knowledge_Base_Set_Input) => {
@@ -121,7 +144,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
             name="is_publish"
             control={control}
             render={({ field: { value, onChange } }) => (
-              <Switch isSelected={value as boolean} onValueChange={onChange}>
+              <Switch size={"sm"} isSelected={value as boolean} onValueChange={onChange}>
                 Publish the library
               </Switch>
             )}
@@ -157,15 +180,52 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
           <Controller
             name="doc_schema"
             control={control}
+            rules={{
+              validate: (value) => {
+                const isValid = documemtSchemaValidate(value);
+                if (!isValid) {
+                  const errorMessage = documemtSchemaValidate.errors
+                    ?.map(
+                      (error) =>
+                        `${error.instancePath}${error.instancePath ? ": " : ""}${error.message}`,
+                    )
+                    .join("\n");
+                  toast.error(`Not compliant with JSON Schema: ${errorMessage}`);
+                  return `Not compliant with JSON Schema: ${errorMessage}`;
+                }
+                return true;
+              },
+            }}
             render={({ field }) => (
               <div>
                 <label className="font-sans text-sm text-gray-900">Document Schema</label>
                 <JsonEditor
                   maxWidth={400}
                   data={field.value}
-                  onUpdate={({ newData }) => field.onChange(newData)}
+                  onUpdate={({ newData }) => {
+                    // console.log("onUpdate");
+                    // const valid = documemtSchemaValidate(newData);
+                    // if (!valid) {
+                    //   console.log("Errors", documemtSchemaValidate.errors);
+                    //   const errorMessage = documemtSchemaValidate.errors
+                    //     ?.map(
+                    //       (error) =>
+                    //         `${error.instancePath}${error.instancePath ? ": " : ""}${error.message}`,
+                    //     )
+                    //     .join("\n");
+                    //   toast.error(`Not compliant with JSON Schema:${errorMessage}`);
+                    //   return "JSON Schema error";
+                    // }
+                    field.onChange(newData);
+                  }}
+                  //   onUpdate={({ newData }) => field.onChange(newData)}
                   rootName="data"
                 />
+                {errors.doc_schema && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.doc_schema.message as string}
+                  </p>
+                )}
               </div>
             )}
           />
@@ -208,7 +268,21 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
                 <JsonEditor
                   maxWidth={400}
                   data={field.value}
-                  onUpdate={({ newData }) => field.onChange(newData)}
+                  onUpdate={({ newData }) => {
+                    const valid = chunkingStrategyValidate(newData);
+                    if (!valid) {
+                      console.log("Errors", chunkingStrategyValidate.errors);
+                      const errorMessage = chunkingStrategyValidate.errors
+                        ?.map(
+                          (error) =>
+                            `${error.instancePath}${error.instancePath ? ": " : ""}${error.message}`,
+                        )
+                        .join("\n");
+                      toast.error(`Not compliant with JSON Schema:${errorMessage}`);
+                      return "JSON Schema error";
+                    }
+                    field.onChange(newData);
+                  }}
                   rootName="data"
                 />
               </div>
@@ -245,7 +319,10 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
               name="is_extraction"
               control={control}
               render={({ field: { value, onChange } }) => (
-                <Switch isSelected={value as boolean} onValueChange={onChange}>
+                <Switch
+                  size={"sm"}
+                  isSelected={value as boolean}
+                  onValueChange={onChange}>
                   Extraction Process Switch
                 </Switch>
               )}
