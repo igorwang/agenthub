@@ -77,6 +77,9 @@ const ModelSelect = React.forwardRef<HTMLDivElement, ModelSelectProps>(
       if (model) {
         setValue(new Set([newValue]));
         onSelectionChange?.(model?.name, model.max_tokens || 4096); // Call the callback function with the new value
+      } else {
+        setValue(new Set([]));
+        onSelectionChange?.("", 4096);
       }
     };
 

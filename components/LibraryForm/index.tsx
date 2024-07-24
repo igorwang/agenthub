@@ -2,7 +2,6 @@
 import ModelSelect from "@/components/PromptFrom/model-select";
 import {
   Chunking_Strategy_Enum,
-  Knowledge_Base_Mode_Enum,
   Knowledge_Base_Set_Input,
   KnowledgeBaseDetailQuery,
   useUpdateKnowledgeBaseMutation,
@@ -152,86 +151,6 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
         </div>
       </div>
       <Divider className="my-2" />
-      {/* 文档结构配置 */}
-      <div className="mb-6">
-        <div className="mb-2 flex flex-row items-center gap-2">
-          <Icon icon={"solar:document-add-linear"} fontSize={20} />
-          <h3 className="text-lg font-semibold">Document Structure</h3>
-        </div>
-        <div className="flex flex-col gap-4">
-          <Controller
-            name="mode"
-            control={control}
-            render={({ field }) => (
-              <Select
-                label="Library Document Structure"
-                labelPlacement="outside"
-                placeholder="Select your structure of document for this library"
-                selectedKeys={field.value ? [field.value] : []}
-                onSelectionChange={(keys) => field.onChange(Array.from(keys)[0])}>
-                {Object.values(Knowledge_Base_Mode_Enum).map((mode) => (
-                  <SelectItem key={mode} value={mode}>
-                    {mode}
-                  </SelectItem>
-                ))}
-              </Select>
-            )}
-          />
-          <Controller
-            name="doc_schema"
-            control={control}
-            rules={{
-              validate: (value) => {
-                const isValid = documemtSchemaValidate(value);
-                if (!isValid) {
-                  const errorMessage = documemtSchemaValidate.errors
-                    ?.map(
-                      (error) =>
-                        `${error.instancePath}${error.instancePath ? ": " : ""}${error.message}`,
-                    )
-                    .join("\n");
-                  toast.error(`Not compliant with JSON Schema: ${errorMessage}`);
-                  return `Not compliant with JSON Schema: ${errorMessage}`;
-                }
-                return true;
-              },
-            }}
-            render={({ field }) => (
-              <div>
-                <label className="font-sans text-sm text-gray-900">Document Schema</label>
-                <JsonEditor
-                  maxWidth={400}
-                  data={field.value}
-                  onUpdate={({ newData }) => {
-                    // console.log("onUpdate");
-                    // const valid = documemtSchemaValidate(newData);
-                    // if (!valid) {
-                    //   console.log("Errors", documemtSchemaValidate.errors);
-                    //   const errorMessage = documemtSchemaValidate.errors
-                    //     ?.map(
-                    //       (error) =>
-                    //         `${error.instancePath}${error.instancePath ? ": " : ""}${error.message}`,
-                    //     )
-                    //     .join("\n");
-                    //   toast.error(`Not compliant with JSON Schema:${errorMessage}`);
-                    //   return "JSON Schema error";
-                    // }
-                    field.onChange(newData);
-                  }}
-                  //   onUpdate={({ newData }) => field.onChange(newData)}
-                  rootName="data"
-                />
-                {errors.doc_schema && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {errors.doc_schema.message as string}
-                  </p>
-                )}
-              </div>
-            )}
-          />
-        </div>
-      </div>
-      <Divider className="my-2" />
       {/* 索引配置 */}
       <div className="mb-6">
         <div className="mb-2 flex flex-row items-center gap-2">
@@ -248,7 +167,10 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
                 labelPlacement="outside"
                 placeholder="Select your chunking strategy for this library"
                 selectedKeys={field.value ? [field.value] : []}
-                onSelectionChange={(keys) => field.onChange(Array.from(keys)[0])}>
+                disallowEmptySelection={false}
+                onSelectionChange={(keys) => {
+                  field.onChange(Array.from(keys)[0] || null);
+                }}>
                 {Object.values(Chunking_Strategy_Enum).map((strategy) => (
                   <SelectItem key={strategy} value={strategy}>
                     {strategy}
@@ -297,13 +219,63 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
                 modelType="embedding"
                 labelPlacement="outside"
                 defaultModel={field.value as string}
-                onSelectionChange={(modelName) => field.onChange(modelName)}
+                onSelectionChange={(modelName) => field.onChange(modelName || null)}
               />
             )}
           />
         </div>
       </div>
       <Divider className="my-2" />
+      {/* 文档结构配置 */}
+      <div className="mb-6">
+        <div className="mb-2 flex flex-row items-center gap-2">
+          <Icon icon={"solar:document-add-linear"} fontSize={20} />
+          <h3 className="text-lg font-semibold">Document Structure</h3>
+        </div>
+        <div className="flex flex-col gap-4">
+          <Controller
+            name="doc_schema"
+            control={control}
+            rules={{
+              validate: (value) => {
+                const isValid = documemtSchemaValidate(value);
+                if (!isValid) {
+                  const errorMessage = documemtSchemaValidate.errors
+                    ?.map(
+                      (error) =>
+                        `${error.instancePath}${error.instancePath ? ": " : ""}${error.message}`,
+                    )
+                    .join("\n");
+                  toast.error(`Not compliant with JSON Schema: ${errorMessage}`);
+                  return `Not compliant with JSON Schema: ${errorMessage}`;
+                }
+                return true;
+              },
+            }}
+            render={({ field }) => (
+              <div>
+                <label className="font-sans text-sm text-gray-900">Document Schema</label>
+                <JsonEditor
+                  maxWidth={400}
+                  data={field.value}
+                  onUpdate={({ newData }) => {
+                    field.onChange(newData);
+                  }}
+                  //   onUpdate={({ newData }) => field.onChange(newData)}
+                  rootName="data"
+                />
+                {errors.doc_schema && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.doc_schema.message as string}
+                  </p>
+                )}
+              </div>
+            )}
+          />
+        </div>
+      </div>
+      <Divider className="my-2" />
+
       {/* 高级功能配置 */}
       <Accordion defaultChecked={isAdvancedOpen}>
         <AccordionItem
@@ -334,7 +306,10 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
                 <ModelSelect
                   labelPlacement="outside"
                   defaultModel={field.value as string}
-                  onSelectionChange={(modelName) => field.onChange(modelName)}
+                  onSelectionChange={(modelName) => {
+                    console.log("onSelectionChange", modelName);
+                    field.onChange(modelName || null);
+                  }}
                 />
               )}
             />
