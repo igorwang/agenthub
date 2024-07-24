@@ -295,7 +295,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
                   size={"sm"}
                   isSelected={value as boolean}
                   onValueChange={onChange}>
-                  Extraction Process Switch
+                  Enable Extraction Process
                 </Switch>
               )}
             />
