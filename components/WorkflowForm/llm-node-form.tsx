@@ -17,6 +17,7 @@ interface NodeData {
 interface LlmNodeFormProps {
   node: Node<NodeData>;
   onNodeChange?: (data: { [key: string]: any }) => void;
+  onToggleDrawer?: () => void;
 }
 
 type FormValues = {
@@ -27,7 +28,11 @@ type FormValues = {
   label: string;
 };
 
-export default function LlmNodeForm({ node, onNodeChange }: LlmNodeFormProps) {
+export default function LlmNodeForm({
+  node,
+  onNodeChange,
+  onToggleDrawer,
+}: LlmNodeFormProps) {
   const promptFormRef = useRef<PromptFormHandle>(null);
   const ajv = new Ajv();
   const outputSchemaValidate = ajv.compile(outputSchema);
@@ -66,6 +71,7 @@ export default function LlmNodeForm({ node, onNodeChange }: LlmNodeFormProps) {
       console.log("promptFormRef", promptFormRef.current);
     }
     onNodeChange?.(data);
+    onToggleDrawer?.();
   };
 
   return (
@@ -176,7 +182,12 @@ export default function LlmNodeForm({ node, onNodeChange }: LlmNodeFormProps) {
         )}
       />
       <div className="flex flex-row justify-end gap-2">
-        <Button color="danger" variant="bordered">
+        <Button
+          color="danger"
+          variant="bordered"
+          onClick={() => {
+            onToggleDrawer?.();
+          }}>
           Close
         </Button>
         <Button type="submit" color="primary">

@@ -51,7 +51,12 @@ export default function NodeDrawer({
       onClose={onToggleDrawer}
       direction="right"
       className="z-20 h-full min-w-[400px] overflow-auto">
-      <FormComponent key={node.id} node={node} onNodeChange={onNodeChange} />
+      <FormComponent
+        key={node.id}
+        node={node}
+        onNodeChange={onNodeChange}
+        onToggleDrawer={onToggleDrawer}
+      />
     </Drawer>
     // </div>
   );

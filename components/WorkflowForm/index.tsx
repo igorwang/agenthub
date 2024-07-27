@@ -145,7 +145,7 @@ export default function WorkflowForm({
 
       <div className="flex w-full flex-row gap-2">
         <NodeTypeList nodeTypeList={nodeTypeList} />
-        <div className="h-[600px] w-full border">
+        <div className="z-20 min-h-[600px] w-full border">
           <WorkflowPane
             flowId={flowId}
             initialEdges={initialEdges}
@@ -154,8 +154,8 @@ export default function WorkflowForm({
         </div>
       </div>
 
-      <form className="relative flex" onSubmit={handleSubmit(onSubmit)}>
-        <Button type="submit" color="primary" className="absolute right-0">
+      <form className="flex justify-end" onSubmit={handleSubmit(onSubmit)}>
+        <Button type="submit" color="primary" className="">
           {"Save Workflow"}
         </Button>
       </form>
