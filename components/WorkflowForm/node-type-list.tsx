@@ -1,4 +1,5 @@
 import { NodeTypeFragmentFragment } from "@/graphql/generated/types";
+import { Icon } from "@iconify/react";
 import React from "react";
 
 export type NodeType = "input" | "default" | "output";
@@ -23,11 +24,15 @@ const NodeTypeList: React.FC<NodeTypeListProps> = ({ nodeTypeList }) => {
         {nodeTypeList.map((item) => (
           <div
             key={item.id}
-            className="flex h-16 cursor-move flex-col items-center justify-center rounded border border-blue-500 p-1 text-center"
+            className="flex h-16 cursor-move flex-col items-center justify-center gap-1 rounded border border-blue-500 p-1 text-center"
             onDragStart={(event) => onDragStart(event, item)}
             draggable>
-            <div className="mb-1 h-6 w-6">{/* You can add an icon here if needed */}</div>
-            <span className="text-xs leading-tight">{item.label}</span>
+            {/* <div className="mb-1 h-6 w-6"> */}
+            <Icon icon={item.icon ? item.icon : "carbon:pcn-p-node"} fontSize={20} />
+            {/* </div> */}
+            <span className="max-w-full overflow-hidden text-ellipsis text-nowrap text-xs leading-tight">
+              {item.label}
+            </span>
           </div>
         ))}
       </div>

@@ -91,7 +91,6 @@ export default function WorkflowForm({
     formData.append("edges", JSON.stringify(data.edges));
 
     const result = await action(formData);
-    console.log(result);
     if (result.success) {
     } else {
       toast.error("Create error");
@@ -142,6 +141,9 @@ export default function WorkflowForm({
           </div>
         )}
       />
+      {errors.name && (
+        <p className="mt-1 text-sm text-red-500">{errors.name.message as string}</p>
+      )}
 
       <div className="flex w-full flex-row gap-2">
         <NodeTypeList nodeTypeList={nodeTypeList} />
