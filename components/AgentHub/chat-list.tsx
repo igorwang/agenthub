@@ -260,6 +260,7 @@ export const ChatList: React.FC<ChatListProps> = ({
       </Modal>
     );
   }
+
   return (
     <ScrollShadow
       className={"flex max-h-full min-h-[60px] flex-col justify-between py-2"}

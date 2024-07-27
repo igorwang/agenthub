@@ -19,6 +19,11 @@ import {
   Button,
   Divider,
   Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
   Select,
   SelectItem,
   Switch,
@@ -39,6 +44,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
   const router = useRouter();
   const [updateKnowledgeBaseMutation] = useUpdateKnowledgeBaseMutation();
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(true);
+  const [deleteModal, setDeleteModal] = useState(false);
   console.log("initLibrary", initLibrary);
   const ajv = new Ajv();
   const chunkingStrategyValidate = ajv.compile(chunkingParamsSchema);
@@ -86,6 +92,34 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
       toast.error("Failed to update library information");
     }
   };
+
+  const handleDeleteLibrary = () => {
+    setDeleteModal(false);
+  };
+
+  const deleteModalContent = (
+    <Modal isOpen={deleteModal} hideCloseButton={true}>
+      <ModalContent>
+        <ModalHeader className="flex flex-col gap-1">Delete Library</ModalHeader>
+        <ModalBody>
+          <p>Are you sure you want to remove this Library : {initLibrary?.name}?</p>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" variant="light" onPress={() => setDeleteModal(false)}>
+            Close
+          </Button>
+          <Button
+            color="danger"
+            onPress={() => {
+              // setIsModalOpen(false);
+              handleDeleteLibrary();
+            }}>
+            Affirm
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="h-full w-full max-w-4xl">
@@ -312,12 +346,16 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
         </AccordionItem>
       </Accordion>
 
-      <div className="flex items-end justify-end pb-1">
+      <div className="flex items-end justify-end gap-2 pb-1">
         {/* <span className="text-foreground-500">Library Information</span> */}
+        <Button color="danger" onClick={() => setDeleteModal(true)}>
+          Delete
+        </Button>
         <Button color="primary" type="submit">
           Save
         </Button>
       </div>
+      {deleteModal && deleteModalContent}
     </form>
   );
 }
