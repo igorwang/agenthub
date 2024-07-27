@@ -4,6 +4,7 @@ import {
   addEdge,
   Background,
   BackgroundVariant,
+  Connection,
   Controls,
   MiniMap,
   NodeMouseHandler,
@@ -14,9 +15,8 @@ import {
   useReactFlow,
   type Edge,
   type Node,
-  type OnConnect,
 } from "@xyflow/react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import NodeDrawer from "@/components/WorkflowForm/node-drawer";
 import { nodeTypes } from "@/components/WorkflowForm/nodes";
@@ -28,23 +28,37 @@ interface WorkflowPaneProps {
   flowId: string;
   initialNodes: Node[];
   initialEdges: Edge[];
+  onWorkflowChange?: (nodes: Node[], edges: Edge[]) => void;
 }
 
-function Flow({ flowId, initialNodes, initialEdges }: WorkflowPaneProps) {
+function Flow({
+  flowId,
+  initialNodes,
+  initialEdges,
+  onWorkflowChange,
+}: WorkflowPaneProps) {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
-
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
-
-  const { getIntersectingNodes } = useReactFlow();
-
   const { screenToFlowPosition } = useReactFlow();
 
-  const onConnect = useCallback<OnConnect>(
-    (params) => {
-      setEdges((eds) => addEdge(params, eds));
+  useEffect(() => {
+    onWorkflowChange?.(nodes, edges);
+  }, [nodes, edges]);
+
+  const onConnect = useCallback(
+    (params: Connection) => {
+      setEdges((eds) => {
+        const newEdge: Edge = {
+          ...params,
+          id: `${v4()}`, // 使用 UUID 生成唯一 ID
+          // 您可以在这里添加其他边的属性
+          type: "default", // 或其他您想要的边类型
+        };
+        return addEdge(newEdge, eds);
+      });
     },
     [setEdges],
   );

@@ -7,7 +7,6 @@ type CustomNodeData = {
 };
 
 export type StartNode = Node<CustomNodeData, "startNode">;
-
 export const StartNodeComponent: React.FC<NodeProps<StartNode>> = memo(({ data }) => {
   return (
     <div className="rounded-md border-2 border-stone-400 bg-white px-4 py-2 shadow-md">

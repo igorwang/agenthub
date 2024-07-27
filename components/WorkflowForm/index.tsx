@@ -7,6 +7,8 @@ import {
   FlowNodeFragmentFragment,
   NodeTypeFragmentFragment,
 } from "@/graphql/generated/types";
+import { Button } from "@nextui-org/react";
+import { Edge, Node } from "@xyflow/react";
 import "@xyflow/react/dist/base.css";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -74,6 +76,8 @@ export default function WorkflowForm({
   });
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    console.log("onSubmit", data);
+
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("description", data.description);
@@ -84,12 +88,16 @@ export default function WorkflowForm({
     // }
   };
 
-  const handleWorkflowChange = (nodes: Node[], edges: Edges[]) => {};
+  const handleWorkflowChange = (nodes: Node[], edges: Edge[]) => {
+    console.log("handleWorkflowChange");
+    setValue("nodes", nodes);
+    setValue("edges", edges);
+  };
 
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
+        {/* <div>
           <label htmlFor="name">Name:</label>
           <input id="name" {...register("name", { required: "Name is required" })} />
           {errors.name && <span>{errors.name.message}</span>}
@@ -97,18 +105,19 @@ export default function WorkflowForm({
         <div>
           <label htmlFor="description">Description:</label>
           <textarea id="description" {...register("description")} />
-        </div>
-        <button type="submit">
+        </div> */}
+        <Button type="submit">
           {initialData ? "Update Workflow" : "Create Workflow"}
-        </button>
-        <div className="h-[400px] w-full">
-          <WorkflowPane
-            flowId={flowId}
-            initialEdges={initialEdges}
-            initialNodes={initialNodes}></WorkflowPane>
-        </div>
-        <NodeTypeList nodeTypeList={nodeTypeList} />
+        </Button>
       </form>
+      <NodeTypeList nodeTypeList={nodeTypeList} />
+      <div className="h-[400px] w-full">
+        <WorkflowPane
+          flowId={flowId}
+          initialEdges={initialEdges}
+          initialNodes={initialNodes}
+          onWorkflowChange={handleWorkflowChange}></WorkflowPane>
+      </div>
     </div>
   );
 }

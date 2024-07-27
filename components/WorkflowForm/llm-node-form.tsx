@@ -28,8 +28,6 @@ type FormValues = {
 };
 
 export default function LlmNodeForm({ node, onNodeChange }: LlmNodeFormProps) {
-  console.log("LlmNodeForm", node);
-
   const promptFormRef = useRef<PromptFormHandle>(null);
   const ajv = new Ajv();
   const outputSchemaValidate = ajv.compile(outputSchema);
