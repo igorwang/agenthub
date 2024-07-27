@@ -1,11 +1,13 @@
 "use client";
 import FileTable, { FileDTO } from "@/components/LibraryFileList/file-table";
+import DeleteConfirmModal from "@/components/ui/delete-modal";
 import { PlusIcon } from "@/components/ui/icons";
 import UploadZone from "@/components/UploadZone";
 import {
   FilesListQuery,
   Order_By,
   Status_Enum,
+  useDeleteFileByIdMutation,
   useFilesListQuery,
 } from "@/graphql/generated/types";
 import { Icon } from "@iconify/react";
@@ -18,10 +20,16 @@ import {
   ModalHeader,
 } from "@nextui-org/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 
 interface FilesListProps {
   initialFiles: FilesListQuery | null;
   knowledgeBaseId: string;
+}
+
+interface File {
+  id: string;
+  name: string;
 }
 
 export default function LibraryFileList({
@@ -30,6 +38,9 @@ export default function LibraryFileList({
 }: FilesListProps) {
   const [page, setPage] = useState<number>(1);
   const [searchValue, setSearchValue] = useState("");
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [selectedFile, setSelectFile] = useState<File | null>();
+  const [deleteFileById] = useDeleteFileByIdMutation();
 
   const pageSize = 10;
   const [files, setFiles] = useState<FilesListQuery["files"]>(initialFiles?.files || []);
@@ -84,9 +95,12 @@ export default function LibraryFileList({
     // 实现编辑文件的逻辑
   }, []);
 
-  const handleDeleteFile = useCallback((file: FileDTO) => {
-    console.log("Deleting file:", file.name);
+  const handleDeleteFile = useCallback((id: string) => {
     // 实现删除文件的逻辑
+    deleteFileById({ variables: { id: id } }).then(async (res) => {
+      toast.success(`${res?.data?.delete_files_by_pk?.name} was successfully deleted`);
+      refetch();
+    });
   }, []);
 
   const handleAfterUploadFile = useCallback(() => {
@@ -141,7 +155,10 @@ export default function LibraryFileList({
         onPage={handleSetPage}
         onView={handleViewFile}
         onRedo={handleRedoFile}
-        onDelete={handleDeleteFile}
+        onDelete={(file: { id: string; name: string }) => {
+          setDeleteModal(true);
+          setSelectFile(file);
+        }}
       />
       <Modal
         isOpen={isUploadOpen}
@@ -164,6 +181,16 @@ export default function LibraryFileList({
           )}
         </ModalContent>
       </Modal>
+      {deleteModal && (
+        <DeleteConfirmModal
+          isOpen={deleteModal}
+          title={"Delete File"}
+          name={selectedFile?.name || ""}
+          id={selectedFile?.id || ""}
+          onClose={() => setDeleteModal(false)}
+          onAffirm={() => handleDeleteFile(selectedFile?.id || "")}
+        />
+      )}
     </div>
   );
 }

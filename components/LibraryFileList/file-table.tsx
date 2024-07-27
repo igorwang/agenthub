@@ -12,7 +12,7 @@ import {
   TableRow,
   Tooltip,
 } from "@nextui-org/react";
-import React, { FC, useCallback, useMemo } from "react";
+import React, { FC, useCallback, useMemo, useState } from "react";
 
 export interface FileDTO {
   id: string;
@@ -65,6 +65,7 @@ const FileTable: FC<FileTableProps> = ({
     column: "updateTime",
     direction: "descending",
   });
+  const [deleteModal, setDeleteModal] = useState(false);
 
   const sortedFiles = useMemo(() => {
     return [...files].sort((a, b) => {
@@ -128,7 +129,9 @@ const FileTable: FC<FileTableProps> = ({
               <Tooltip color="danger" content="Delete">
                 <span
                   className="cursor-pointer text-lg text-danger active:opacity-50"
-                  onClick={() => onDelete(file)}>
+                  onClick={() => {
+                    onDelete(file);
+                  }}>
                   <Icon icon={"openmoji:delete"} />
                 </span>
               </Tooltip>
