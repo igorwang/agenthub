@@ -187,7 +187,10 @@ export default function LibraryFileList({
           title={"Delete File"}
           name={selectedFile?.name || ""}
           id={selectedFile?.id || ""}
-          onClose={() => setDeleteModal(false)}
+          onClose={() => {
+            setDeleteModal(false);
+            setSelectFile(null);
+          }}
           onAffirm={() => {
             handleDeleteFile(selectedFile?.id || "");
             setSelectFile(null);
