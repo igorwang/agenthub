@@ -1,14 +1,55 @@
-"use client";
+import { auth } from "@/auth";
+import LibraryFileList from "@/components/LibraryFileList";
+import {
+  FilesListDocument,
+  FilesListQuery,
+  FilesListQueryVariables,
+  KnowledgeBaseDetailDocument,
+  KnowledgeBaseDetailQuery,
+  KnowledgeBaseDetailQueryVariables,
+  Order_By,
+} from "@/graphql/generated/types";
+import { fetchData } from "@/lib/apolloRequest";
+import { Suspense } from "react";
 
-import LibraryFile from "@/components/LibraryFile";
-import { usePathname } from "next/navigation";
+async function fetchFileListData(id: string) {
+  const session = await auth();
+  if (!session?.user) return null;
 
-export default function LibraryPage() {
-  const path = usePathname();
-  const id = path.split("/")[path.split("/").length - 1];
+  const variables: FilesListQueryVariables = {
+    order_by: { updated_at: Order_By.DescNullsLast },
+    limit: 10,
+    where: { creator_id: { _eq: session.user.id }, knowledge_base_id: { _eq: id } },
+  };
+
+  return await fetchData<FilesListQuery, FilesListQueryVariables>(
+    FilesListDocument,
+    variables,
+  );
+}
+
+async function fetchLibraryData(id: string) {
+  const session = await auth();
+  if (!session?.user) return null;
+
+  const variables: KnowledgeBaseDetailQueryVariables = {
+    id: id,
+  };
+
+  return await fetchData<KnowledgeBaseDetailQuery, KnowledgeBaseDetailQueryVariables>(
+    KnowledgeBaseDetailDocument,
+    variables,
+  );
+}
+
+export default async function LibraryMainPage({ params }: { params: { id: string } }) {
+  const files = await fetchFileListData(params.id);
+
   return (
-    <div className="mx-auto flex h-full w-full items-center px-10 py-10">
-      <LibraryFile id={id} showSaveButton={true} />
+    <div className="mx-auto flex w-full max-w-7xl flex-col">
+      <Suspense fallback={<div className="text-center">Loading...</div>}>
+        <LibraryFileList initialFiles={files} knowledgeBaseId={params.id} />
+      </Suspense>
     </div>
   );
 }

@@ -106,7 +106,7 @@ export default function AgentSettings() {
   }
 
   return (
-    <div className={"flex h-full w-full flex-col gap-4"}>
+    <div className={"flex h-full w-full flex-col gap-4 overflow-auto"}>
       <RightHeader title={"Agent Setting"} callBackUri={`/chat/${id}`} />
       <div className={"mx-auto mt-10 flex w-full flex-col items-center px-4"}>
         <HorizontalSteps

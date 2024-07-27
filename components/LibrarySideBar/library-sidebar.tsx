@@ -53,7 +53,7 @@ export default function LibrarySideBar({ items }: LibrarySideBarProps) {
 
   function handleItemClick(id: string) {
     setSelectedItemId(id);
-    router.push(`/discover/${id}`);
+    router.push(`/library/${id}`);
   }
 
   return (

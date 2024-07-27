@@ -1,12 +1,5 @@
-import { auth } from "@/auth";
+import ComingSoonPage from "@/components/ui/coming-soon-page";
 
-export default async function LibraryPage() {
-  const session = await auth();
-  if (!session?.user) return null;
-
-  return (
-    <div className="flex h-full w-full flex-row">
-      <div>Library</div>
-    </div>
-  );
+export default function DiscoverPage() {
+  return <ComingSoonPage />;
 }

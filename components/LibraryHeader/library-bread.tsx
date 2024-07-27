@@ -37,13 +37,13 @@ export default function LibraryBreadcrumbs({ libraryId }: LibraryBreadcrumbsProp
         ],
       }}>
       <BreadcrumbItem key="files" isCurrent={currentPage === "files"}>
-        <Link href={`/discover/${libraryId}`}>Files</Link>
+        <Link href={`/library/${libraryId}`}>Files</Link>
       </BreadcrumbItem>
       <BreadcrumbItem key="settings" isCurrent={currentPage === "settings"}>
-        <Link href={`/discover/${libraryId}/settings`}>Settings</Link>
+        <Link href={`/library/${libraryId}/settings`}>Settings</Link>
       </BreadcrumbItem>
       <BreadcrumbItem key="workflow" isCurrent={currentPage === "workflow"}>
-        <Link href={`/discover/${libraryId}/workflow`}>Workflow</Link>
+        <Link href={`/library/${libraryId}/workflow`}>Workflow</Link>
       </BreadcrumbItem>
     </Breadcrumbs>
   );
