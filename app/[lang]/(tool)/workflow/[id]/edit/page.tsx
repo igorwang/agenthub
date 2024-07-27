@@ -58,9 +58,6 @@ export default async function EditWorkflowPage({ params }: Props) {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="mb-4 text-2xl font-bold">
-        Edit Workflow: {workflow.workflow_by_pk?.name}
-      </h1>
       <WorkflowForm
         initialData={initialData}
         action={updateWorkflow}

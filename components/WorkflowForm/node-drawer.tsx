@@ -50,7 +50,7 @@ export default function NodeDrawer({
       open={isOpen}
       onClose={onToggleDrawer}
       direction="right"
-      className="h-full min-w-[400px] overflow-auto">
+      className="z-20 h-full min-w-[400px] overflow-auto">
       <FormComponent key={node.id} node={node} onNodeChange={onNodeChange} />
     </Drawer>
     // </div>

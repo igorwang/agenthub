@@ -7,11 +7,12 @@ import {
   FlowNodeFragmentFragment,
   NodeTypeFragmentFragment,
 } from "@/graphql/generated/types";
-import { Button } from "@nextui-org/react";
+import { Button, Input } from "@nextui-org/react";
 import { Edge, Node } from "@xyflow/react";
 import "@xyflow/react/dist/base.css";
 import { useRouter } from "next/navigation";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 interface WorkflowFormProps {
@@ -40,6 +41,7 @@ export default function WorkflowForm({
   nodeTypeList,
 }: WorkflowFormProps) {
   const router = useRouter();
+  const [isEditing, setIsEditing] = useState(false);
 
   const flowId = initialData.id;
 
@@ -66,6 +68,7 @@ export default function WorkflowForm({
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
     setValue,
   } = useForm<FormValues>({
@@ -78,10 +81,8 @@ export default function WorkflowForm({
     },
   });
   const onSubmit: SubmitHandler<FormValues> = async (data, event) => {
+    console.log(data);
     event?.preventDefault();
-
-    console.log("onSubmit", data);
-
     const formData = new FormData();
     formData.append("id", data.id);
     formData.append("name", data.name);
@@ -97,6 +98,7 @@ export default function WorkflowForm({
     }
 
     if (result.success) {
+      toast.success("Save workflow success");
       router.push(`/workflow/${flowId}/edit`);
     }
   };
@@ -107,29 +109,56 @@ export default function WorkflowForm({
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        {/* <div>
-          <label htmlFor="name">Name:</label>
-          <input id="name" {...register("name", { required: "Name is required" })} />
-          {errors.name && <span>{errors.name.message}</span>}
+    <div className="flex flex-col gap-4">
+      <Controller
+        name={"name"}
+        control={control}
+        rules={{ required: "name  is required" }}
+        render={({ field }) => (
+          <div className="max-w-1/2 w-[300px]">
+            {isEditing ? (
+              <Input
+                autoFocus
+                {...field}
+                onBlur={(e) => {
+                  field.onBlur();
+                  setIsEditing(false);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault(); // 防止表单提交
+                    field.onBlur(); // 触发 react-hook-form 的 onBlur
+                    setIsEditing(false);
+                  }
+                }}
+              />
+            ) : (
+              <div
+                className="min-h-[40px] cursor-pointer rounded border p-2 hover:bg-gray-100"
+                onClick={() => setIsEditing(true)}>
+                {field.value}
+              </div>
+            )}
+          </div>
+        )}
+      />
+
+      <div className="flex w-full flex-row gap-2">
+        <NodeTypeList nodeTypeList={nodeTypeList} />
+        <div className="h-[600px] w-full border">
+          <WorkflowPane
+            flowId={flowId}
+            initialEdges={initialEdges}
+            initialNodes={initialNodes}
+            onWorkflowChange={handleWorkflowChange}></WorkflowPane>
         </div>
-        <div>
-          <label htmlFor="description">Description:</label>
-          <textarea id="description" {...register("description")} />
-        </div> */}
-        <Button type="submit">
-          {initialData ? "Update Workflow" : "Create Workflow"}
+      </div>
+
+      <form className="relative flex" onSubmit={handleSubmit(onSubmit)}>
+        <Button type="submit" color="primary" className="absolute right-0">
+          {"Save Workflow"}
         </Button>
       </form>
-      <NodeTypeList nodeTypeList={nodeTypeList} />
-      <div className="h-[400px] w-full">
-        <WorkflowPane
-          flowId={flowId}
-          initialEdges={initialEdges}
-          initialNodes={initialNodes}
-          onWorkflowChange={handleWorkflowChange}></WorkflowPane>
-      </div>
     </div>
   );
 }

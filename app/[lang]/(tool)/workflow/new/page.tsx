@@ -24,10 +24,8 @@ async function getNodeTypeListData() {
 export default async function NewWorkflowPage() {
   const nodeTypeList = await getNodeTypeListData();
   const flowId = v4();
-  console.log("nodeTypeList", nodeTypeList);
   return (
     <div className="container mx-auto p-4">
-      <h1 className="mb-4 text-2xl font-bold">Create New Workflow</h1>
       <WorkflowForm
         initialData={{ id: flowId, name: "new flow", description: "" }}
         action={createNewWorkflow}
