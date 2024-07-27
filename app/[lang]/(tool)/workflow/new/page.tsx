@@ -5,7 +5,7 @@ import {
   GetNodeTypeListQuery,
   GetNodeTypeListQueryVariables,
 } from "@/graphql/generated/types";
-import { createWorkflow } from "@/lib/actions/workflowActions";
+import { createNewWorkflow } from "@/lib/actions/workflowActions";
 import { fetchData } from "@/lib/apolloRequest";
 
 async function getNodeTypeListData() {
@@ -27,7 +27,7 @@ export default async function NewWorkflowPage() {
     <div className="container mx-auto p-4">
       <h1 className="mb-4 text-2xl font-bold">Create New Workflow</h1>
       <WorkflowForm
-        action={createWorkflow}
+        action={createNewWorkflow}
         nodeTypeList={nodeTypeList?.node_type || []}
       />
     </div>

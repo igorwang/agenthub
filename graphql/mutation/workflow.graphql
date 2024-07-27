@@ -3,3 +3,15 @@ mutation CreateNewWorkflow($object: workflow_insert_input = {}) {
     id
   }
 }
+
+mutation DeleteNodesAndEdges(
+  $where: flow_node_bool_exp = {}
+  $where1: flow_edge_bool_exp = {}
+) {
+  delete_flow_node(where: $where) {
+    affected_rows
+  }
+  delete_flow_edge(where: $where1) {
+    affected_rows
+  }
+}

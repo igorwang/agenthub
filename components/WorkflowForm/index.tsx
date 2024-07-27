@@ -12,6 +12,7 @@ import { Edge, Node } from "@xyflow/react";
 import "@xyflow/react/dist/base.css";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { v4 } from "uuid";
 
 interface WorkflowFormProps {
@@ -75,14 +76,26 @@ export default function WorkflowForm({
     },
   });
 
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+  const onSubmit: SubmitHandler<FormValues> = async (data, event) => {
+    event?.preventDefault();
+
     console.log("onSubmit", data);
 
     const formData = new FormData();
+    formData.append("id", data.id);
     formData.append("name", data.name);
     formData.append("description", data.description);
+    formData.append("nodes", JSON.stringify(data.nodes));
+    formData.append("edges", JSON.stringify(data.edges));
 
     const result = await action(formData);
+    console.log("result");
+    if (result.success) {
+    } else {
+      console.log("result");
+      toast.error("Create error");
+    }
+
     // if (result.success) {
     //   router.push("/workflow");
     // }
