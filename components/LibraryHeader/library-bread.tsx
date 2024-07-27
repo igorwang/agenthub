@@ -32,7 +32,7 @@ export default function LibraryBreadcrumbs({ libraryId }: LibraryBreadcrumbsProp
         item: [
           "px-2 py-0.5 rounded-small",
           "border-1", // 默认无边框
-          "data-[current=true]:border-small data-[current=true]:border-default-800 data-[current=true]:bg-foreground data-[current=true]:text-background",
+          "data-[current=true]:border-1 data-[current=true]:border-default-800 data-[current=true]:bg-foreground data-[current=true]:text-background",
           "transition-colors",
         ],
       }}>

@@ -89,13 +89,6 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="h-full w-full max-w-4xl">
-      <div className="flex items-end justify-end pb-1">
-        {/* <span className="text-foreground-500">Library Information</span> */}
-        <Button color="primary" type="submit">
-          Save
-        </Button>
-      </div>
-
       {/* 基本信息配置 */}
       <div className="mb-6">
         <div className="mb-2 flex flex-row items-center gap-2">
@@ -188,6 +181,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
                   Chunking Parameters
                 </label>
                 <JsonEditor
+                  collapse={true} // This will collapse the editor by default
                   maxWidth={400}
                   data={field.value}
                   onUpdate={({ newData }) => {
@@ -256,6 +250,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
               <div>
                 <label className="font-sans text-sm text-gray-900">Document Schema</label>
                 <JsonEditor
+                  collapse={true} // This will collapse the editor by default
                   maxWidth={400}
                   data={field.value}
                   onUpdate={({ newData }) => {
@@ -316,6 +311,13 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
           </div>
         </AccordionItem>
       </Accordion>
+
+      <div className="flex items-end justify-end pb-1">
+        {/* <span className="text-foreground-500">Library Information</span> */}
+        <Button color="primary" type="submit">
+          Save
+        </Button>
+      </div>
     </form>
   );
 }
