@@ -148,7 +148,6 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
 
     const featureToolComponent = useMemo(() => {
       if (tool?.id && agentId) {
-        console.log("featureToolComponent", sourceResults);
         return (
           <FeatureTool
             messageId={messageId}

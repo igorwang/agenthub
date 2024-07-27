@@ -108,7 +108,6 @@ export const Conversation: React.FC<ConversationProps> = ({
   };
 
   const handleSelectedSource = (source: SourceType, selected: boolean) => {
-    console.log("handleAddSource", source, selected);
     if (selected) {
       const hasThisSource = selectedSources.some((item) => item.fileId == source.fileId);
       if (!hasThisSource) {

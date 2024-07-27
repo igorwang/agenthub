@@ -90,7 +90,6 @@ export default function LibraryFileList({
   }, []);
 
   const handleAfterUploadFile = useCallback(() => {
-    console.log("handleAfterUploadFile");
     setPage(1);
   }, []);
 

@@ -44,7 +44,6 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
 
   useEffect(() => {
     if (query.data) {
-      console.log("query.data", query.data);
       setAgent(query?.data?.agent_by_pk);
     }
   }, [query]);

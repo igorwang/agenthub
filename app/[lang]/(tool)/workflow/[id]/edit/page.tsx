@@ -25,7 +25,6 @@ async function getWorkflow(id: string) {
     GetWorkflowByIdDocument,
     variables,
   );
-  console.log("getWorkflow", data);
   return data;
 }
 
@@ -54,7 +53,6 @@ export default async function EditWorkflowPage({ params }: Props) {
     nodes: workflow.workflow_by_pk?.flow_nodes,
     edges: workflow.workflow_by_pk?.flow_edges,
   };
-  console.log(initialData);
 
   return (
     <div className="container mx-auto p-4">

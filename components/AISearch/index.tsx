@@ -113,7 +113,6 @@ export default function AISearch() {
       const fetchRefineQuery = async () => {
         try {
           const result = await ragQueryAnalyzer(query, null);
-          console.log("result", result);
           const transformedResult = {
             refineQuery: Array.isArray(result.refineQuery)
               ? result.refineQuery.join(";")
@@ -122,7 +121,6 @@ export default function AISearch() {
               ? result.keywords.join(";")
               : result.keywords,
           };
-          console.log(transformedResult);
           setRefineQuery(transformedResult);
         } catch (error) {
           toast.error("System error, please try later.");
@@ -138,9 +136,7 @@ export default function AISearch() {
   useEffect(() => {
     if (isChating && refineQuery != null && chatStatus == CHAT_STATUS_ENUM.Analyzing) {
       setChatStatus(CHAT_STATUS_ENUM.Searching);
-      console.log("refineQuery", refineQuery);
       const searchLibrary = async () => {
-        console.log("Go to search something");
         try {
           const searchBody = {
             query: `${refineQuery?.refineQuery};${refineQuery?.keywords}`,
@@ -159,7 +155,6 @@ export default function AISearch() {
             .then((response) => {
               if (!response.ok) {
                 // If response is not ok, throw an error
-                console.log(`Library search failed: ${response.statusText}`);
                 toast.error(`Library search failed.`);
                 return [];
               }
@@ -239,7 +234,6 @@ export default function AISearch() {
       messages[messages.length - 1].status == "draft" &&
       chatStatus == CHAT_STATUS_ENUM.Searching
     ) {
-      console.log("Generating answer");
       setChatStatus(CHAT_STATUS_ENUM.Generating);
       const generateAnswer = async () => {
         const prompt = await createRagAnswerPrompt(
@@ -300,7 +294,6 @@ export default function AISearch() {
         } catch (error) {
           console.error("Error while streaming:", error);
         }
-        console.log("finished chat");
         setMessages((prev) => [
           ...prev.slice(0, -1),
           { ...prev[prev.length - 1], status: "success" },

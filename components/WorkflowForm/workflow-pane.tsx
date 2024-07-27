@@ -87,7 +87,6 @@ function Flow({
       if (!nodeTypeData || !nodeTypeData.type) {
         return;
       }
-      console.log(reactFlowBounds?.left, reactFlowBounds?.top);
       const position = screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,
@@ -139,8 +138,6 @@ function Flow({
       // Example: Use reactFlowInstance if needed
 
       const { x, y } = screenToFlowPosition({ x: event.clientX, y: event.clientY });
-      console.log("Clicked position in flow coordinates:", { x, y });
-      console.log("Node double-clicked:", node);
       setSelectedNode(node);
       setOpenDrawer(true);
       // You can add more logic here, such as opening a modal for editing the node
@@ -150,7 +147,6 @@ function Flow({
 
   const onNodeClick: NodeMouseHandler = useCallback(
     (event, node) => {
-      console.log("onNodeClick");
       // setSelectedNode((prevNode) => (prevNode?.id === node.id ? null : node));
       // console.log(node);
     },

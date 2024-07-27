@@ -85,7 +85,6 @@ export default function AgentSettings() {
 
   function onClickNext() {
     const currentStep = step;
-    console.log("currentStep", currentStep);
     setStep(currentStep + 1);
     switch (currentStep) {
       case 0:

@@ -131,7 +131,6 @@ const LibraryFile = forwardRef<LibraryFileHandle, LibraryFileProps>(
 
     useImperativeHandle(ref, () => ({
       saveLibraryInfo() {
-        console.log(`Saving library info for id: ${id}`);
         // Add your save logic here
         handleSaveLibraryInfo();
       },
@@ -142,7 +141,6 @@ const LibraryFile = forwardRef<LibraryFileHandle, LibraryFileProps>(
         name: knowledgeBase?.name,
         description: knowledgeBase?.description,
       };
-      console.log("knowledgeBase input", input);
       updateKnowledgeBaseMutation({
         variables: {
           pk_columns: { id: id },
@@ -416,7 +414,6 @@ const LibraryFile = forwardRef<LibraryFileHandle, LibraryFileProps>(
       if (selectedKeys !== "all") {
         const ids: string[] = [];
         selectedKeys.forEach((value: Key) => {
-          console.log(value.toString());
           ids.push(value.toString());
         });
         setModalProps({ ids: ids });

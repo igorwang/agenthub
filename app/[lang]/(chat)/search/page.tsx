@@ -6,7 +6,6 @@ const generateShortId = () => {
 };
 export default function SearchPage() {
   const id = generateShortId();
-  console.log(generateShortId);
   redirect(`/search/${id}`);
   return null;
 }

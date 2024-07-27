@@ -29,7 +29,6 @@ const resetTokenLink = onError(({ networkError }) => {
 });
 
 const createHttpLink = (headers: Record<string, string> | null) => {
-  console.log(`createHttpLink: ${JSON.stringify(headers, null, 2)}`);
   const httpLink = new HttpLink({
     uri: `${process.env.HTTP_API_HOST}`,
     credentials: "include",
@@ -53,9 +52,7 @@ const createWSLink = (): WebSocketLink => {
     },
   });
 
-  subscriptionClient.onConnected(() => {
-    console.log("WebSocket connection established");
-  });
+  subscriptionClient.onConnected(() => {});
 
   return new WebSocketLink(subscriptionClient);
 };

@@ -68,7 +68,6 @@ export default function LlmNodeForm({
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     if (promptFormRef.current) {
       await promptFormRef.current.clickButton();
-      console.log("promptFormRef", promptFormRef.current);
     }
     onNodeChange?.(data);
     onToggleDrawer?.();
@@ -174,7 +173,6 @@ export default function LlmNodeForm({
             rightColumnClassName="w-full"
             ref={promptFormRef}
             onUpdatePromptId={(value) => {
-              console.log("onUpdatePromptId", value);
               field.onChange(value);
               // ensure prompt id is the latest one
               onNodeChange?.({ id: node.id, prompt_id: value });

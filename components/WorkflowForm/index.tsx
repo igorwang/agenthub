@@ -62,9 +62,6 @@ export default function WorkflowForm({
       }))
     : [];
 
-  // const flowId = initialData?.id || v4();
-  // console.log(flowId);
-
   const {
     register,
     handleSubmit,
@@ -81,7 +78,6 @@ export default function WorkflowForm({
     },
   });
   const onSubmit: SubmitHandler<FormValues> = async (data, event) => {
-    console.log(data);
     event?.preventDefault();
     const formData = new FormData();
     formData.append("id", data.id);

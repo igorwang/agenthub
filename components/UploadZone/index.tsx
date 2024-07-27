@@ -53,7 +53,6 @@ export default function UploadZone({ knowledgeBaseId, onAfterUpload }: UploadZon
     setFiles([]);
   };
   const handleUploadStart = async () => {
-    console.log("handleUploadStart");
     setIsUploading(true);
     setFiles(
       files.map((file) => ({

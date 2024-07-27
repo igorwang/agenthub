@@ -44,7 +44,6 @@ export async function ragQueryAnalyzer(
     format_instructions: parser.getFormatInstructions(),
   });
 
-  // console.log("formattedPrompt", formattedPrompt);
   const modelParams = {
     stop: ["```", "} ```"],
   };

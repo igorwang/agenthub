@@ -128,7 +128,6 @@ export default function MessageWindow({
 
   useEffect(() => {
     if (agentData) {
-      console.log("agentData", agentData);
       setAgent({
         id: agentData.agent_by_pk?.id,
         name: agentData.agent_by_pk?.name,
@@ -216,13 +215,10 @@ export default function MessageWindow({
       messages.length > 0 &&
       messages[messages.length - 1].status == "draft"
     ) {
-      console.log("Analyzing:messages", messages);
       setChatStatus(CHAT_STATUS_ENUM.Analyzing);
       const fetchRefineQuery = async () => {
         const historyMessage = messages.filter((item) => item.status != "draft");
-        console.log("libraries:", libraries);
         try {
-          console.log(historyMessage);
           const result = await queryAnalyzer(
             messages,
             agent?.defaultModel,
@@ -244,14 +240,12 @@ export default function MessageWindow({
   useEffect(() => {
     if (isChating && refineQuery != null && chatStatus == CHAT_STATUS_ENUM.Analyzing) {
       setChatStatus(CHAT_STATUS_ENUM.Searching);
-      console.log("refineQuery", refineQuery);
       const filter_kb_ids = selectedSources
         ?.map((item) => item.knowledgeBaseId || null)
         .filter((id) => id !== null);
       const filter_file_ids = selectedSources?.map((item) => item.fileId);
 
       const searchLibrary = async () => {
-        console.log("Go to search something");
         try {
           const librarySearchPromise = librarySearcher({
             query: `${refineQuery?.refineQuery};${refineQuery?.keywords}`,
@@ -282,7 +276,6 @@ export default function MessageWindow({
 
           Promise.all(searchPromises)
             .then(async ([librarySearchResponse, webSearchResponse]) => {
-              console.log(agent?.enable_search);
               const librarySearchResults = await librarySearchResponse;
               const webSearchResults = webSearchResponse
                 ? await webSearchResponse.json()
@@ -314,7 +307,6 @@ export default function MessageWindow({
               const searchResults = [...libraryResults, ...webResults].map(
                 (item, index) => ({ ...item, index: index + 1 }),
               );
-              console.log("searchResults:", searchResults);
               setSearchResults(() => searchResults || []);
               setMessages((prev) => [
                 ...prev.slice(0, -1),
@@ -338,7 +330,6 @@ export default function MessageWindow({
         (item) => item.role == Message_Role_Enum.Assistant && item.sources,
       );
       if (isFollowUp && latestSources) {
-        console.log("use prev sources");
         setSearchResults(latestSources[latestSources.length - 1].sources || []);
       } else if (
         (refineQuery.knowledge_base_ids && refineQuery.knowledge_base_ids.length > 0) ||
@@ -346,7 +337,6 @@ export default function MessageWindow({
       ) {
         searchLibrary();
       } else {
-        console.log("Igonre Search");
         setSearchResults([]); // empty result
       }
     }

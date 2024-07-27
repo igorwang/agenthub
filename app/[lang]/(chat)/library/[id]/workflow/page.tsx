@@ -53,7 +53,6 @@ export default async function LibraryWorkflowPage({
     nodes: workflow?.flow_nodes,
     edges: workflow?.flow_edges,
   };
-  console.log(initialData);
 
   const bindWorkflowToLibraryWithId = bindWorkflowToLibrary.bind(null, params.id);
 

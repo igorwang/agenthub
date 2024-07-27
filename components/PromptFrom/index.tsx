@@ -161,7 +161,6 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
     }, [promptId]);
 
     useEffect(() => {
-      console.log("data", data);
       if (data) {
         setPrompt({
           name: data.prompt_hub_by_pk?.name || "",
@@ -418,7 +417,6 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
         });
 
         const newPromptId = data?.insert_prompt_hub_one?.id;
-        console.log("newPromptId", newPromptId);
         if (newPromptId && agentId) {
           const { data: updateAgentData, errors: updateAgentErrors } =
             await upadeAgentPromptMutation({

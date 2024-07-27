@@ -19,7 +19,6 @@ export default function Blog() {
   };
 
   const handleClick = () => {
-    console.log("handleClick", promptFormRef);
     if (promptFormRef.current) {
       promptFormRef.current.clickButton();
     }

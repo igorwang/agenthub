@@ -41,7 +41,6 @@ const chatListSlice = createSlice({
       state.selectedSessionId = action.payload;
     },
     setIsFollowUp: (state, action: PayloadAction<boolean>) => {
-      console.log("setIsFollowUp");
       state.isFollowUp = action.payload;
     },
   },

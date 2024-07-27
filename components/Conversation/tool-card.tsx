@@ -60,9 +60,6 @@ const FeatureTool: React.FC<FeatureToolProps> = ({
           })
           .filter((item: object | null) => item !== null); // 过滤掉解析失败的元素
 
-        console.log("schema", schema);
-        console.log("parsedResults", parsedResults);
-
         setData(parsedResults); // 将解析成功的结果传给 setData
       } catch (error: any) {
         setError(error.message);
@@ -98,9 +95,6 @@ const FeatureTool: React.FC<FeatureToolProps> = ({
     }))
     .sort((a, b) => a.order - b.order)
     .map(({ key, label }) => ({ key, label }));
-
-  console.log("schema", schema);
-  console.log("columns:", columns);
 
   return (
     <div className="flex w-full flex-grow-0 overflow-hidden">

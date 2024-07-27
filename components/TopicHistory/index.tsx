@@ -119,7 +119,6 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   });
 
   const handleAddTopic = async ({ agent_id, user_id }: AddTopicParams) => {
-    console.log("pathname", pathname);
     dispatch(selectSession(null));
     // try {
     //   const { data, errors } = await addNewTopicMutation({

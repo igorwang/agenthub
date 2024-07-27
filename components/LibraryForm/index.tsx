@@ -45,7 +45,6 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
   const [updateKnowledgeBaseMutation] = useUpdateKnowledgeBaseMutation();
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(true);
   const [deleteModal, setDeleteModal] = useState(false);
-  console.log("initLibrary", initLibrary);
   const ajv = new Ajv();
   const chunkingStrategyValidate = ajv.compile(chunkingParamsSchema);
 
@@ -221,7 +220,6 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
                   onUpdate={({ newData }) => {
                     const valid = chunkingStrategyValidate(newData);
                     if (!valid) {
-                      console.log("Errors", chunkingStrategyValidate.errors);
                       const errorMessage = chunkingStrategyValidate.errors
                         ?.map(
                           (error) =>
@@ -336,7 +334,6 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
                   labelPlacement="outside"
                   defaultModel={field.value as string}
                   onSelectionChange={(modelName) => {
-                    console.log("onSelectionChange", modelName);
                     field.onChange(modelName || null);
                   }}
                 />
