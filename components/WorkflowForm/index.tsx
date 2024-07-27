@@ -13,11 +13,10 @@ import "@xyflow/react/dist/base.css";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { v4 } from "uuid";
 
 interface WorkflowFormProps {
-  initialData?: {
-    id?: string;
+  initialData: {
+    id: string;
     name: string;
     description: string;
     nodes?: FlowNodeFragmentFragment[];
@@ -40,11 +39,10 @@ export default function WorkflowForm({
   action,
   nodeTypeList,
 }: WorkflowFormProps) {
-  // const [nodes, setNodes] = useState(FlowNodeFragmentFragmentDoc);
-  // const [edges, setEdges] = useState(Flow_Edge_Update_Column);
-
   const router = useRouter();
-  const flowId = initialData?.id || v4();
+
+  const flowId = initialData.id;
+
   const initialNodes = initialData?.nodes
     ? initialData.nodes.map((item) => ({
         id: item.id,
@@ -61,6 +59,10 @@ export default function WorkflowForm({
         target: item.target_id,
       }))
     : [];
+
+  // const flowId = initialData?.id || v4();
+  // console.log(flowId);
+
   const {
     register,
     handleSubmit,
@@ -75,7 +77,6 @@ export default function WorkflowForm({
       edges: initialEdges,
     },
   });
-
   const onSubmit: SubmitHandler<FormValues> = async (data, event) => {
     event?.preventDefault();
 
@@ -89,20 +90,18 @@ export default function WorkflowForm({
     formData.append("edges", JSON.stringify(data.edges));
 
     const result = await action(formData);
-    console.log("result");
+    console.log(result);
     if (result.success) {
     } else {
-      console.log("result");
       toast.error("Create error");
     }
 
-    // if (result.success) {
-    //   router.push("/workflow");
-    // }
+    if (result.success) {
+      router.push(`/workflow/${flowId}/edit`);
+    }
   };
 
   const handleWorkflowChange = (nodes: Node[], edges: Edge[]) => {
-    console.log("handleWorkflowChange");
     setValue("nodes", nodes);
     setValue("edges", edges);
   };

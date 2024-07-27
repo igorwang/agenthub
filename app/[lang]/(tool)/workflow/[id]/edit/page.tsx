@@ -4,10 +4,12 @@ import {
   GetNodeTypeListDocument,
   GetNodeTypeListQuery,
   GetNodeTypeListQueryVariables,
+  GetWorkflowByIdDocument,
+  GetWorkflowByIdQuery,
+  GetWorkflowByIdQueryVariables,
 } from "@/graphql/generated/types";
 import { updateWorkflow } from "@/lib/actions/workflowActions";
 import { fetchData } from "@/lib/apolloRequest";
-import { notFound } from "next/navigation";
 
 interface Props {
   params: {
@@ -16,9 +18,15 @@ interface Props {
 }
 
 async function getWorkflow(id: string) {
-  // 这里应该是实际的数据获取逻辑
-  // 例如: return await db.workflow.findById(id);
-  return { id, name: "Sample Workflow", description: "This is a sample workflow" };
+  const variables: GetWorkflowByIdQueryVariables = {
+    id: id,
+  };
+  const data = await fetchData<GetWorkflowByIdQuery, GetWorkflowByIdQueryVariables>(
+    GetWorkflowByIdDocument,
+    variables,
+  );
+  console.log("getWorkflow", data);
+  return data;
 }
 
 async function getNodeTypeListData() {
@@ -35,20 +43,27 @@ async function getNodeTypeListData() {
 
 export default async function EditWorkflowPage({ params }: Props) {
   const workflow = await getWorkflow(params.id);
+  // if (!workflow) {
+  //   notFound();
+  // }
   const nodeTypeList = await getNodeTypeListData();
-
-  if (!workflow) {
-    notFound();
-  }
-
-  const updateWorkflowWithId = updateWorkflow.bind(null, params.id);
+  const initialData = {
+    id: workflow.workflow_by_pk?.id,
+    name: workflow.workflow_by_pk?.name || "",
+    description: workflow.workflow_by_pk?.description || "",
+    nodes: workflow.workflow_by_pk?.flow_nodes,
+    edges: workflow.workflow_by_pk?.flow_edges,
+  };
+  console.log(initialData);
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="mb-4 text-2xl font-bold">Edit Workflow: {workflow.name}</h1>
+      <h1 className="mb-4 text-2xl font-bold">
+        Edit Workflow: {workflow.workflow_by_pk?.name}
+      </h1>
       <WorkflowForm
-        initialData={workflow}
-        action={updateWorkflowWithId}
+        initialData={initialData}
+        action={updateWorkflow}
         nodeTypeList={nodeTypeList?.node_type || []}
       />
     </div>

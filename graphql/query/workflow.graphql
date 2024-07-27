@@ -61,3 +61,25 @@ fragment flowEdgeFragment on flow_edge {
   updated_at
   label
 }
+
+query getWorkflowById($id: uuid = "") {
+  workflow_by_pk(id: $id) {
+    id
+    name
+    updated_at
+    created_at
+    description
+    flow_nodes {
+      ...flowNodeFragment
+    }
+    flow_edges {
+      ...flowEdgeFragment
+    }
+  }
+}
+
+mutation deleteWorkflowById($id: uuid = "") {
+  delete_workflow_by_pk(id: $id) {
+    id
+  }
+}
