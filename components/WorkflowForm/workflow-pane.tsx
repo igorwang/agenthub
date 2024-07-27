@@ -87,10 +87,10 @@ function Flow({
       if (!nodeTypeData || !nodeTypeData.type) {
         return;
       }
-
+      console.log(reactFlowBounds?.left, reactFlowBounds?.top);
       const position = screenToFlowPosition({
-        x: event.clientX - (reactFlowBounds?.left ?? 0),
-        y: event.clientY - (reactFlowBounds?.top ?? 0),
+        x: event.clientX,
+        y: event.clientY,
       });
 
       const newNodeId = v4();

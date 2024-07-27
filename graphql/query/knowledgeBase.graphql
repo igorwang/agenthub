@@ -26,6 +26,17 @@ fragment knowledgeBaseFragment on knowledge_base {
   embedding_model
   doc_schema
   mode
+  workflow {
+    id
+    name
+    description
+    flow_edges {
+      ...flowEdgeFragment
+    }
+    flow_nodes {
+      ...flowNodeFragment
+    }
+  }
 }
 
 query KnowledgeBaseDetail($id: uuid!) {

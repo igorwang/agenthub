@@ -18,7 +18,7 @@ const NodeTypeList: React.FC<NodeTypeListProps> = ({ nodeTypeList }) => {
   };
 
   return (
-    <aside className="w-64 border-r border-gray-200 bg-gray-50 p-4 text-xs">
+    <aside className="w-64 border-r border-gray-200 bg-gray-200 p-4 text-xs">
       <div className="mb-4 text-sm">Drag nodes to the right pane.</div>
       <div className="grid grid-cols-2 gap-2">
         {nodeTypeList.map((item) => (

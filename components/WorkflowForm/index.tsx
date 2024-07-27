@@ -98,7 +98,7 @@ export default function WorkflowForm({
 
     if (result.success) {
       toast.success("Save workflow success");
-      router.push(`/workflow/${flowId}/edit`);
+      // router.push(`/workflow/${flowId}/edit`);
     }
   };
 
@@ -147,7 +147,7 @@ export default function WorkflowForm({
 
       <div className="flex w-full flex-row gap-2">
         <NodeTypeList nodeTypeList={nodeTypeList} />
-        <div className="z-20 min-h-[600px] w-full border">
+        <div className="z-20 min-h-[600px] w-full border bg-white">
           <WorkflowPane
             flowId={flowId}
             initialEdges={initialEdges}

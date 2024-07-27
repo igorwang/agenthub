@@ -8,6 +8,8 @@ import {
   DeleteNodesAndEdgesMutationVariables,
   DeleteWorkflowByIdDocument,
   DeleteWorkflowByIdMutationVariables,
+  UpdateKnowledgeBaseDocument,
+  UpdateKnowledgeBaseMutationVariables,
 } from "@/graphql/generated/types";
 import { performMutation } from "@/lib/apolloRequest";
 import { Edge, Node } from "@xyflow/react";
@@ -158,5 +160,30 @@ export async function updateWorkflow(formData: FormData) {
       error: "Failed to create workflow. Please try again later.",
     };
   }
+  return { success: true };
+}
+
+export async function bindWorkflowToLibrary(id: string, formData: FormData) {
+  try {
+    const flowId = formData.get("id") as string;
+    console.log("bindWorkflowToLibrary");
+    const createRepsonse = await updateWorkflow(formData);
+    console.log(createRepsonse);
+
+    const updateVariables: UpdateKnowledgeBaseMutationVariables = {
+      _set: { workflow_id: flowId },
+      pk_columns: { id: id },
+    };
+
+    const updateResponse = await performMutation(
+      UpdateKnowledgeBaseDocument,
+      updateVariables,
+    );
+    console.log("updateResponse", updateResponse);
+  } catch (error) {
+    console.error("Error save prompt", error);
+    throw new Error("Error save prompt");
+  }
+
   return { success: true };
 }
