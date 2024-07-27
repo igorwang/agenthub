@@ -145,6 +145,7 @@ export default function LlmNodeForm({
         }}
         render={({ field }) => (
           <JsonEditor
+            collapse={true} // This will collapse the editor by default
             maxWidth={400}
             data={field.value || {}}
             onUpdate={({ newData }) => {

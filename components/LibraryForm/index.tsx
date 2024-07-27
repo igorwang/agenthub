@@ -199,7 +199,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
                     }
                     field.onChange(newData);
                   }}
-                  rootName="data"
+                  rootName=""
                 />
               </div>
             )}
@@ -257,7 +257,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
                     field.onChange(newData);
                   }}
                   //   onUpdate={({ newData }) => field.onChange(newData)}
-                  rootName="data"
+                  rootName=""
                 />
                 {errors.doc_schema && (
                   <p className="mt-1 text-sm text-red-500">
