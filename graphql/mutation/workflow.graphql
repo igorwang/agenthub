@@ -1,0 +1,5 @@
+mutation CreateNewWorkflow($object: workflow_insert_input = {}) {
+  insert_workflow_one(object: $object) {
+    id
+  }
+}

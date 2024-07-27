@@ -1,0 +1,63 @@
+query getNodeTypeList(
+  $where: node_type_bool_exp = {}
+  $limit: Int = 10
+  $offset: Int = 0
+) {
+  node_type(where: $where, limit: $limit, offset: $offset) {
+    ...nodeTypeFragment
+  }
+}
+
+fragment nodeTypeFragment on node_type {
+  id
+  label
+  schema
+  type
+  description
+  default_data
+  created_at
+  updated_at
+}
+
+query getNodeList($where: flow_node_bool_exp = {}) {
+  flow_node(where: $where) {
+    ...flowNodeFragment
+  }
+}
+
+fragment flowNodeFragment on flow_node {
+  id
+  label
+  data
+  flow_id
+  created_at
+  node_type {
+    type
+    schema
+    id
+    label
+  }
+  node_type_id
+  position_x
+  position_y
+  updated_at
+}
+
+query getEdgeList($where: flow_edge_bool_exp = {}) {
+  flow_edge(where: $where) {
+    ...flowEdgeFragment
+  }
+}
+
+fragment flowEdgeFragment on flow_edge {
+  id
+  source_id
+  target_id
+  type
+  data
+  flow_id
+  animated
+  created_at
+  updated_at
+  label
+}

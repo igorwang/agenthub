@@ -11,8 +11,10 @@ export type ModelSelectProps = {
   // models?: ModelProps[];
   modelType?: "llm" | "embedding";
   label?: string;
+  isRequired?: boolean;
   defaultModel?: string;
   labelPlacement?: "outside" | "outside-left" | "inside" | undefined;
+  labelClassName?: string;
   onSelectionChange?: (modelName: string, limit?: number) => void;
 };
 
@@ -33,6 +35,8 @@ const ModelSelect = React.forwardRef<HTMLDivElement, ModelSelectProps>(
       labelPlacement,
       defaultModel,
       modelType = "llm",
+      isRequired = false,
+      labelClassName,
       ...props
     },
     ref,
@@ -85,14 +89,15 @@ const ModelSelect = React.forwardRef<HTMLDivElement, ModelSelectProps>(
 
     return (
       <Select
-        // isRequired
+        isRequired
         label={label}
         labelPlacement={labelPlacement}
         placeholder="Select an Model"
         // selectedKeys={value}
         selectedKeys={value}
         onChange={handleSelectionChange}
-        className="max-w-full">
+        className="max-w-full"
+        classNames={{ label: labelClassName }}>
         {models.map((model) => (
           <SelectItem key={model.name}>{model.name}</SelectItem>
         ))}

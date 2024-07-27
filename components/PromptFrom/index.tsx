@@ -22,6 +22,7 @@ import { Icon } from "@iconify/react";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { Button } from "@nextui-org/button";
 import { Input, Spacer, Tooltip } from "@nextui-org/react";
+import { clsx } from "clsx";
 import { useSession } from "next-auth/react";
 import React, {
   useCallback,
@@ -46,13 +47,19 @@ export type PromptFormProps = {
   agentId?: string;
   konwledgeBaseId?: string;
   defualtEditing?: boolean;
-  defaultPromptId?: number;
+  defaultPromptId?: number | null;
   templates?: PromptTemplateType[];
   hiddeTitle?: boolean;
   defaultModel?: string;
   hiddenSaveButton?: boolean;
+  hiddenNewButton?: boolean;
+  hiddenTemplateName?: boolean;
+  containerClassName?: string;
+  leftColumnClassName?: string;
+  rightColumnClassName?: string;
   onUpdateAgent?: () => void;
   onUpdateKnowledge?: () => void;
+  onUpdatePromptId?: (id: number) => void;
 };
 
 export type variableInputsType = {
@@ -77,15 +84,21 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
   (
     {
       hiddenSaveButton,
+      hiddenNewButton,
       hiddeTitle,
+      hiddenTemplateName,
       agentId,
       konwledgeBaseId,
       defaultPromptId,
       defaultModel,
       defualtEditing = false,
       templates = defaultTemplates,
+      containerClassName,
+      leftColumnClassName,
+      rightColumnClassName,
       onUpdateAgent,
       onUpdateKnowledge,
+      onUpdatePromptId,
       ...props
     },
     ref,
@@ -426,7 +439,7 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
             });
           onUpdateKnowledge?.();
         }
-
+        newPromptId && onUpdatePromptId?.(newPromptId);
         setPromptId(newPromptId || null);
         setIsNewPromot(false);
       } catch (error) {
@@ -454,6 +467,17 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
         handleRoleSelect={handleRoleSelect}></PromptTemplateInput>
     ));
 
+    const containerClasses = clsx("flex flex-row gap-4", containerClassName);
+
+    const leftColumnClasses = clsx(
+      "flex h-full w-1/2 flex-col items-start justify-start gap-2",
+      leftColumnClassName,
+    );
+
+    const rightColumnClasses = clsx(
+      "flex w-1/2 flex-col justify-start gap-2",
+      rightColumnClassName,
+    );
     return (
       <div ref={ref} className="flex h-full w-full max-w-full flex-col">
         <Spacer y={2} />
@@ -486,7 +510,11 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
           </div>
           <div className="flex flex-row gap-2">
             <Tooltip content="Add new prompt">
-              <Button isIconOnly variant="bordered" onClick={handleAddPrompt}>
+              <Button
+                isIconOnly
+                variant="bordered"
+                onClick={handleAddPrompt}
+                className={hiddenNewButton ? "hidden" : "visible"}>
                 <Icon icon={"ic:outline-add"} fontSize={30} color={"slate-200"}></Icon>
               </Button>
             </Tooltip>
@@ -500,21 +528,22 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
           </div>
         </div>
         <Spacer y={2} />
-        <div className="flex flex-row gap-4">
-          <div className="flex h-full w-1/2 flex-col items-start justify-start gap-2">
-            <Input
-              className="w-full"
-              label="Template Name"
-              labelPlacement="outside"
-              classNames={{ label: "text-1xl font-bold" }}
-              value={prompt?.name}
-              onValueChange={(value) =>
-                setPrompt((prevPrompt) => ({ ...prevPrompt, name: value }))
-              }
-              placeholder="Enter prompt name"></Input>
+        <div className={containerClasses}>
+          <div className={leftColumnClasses}>
+            {hiddenTemplateName && (
+              <Input
+                className="w-full"
+                label="Template Name"
+                labelPlacement="outside"
+                classNames={{ label: "text-md font-bold" }}
+                value={prompt?.name}
+                onValueChange={(value) =>
+                  setPrompt((prevPrompt) => ({ ...prevPrompt, name: value }))
+                }
+                placeholder="Enter prompt name"></Input>
+            )}
 
-            <span className="text-1xl font-bold">Template Messages</span>
-
+            <span className="text-md font-bold">Template Messages</span>
             {templatesElement}
             <Button
               className="m-2 gap-1 bg-white p-2"
@@ -526,21 +555,21 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
               Message
             </Button>
           </div>
-          <div className="flex w-1/2 flex-col justify-start gap-2">
+          <div className={rightColumnClasses}>
             {/* <span className="text-xl font-bold">Inputs</span>
             <PromptVariablesInput
               ref={variableInputRef}
               templates={templatesState}
               isDisabled={!isEditing}
               setVariableInputs={handelVariableInputChange}></PromptVariablesInput> */}
-            <div className="text-xl font-bold">Output</div>
-            <div className="relative flex h-full flex-col items-baseline gap-2 border-2 p-2">
+            <div className="text-md font-bold">Output</div>
+            <div className="relative flex h-full flex-col items-baseline gap-2 border-2">
               <div className="flex w-full flex-col">
                 <ModelSelect
                   onSelectionChange={(modelName, limit) => setSelectedModel(modelName)}
                   defaultModel={selectedModel}></ModelSelect>
               </div>
-              <div className="max-h-[600px] w-full overflow-scroll pb-8">
+              <div className="max-h-[600px] w-full overflow-scroll pb-16">
                 {message && "Assistant:"}
                 <></>
                 <MarkdownRenderer content={message}></MarkdownRenderer>

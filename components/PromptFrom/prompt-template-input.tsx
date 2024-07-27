@@ -97,7 +97,7 @@ const PromptTemplateInput = React.forwardRef<
       );
     }, [template]);
     return (
-      <div className="relative w-full px-2">
+      <div className="relative w-full">
         <Textarea
           key={template.id}
           ref={refTextarea}
@@ -117,8 +117,7 @@ const PromptTemplateInput = React.forwardRef<
               variant="light"
               className="absolute right-0 top-0 hidden hover:cursor-pointer group-hover:block data-[hover=true]:bg-transparent"
               onClick={() => handleDeleteMessage && handleDeleteMessage(template.id)}
-              startContent={<DeleteOutlineIcon />}
-            ></Button>
+              startContent={<DeleteOutlineIcon />}></Button>
           }
           value={template.template}
           label={
@@ -143,15 +142,13 @@ const PromptTemplateInput = React.forwardRef<
                 selectedKeys={template.role}
                 onAction={(key) =>
                   handleRoleSelect && handleRoleSelect(template.id, key.toString())
-                }
-              >
+                }>
                 <DropdownItem key="system">system</DropdownItem>
                 <DropdownItem key="user">user</DropdownItem>
                 <DropdownItem key="assistant">assistant</DropdownItem>
               </DropdownMenu>
             </Dropdown>
-          }
-        ></Textarea>
+          }></Textarea>
         {isDraggedOver && <DropIndicator edge={"bottom"} gap={"8px"}></DropIndicator>}
       </div>
     );

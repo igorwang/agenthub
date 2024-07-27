@@ -75,3 +75,38 @@ export const defaultDocumentSchemaExample = {
     },
   },
 };
+
+export const outputSchema = {
+  type: "object",
+  required: ["properties"],
+  properties: {
+    properties: {
+      type: "object",
+      additionalProperties: {
+        type: "object",
+        required: ["type"],
+        properties: {
+          type: { type: "string" },
+          label: { type: "string" },
+        },
+      },
+    },
+  },
+  additionalProperties: false,
+};
+
+export const outputSchemaExample = {
+  properties: {
+    name: {
+      type: "string",
+      label: "name",
+    },
+    age: {
+      type: "number",
+      label: "age",
+    },
+    isStudent: {
+      type: "boolean",
+    },
+  },
+};
