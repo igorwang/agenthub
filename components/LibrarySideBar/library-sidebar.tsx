@@ -48,7 +48,7 @@ export default function LibrarySideBar({ items }: LibrarySideBarProps) {
         ...prev,
       ]);
       //   refetch();
-      //   router.push(`/library/${res?.data?.insert_knowledge_base_one?.id}/settings`);
+      router.push(`/library/${res?.data?.insert_knowledge_base_one?.id}/settings`);
     });
   }
 

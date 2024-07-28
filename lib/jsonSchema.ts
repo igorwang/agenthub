@@ -20,7 +20,7 @@ export const documentSchema = {
   properties: {
     type: {
       type: "string",
-      const: "Document",
+      const: "object",
     },
     title: { type: "string" },
     description: { type: "string" },
@@ -61,7 +61,7 @@ export const documentSchema = {
 };
 
 export const defaultDocumentSchemaExample = {
-  type: "Document",
+  type: "object",
   title: "Minimal Schema",
   description: "A minimal schema description",
   properties: {

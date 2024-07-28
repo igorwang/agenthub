@@ -80,6 +80,34 @@ export const llmNodeComponent: React.FC<NodeProps<InputNode>> = memo(
   },
 );
 
+export type endNode = Node<CustomNodeData, "endNode">;
+export const EndNodeComponent: React.FC<NodeProps<endNode>> = memo(
+  ({ data, selected }) => {
+    const borderColor = selected ? "border-blue-500" : "border-gray-200";
+
+    return (
+      <div
+        className={`rounded-md border ${borderColor} bg-slate-100 px-4 py-2 shadow-sm transition-colors duration-200`}>
+        <div className="flex items-center">
+          <div className="mr-2 flex h-6 w-4 items-center justify-center text-slate-300">
+            <Icon icon="mdi:stop-circle" fontSize={24} />
+          </div>
+          <div>
+            <div className="text-sm font-medium text-slate-700">
+              {data.label || "End"}
+            </div>
+          </div>
+        </div>
+        <Handle
+          type="target"
+          position={Position.Left}
+          className="h-4 w-1 !border-1 !border-white !bg-red-300"
+        />
+      </div>
+    );
+  },
+);
+
 // export const EndNode: React.FC<NodeProps> = memo(({ data }) => {
 //   return (
 //     <div className="rounded-md border-2 border-stone-400 bg-white px-4 py-2 shadow-md">
@@ -96,8 +124,42 @@ export const llmNodeComponent: React.FC<NodeProps<InputNode>> = memo(
 //   );
 // });
 
+export type outputParserNode = Node<CustomNodeData, "outputParserNode">;
+export const OutputParserNodeComponent: React.FC<NodeProps<outputParserNode>> = memo(
+  ({ data, selected }) => {
+    const borderColor = selected ? "border-blue-500" : "border-gray-200";
+    return (
+      <div
+        className={`rounded-md border ${borderColor} bg-purple-100 px-4 py-2 shadow-sm transition-colors duration-200`}>
+        <div className="flex items-center">
+          <div className="mr-1 flex h-12 w-6 items-center justify-center text-purple-500">
+            <Icon icon="mdi:code-json" fontSize={24} />
+          </div>
+          <div>
+            <div className="text-sm font-medium text-purple-700">
+              {data.label || "Output Parser"}
+            </div>
+          </div>
+        </div>
+        <Handle
+          type="target"
+          position={Position.Left}
+          className="h-4 w-1 !border-1 !border-white !bg-purple-300"
+        />
+        <Handle
+          type="source"
+          position={Position.Right}
+          className="h-3 w-3 !border-2 !border-white !bg-purple-300"
+        />
+      </div>
+    );
+  },
+);
+
 export const nodeTypes: NodeTypes = {
   startNode: StartNodeComponent,
   inputNode: InputNodeComponent,
   llmNode: llmNodeComponent,
+  endNode: EndNodeComponent,
+  outputParserNode: OutputParserNodeComponent,
 };

@@ -89,7 +89,7 @@ const ModelSelect = React.forwardRef<HTMLDivElement, ModelSelectProps>(
 
     return (
       <Select
-        isRequired
+        isRequired={isRequired}
         label={label}
         labelPlacement={labelPlacement}
         placeholder="Select an Model"

@@ -24,3 +24,9 @@ mutation CreateOneKnowledgeBase($object: knowledge_base_insert_input!) {
     ...KnowledgeBaseItem
   }
 }
+
+mutation deleteKnowledgeBaseById($id: uuid = "") {
+  delete_knowledge_base_by_pk(id: $id) {
+    id
+  }
+}

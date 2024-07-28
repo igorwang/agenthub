@@ -4,6 +4,7 @@ import {
   Chunking_Strategy_Enum,
   Knowledge_Base_Set_Input,
   KnowledgeBaseDetailQuery,
+  useDeleteKnowledgeBaseByIdMutation,
   useUpdateKnowledgeBaseMutation,
 } from "@/graphql/generated/types";
 import {
@@ -43,6 +44,7 @@ interface LibraryFormProps {
 export default function LibraryForm({ initLibrary }: LibraryFormProps) {
   const router = useRouter();
   const [updateKnowledgeBaseMutation] = useUpdateKnowledgeBaseMutation();
+  const [deleteKnowledgeBaseByIdMutation] = useDeleteKnowledgeBaseByIdMutation();
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(true);
   const [deleteModal, setDeleteModal] = useState(false);
   const ajv = new Ajv();
@@ -92,7 +94,14 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
     }
   };
 
-  const handleDeleteLibrary = () => {
+  const handleDeleteLibrary = async () => {
+    const response = await deleteKnowledgeBaseByIdMutation({
+      variables: { id: initLibrary?.id },
+    });
+    console.log("response", response);
+    toast.success("Delete library success");
+    router.push("/library");
+    router.refresh();
     setDeleteModal(false);
   };
 
@@ -174,6 +183,19 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
               </Switch>
             )}
           />
+          <Controller
+            name="model_name"
+            control={control}
+            render={({ field }) => (
+              <ModelSelect
+                labelPlacement="outside"
+                defaultModel={field.value as string}
+                onSelectionChange={(modelName) => {
+                  field.onChange(modelName || null);
+                }}
+              />
+            )}
+          />
         </div>
       </div>
       <Divider className="my-2" />
@@ -244,6 +266,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
                 label="Embedding model"
                 modelType="embedding"
                 labelPlacement="outside"
+                isRequired={false}
                 defaultModel={field.value as string}
                 onSelectionChange={(modelName) => field.onChange(modelName || null)}
               />
@@ -324,19 +347,6 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
                   onValueChange={onChange}>
                   Enable Extraction Process
                 </Switch>
-              )}
-            />
-            <Controller
-              name="model_name"
-              control={control}
-              render={({ field }) => (
-                <ModelSelect
-                  labelPlacement="outside"
-                  defaultModel={field.value as string}
-                  onSelectionChange={(modelName) => {
-                    field.onChange(modelName || null);
-                  }}
-                />
               )}
             />
           </div>
