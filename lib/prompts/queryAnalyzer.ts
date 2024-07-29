@@ -11,6 +11,12 @@ export const QueryAnalyzeResultSchema = z.object({
     .boolean()
     .default(false)
     .describe("Does the given database contain information relevant to the query?"),
+  isFollowUp: z
+    .boolean()
+    .default(false)
+    .describe(
+      "Is the user's latest question related to the previous question, and does it require a new database search?",
+    ),
   refineQuery: z
     .union([z.string(), z.array(z.string())])
     .describe(
@@ -43,9 +49,9 @@ export async function queryAnalyzer(
   2. Refine the query by breaking down the final question into distinct sub-questions that address the original query.
   3. Generate 3-8 keywords based on the overall intent and final query.
   4. Search relevant knowledge bases for answers, ensuring high-precision matching across domain and content. Only search databases with consistent domains.
-  
+  5. isFollowUp: Is the user's latest question related to the previous question, and does it require a new database search?
   Please output strictly in JSON format, for example:
-  {{"isRelated":boolean,"refineQuery":String | [String], "keywords":[String], "knowledge_base_ids":[String]}}
+  {{"isRelated":boolean,"isFollowUp":boolean ,"refineQuery":String | [String], "keywords":[String], "knowledge_base_ids":[String]}}
   `;
 
   const tools = [
@@ -74,8 +80,7 @@ export async function queryAnalyzer(
           .map((message) => message.message)
           .join("\n")
       : "";
-  const latestQuestion =
-    messages.length >= 1 ? messages[messages.length - 1].message : "";
+  const latestQuestion = messages[messages.length - 1].message;
 
   const promptTemplate = ChatPromptTemplate.fromMessages([
     ["system", queryAnalyzerPrompt],
@@ -125,6 +130,7 @@ export async function queryAnalyzer(
       refineQuery: response.refineQuery.toString(),
       keywords: response.keywords.toString(),
       knowledge_base_ids: response.knowledge_base_ids || [],
+      isFollowUp: response.isFollowUp,
     };
   } catch (error) {
     console.error(`parse error:${error}`);
@@ -133,6 +139,7 @@ export async function queryAnalyzer(
       refineQuery: "",
       keywords: "",
       knowledge_base_ids: [],
+      isFollowUp: false,
     };
   }
 

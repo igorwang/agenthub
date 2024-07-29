@@ -51,6 +51,7 @@ type QueryAnalyzeResultSchema = {
   refineQuery?: string;
   keywords?: string;
   knowledge_base_ids?: string[];
+  isFollowUp?: boolean;
 };
 
 type MessageWindowProps = {
@@ -218,9 +219,10 @@ export default function MessageWindow({
       setChatStatus(CHAT_STATUS_ENUM.Analyzing);
       const fetchRefineQuery = async () => {
         const historyMessage = messages.filter((item) => item.status != "draft");
+        console.log("historyMessage", historyMessage);
         try {
           const result = await queryAnalyzer(
-            messages,
+            historyMessage,
             agent?.defaultModel,
             JSON.stringify(libraries ? libraries : ""),
           );
@@ -329,7 +331,8 @@ export default function MessageWindow({
       const latestSources = messages?.filter(
         (item) => item.role == Message_Role_Enum.Assistant && item.sources,
       );
-      if (isFollowUp && latestSources) {
+      if (refineQuery.isFollowUp && latestSources.length > 0) {
+        console.log("refineQuery.isFollowUp");
         setSearchResults(latestSources[latestSources.length - 1].sources || []);
       } else if (
         (refineQuery.knowledge_base_ids && refineQuery.knowledge_base_ids.length > 0) ||
