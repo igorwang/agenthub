@@ -306,9 +306,10 @@ export default function MessageWindow({
                     knowledgeBaseId: item.knowledge_base_id || "",
                   }),
                 ) || [];
-              const searchResults = [...libraryResults, ...webResults].map(
-                (item, index) => ({ ...item, index: index + 1 }),
-              );
+              const searchResults = [...libraryResults, ...webResults]
+                .map((item, index) => ({ ...item, index: index + 1 }))
+                .slice(0, 10);
+
               setSearchResults(() => searchResults || []);
               setMessages((prev) => [
                 ...prev.slice(0, -1),
@@ -327,12 +328,13 @@ export default function MessageWindow({
           handleChatingStatus?.(false);
         }
       };
-
       const latestSources = messages?.filter(
         (item) => item.role == Message_Role_Enum.Assistant && item.sources,
       );
+      console.log("selectedSources", selectedSources);
+      console.log("isFollowUp", isFollowUp);
+
       if (refineQuery.isFollowUp && latestSources.length > 0) {
-        console.log("refineQuery.isFollowUp");
         setSearchResults(latestSources[latestSources.length - 1].sources || []);
       } else if (
         (refineQuery.knowledge_base_ids && refineQuery.knowledge_base_ids.length > 0) ||
