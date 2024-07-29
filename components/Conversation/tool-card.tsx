@@ -97,7 +97,7 @@ const FeatureTool: React.FC<FeatureToolProps> = ({
     .map(({ key, label }) => ({ key, label }));
 
   return (
-    <div className="flex w-full flex-grow-0 overflow-hidden">
+    <div className="flex w-full max-w-6xl overflow-auto">
       {/* <h1>Feature Tool Data</h1> */}
       {/* <pre className="overflow-hidden">{JSON.stringify(data, null, 2)}</pre> */}
       <ToolResultTable columns={columns} rows={rows || []}></ToolResultTable>

@@ -456,7 +456,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
     );
 
     return (
-      <div {...props} ref={ref} className={cn("flex gap-3", className)}>
+      <div {...props} ref={ref} className={cn("flex max-w-7xl gap-3", className)}>
         {isUser ? (
           <>
             {userMessageContent}
