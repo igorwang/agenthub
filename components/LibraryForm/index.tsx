@@ -2,6 +2,7 @@
 import ModelSelect from "@/components/PromptFrom/model-select";
 import {
   Chunking_Strategy_Enum,
+  Knowledge_Base_Mode_Enum,
   Knowledge_Base_Set_Input,
   KnowledgeBaseDetailQuery,
   useDeleteKnowledgeBaseByIdMutation,
@@ -70,7 +71,6 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
       model_name: initLibrary?.model_name || "",
       is_publish: initLibrary?.is_publish || false,
       embedding_model: initLibrary?.embedding_model || "",
-
       doc_schema: Object.keys(initLibrary?.doc_schema || {}).length
         ? initLibrary?.doc_schema
         : defaultDocumentSchemaExample,
@@ -196,6 +196,19 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
               />
             )}
           />
+          <Controller
+            name="model_name"
+            control={control}
+            render={({ field }) => (
+              <ModelSelect
+                labelPlacement="outside"
+                defaultModel={field.value as string}
+                onSelectionChange={(modelName) => {
+                  field.onChange(modelName || null);
+                }}
+              />
+            )}
+          />
         </div>
       </div>
       <Divider className="my-2" />
@@ -277,10 +290,33 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
       <Divider className="my-2" />
       {/* 文档结构配置 */}
       <div className="mb-6">
-        <div className="mb-2 flex flex-row items-center gap-2">
+        <div className="mb-4 flex flex-row items-center gap-2">
           <Icon icon={"solar:document-add-linear"} fontSize={20} />
           <h3 className="text-lg font-semibold">Document Structure</h3>
         </div>
+        <Controller
+          name="mode"
+          control={control}
+          render={({ field }) => (
+            <Select
+              label="Library Document Mode"
+              className="pt-2"
+              labelPlacement="outside"
+              placeholder="Select your mode for this library"
+              selectedKeys={field.value ? [field.value] : []}
+              disallowEmptySelection={false}
+              onSelectionChange={(keys) => {
+                field.onChange(Array.from(keys)[0] || null);
+              }}>
+              {Object.values(Knowledge_Base_Mode_Enum).map((mode) => (
+                <SelectItem key={mode} value={mode}>
+                  {mode}
+                </SelectItem>
+              ))}
+            </Select>
+          )}
+        />
+
         <div className="flex flex-col gap-4">
           <Controller
             name="doc_schema"

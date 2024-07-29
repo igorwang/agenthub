@@ -2,7 +2,7 @@
 
 import { cn } from "@/cn";
 import { Icon } from "@iconify/react";
-import { Button, ScrollShadow, Switch, Tooltip } from "@nextui-org/react";
+import { Button, ScrollShadow, Tooltip } from "@nextui-org/react";
 import React, { useRef, useState } from "react";
 
 import { UploadFile, UploadFileProps } from "@/components/Conversation/upload-file";
@@ -16,7 +16,6 @@ import {
   selectSelectedChatId,
   selectSelectedSessionId,
   selectSession,
-  setIsFollowUp,
 } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
 import { SourceType } from "@/types/chatTypes";
@@ -324,13 +323,13 @@ export default function PromptInputWithFaq({
               ref={fileInputRef}
               onChange={handleFileChange}
             />
-            <Switch
+            {/* <Switch
               isSelected={isFollowUp}
               onValueChange={(value) => {
                 dispatch(setIsFollowUp(value));
               }}>
               Follow-up
-            </Switch>
+            </Switch> */}
             {/* <Button
               size="sm"
               startContent={
