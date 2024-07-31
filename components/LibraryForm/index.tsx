@@ -196,19 +196,6 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
               />
             )}
           />
-          <Controller
-            name="model_name"
-            control={control}
-            render={({ field }) => (
-              <ModelSelect
-                labelPlacement="outside"
-                defaultModel={field.value as string}
-                onSelectionChange={(modelName) => {
-                  field.onChange(modelName || null);
-                }}
-              />
-            )}
-          />
         </div>
       </div>
       <Divider className="my-2" />

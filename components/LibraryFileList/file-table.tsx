@@ -43,12 +43,13 @@ const columns = [
 
 const statusColorMap: Record<
   Status_Enum,
-  "default" | "primary" | "secondary" | "success"
+  "default" | "primary" | "secondary" | "success" | "danger"
 > = {
   [Status_Enum.Chunked]: "default",
   [Status_Enum.Extracted]: "primary",
   [Status_Enum.Indexed]: "secondary",
   [Status_Enum.Uploaded]: "success",
+  [Status_Enum.Failed]: "danger",
 };
 
 const FileTable: FC<FileTableProps> = ({
