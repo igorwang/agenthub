@@ -334,8 +334,21 @@ export default function MessageWindow({
       console.log("selectedSources", selectedSources);
       console.log("isFollowUp", isFollowUp);
 
-      if (refineQuery.isFollowUp && latestSources.length > 0) {
+      if (selectedSources && selectedSources.length > 0) {
+        setSearchResults(selectedSources);
+        setMessages((prev) => [
+          ...prev.slice(0, -1),
+          { ...prev[prev.length - 1], sources: selectedSources || [] },
+        ]);
+      } else if (refineQuery.isFollowUp && latestSources.length > 0) {
         setSearchResults(latestSources[latestSources.length - 1].sources || []);
+        setMessages((prev) => [
+          ...prev.slice(0, -1),
+          {
+            ...prev[prev.length - 1],
+            sources: latestSources[latestSources.length - 1].sources || [],
+          },
+        ]);
       } else if (
         (refineQuery.knowledge_base_ids && refineQuery.knowledge_base_ids.length > 0) ||
         agent?.force_search

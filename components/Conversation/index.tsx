@@ -59,6 +59,7 @@ export const Conversation: React.FC<ConversationProps> = ({
     useCreateNewMessageMutation();
 
   useEffect(() => {
+    setIsChating(false);
     setSelectedSources([]);
   }, [selectedSessionId]);
 
