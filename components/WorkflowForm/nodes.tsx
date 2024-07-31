@@ -156,6 +156,12 @@ export const OutputParserNodeComponent: React.FC<NodeProps<outputParserNode>> = 
   },
 );
 
+StartNodeComponent.displayName = "StartNodeComponent";
+InputNodeComponent.displayName = "InputNodeComponent";
+llmNodeComponent.displayName = "llmNodeComponent";
+EndNodeComponent.displayName = "EndNodeComponent";
+OutputParserNodeComponent.displayName = "outputParserNode";
+
 export const nodeTypes: NodeTypes = {
   startNode: StartNodeComponent,
   inputNode: InputNodeComponent,

@@ -6,7 +6,8 @@
       "error",
       {
         "env": "apollo",
-        "tagName": "gql"
+        "tagName": "gql",
+        "schemaJsonFilepath": "./graphql/generated/schema.json"
       }
     ]
   }

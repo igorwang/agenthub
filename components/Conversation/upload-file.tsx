@@ -40,7 +40,7 @@ export const UploadFile = React.forwardRef<HTMLDivElement, UploadFileProps>(
         case "jpeg":
         case "png":
           return url && !isLoading ? (
-            <Image width={100} src={url} />
+            <Image width={100} src={url} alt="upload" />
           ) : (
             <DefaultFileIcon />
           );
@@ -71,8 +71,7 @@ export const UploadFile = React.forwardRef<HTMLDivElement, UploadFileProps>(
         className={clsx(
           "group relative ml-2 mt-2 flex max-w-48 flex-none items-center justify-start rounded-md bg-white p-2",
           className,
-        )}
-      >
+        )}>
         {removeFileHandler && (
           <DeleteIcon
             className="absolute right-0 top-0 m-1 hidden size-4 -translate-y-1/2 translate-x-1/2 transform rounded-full border border-gray-400 hover:cursor-pointer hover:border-gray-600 group-hover:block"
@@ -89,3 +88,5 @@ export const UploadFile = React.forwardRef<HTMLDivElement, UploadFileProps>(
     );
   },
 );
+
+UploadFile.displayName = "UploadFile";

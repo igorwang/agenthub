@@ -23,8 +23,7 @@ const FeatureCard = React.forwardRef<HTMLDivElement, FeatureCardProps>(
           {descriptions.map((description, index) => (
             <div
               key={index}
-              className="flex min-h-[50px] rounded-medium bg-content3 px-3 py-2 text-content3-foreground"
-            >
+              className="flex min-h-[50px] rounded-medium bg-content3 px-3 py-2 text-content3-foreground">
               <p className="text-small">{description}</p>
             </div>
           ))}

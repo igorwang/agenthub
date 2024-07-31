@@ -37,11 +37,12 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
 
   return (
     <ReactMarkdown
-      children={content}
       remarkPlugins={[remarkMath, remarkGfm, gfm]}
       rehypePlugins={[rehypeKatex, rehypeRaw]}
       components={components} // 使用自定义渲染器
-    />
+    >
+      {content}
+    </ReactMarkdown>
   );
 };
 

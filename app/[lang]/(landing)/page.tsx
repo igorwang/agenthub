@@ -27,15 +27,13 @@ export default function Home() {
             color: "primary",
             radius: "full",
             variant: "shadow",
-          })}
-        >
+          })}>
           Documentation
         </Link>
         <Link
           isExternal
           className={buttonStyles({ variant: "bordered", radius: "full" })}
-          href={siteConfig.links.github}
-        >
+          href={siteConfig.links.github}>
           <GithubIcon size={20} />
           GitHub
         </Link>

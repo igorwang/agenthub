@@ -3,13 +3,13 @@ import { Input } from "@nextui-org/input";
 import { Kbd } from "@nextui-org/kbd";
 import { Link } from "@nextui-org/link";
 import {
-  Navbar as NextUINavbar,
   NavbarBrand,
   NavbarContent,
   NavbarItem,
   NavbarMenu,
   NavbarMenuItem,
   NavbarMenuToggle,
+  Navbar as NextUINavbar,
 } from "@nextui-org/navbar";
 
 import { link as linkStyles } from "@nextui-org/theme";
@@ -69,8 +69,7 @@ export const Navbar = () => {
                   "data-[active=true]:font-medium data-[active=true]:text-primary",
                 )}
                 color="foreground"
-                href={item.href}
-              >
+                href={item.href}>
                 {item.label}
               </NextLink>
             </NavbarItem>
@@ -99,8 +98,7 @@ export const Navbar = () => {
             className="bg-default-100 text-sm font-normal text-default-600"
             href={siteConfig.links.sponsor}
             startContent={<HeartFilledIcon className="text-danger" />}
-            variant="flat"
-          >
+            variant="flat">
             Sponsor
           </Button>
         </NavbarItem>
@@ -128,8 +126,7 @@ export const Navbar = () => {
                       : "foreground"
                 }
                 href="#"
-                size="lg"
-              >
+                size="lg">
                 {item.label}
               </Link>
             </NavbarMenuItem>

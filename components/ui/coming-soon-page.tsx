@@ -20,7 +20,7 @@ const ComingSoonPage: React.FC = () => {
       <Card className="w-full max-w-md p-5">
         <h1 className="mb-4 text-center text-4xl font-bold">Coming Soon</h1>
         <h2 className="mb-4 text-center text-2xl">
-          We're working hard to bring you something amazing.
+          We are working hard to bring you something amazing.
         </h2>
         <p className="mb-8 text-center">
           Be the first to know when we launch. Subscribe to our newsletter for updates.

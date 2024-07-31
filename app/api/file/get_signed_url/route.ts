@@ -2,9 +2,9 @@ import { auth } from "@/auth";
 import s3Client from "@/lib/s3Client";
 import { NextRequest, NextResponse } from "next/server";
 
-interface NextRequestBody{
-    bucket:string;    
-    key:string
+interface NextRequestBody {
+  bucket: string;
+  key: string;
 }
 
 export async function POST(req: NextRequest) {
@@ -15,12 +15,12 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const body = await req.json()  as NextRequestBody;
+    const body = (await req.json()) as NextRequestBody;
     const presignedGetUrl = await s3Client.getSignedUrlPromise("getObject", {
-        Bucket: body?.bucket,
-        Key: body?.key,
-        Expires: 2 * 60 * 60,
-      });
+      Bucket: body?.bucket,
+      Key: body?.key,
+      Expires: 2 * 60 * 60,
+    });
     return NextResponse.json({
       url: presignedGetUrl,
     });

@@ -4,7 +4,7 @@ import React, { ReactNode, useMemo } from "react";
 import { cn } from "@/cn";
 import { SourceSection } from "@/components/Conversation/source-section";
 import FeatureTool from "@/components/Conversation/tool-card";
-import { UploadFile, UploadFileProps } from "@/components/Conversation/upload-file";
+import { UploadFileProps } from "@/components/Conversation/upload-file";
 import MarkdownRenderer from "@/components/MarkdownRender";
 import { MessageSkeleton } from "@/components/ui/message-skeleton";
 import {
@@ -226,10 +226,10 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
           <div ref={messageRef} className={"flex justify-end px-1 text-medium"}>
             {hasFailed ? failedMessage : message}
           </div>
-          <div className="flex w-full flex-row flex-wrap">
+          {/* <div className="flex w-full flex-row flex-wrap">
             {files &&
               files.map((item) => <UploadFile className="flex shrink" {...item} />)}
-          </div>
+          </div> */}
         </div>
       </div>
     );
