@@ -45,10 +45,10 @@ const statusColorMap: Record<
   Status_Enum,
   "default" | "primary" | "secondary" | "success" | "danger"
 > = {
-  [Status_Enum.Chunked]: "default",
-  [Status_Enum.Extracted]: "primary",
-  [Status_Enum.Indexed]: "secondary",
-  [Status_Enum.Uploaded]: "success",
+  [Status_Enum.Uploaded]: "default",
+  [Status_Enum.Chunked]: "primary",
+  [Status_Enum.Extracted]: "secondary",
+  [Status_Enum.Indexed]: "success",
   [Status_Enum.Failed]: "danger",
 };
 
