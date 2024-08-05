@@ -4,17 +4,40 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 interface JsonExpressionInputProps {
   defaultValue?: string;
   jsonData?: object;
-  onSubmit: (expression: string) => void;
+  // onSubmit: (expression: string) => void;
+  // 新添加的属性
+  id?: string;
+  value?: string;
+  isRequired?: boolean;
+  isDisabled?: boolean;
+  isReadOnly?: boolean;
+  autoFocus?: boolean;
+  placeholder?: string;
+  className?: string;
+  onChange?: (value: string) => void;
+  onBlur?: (id: string, e: React.FocusEvent<HTMLTextAreaElement>) => void;
+  onFocus?: (id: string, e: React.FocusEvent<HTMLTextAreaElement>) => void;
 }
 
 const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
   defaultValue = "",
   jsonData = {},
-  onSubmit,
+  // onSubmit,
+  // 新添加的属性
+  id,
+  value,
+  isRequired = false,
+  isDisabled = false,
+  isReadOnly = false,
+  autoFocus = false,
+  placeholder,
+  className = "",
+  onChange,
+  onBlur,
+  onFocus,
 }) => {
-  const [expression, setExpression] = useState(defaultValue);
+  const [expression, setExpression] = useState(value || defaultValue);
   const [parsedExpression, setParsedExpression] = useState("");
-
   const [isDragOver, setIsDragOver] = useState(false);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -28,12 +51,14 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
   }, []);
 
   const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setExpression(e.target.value);
+    const newValue = e.target.value;
+    setExpression(newValue);
+    onChange && onChange(newValue);
   };
 
-  const handleSubmit = () => {
-    onSubmit(expression);
-  };
+  // const handleSubmit = () => {
+  //   onSubmit(expression);
+  // };
 
   const syncScroll = () => {
     if (highlightRef.current && textareaRef.current) {
@@ -41,27 +66,26 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
       highlightRef.current.scrollLeft = textareaRef.current.scrollLeft;
     }
   };
+
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    // 阻止默认行为以允许放置
     event.preventDefault();
     setIsDragOver(true);
   };
 
   const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
-    // 阻止默认行为以允许放置
     event.preventDefault();
     setIsDragOver(false);
   };
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-    // 尝试获取不同类型的数据
     const jsonData = event.dataTransfer.getData("application/json");
-
     console.log("JSON data:", jsonData);
     const path = JSON.parse(jsonData).path;
     if (path) {
-      setExpression((prev) => `${prev} {{ ${path} }}`);
+      const newExpression = `${expression} {{ ${path} }}`;
+      setExpression(newExpression);
+      onChange && onChange(newExpression);
     }
     setIsDragOver(false);
   };
@@ -95,17 +119,25 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
   }, [expression, jsonData]);
 
   return (
-    <div className="flex flex-col space-y-2 rounded-lg">
+    <div className={`flex flex-col space-y-2 rounded-lg ${className}`}>
       <div
         className="relative"
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}>
         <textarea
+          id={id}
           ref={textareaRef}
           value={expression}
           onChange={handleInput}
           onScroll={syncScroll}
+          required={isRequired}
+          disabled={isDisabled}
+          readOnly={isReadOnly}
+          autoFocus={autoFocus}
+          placeholder={placeholder}
+          onBlur={(e) => onBlur && onBlur(id || "", e)}
+          onFocus={(e) => onFocus && onFocus(id || "", e)}
           className={`w-full resize-none overflow-auto whitespace-pre-wrap break-words border-1 bg-transparent p-2 font-mono text-transparent caret-black focus:outline-none ${
             isDragOver ? "border-blue-500" : ""
           }`}

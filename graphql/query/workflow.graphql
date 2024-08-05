@@ -12,6 +12,7 @@ fragment nodeTypeFragment on node_type {
   id
   label
   schema
+  uiSchema
   type
   description
   icon

@@ -1,9 +1,12 @@
 "use client";
 
 import { PromptFormHandle } from "@/components/PromptFrom";
+import JsonExpressionInput from "@/components/ui/json-expression-input";
+import JsonTreeRenderer from "@/components/ui/json-tree-render";
+import CustomForm from "@/components/ui/nextui-form";
 import { PromptTemplate } from "@langchain/core/prompts";
+import { RJSFSchema } from "@rjsf/utils";
 import { useRef, useState } from "react";
-import "react-modern-drawer/dist/index.css";
 
 export default function Blog() {
   // promptHubRef =useRef<>
@@ -14,6 +17,7 @@ export default function Blog() {
     "The lift coefficient $C_L$ is a dimensionless coefficient. aa **bb** \n  #1222 \name";
 
   const [isOpen, setIsOpen] = useState(false);
+
   const toggleDrawer = () => {
     setIsOpen((prevState) => !prevState);
   };
@@ -24,29 +28,56 @@ export default function Blog() {
     }
   };
 
+  const schema: RJSFSchema = {
+    type: "array",
+    title: "Array of Objects Schema",
+    description:
+      "A schema describing an array of objects, each with name, expression, condition, and value fields",
+    items: {
+      type: "object",
+      properties: {
+        name: {
+          type: "string",
+        },
+        expression: {
+          type: "string",
+        },
+        condition: {
+          type: "string",
+          enum: [
+            "exists",
+            "does not exist",
+            "is empty",
+            "is not empty",
+            "is equal to",
+            "is not equal to",
+            "contains",
+            "does not contain",
+            "starts with",
+            "does not start with",
+            "ends with",
+            "does not end with",
+            "matches regex",
+            "does not match regex",
+          ],
+        },
+        value: {
+          type: "string",
+        },
+      },
+      required: ["name", "expression", "condition", "value"],
+    },
+  };
+
   return (
     <div className="h-full w-full">
-      {/* <Button onClick={handleClick}>Test</Button>
-      <PromptForm
-        agentId="eb216259-9a28-4c1e-bb5e-ece9534b8a51"
-        // hiddenSaveButton={true}
-        // hiddeTitle={true}
-        ref={promptFormRef}></PromptForm> */}
-      {/* <PromptTemplateInput></PromptTemplateInput> */}
-      {/* <LibrarySideBar></LibrarySideBar> */}
-      {/* <UploadZone></UploadZone> */}
-      {/* <SourceSection title="Sources"></SourceSection> */}
-      {/* <MarkdownRenderer content={content}></MarkdownRenderer> */}
-      {/* <LibraryCart agentId={"8434fd80-1f07-43b9-af55-2fee55314d59"}></LibraryCart> */}
-      {/* <button onClick={toggleDrawer}>Show</button> */}
-      {/* <Drawer
-        open={isOpen}
-        onClose={toggleDrawer}
-        direction="right"
-        className="bla bla bla min-w-[800px]">
-        <div>Hello World</div>
-        <Button variant="bordered" color="primary" />
-      </Drawer> */}
+      <CustomForm
+        schema={schema}
+        // validator={validator}
+        onSubmit={(formData) => console.log("formData", formData)}
+      />
+      <JsonTreeRenderer jsonData={schema}></JsonTreeRenderer>
+      <JsonExpressionInput jsonData={schema}></JsonExpressionInput>
     </div>
   );
 }

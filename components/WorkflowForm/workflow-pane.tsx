@@ -46,7 +46,7 @@ function Flow({
 
   useEffect(() => {
     onWorkflowChange?.(nodes, edges);
-  }, [nodes, edges]);
+  }, [nodes, edges, onWorkflowChange]);
 
   const onConnect = useCallback(
     (params: Connection) => {
@@ -101,6 +101,7 @@ function Flow({
         data: {
           label: nodeTypeData.label,
           schema: nodeTypeData.schema,
+          uiSchema: nodeTypeData.uiSchema,
           flow_id: flowId,
           node_type_id: nodeTypeData.id,
         },
@@ -109,7 +110,7 @@ function Flow({
       setSelectedNode(newNode);
       setOpenDrawer(true);
     },
-    [screenToFlowPosition, nodes, setNodes],
+    [screenToFlowPosition, flowId, setNodes],
   );
 
   const onNodeDoubleClick = useCallback<NodeMouseHandler>(
@@ -117,41 +118,18 @@ function Flow({
       // Prevent the default browser behavior
       event.preventDefault();
 
-      // Example: Update node data
-      // setNodes((nds) =>
-      //   nds.map((n) => {
-      //     if (n.id === node.id) {
-      //       // This is the double clicked node, update it
-      //       return {
-      //         ...n,
-      //         data: {
-      //           ...n.data,
-      //           label: `${n.data.label} (Edited)`,
-      //         },
-      //       };
-      //     }
-      //     return n;
-      //   }),
-      // );
-      // Example: You can also update edges if needed
-      // setEdges((eds) => [...]);
-      // Example: Use reactFlowInstance if needed
-
       const { x, y } = screenToFlowPosition({ x: event.clientX, y: event.clientY });
       setSelectedNode(node);
       setOpenDrawer(true);
       // You can add more logic here, such as opening a modal for editing the node
     },
-    [setNodes, screenToFlowPosition],
+    [screenToFlowPosition],
   );
 
-  const onNodeClick: NodeMouseHandler = useCallback(
-    (event, node) => {
-      // setSelectedNode((prevNode) => (prevNode?.id === node.id ? null : node));
-      // console.log(node);
-    },
-    [setNodes, selectedNode],
-  );
+  const onNodeClick: NodeMouseHandler = useCallback((event, node) => {
+    // setSelectedNode((prevNode) => (prevNode?.id === node.id ? null : node));
+    // console.log(node);
+  }, []);
 
   const toggleDrawer = () => {
     setOpenDrawer((prevState) => !prevState);

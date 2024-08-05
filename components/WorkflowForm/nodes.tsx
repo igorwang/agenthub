@@ -6,6 +6,18 @@ type CustomNodeData = {
   label?: string;
 };
 
+type Condition = {
+  name: string;
+  expression: string;
+  condition: string;
+  value: string;
+};
+
+type ConditionNodeData = {
+  label?: string;
+  schema_form_data?: Condition[];
+};
+
 export type StartNode = Node<CustomNodeData, "startNode">;
 export const StartNodeComponent: React.FC<NodeProps<StartNode>> = memo(({ data }) => {
   return (
@@ -84,7 +96,6 @@ export type endNode = Node<CustomNodeData, "endNode">;
 export const EndNodeComponent: React.FC<NodeProps<endNode>> = memo(
   ({ data, selected }) => {
     const borderColor = selected ? "border-blue-500" : "border-gray-200";
-
     return (
       <div
         className={`rounded-md border ${borderColor} bg-slate-100 px-4 py-2 shadow-sm transition-colors duration-200`}>
@@ -156,11 +167,63 @@ export const OutputParserNodeComponent: React.FC<NodeProps<outputParserNode>> = 
   },
 );
 
+export type ConditionNode = Node<ConditionNodeData, "conditionNode">;
+
+export const ConditionNodeComponent: React.FC<NodeProps<ConditionNode>> = memo(
+  ({ data, selected }) => {
+    const borderColor = selected ? "border-blue-500" : "border-gray-200";
+    const conditions = data.schema_form_data || [];
+
+    return (
+      <div
+        className={`rounded-md border ${borderColor} bg-yellow-100 px-4 py-2 shadow-sm transition-colors duration-200`}>
+        <div className="flex items-center">
+          <div className="mr-1 flex h-12 w-6 items-center justify-center text-yellow-500">
+            <Icon icon="typcn:flow-switch" fontSize={24} />
+          </div>
+          <div>
+            <div className="text-sm font-medium text-yellow-700">
+              {data.label || "Condition"}
+            </div>
+            <div className="text-xs text-yellow-600">
+              {conditions.length} condition{conditions.length !== 1 ? "s" : ""}
+            </div>
+          </div>
+        </div>
+
+        <Handle
+          type="target"
+          position={Position.Left}
+          className="h-4 w-1 !border-1 !border-white !bg-yellow-300"
+        />
+
+        {/* <Handle
+          type="source"
+          position={Position.Right}
+          className="h-3 w-3 !border-2 !border-white !bg-purple-300"
+        /> */}
+
+        {conditions.map((_, index) => (
+          <Handle
+            key={index}
+            type="source"
+            position={Position.Right}
+            id={`input-${index}`}
+            className="h-4 w-1 !border-1 !border-white !bg-yellow-300"
+            style={{ top: `${(index + 1) * 25}%` }}
+          />
+        ))}
+      </div>
+    );
+  },
+);
+
 StartNodeComponent.displayName = "StartNodeComponent";
 InputNodeComponent.displayName = "InputNodeComponent";
 llmNodeComponent.displayName = "llmNodeComponent";
 EndNodeComponent.displayName = "EndNodeComponent";
 OutputParserNodeComponent.displayName = "outputParserNode";
+ConditionNodeComponent.displayName = "ConditionNodeComponent";
 
 export const nodeTypes: NodeTypes = {
   startNode: StartNodeComponent,
@@ -168,4 +231,5 @@ export const nodeTypes: NodeTypes = {
   llmNode: llmNodeComponent,
   endNode: EndNodeComponent,
   outputParserNode: OutputParserNodeComponent,
+  conditionNode: ConditionNodeComponent,
 };
