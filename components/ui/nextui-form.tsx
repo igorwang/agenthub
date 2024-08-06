@@ -12,6 +12,8 @@ import {
 import { ThemeProps, withTheme } from "@rjsf/core";
 import {
   ArrayFieldTemplateProps,
+  FieldProps,
+  RegistryFieldsType,
   RegistryWidgetsType,
   RJSFSchema,
   UiSchema,
@@ -141,43 +143,37 @@ const CustomSelectWidget: React.FC<WidgetProps> = (props) => {
   );
 };
 
-const MyCustomWidget = (props: WidgetProps) => {
-  return (
-    <input
-      type="text"
-      className="custom"
-      value={props.value}
-      required={props.required}
-      onChange={(event) => props.onChange(event.target.value)}
-    />
-  );
+const CustomJsonField: React.FC<FieldProps> = (props) => {
+  const { schema, uiSchema, idSchema, formData, onChange, registry } = props;
+
+  if (schema.format === "json" || uiSchema?.["ui:field"] === "json") {
+    return (
+      <div className="flex flex-col">
+        <label>{schema.title || "Schema"}</label>
+        <JsonEditor
+          id={idSchema.$id}
+          collapse={true}
+          maxWidth={400}
+          data={formData || {}}
+          onUpdate={({ newData }) => {
+            onChange(newData);
+          }}
+          rootName={""}
+        />
+      </div>
+    );
+  }
+
+  return <registry.fields.ObjectField {...props} />;
 };
 
-const JsonEditorWidget: React.FC<WidgetProps> = (props) => {
-  console.log("JsonEditorWidget rendered with props:", props);
-  const { id, value, onChange } = props;
-  return (
-    <JsonEditor
-      id={id}
-      collapse={true}
-      maxWidth={400}
-      data={value || {}}
-      onUpdate={({ newData }) => {
-        onChange(newData);
-      }}
-      rootName=""
-    />
-  );
-};
 // Define default widgets
 const defaultWidgets: RegistryWidgetsType = {
   CheckboxWidget: CustomCheckbox,
   SwitchWidget: CustomSwitch,
   TextWidget: CustomTextWidget,
   SelectWidget: CustomSelectWidget,
-  JsonEditorWidget: JsonEditorWidget,
 };
-console.log("defaultWidgets", defaultWidgets);
 
 // Create the theme object
 const NextUITheme: ThemeProps = {
@@ -223,24 +219,16 @@ const CustomForm: React.FC<CustomFormProps> = ({
   onClose,
 }) => {
   const widgets = { ...defaultWidgets, ...customWidgets };
-  console.log("uiSchema", uiSchema);
 
-  const uiSchema1 = {
-    // ... 其他 uiSchema 配置
-    outputSchema: {
-      "ui:widget": (
-        props: React.JSX.IntrinsicAttributes & WidgetProps<any, RJSFSchema, any>,
-      ) => <JsonEditorWidget {...props} />,
-      "ui:help": "Hint: Make it strong!",
-    },
-  };
+  const fields: RegistryFieldsType = { json: CustomJsonField };
 
   return (
     <ThemedForm
       schema={schema}
-      uiSchema={uiSchema1}
+      uiSchema={uiSchema}
       validator={validator}
       widgets={widgets}
+      fields={fields}
       formContext={{ onClose }}
       onSubmit={({ formData }) => {
         console.log(formData);

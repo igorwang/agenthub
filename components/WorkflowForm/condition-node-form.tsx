@@ -12,13 +12,6 @@ interface ConditionNodeFormProps {
   onToggleDrawer?: () => void;
 }
 
-// type FormValues = {
-//   id: string;
-//   label: string;
-//   inputSchemaData: object | null;
-//   output_schema: object | null;
-// };
-
 export default function ConditionNodeForm({
   node,
   onNodeChange,
@@ -36,7 +29,6 @@ export default function ConditionNodeForm({
     <div className="flex flex-col gap-4 p-4">
       <div className="text-2xl font-bold">Edit Condition Node</div>
       <Divider />
-      {/* <form onSubmit={handleSubmit(onSubmit)}> */}
       <CustomForm
         schema={nodeData.schema}
         uiSchema={nodeData.uiSchema}
