@@ -137,15 +137,17 @@ function Flow({
 
   const handleNodeChange = (data: { [key: string]: any }) => {
     console.log("handleNodeChange", data);
+    const { id, ...nodeData } = data;
+
     setNodes((nds) =>
       nds.map((n) => {
-        if (n.id === data.id) {
+        if (n.id === id) {
           // This is the update node
           return {
             ...n,
             data: {
               ...n.data,
-              ...data,
+              ...nodeData,
             },
           };
         }

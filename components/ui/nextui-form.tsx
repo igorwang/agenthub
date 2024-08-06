@@ -206,6 +206,7 @@ const ThemedForm = withTheme(NextUITheme);
 interface CustomFormProps {
   schema: RJSFSchema;
   uiSchema?: UiSchema;
+  formData?: any; // Add this line to accept default values
   customWidgets?: RegistryWidgetsType;
   onSubmit: (formData: any) => void;
   onClose?: () => void;
@@ -215,17 +216,18 @@ const CustomForm: React.FC<CustomFormProps> = ({
   schema,
   uiSchema,
   customWidgets,
+  formData = {},
   onSubmit,
   onClose,
 }) => {
   const widgets = { ...defaultWidgets, ...customWidgets };
-
   const fields: RegistryFieldsType = { json: CustomJsonField };
 
   return (
     <ThemedForm
       schema={schema}
       uiSchema={uiSchema}
+      formData={formData}
       validator={validator}
       widgets={widgets}
       fields={fields}

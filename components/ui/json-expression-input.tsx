@@ -99,6 +99,7 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
 
   useEffect(() => {
     const parseExpression = (exp: string) => {
+      if (!exp.includes("{{")) return "";
       return exp.replace(/\{\{\s*(.*?)\s*\}\}/g, (match, path) => {
         try {
           const value = JSONPath({ path: path.trim(), json: jsonData });

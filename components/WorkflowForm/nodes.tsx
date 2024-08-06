@@ -15,7 +15,8 @@ type Condition = {
 
 type ConditionNodeData = {
   label?: string;
-  schema_form_data?: Condition[];
+  conditions?: Condition[];
+  [key: string]: any;
 };
 
 export type StartNode = Node<CustomNodeData, "startNode">;
@@ -172,7 +173,6 @@ export type ConditionNode = Node<ConditionNodeData, "conditionNode">;
 export const ConditionNodeComponent: React.FC<NodeProps<ConditionNode>> = memo(
   ({ data, selected }) => {
     const borderColor = selected ? "border-blue-500" : "border-gray-200";
-    const conditions = data.schema_form_data || [];
 
     return (
       <div
@@ -186,30 +186,23 @@ export const ConditionNodeComponent: React.FC<NodeProps<ConditionNode>> = memo(
               {data.label || "Condition"}
             </div>
             <div className="text-xs text-yellow-600">
-              {conditions.length} condition{conditions.length !== 1 ? "s" : ""}
+              {data.conditions?.length} condition
+              {data.conditions?.length !== 1 ? "s" : ""}
             </div>
           </div>
         </div>
-
         <Handle
           type="target"
           position={Position.Left}
-          className="h-4 w-1 !border-1 !border-white !bg-yellow-300"
+          className="h-4 w-1 !border-1 !border-white !bg-slate-200"
         />
-
-        {/* <Handle
-          type="source"
-          position={Position.Right}
-          className="h-3 w-3 !border-2 !border-white !bg-purple-300"
-        /> */}
-
-        {conditions.map((_, index) => (
+        {data.conditions?.map((_, index) => (
           <Handle
             key={index}
             type="source"
             position={Position.Right}
             id={`input-${index}`}
-            className="h-4 w-1 !border-1 !border-white !bg-yellow-300"
+            className="h-3 w-3 !border-2 !border-white !bg-slate-200"
             style={{ top: `${(index + 1) * 25}%` }}
           />
         ))}

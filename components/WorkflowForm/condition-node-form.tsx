@@ -18,7 +18,7 @@ export default function ConditionNodeForm({
   onToggleDrawer,
 }: ConditionNodeFormProps) {
   const nodeData = node.data || {};
-  console.log("nodeData", nodeData);
+  console.log("nodeData", node);
 
   const onSubmit = (data: any) => {
     onNodeChange?.(data);
@@ -32,11 +32,12 @@ export default function ConditionNodeForm({
       <CustomForm
         schema={nodeData.schema}
         uiSchema={nodeData.uiSchema}
+        formData={nodeData}
         onSubmit={(formData) => {
-          console.log("formData", formData);
+          onSubmit?.({ ...formData, id: node.id });
         }}
         onClose={() => {
-          console.log("CustomForm close");
+          onToggleDrawer?.();
         }}
       />
     </div>
