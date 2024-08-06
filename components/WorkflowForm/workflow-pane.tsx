@@ -21,6 +21,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import NodeDrawer from "@/components/WorkflowForm/node-drawer";
 import { nodeTypes } from "@/components/WorkflowForm/nodes";
 import { NodeTypeFragmentFragment } from "@/graphql/generated/types";
+import { alg, Graph } from "@dagrejs/graphlib";
 import "@xyflow/react/dist/base.css";
 import { v4 } from "uuid";
 
@@ -41,12 +42,47 @@ function Flow({
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
+  const [prevSelectedNodes, setPrevSelectedNodes] = useState<Node[]>([]); // record the nodes before selected
+
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const { screenToFlowPosition } = useReactFlow();
 
+  const graphRef = useRef<Graph>(new Graph({ directed: true }));
+
   useEffect(() => {
     onWorkflowChange?.(nodes, edges);
+    const graph = new Graph({ directed: true });
+    nodes.forEach((node) => graph.setNode(node.id, node));
+    edges.forEach((edge) => graph.setEdge(edge.source, edge.target));
+    graphRef.current = graph;
   }, [nodes, edges, onWorkflowChange]);
+
+  const findPrevNodes = useCallback(
+    (nodeId: string) => {
+      const graph = graphRef.current;
+      const prevNodeIds = new Set<string>();
+
+      function dfs(currentId: string) {
+        graph.predecessors(currentId)?.forEach((predId) => {
+          if (!prevNodeIds.has(predId)) {
+            prevNodeIds.add(predId);
+            dfs(predId);
+          }
+        });
+      }
+      dfs(nodeId);
+
+      const sortedNodes = alg.topsort(graph);
+      const sortedPrevNodeIds = sortedNodes.filter((id) => prevNodeIds.has(id));
+      const prevNodes = nodes.filter((node) =>
+        sortedPrevNodeIds.some((id) => String(id) === String(node.id)),
+      );
+      console.log("prevNodeIds", sortedPrevNodeIds, prevNodes, nodes);
+
+      return prevNodes;
+    },
+    [nodes],
+  );
 
   const onConnect = useCallback(
     (params: Connection) => {
@@ -108,9 +144,9 @@ function Flow({
       };
       setNodes((nds) => nds.concat(newNode));
       setSelectedNode(newNode);
-      setOpenDrawer(true);
+      // setOpenDrawer(true);
     },
-    [screenToFlowPosition, flowId, setNodes],
+    [screenToFlowPosition, flowId],
   );
 
   const onNodeDoubleClick = useCallback<NodeMouseHandler>(
@@ -120,10 +156,15 @@ function Flow({
 
       const { x, y } = screenToFlowPosition({ x: event.clientX, y: event.clientY });
       setSelectedNode(node);
+
+      const prevNodes = findPrevNodes(node.id);
+      setPrevSelectedNodes(prevNodes);
+      console.log("prevNodes", prevNodes);
+
       setOpenDrawer(true);
       // You can add more logic here, such as opening a modal for editing the node
     },
-    [screenToFlowPosition],
+    [screenToFlowPosition, nodes],
   );
 
   const onNodeClick: NodeMouseHandler = useCallback((event, node) => {
@@ -136,7 +177,6 @@ function Flow({
   };
 
   const handleNodeChange = (data: { [key: string]: any }) => {
-    console.log("handleNodeChange", data);
     const { id, ...nodeData } = data;
 
     setNodes((nds) =>
@@ -176,6 +216,7 @@ function Flow({
         {selectedNode && (
           <NodeDrawer
             node={selectedNode}
+            prevNodes={prevSelectedNodes}
             isOpen={openDrawer}
             onToggleDrawer={toggleDrawer}
             onNodeChange={handleNodeChange}

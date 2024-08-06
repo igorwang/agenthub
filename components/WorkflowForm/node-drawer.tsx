@@ -8,6 +8,7 @@ import Drawer from "react-modern-drawer";
 import "react-modern-drawer/dist/index.css";
 
 interface NodeDrawerProps {
+  prevNodes?: Node[];
   node: Node | null;
   isOpen: boolean;
   onToggleDrawer: () => void;
@@ -25,6 +26,7 @@ const formComponents: Map<string, any | null> = new Map([
 ]);
 
 export default function NodeDrawer({
+  prevNodes,
   node,
   isOpen,
   onToggleDrawer,
@@ -33,6 +35,7 @@ export default function NodeDrawer({
   if (!node?.type) {
     return null;
   }
+
   const FormComponent = formComponents.get(node.type);
   if (FormComponent === undefined) {
     // 如果没有找到对应的表单，关闭抽屉
@@ -55,7 +58,7 @@ export default function NodeDrawer({
       open={isOpen}
       onClose={onToggleDrawer}
       direction="right"
-      className="z-20 h-full min-w-[600px] overflow-auto">
+      className="z-20 h-full min-w-[400px] overflow-auto">
       <FormComponent
         key={node.id}
         node={node}

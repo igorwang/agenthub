@@ -81,6 +81,7 @@ export default function WorkflowForm({
   const onSubmit: SubmitHandler<FormValues> = async (data, event) => {
     event?.preventDefault();
     const formData = new FormData();
+
     formData.append("id", data.id);
     formData.append("name", data.name);
     formData.append("description", data.description);
