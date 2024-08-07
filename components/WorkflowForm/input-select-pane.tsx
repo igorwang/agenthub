@@ -1,3 +1,4 @@
+import JsonTreeRenderer from "@/components/ui/json-tree-render";
 import {
   Card,
   CardBody,
@@ -64,14 +65,16 @@ export const InputSelectionPane: React.FC<InputSelectionPaneProps> = ({ nodes })
           ))}
         </Select>
 
-        {selectedNode && (
+        {nodes.length > 0 && selectedNode && (
           <div className="flex h-full flex-col items-center justify-center">
             {/* <h3 className="text-md font-medium">
               {getNodeLabel(selectedNode, nodes.indexOf(selectedNode))}
             </h3> */}
             {selectedNode.data.outputSchema ? (
-              <pre className="mt-2 overflow-x-auto rounded bg-gray-100 p-2 text-sm">
-                {JSON.stringify(selectedNode.data.outputSchema, null, 2)}
+              <pre className="mt-2 overflow-x-auto p-2 text-sm">
+                {/* {JSON.stringify(selectedNode.data.outputSchema, null, 2)} */}
+                <JsonTreeRenderer
+                  jsonData={selectedNode.data.outputSchema}></JsonTreeRenderer>
               </pre>
             ) : (
               <p className="mt-2 text-gray-500">No input data yet</p>

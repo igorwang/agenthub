@@ -21,7 +21,7 @@ const JsonSchemaTooltip: React.FC<JsonSchemaTooltipProps> = ({
       <div className="whitespace-pre-wrap">{content}</div>
       {format && (
         <div className="mt-2">
-          <h5 className="mb-1 font-semibold">Format:</h5>
+          <h5 className="mb-1 font-semibold">Example:</h5>
           <pre className="overflow-auto rounded bg-gray-100 p-2 text-xs">
             {JSON.stringify(JSON.parse(format), null, 2)}
           </pre>

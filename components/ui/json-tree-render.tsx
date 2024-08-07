@@ -108,7 +108,6 @@ const JsonTreeRenderer: React.FC<JsonTreeRendererProps> = ({ jsonData, onDragSta
       </>
     );
   };
-
   const renderTree = (nodes: TreeNode[]) => (
     <ul className="pl-4">
       {nodes.map((node) => (

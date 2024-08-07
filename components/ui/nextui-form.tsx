@@ -146,7 +146,6 @@ const CustomSelectWidget: React.FC<WidgetProps> = (props) => {
 
 const CustomJsonField: React.FC<FieldProps> = (props) => {
   const { name, schema, uiSchema, idSchema, formData, onChange, registry } = props;
-  console.log("idSchema", name, schema, idSchema);
 
   const outputSchemaDocstring = {
     type: "object",
@@ -174,6 +173,7 @@ const CustomJsonField: React.FC<FieldProps> = (props) => {
   const taskOutputFormatIntro =
     "This field defines the output format for the current task node. Follow these principles:\n\n1. The output must be a JSON object.\n2. Define properties with appropriate types (string, number, boolean, object, array).\n3. Use 'title' to provide a human-readable name for each property.\n\nAdhering to this format ensures consistency and facilitates data processing in subsequent steps.";
   const jsonInputPrompt = `Please enter data that conforms to JSON standards.
+
     Example:
     {
       "name": "John Doe",
@@ -189,12 +189,35 @@ const CustomJsonField: React.FC<FieldProps> = (props) => {
     4. Use true or false for boolean values
     5. Write numbers directly, without quotes`;
 
+  const outputSchemaDataExample = {
+    name: {
+      type: "string",
+      title: "Name",
+    },
+    age: {
+      type: "number",
+      title: "Age",
+    },
+    isStudent: {
+      type: "boolean",
+      title: "Is Student",
+    },
+    address: {
+      type: "object",
+      title: "Address",
+    },
+    hobbies: {
+      type: "array",
+      title: "Hobbies",
+    },
+  };
+
   const tooltipContent =
     name === "outputSchema" ? (
       <JsonSchemaTooltip
         title="outputSchema"
         content={taskOutputFormatIntro}
-        format={JSON.stringify(outputSchemaDocstring)}
+        format={JSON.stringify(outputSchemaDataExample)}
       />
     ) : (
       <JsonSchemaTooltip title="jsonSchema" content={jsonInputPrompt} />

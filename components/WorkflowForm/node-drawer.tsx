@@ -54,6 +54,7 @@ export default function NodeDrawer({
   //   return <FormComponent node={node} />;
   // };
 
+  console.log("NodeDrawer prevNodes", prevNodes);
   return (
     // <div className="">
     <Drawer
