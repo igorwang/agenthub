@@ -1,5 +1,6 @@
 "use client";
 import ConditionNodeForm from "@/components/WorkflowForm/condition-node-form";
+import { InputSelectionPane } from "@/components/WorkflowForm/input-select-pane";
 import LlmNodeForm from "@/components/WorkflowForm/llm-node-form";
 import OutputParserNodeForm from "@/components/WorkflowForm/output-parser-form";
 import { Node } from "@xyflow/react";
@@ -58,13 +59,18 @@ export default function NodeDrawer({
       open={isOpen}
       onClose={onToggleDrawer}
       direction="right"
-      className="z-20 h-full min-w-[400px] overflow-auto">
-      <FormComponent
-        key={node.id}
-        node={node}
-        onNodeChange={onNodeChange}
-        onToggleDrawer={onToggleDrawer}
-      />
+      className="z-20 flex h-full min-w-[800px] flex-row overflow-auto">
+      <div className="my-10 w-1/2 px-2">
+        <InputSelectionPane nodes={prevNodes || []} />
+      </div>
+      <div className="w-1/2">
+        <FormComponent
+          key={node.id}
+          node={node}
+          onNodeChange={onNodeChange}
+          onToggleDrawer={onToggleDrawer}
+        />
+      </div>
     </Drawer>
     // </div>
   );

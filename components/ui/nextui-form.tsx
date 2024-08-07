@@ -148,12 +148,12 @@ const CustomJsonField: React.FC<FieldProps> = (props) => {
 
   if (schema.format === "json" || uiSchema?.["ui:field"] === "json") {
     return (
-      <div className="flex flex-col">
+      <div className="flex max-w-full flex-col">
         <label>{schema.title || "Schema"}</label>
         <JsonEditor
           id={idSchema.$id}
           collapse={true}
-          maxWidth={400}
+          // maxWidth={400}
           data={formData || {}}
           onUpdate={({ newData }) => {
             onChange(newData);
