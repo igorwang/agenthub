@@ -60,7 +60,9 @@ const CustomSwitch: React.FC<WidgetProps> = (props) => {
       className="mb-2"
       isSelected={value}
       isDisabled={disabled || readonly}
-      onValueChange={(isSelected) => onChange(isSelected)}>
+      onValueChange={(isSelected) => {
+        onChange(isSelected);
+      }}>
       {label}
     </Switch>
   );
@@ -80,15 +82,6 @@ const CustomTextWidget: React.FC<WidgetProps> = (props) => {
     options,
     formContext,
   } = props;
-  // const { prevNodes } = formContext;
-
-  // const jsonData = prevNodes
-  //   ? prevNodes.reduce((acc: { [key: string]: any }, item: Node) => {
-  //       const key = (item.data.label as string) || "Node Label";
-  //       acc[key] = item.data.outputSchema;
-  //       return acc;
-  //     }, {})
-  //   : {};
 
   return (
     <Input
@@ -139,13 +132,14 @@ const CustomArrayFieldTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
 };
 
 const CustomSelectWidget: React.FC<WidgetProps> = (props) => {
-  const { id, value, required, disabled, readonly, onChange, options } = props;
+  const { id, name, value, required, disabled, readonly, onChange, options } = props;
   return (
     <Select
       id={id}
       className="mb-2"
       value={value}
       isRequired={required}
+      selectedKeys={new Set([value])}
       isDisabled={disabled || readonly}
       onChange={(e) => onChange(e.target.value)}>
       {(options.enumOptions || []).map((option: any) => (
@@ -161,7 +155,6 @@ const CustomJsonField: React.FC<FieldProps> = (props) => {
   const { name, schema, uiSchema, idSchema, formData, onChange, registry, formContext } =
     props;
 
-  console.log("CustomJsonField", formContext);
   const outputSchemaDocstring = {
     type: "object",
     required: ["properties"],
@@ -288,8 +281,6 @@ const CustomExpressionInputField: React.FC<FieldProps> = (props) => {
         return acc;
       }, {})
     : {};
-
-  console.log("JsonExpressionInput", required);
 
   return (
     <div>
