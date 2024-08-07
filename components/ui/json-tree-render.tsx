@@ -12,11 +12,16 @@ interface TreeNode {
 }
 
 interface JsonTreeRendererProps {
+  defaultPath?: string;
   jsonData: object;
   onDragStart?: (nodeData: TreeNode) => void;
 }
 
-const JsonTreeRenderer: React.FC<JsonTreeRendererProps> = ({ jsonData, onDragStart }) => {
+const JsonTreeRenderer: React.FC<JsonTreeRendererProps> = ({
+  jsonData,
+  defaultPath,
+  onDragStart,
+}) => {
   const [treeData] = useState<TreeNode[]>(
     useMemo(() => convertJsonToTreeData(jsonData), [jsonData]),
   );
@@ -26,6 +31,9 @@ const JsonTreeRenderer: React.FC<JsonTreeRendererProps> = ({ jsonData, onDragSta
   function convertJsonToTreeData(json: any, parentPath: string = ""): TreeNode[] {
     return Object.entries(json).map(([key, value]) => {
       const currentPath = parentPath ? `${parentPath}.${key}` : key;
+      // const currentPath = defaultPath ? (parentPath ? `${parentPath}.${key}` : key);
+      const fullPath = defaultPath ? `${defaultPath}.${currentPath}` : currentPath;
+
       const type = Array.isArray(value)
         ? "array"
         : value === null
@@ -34,19 +42,19 @@ const JsonTreeRenderer: React.FC<JsonTreeRendererProps> = ({ jsonData, onDragSta
 
       if (typeof value === "object" && value !== null) {
         return {
-          key: currentPath,
+          key: fullPath,
           title: key,
           value: undefined,
-          path: currentPath,
+          path: fullPath,
           type: type as "object" | "array",
           children: convertJsonToTreeData(value, currentPath),
         };
       }
       return {
-        key: currentPath,
+        key: fullPath,
         title: key,
         value: value,
-        path: currentPath,
+        path: fullPath,
         type: type as "string" | "number" | "boolean" | "null",
       };
     });

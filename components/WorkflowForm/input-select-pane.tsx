@@ -35,6 +35,7 @@ export const InputSelectionPane: React.FC<InputSelectionPaneProps> = ({ nodes })
     const selectedKey = Array.from(keys)[0] as string;
     const newSelectedNode = nodes.find((node) => node.id === selectedKey);
     if (newSelectedNode) {
+      console.log("newSelectedNode", newSelectedNode);
       setSelectedNode(newSelectedNode);
     }
   };
@@ -74,7 +75,9 @@ export const InputSelectionPane: React.FC<InputSelectionPaneProps> = ({ nodes })
               <pre className="mt-2 overflow-x-auto p-2 text-sm">
                 {/* {JSON.stringify(selectedNode.data.outputSchema, null, 2)} */}
                 <JsonTreeRenderer
-                  jsonData={selectedNode.data.outputSchema}></JsonTreeRenderer>
+                  jsonData={selectedNode.data.outputSchema}
+                  defaultPath={selectedNode.data.label}
+                />
               </pre>
             ) : (
               <p className="mt-2 text-gray-500">No input data yet</p>

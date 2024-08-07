@@ -82,6 +82,7 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();
+
     const jsonData = event.dataTransfer.getData("application/json");
     console.log("JSON data:", jsonData);
     const path = JSON.parse(jsonData).path;
