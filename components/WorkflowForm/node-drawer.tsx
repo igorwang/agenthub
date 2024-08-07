@@ -1,5 +1,6 @@
 "use client";
 import ConditionNodeForm from "@/components/WorkflowForm/condition-node-form";
+import InputNodeForm from "@/components/WorkflowForm/input-node-form";
 import { InputSelectionPane } from "@/components/WorkflowForm/input-select-pane";
 import LlmNodeForm from "@/components/WorkflowForm/llm-node-form";
 import OutputParserNodeForm from "@/components/WorkflowForm/output-parser-form";
@@ -18,7 +19,7 @@ interface NodeDrawerProps {
 
 const formComponents: Map<string, any | null> = new Map([
   // ['startNode', StartNodeForm],
-  // ['inputNode', InputNodeForm],
+  ["inputNode", InputNodeForm],
   ["llmNode", LlmNodeForm],
   ["outputParserNode", OutputParserNodeForm],
   ["conditionNode", ConditionNodeForm],

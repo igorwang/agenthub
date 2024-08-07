@@ -1,4 +1,5 @@
 import JsonExpressionInput from "@/components/ui/json-expression-input";
+import JsonSchemaTooltip from "@/components/ui/json-schema-tooltip";
 import {
   Button,
   Card,
@@ -144,12 +145,69 @@ const CustomSelectWidget: React.FC<WidgetProps> = (props) => {
 };
 
 const CustomJsonField: React.FC<FieldProps> = (props) => {
-  const { schema, uiSchema, idSchema, formData, onChange, registry } = props;
+  const { name, schema, uiSchema, idSchema, formData, onChange, registry } = props;
+  console.log("idSchema", name, schema, idSchema);
+
+  const outputSchemaDocstring = {
+    type: "object",
+    required: ["properties"],
+    properties: {
+      properties: {
+        type: "object",
+        additionalProperties: {
+          type: "object",
+          required: ["type"],
+          properties: {
+            type: {
+              type: "string",
+              enum: ["string", "number", "boolean", "object", "array"],
+            },
+            title: {
+              type: "string",
+            },
+          },
+        },
+      },
+    },
+    additionalProperties: false,
+  };
+  const taskOutputFormatIntro =
+    "This field defines the output format for the current task node. Follow these principles:\n\n1. The output must be a JSON object.\n2. Define properties with appropriate types (string, number, boolean, object, array).\n3. Use 'title' to provide a human-readable name for each property.\n\nAdhering to this format ensures consistency and facilitates data processing in subsequent steps.";
+  const jsonInputPrompt = `Please enter data that conforms to JSON standards.
+    Example:
+    {
+      "name": "John Doe",
+      "age": 30,
+      "hobbies": ["reading", "traveling"],
+      "isStudent": false
+    }
+    
+    Note:
+    1. Use double quotes for key names and string values
+    2. Use square brackets [] for arrays, curly braces {} for objects
+    3. Separate items with commas
+    4. Use true or false for boolean values
+    5. Write numbers directly, without quotes`;
+
+  const tooltipContent =
+    name === "outputSchema" ? (
+      <JsonSchemaTooltip
+        title="outputSchema"
+        content={taskOutputFormatIntro}
+        format={JSON.stringify(outputSchemaDocstring)}
+      />
+    ) : (
+      <JsonSchemaTooltip title="jsonSchema" content={jsonInputPrompt} />
+    );
 
   if (schema.format === "json" || uiSchema?.["ui:field"] === "json") {
     return (
       <div className="flex max-w-full flex-col">
-        <label>{schema.title || "Schema"}</label>
+        <div className="flex flex-row items-center justify-start">
+          <label>{schema.title || "Schema"}</label>
+          {tooltipContent}
+        </div>
+
         <JsonEditor
           id={idSchema.$id}
           collapse={true}

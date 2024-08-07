@@ -31,7 +31,7 @@ export default function InputNodeForm({
       <Divider />
       <CustomForm
         schema={nodeData.schema}
-        uiSchema={nodeData.uiSchema}
+        uiSchema={nodeData.uiSchema || {}}
         formData={nodeData}
         onSubmit={(formData) => {
           onSubmit?.({ ...formData, id: node.id });
