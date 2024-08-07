@@ -21,6 +21,7 @@ import {
   WidgetProps,
 } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv8";
+import { Node } from "@xyflow/react";
 import { JsonEditor } from "json-edit-react";
 import React from "react";
 
@@ -76,11 +77,23 @@ const CustomTextWidget: React.FC<WidgetProps> = (props) => {
     onFocus,
     autofocus,
     options,
+    formContext,
   } = props;
+  const { prevNodes } = formContext;
+
+  const jsonData = prevNodes
+    ? prevNodes.reduce((acc: { [key: string]: any }, item: Node) => {
+        const key = (item.data.label as string) || "Node Label";
+        acc[key] = item.data.outputSchema;
+        return acc;
+      }, {})
+    : {};
+
   return (
     <JsonExpressionInput
       id={id}
       value={value || ""}
+      jsonData={jsonData}
       isRequired={required}
       className="mb-2"
       isDisabled={disabled || readonly}
@@ -145,8 +158,10 @@ const CustomSelectWidget: React.FC<WidgetProps> = (props) => {
 };
 
 const CustomJsonField: React.FC<FieldProps> = (props) => {
-  const { name, schema, uiSchema, idSchema, formData, onChange, registry } = props;
+  const { name, schema, uiSchema, idSchema, formData, onChange, registry, formContext } =
+    props;
 
+  console.log("CustomJsonField", formContext);
   const outputSchemaDocstring = {
     type: "object",
     required: ["properties"],
@@ -289,6 +304,7 @@ interface CustomFormProps {
   uiSchema?: UiSchema;
   formData?: any; // Add this line to accept default values
   customWidgets?: RegistryWidgetsType;
+  prevNodes?: Node[];
   onSubmit: (formData: any) => void;
   onClose?: () => void;
 }
@@ -296,6 +312,7 @@ interface CustomFormProps {
 const CustomForm: React.FC<CustomFormProps> = ({
   schema,
   uiSchema,
+  prevNodes,
   customWidgets,
   formData = {},
   onSubmit,
@@ -312,7 +329,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
       validator={validator}
       widgets={widgets}
       fields={fields}
-      formContext={{ onClose }}
+      formContext={{ onClose, prevNodes }}
       onSubmit={({ formData }) => {
         console.log(formData);
         onSubmit(formData);

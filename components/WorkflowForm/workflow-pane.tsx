@@ -99,6 +99,14 @@ function Flow({
     [setEdges],
   );
 
+  const generateRandomLetters = () => {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    return Array(6)
+      .fill(0)
+      .map(() => chars.charAt(Math.floor(Math.random() * chars.length)))
+      .join("");
+  };
+
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
@@ -135,7 +143,7 @@ function Flow({
         type: nodeTypeData.type,
         position,
         data: {
-          label: nodeTypeData.label,
+          label: `${nodeTypeData.label}-${generateRandomLetters()}`,
           schema: nodeTypeData.schema,
           uiSchema: nodeTypeData.uiSchema,
           flow_id: flowId,
@@ -177,6 +185,17 @@ function Flow({
 
   const handleNodeChange = (data: { [key: string]: any }) => {
     const { id, ...nodeData } = data;
+    const label = nodeData.label;
+
+    const existingLabels = new Set(
+      nodes.filter((n) => n.id !== id).map((n) => n.data.label),
+    );
+
+    const newLabel = existingLabels.has(label)
+      ? `${label}-${generateRandomLetters()}`
+      : label;
+
+    console.log("handleNodeChange", data, label, existingLabels);
 
     setNodes((nds) =>
       nds.map((n) => {
@@ -187,6 +206,7 @@ function Flow({
             data: {
               ...n.data,
               ...nodeData,
+              label: newLabel,
             },
           };
         }

@@ -8,17 +8,18 @@ interface NodeData {
 
 interface ConditionNodeFormProps {
   node: Node<NodeData>;
+  prevNodes?: Node[];
   onNodeChange?: (data: { [key: string]: any }) => void;
   onToggleDrawer?: () => void;
 }
 
 export default function ConditionNodeForm({
   node,
+  prevNodes,
   onNodeChange,
   onToggleDrawer,
 }: ConditionNodeFormProps) {
   const nodeData = node.data || {};
-  console.log("nodeData", node);
 
   const onSubmit = (data: any) => {
     onNodeChange?.(data);
@@ -39,6 +40,7 @@ export default function ConditionNodeForm({
         onClose={() => {
           onToggleDrawer?.();
         }}
+        prevNodes={prevNodes}
       />
     </div>
   );

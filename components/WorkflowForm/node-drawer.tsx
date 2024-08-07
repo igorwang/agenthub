@@ -45,6 +45,7 @@ export default function NodeDrawer({
           node={node}
           onNodeChange={onNodeChange}
           onToggleDrawer={onToggleDrawer}
+          prevNodes={prevNodes}
         />
       </div>
     </Drawer>
