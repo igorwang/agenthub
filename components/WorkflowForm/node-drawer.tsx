@@ -1,9 +1,6 @@
 "use client";
-import ConditionNodeForm from "@/components/WorkflowForm/condition-node-form";
-import InputNodeForm from "@/components/WorkflowForm/input-node-form";
 import { InputSelectionPane } from "@/components/WorkflowForm/input-select-pane";
-import LlmNodeForm from "@/components/WorkflowForm/llm-node-form";
-import OutputParserNodeForm from "@/components/WorkflowForm/output-parser-form";
+import { nodeFormComponents } from "@/components/WorkflowForm/node-forms";
 import { Node } from "@xyflow/react";
 import Drawer from "react-modern-drawer";
 
@@ -17,16 +14,6 @@ interface NodeDrawerProps {
   onNodeChange?: (data: { [key: string]: any }) => void;
 }
 
-const formComponents: Map<string, any | null> = new Map([
-  // ['startNode', StartNodeForm],
-  ["inputNode", InputNodeForm],
-  ["llmNode", LlmNodeForm],
-  ["outputParserNode", OutputParserNodeForm],
-  ["conditionNode", ConditionNodeForm],
-  // 如果某种节点类型没有对应的表单，可以设置为 null
-  // ['someOtherNode', null],
-]);
-
 export default function NodeDrawer({
   prevNodes,
   node,
@@ -38,25 +25,12 @@ export default function NodeDrawer({
     return null;
   }
 
-  const FormComponent = formComponents.get(node.type);
-  if (FormComponent === undefined) {
-    // 如果没有找到对应的表单，关闭抽屉
-    onToggleDrawer();
-    return null;
-  }
-  if (FormComponent === null) {
-    // 如果明确设置为 null，也关闭抽屉
-    onToggleDrawer();
+  const FormComponent = nodeFormComponents.get(node.type);
+  if (FormComponent === undefined || FormComponent === null) {
     return null;
   }
 
-  // const renderForm = () => {
-  //   return <FormComponent node={node} />;
-  // };
-
-  console.log("NodeDrawer prevNodes", prevNodes);
   return (
-    // <div className="">
     <Drawer
       open={isOpen}
       onClose={onToggleDrawer}
@@ -74,6 +48,5 @@ export default function NodeDrawer({
         />
       </div>
     </Drawer>
-    // </div>
   );
 }

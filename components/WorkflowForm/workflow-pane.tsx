@@ -19,6 +19,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import NodeDrawer from "@/components/WorkflowForm/node-drawer";
+import { nodeFormComponents } from "@/components/WorkflowForm/node-forms";
 import { nodeTypes } from "@/components/WorkflowForm/nodes";
 import { NodeTypeFragmentFragment } from "@/graphql/generated/types";
 import { alg, Graph } from "@dagrejs/graphlib";
@@ -77,7 +78,6 @@ function Flow({
       const prevNodes = nodes.filter((node) =>
         sortedPrevNodeIds.some((id) => String(id) === String(node.id)),
       );
-      console.log("prevNodeIds", sortedPrevNodeIds, prevNodes, nodes);
 
       return prevNodes;
     },
@@ -159,18 +159,17 @@ function Flow({
 
       const prevNodes = findPrevNodes(node.id);
       setPrevSelectedNodes(prevNodes);
-      console.log("prevNodes", prevNodes);
 
-      setOpenDrawer(true);
-      // You can add more logic here, such as opening a modal for editing the node
+      const hasFormComponent = nodeFormComponents.has(node.type || "");
+
+      if (hasFormComponent) {
+        setOpenDrawer(true);
+      }
     },
     [screenToFlowPosition, nodes],
   );
 
-  const onNodeClick: NodeMouseHandler = useCallback((event, node) => {
-    // setSelectedNode((prevNode) => (prevNode?.id === node.id ? null : node));
-    // console.log(node);
-  }, []);
+  const onNodeClick: NodeMouseHandler = useCallback((event, node) => {}, []);
 
   const toggleDrawer = () => {
     setOpenDrawer((prevState) => !prevState);
@@ -213,7 +212,7 @@ function Flow({
         <Controls />
         <MiniMap />
         <Background variant={BackgroundVariant.Dots} gap={16} size={1} />
-        {selectedNode && (
+        {openDrawer && (
           <NodeDrawer
             node={selectedNode}
             prevNodes={prevSelectedNodes}
