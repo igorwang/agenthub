@@ -69,16 +69,19 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
+    event.stopPropagation();
     setIsDragOver(true);
   };
 
   const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
+    event.stopPropagation();
     setIsDragOver(false);
   };
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
+    event.stopPropagation();
     const jsonData = event.dataTransfer.getData("application/json");
     console.log("JSON data:", jsonData);
     const path = JSON.parse(jsonData).path;
