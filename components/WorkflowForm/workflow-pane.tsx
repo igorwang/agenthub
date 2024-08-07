@@ -128,9 +128,11 @@ function Flow({
         // toast.error("Error parsing JSON data");
         return null;
       }
-      if (!nodeTypeData || !nodeTypeData.type) {
+      console.log("nodeTypeData", nodeTypeData);
+      if (!nodeTypeData || !nodeTypeData.type || !nodeTypeData.type.endsWith("Node")) {
         return;
       }
+
       const position = screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,

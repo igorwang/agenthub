@@ -15,23 +15,31 @@ interface JsonTreeRendererProps {
   defaultPath?: string;
   jsonData: object;
   onDragStart?: (nodeData: TreeNode) => void;
+  onDrop?: (draggedNode: TreeNode, targetNode: TreeNode) => void;
+  canDrop?: (draggedNode: TreeNode, targetNode: TreeNode) => boolean;
 }
 
 const JsonTreeRenderer: React.FC<JsonTreeRendererProps> = ({
   jsonData,
   defaultPath,
   onDragStart,
+  onDrop,
+  canDrop,
 }) => {
-  const [treeData] = useState<TreeNode[]>(
-    useMemo(() => convertJsonToTreeData(jsonData), [jsonData]),
-  );
-  const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
+  const treeData = useMemo(() => convertJsonToTreeData(jsonData), [jsonData]);
+
+  // Initialize expandedNodes with first level nodes
+  const [expandedNodes, setExpandedNodes] = useState<Set<string>>(() => {
+    const firstLevelNodes = new Set<string>();
+    treeData.forEach((node) => firstLevelNodes.add(node.path));
+    return firstLevelNodes;
+  });
+
   const [expandedValues, setExpandedValues] = useState<Set<string>>(new Set());
 
   function convertJsonToTreeData(json: any, parentPath: string = ""): TreeNode[] {
     return Object.entries(json).map(([key, value]) => {
       const currentPath = parentPath ? `${parentPath}.${key}` : key;
-      // const currentPath = defaultPath ? (parentPath ? `${parentPath}.${key}` : key);
       const fullPath = defaultPath ? `${defaultPath}.${currentPath}` : currentPath;
 
       const type = Array.isArray(value)
@@ -116,6 +124,7 @@ const JsonTreeRenderer: React.FC<JsonTreeRendererProps> = ({
       </>
     );
   };
+
   const renderTree = (nodes: TreeNode[]) => (
     <ul className="pl-4">
       {nodes.map((node) => (

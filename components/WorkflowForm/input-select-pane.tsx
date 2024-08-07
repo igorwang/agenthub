@@ -75,8 +75,11 @@ export const InputSelectionPane: React.FC<InputSelectionPaneProps> = ({ nodes })
               <pre className="mt-2 overflow-x-auto p-2 text-sm">
                 {/* {JSON.stringify(selectedNode.data.outputSchema, null, 2)} */}
                 <JsonTreeRenderer
-                  jsonData={selectedNode.data.outputSchema}
-                  defaultPath={selectedNode.data.label}
+                  jsonData={{
+                    [selectedNode.data.label || "Unamed Node"]:
+                      selectedNode.data.outputSchema,
+                  }}
+                  // defaultPath={selectedNode.data.label}
                 />
               </pre>
             ) : (
