@@ -6,6 +6,7 @@ import {
   CardBody,
   CardHeader,
   Checkbox,
+  Input,
   Select,
   SelectItem,
   Switch,
@@ -79,29 +80,28 @@ const CustomTextWidget: React.FC<WidgetProps> = (props) => {
     options,
     formContext,
   } = props;
-  const { prevNodes } = formContext;
+  // const { prevNodes } = formContext;
 
-  const jsonData = prevNodes
-    ? prevNodes.reduce((acc: { [key: string]: any }, item: Node) => {
-        const key = (item.data.label as string) || "Node Label";
-        acc[key] = item.data.outputSchema;
-        return acc;
-      }, {})
-    : {};
+  // const jsonData = prevNodes
+  //   ? prevNodes.reduce((acc: { [key: string]: any }, item: Node) => {
+  //       const key = (item.data.label as string) || "Node Label";
+  //       acc[key] = item.data.outputSchema;
+  //       return acc;
+  //     }, {})
+  //   : {};
 
   return (
-    <JsonExpressionInput
+    <Input
       id={id}
       value={value || ""}
-      jsonData={jsonData}
       isRequired={required}
       className="mb-2"
       isDisabled={disabled || readonly}
       autoFocus={autofocus}
       placeholder={options.placeholder}
-      onChange={(value) => onChange(value)}
-      onBlur={(id, e) => onBlur(id, e)}
-      onFocus={(id, e) => onFocus(id, e)}
+      onChange={(event) => onChange(event.target.value)}
+      onBlur={(event) => onBlur(id, event.target)}
+      onFocus={(event) => onFocus(id, event.target)}
     />
   );
 };
@@ -263,6 +263,56 @@ const CustomJsonField: React.FC<FieldProps> = (props) => {
   return <registry.fields.ObjectField {...props} />;
 };
 
+const CustomExpressionInputField: React.FC<FieldProps> = (props) => {
+  const {
+    id,
+    formData,
+    required,
+    disabled,
+    readonly,
+    onChange,
+    onBlur,
+    onFocus,
+    autofocus,
+    schema,
+    uiSchema,
+    formContext,
+  } = props;
+
+  const { prevNodes } = formContext || {};
+
+  const jsonData = prevNodes
+    ? prevNodes.reduce((acc: { [key: string]: any }, item: Node) => {
+        const key = (item.data.label as string) || "Node Label";
+        acc[key] = item.data.outputSchema;
+        return acc;
+      }, {})
+    : {};
+
+  console.log("JsonExpressionInput", required);
+
+  return (
+    <div>
+      <label>
+        {schema.title || "Expression"} {required ? "*" : ""}
+      </label>
+      <JsonExpressionInput
+        id={id}
+        value={formData || ""}
+        jsonData={jsonData}
+        isRequired={required}
+        className="mb-2"
+        isDisabled={disabled || readonly}
+        autoFocus={autofocus}
+        placeholder={uiSchema?.["ui:placeholder"]}
+        onChange={(value) => onChange(value)}
+        onBlur={(id, e) => onBlur(id, e.target.value)}
+        onFocus={(id, e) => onFocus(id, e.target.value)}
+      />
+    </div>
+  );
+};
+
 // Define default widgets
 const defaultWidgets: RegistryWidgetsType = {
   CheckboxWidget: CustomCheckbox,
@@ -319,7 +369,10 @@ const CustomForm: React.FC<CustomFormProps> = ({
   onClose,
 }) => {
   const widgets = { ...defaultWidgets, ...customWidgets };
-  const fields: RegistryFieldsType = { json: CustomJsonField };
+  const fields: RegistryFieldsType = {
+    json: CustomJsonField,
+    expression: CustomExpressionInputField,
+  };
 
   return (
     <ThemedForm
