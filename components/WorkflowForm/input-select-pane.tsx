@@ -75,7 +75,7 @@ export const InputSelectionPane: React.FC<InputSelectionPaneProps> = ({
               {getNodeLabel(selectedNode, nodes.indexOf(selectedNode))}
             </h3> */}
             {workflowTestResult[selectedNode?.data.label ?? ""] ? (
-              <pre className="mt-2 overflow-x-auto p-2 text-sm">
+              <pre className="mt-2 overflow-auto p-2 text-sm">
                 {/* {JSON.stringify(selectedNode.data.outputSchema, null, 2)} */}
                 <JsonTreeRenderer
                   jsonData={{

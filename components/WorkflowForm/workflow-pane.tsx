@@ -110,17 +110,6 @@ function Flow({
       setWorkflowTestResult(newWorkflowTestResult);
     };
 
-    // 根据 nodes 设置 workflowTestResult
-    // const newWorkflowTestResult = nodes.reduce(
-    //   (acc, node) => {
-    //     acc[node.data.label as string] = node.data.outputSchema
-    //       ? node.data.outputSchema
-    //       : { hello: "world" };
-    //     return acc;
-    //   },
-    //   {} as { [key: string]: any },
-    // );
-    // setWorkflowTestResult(newWorkflowTestResult);
     updateFakeData();
   }, [nodes, edges, onWorkflowChange]);
 
