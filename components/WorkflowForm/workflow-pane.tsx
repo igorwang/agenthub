@@ -118,6 +118,7 @@ function Flow({
     };
 
     updateFakeData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nodes, edges, onWorkflowChange]);
 
   const findPrevNodes = useCallback(
