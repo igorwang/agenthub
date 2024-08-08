@@ -1,5 +1,6 @@
 import JsonExpressionInput from "@/components/ui/json-expression-input";
 import JsonSchemaTooltip from "@/components/ui/json-schema-tooltip";
+import { Icon } from "@iconify/react";
 import {
   Button,
   Card,
@@ -24,7 +25,7 @@ import {
 import validator from "@rjsf/validator-ajv8";
 import { Node } from "@xyflow/react";
 import { JsonEditor } from "json-edit-react";
-import React from "react";
+import React, { useState } from "react";
 
 // Custom Widgets
 const CustomCheckbox: React.FC<WidgetProps> = (props) => {
@@ -101,33 +102,67 @@ const CustomTextareaWidget: React.FC<WidgetProps> = (props) => {
 };
 
 const CustomArrayFieldTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
+  const [isExpanded, setIsExpanded] = useState(true);
+
   return (
     <Card className="mb-2">
-      <CardHeader>
+      <CardHeader
+        className="flex cursor-pointer items-center justify-between"
+        onClick={() => setIsExpanded(!isExpanded)}>
         <h4 className="text-lg font-bold">{props.title}</h4>
-        {/* {props.description && <p className="text-sm text-gray-500">{props.description}</p>} */}
+        <Icon
+          icon={isExpanded ? "mdi:chevron-up" : "mdi:chevron-down"}
+          width="24"
+          height="24"
+        />
       </CardHeader>
-      <CardBody>
-        {props.items.map((element, index) => (
-          <Card key={element.key} className="mb-4">
-            <CardBody>
-              {element.children}
-              <Button
-                color="danger"
-                size="md"
-                onClick={element.onDropIndexClick(index)}
-                className="mt-2">
-                Remove
-              </Button>
-            </CardBody>
-          </Card>
-        ))}
-        {props.canAdd && (
-          <Button color="primary" onClick={props.onAddClick} className="mt-2">
-            Add Item
-          </Button>
-        )}
-      </CardBody>
+      {isExpanded && (
+        <CardBody>
+          {props.items.map((element, index) => (
+            <Card key={element.key} className="mb-4">
+              <CardBody>
+                {element.children}
+                <div className="mt-2 flex justify-between">
+                  <div>
+                    <Button
+                      isIconOnly
+                      variant="light"
+                      onClick={() => element.onReorderClick(index, index - 1)()}
+                      isDisabled={index === 0}
+                      className="mr-1">
+                      <Icon icon="mdi:arrow-up" width="20" height="20" />
+                    </Button>
+                    <Button
+                      isIconOnly
+                      variant="light"
+                      onClick={() => element.onReorderClick(index, index + 1)()}
+                      isDisabled={index === props.items.length - 1}>
+                      <Icon icon="mdi:arrow-down" width="20" height="20" />
+                    </Button>
+                  </div>
+                  <Button
+                    color="danger"
+                    variant="flat"
+                    onPress={() => element.onDropIndexClick(index)()}>
+                    Remove
+                  </Button>
+                </div>
+              </CardBody>
+            </Card>
+          ))}
+          {props.canAdd && (
+            <Button
+              color="primary"
+              onClick={(e) => {
+                e.preventDefault();
+                props.onAddClick();
+              }}
+              className="mt-2">
+              Add Item
+            </Button>
+          )}
+        </CardBody>
+      )}
     </Card>
   );
 };
