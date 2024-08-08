@@ -166,7 +166,6 @@ export async function bindWorkflowToLibrary(id: string, formData: FormData) {
   try {
     const flowId = formData.get("id") as string;
     const createRepsonse = await updateWorkflow(formData);
-    console.log(createRepsonse);
 
     const updateVariables: UpdateKnowledgeBaseMutationVariables = {
       _set: { workflow_id: flowId },

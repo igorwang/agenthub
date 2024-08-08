@@ -276,7 +276,6 @@ export default function PromptInputWithFaq({
                   <Icon
                     icon={"clarity:remove-line"}
                     onClick={() => {
-                      console.log("click");
                       onSelectedSource?.(item, false);
                     }}
                     className="cursor-pointer"

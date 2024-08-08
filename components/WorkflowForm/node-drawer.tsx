@@ -27,8 +27,6 @@ export default function NodeDrawer({
     return null;
   }
 
-  console.log("workflowTestResult", workflowTestResult);
-
   const FormComponent = nodeFormComponents.get(node.type);
   if (FormComponent === undefined || FormComponent === null) {
     return null;

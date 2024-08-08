@@ -9,6 +9,7 @@ interface NodeData {
 interface ConditionNodeFormProps {
   node: Node<NodeData>;
   prevNodes?: Node[];
+  workflowTestResult?: { [key: string]: any };
   onNodeChange?: (data: { [key: string]: any }) => void;
   onToggleDrawer?: () => void;
 }
@@ -16,6 +17,7 @@ interface ConditionNodeFormProps {
 export default function ConditionNodeForm({
   node,
   prevNodes,
+  workflowTestResult,
   onNodeChange,
   onToggleDrawer,
 }: ConditionNodeFormProps) {
@@ -40,6 +42,7 @@ export default function ConditionNodeForm({
           onToggleDrawer?.();
         }}
         prevNodes={prevNodes}
+        workflowTestResult={workflowTestResult}
       />
     </div>
   );

@@ -8,12 +8,14 @@ interface NodeData {
 
 interface InputNodeFormProps {
   node: Node<NodeData>;
+  workflowTestResult?: { [key: string]: any };
   onNodeChange?: (data: { [key: string]: any }) => void;
   onToggleDrawer?: () => void;
 }
 
 export default function InputNodeForm({
   node,
+  workflowTestResult,
   onNodeChange,
   onToggleDrawer,
 }: InputNodeFormProps) {
@@ -31,6 +33,7 @@ export default function InputNodeForm({
       <CustomForm
         schema={nodeData.schema}
         uiSchema={nodeData.uiSchema || {}}
+        workflowTestResult={workflowTestResult}
         formData={nodeData}
         onSubmit={(formData) => {
           onSubmit?.({ ...formData, id: node.id });

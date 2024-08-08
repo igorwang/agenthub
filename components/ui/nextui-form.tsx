@@ -157,29 +157,6 @@ const CustomJsonField: React.FC<FieldProps> = (props) => {
   const { name, schema, uiSchema, idSchema, formData, onChange, registry, formContext } =
     props;
 
-  const outputSchemaDocstring = {
-    type: "object",
-    required: ["properties"],
-    properties: {
-      properties: {
-        type: "object",
-        additionalProperties: {
-          type: "object",
-          required: ["type"],
-          properties: {
-            type: {
-              type: "string",
-              enum: ["string", "number", "boolean", "object", "array"],
-            },
-            title: {
-              type: "string",
-            },
-          },
-        },
-      },
-    },
-    additionalProperties: false,
-  };
   const taskOutputFormatIntro =
     "This field defines the output format for the current task node. Follow these principles:\n\n1. The output must be a JSON object.\n2. Define properties with appropriate types (string, number, boolean, object, array).\n3. Use 'title' to provide a human-readable name for each property.\n\nAdhering to this format ensures consistency and facilitates data processing in subsequent steps.";
   const jsonInputPrompt = `Please enter data that conforms to JSON standards.
@@ -274,8 +251,7 @@ const CustomExpressionInputField: React.FC<FieldProps> = (props) => {
     formContext,
   } = props;
 
-  const { prevNodes } = formContext || {};
-
+  const { prevNodes, workflowTestResult } = formContext || {};
   const jsonData = prevNodes
     ? prevNodes.reduce((acc: { [key: string]: any }, item: Node) => {
         const key = (item.data.label as string) || "Node Label";
@@ -292,7 +268,7 @@ const CustomExpressionInputField: React.FC<FieldProps> = (props) => {
       <JsonExpressionInput
         id={id}
         value={formData || ""}
-        jsonData={jsonData}
+        jsonData={workflowTestResult}
         isRequired={required}
         className="mb-2"
         isDisabled={disabled || readonly}
@@ -348,6 +324,7 @@ interface CustomFormProps {
   formData?: any; // Add this line to accept default values
   customWidgets?: RegistryWidgetsType;
   prevNodes?: Node[];
+  workflowTestResult?: { [key: string]: any };
   onSubmit: (formData: any) => void;
   onClose?: () => void;
 }
@@ -357,6 +334,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
   uiSchema,
   prevNodes,
   customWidgets,
+  workflowTestResult,
   formData = {},
   onSubmit,
   onClose,
@@ -375,9 +353,8 @@ const CustomForm: React.FC<CustomFormProps> = ({
       validator={validator}
       widgets={widgets}
       fields={fields}
-      formContext={{ onClose, prevNodes }}
+      formContext={{ onClose, prevNodes, workflowTestResult }}
       onSubmit={({ formData }) => {
-        console.log(formData);
         onSubmit(formData);
       }}
     />

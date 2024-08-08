@@ -96,7 +96,6 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
     const response = await deleteKnowledgeBaseByIdMutation({
       variables: { id: initLibrary?.id },
     });
-    console.log("response", response);
     toast.success("Delete library success");
     router.push("/library");
     router.refresh();
