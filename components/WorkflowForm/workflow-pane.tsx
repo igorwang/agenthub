@@ -63,6 +63,10 @@ function Flow({
   }, []);
 
   const generateFakeData = async (nodes: Node[] | undefined) => {
+    if (!JSONSchemaFaker) {
+      return {};
+    }
+
     if (!nodes || !Array.isArray(nodes) || nodes.length === 0) {
       console.warn("No valid nodes provided for generating fake data");
       return {};
