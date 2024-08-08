@@ -10,6 +10,7 @@ interface NodeDrawerProps {
   prevNodes?: Node[];
   node: Node | null;
   isOpen: boolean;
+  workflowTestResult: { [key: string]: any };
   onToggleDrawer: () => void;
   onNodeChange?: (data: { [key: string]: any }) => void;
 }
@@ -18,12 +19,15 @@ export default function NodeDrawer({
   prevNodes,
   node,
   isOpen,
+  workflowTestResult,
   onToggleDrawer,
   onNodeChange,
 }: NodeDrawerProps) {
   if (!node?.type) {
     return null;
   }
+
+  console.log("workflowTestResult", workflowTestResult);
 
   const FormComponent = nodeFormComponents.get(node.type);
   if (FormComponent === undefined || FormComponent === null) {
@@ -37,7 +41,10 @@ export default function NodeDrawer({
       direction="right"
       className="z-20 flex h-full min-w-[800px] flex-row overflow-auto">
       <div className="my-10 w-1/2 px-2">
-        <InputSelectionPane nodes={prevNodes || []} />
+        <InputSelectionPane
+          nodes={prevNodes || []}
+          workflowTestResult={workflowTestResult}
+        />
       </div>
       <div className="w-1/2">
         <FormComponent
@@ -46,6 +53,7 @@ export default function NodeDrawer({
           onNodeChange={onNodeChange}
           onToggleDrawer={onToggleDrawer}
           prevNodes={prevNodes}
+          workflowTestResult={workflowTestResult}
         />
       </div>
     </Drawer>

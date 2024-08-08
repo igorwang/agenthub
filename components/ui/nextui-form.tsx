@@ -139,6 +139,7 @@ const CustomSelectWidget: React.FC<WidgetProps> = (props) => {
       id={id}
       className="mb-2"
       value={value}
+      aria-label={`Select-${id}`}
       isRequired={required}
       selectedKeys={new Set([value])}
       isDisabled={disabled || readonly}

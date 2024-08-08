@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
 import { Card, CardBody, Tooltip } from "@nextui-org/react";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 interface TreeNode {
   key: string;
@@ -17,6 +17,7 @@ interface JsonTreeRendererProps {
   onDragStart?: (nodeData: TreeNode) => void;
   onDrop?: (draggedNode: TreeNode, targetNode: TreeNode) => void;
   canDrop?: (draggedNode: TreeNode, targetNode: TreeNode) => boolean;
+  expandedPaths?: string[];
 }
 
 const JsonTreeRenderer: React.FC<JsonTreeRendererProps> = ({
@@ -25,17 +26,40 @@ const JsonTreeRenderer: React.FC<JsonTreeRendererProps> = ({
   onDragStart,
   onDrop,
   canDrop,
+  expandedPaths,
 }) => {
   const treeData = useMemo(() => convertJsonToTreeData(jsonData), [jsonData]);
 
-  // Initialize expandedNodes with first level nodes
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(() => {
-    const firstLevelNodes = new Set<string>();
-    treeData.forEach((node) => firstLevelNodes.add(node.path));
-    return firstLevelNodes;
+    const initialExpanded = new Set<string>();
+    // Always expand first level nodes
+    treeData.forEach((node) => initialExpanded.add(node.path));
+    // Add any additional expanded paths
+    expandedPaths?.forEach((path) => initialExpanded.add(path));
+    return initialExpanded;
   });
 
   const [expandedValues, setExpandedValues] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    setExpandedNodes((prevExpanded) => {
+      const newExpanded = new Set<string>();
+      // Always expand first level nodes
+      treeData.forEach((node) => newExpanded.add(node.path));
+      // Add any additional expanded paths
+      expandedPaths?.forEach((path) => newExpanded.add(path));
+      // Keep previously expanded nodes that still exist in the new data
+      prevExpanded.forEach((path) => {
+        if (
+          path.split(".").length > 1 &&
+          treeData.some((node) => node.path === path.split(".")[0])
+        ) {
+          newExpanded.add(path);
+        }
+      });
+      return newExpanded;
+    });
+  }, [treeData, expandedPaths]);
 
   function convertJsonToTreeData(json: any, parentPath: string = ""): TreeNode[] {
     return Object.entries(json).map(([key, value]) => {
@@ -125,7 +149,7 @@ const JsonTreeRenderer: React.FC<JsonTreeRendererProps> = ({
     );
   };
 
-  const renderTree = (nodes: TreeNode[]) => (
+  const renderTree = (nodes: TreeNode[], depth: number = 0) => (
     <ul className="pl-4">
       {nodes.map((node) => (
         <li key={node.key} className="my-2">
@@ -162,7 +186,9 @@ const JsonTreeRenderer: React.FC<JsonTreeRendererProps> = ({
               </button>
             </Tooltip>
           </div>
-          {node.children && expandedNodes.has(node.path) && renderTree(node.children)}
+          {node.children &&
+            (depth === 0 || expandedNodes.has(node.path)) &&
+            renderTree(node.children, depth + 1)}
         </li>
       ))}
     </ul>

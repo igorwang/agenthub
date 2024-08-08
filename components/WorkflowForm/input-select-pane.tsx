@@ -20,9 +20,13 @@ interface NodeData {
 
 interface InputSelectionPaneProps {
   nodes: Node<NodeData>[];
+  workflowTestResult: { [key: string]: any };
 }
 
-export const InputSelectionPane: React.FC<InputSelectionPaneProps> = ({ nodes }) => {
+export const InputSelectionPane: React.FC<InputSelectionPaneProps> = ({
+  nodes,
+  workflowTestResult,
+}) => {
   const [selectedNode, setSelectedNode] = useState<Node<NodeData> | null>(null);
 
   useEffect(() => {
@@ -70,13 +74,13 @@ export const InputSelectionPane: React.FC<InputSelectionPaneProps> = ({ nodes })
             {/* <h3 className="text-md font-medium">
               {getNodeLabel(selectedNode, nodes.indexOf(selectedNode))}
             </h3> */}
-            {selectedNode.data.outputSchema ? (
+            {workflowTestResult[selectedNode?.data.label ?? ""] ? (
               <pre className="mt-2 overflow-x-auto p-2 text-sm">
                 {/* {JSON.stringify(selectedNode.data.outputSchema, null, 2)} */}
                 <JsonTreeRenderer
                   jsonData={{
                     [selectedNode.data.label || "Unamed Node"]:
-                      selectedNode.data.outputSchema,
+                      workflowTestResult[selectedNode?.data.label ?? ""] ?? {},
                   }}
                   // defaultPath={selectedNode.data.label}
                 />

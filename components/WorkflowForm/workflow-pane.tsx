@@ -43,6 +43,10 @@ function Flow({
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
+  const [workflowTestResult, setWorkflowTestResult] = useState<{ [key: string]: any }>(
+    {},
+  );
+
   const [prevSelectedNodes, setPrevSelectedNodes] = useState<Node[]>([]); // record the nodes before selected
 
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
@@ -56,6 +60,18 @@ function Flow({
     nodes.forEach((node) => graph.setNode(node.id, node));
     edges.forEach((edge) => graph.setEdge(edge.source, edge.target));
     graphRef.current = graph;
+
+    // 根据 nodes 设置 workflowTestResult
+    const newWorkflowTestResult = nodes.reduce(
+      (acc, node) => {
+        acc[node.data.label as string] = node.data.outputSchema
+          ? node.data.outputSchema
+          : { hello: "world" };
+        return acc;
+      },
+      {} as { [key: string]: any },
+    );
+    setWorkflowTestResult(newWorkflowTestResult);
   }, [nodes, edges, onWorkflowChange]);
 
   const findPrevNodes = useCallback(
@@ -155,7 +171,7 @@ function Flow({
       setSelectedNode(newNode);
       // setOpenDrawer(true);
     },
-    [screenToFlowPosition, flowId],
+    [screenToFlowPosition, flowId, setNodes],
   );
 
   const onNodeDoubleClick = useCallback<NodeMouseHandler>(
@@ -175,7 +191,7 @@ function Flow({
         setOpenDrawer(true);
       }
     },
-    [screenToFlowPosition, nodes],
+    [screenToFlowPosition, findPrevNodes],
   );
 
   const onNodeClick: NodeMouseHandler = useCallback((event, node) => {}, []);
@@ -236,6 +252,7 @@ function Flow({
             node={selectedNode}
             prevNodes={prevSelectedNodes}
             isOpen={openDrawer}
+            workflowTestResult={workflowTestResult}
             onToggleDrawer={toggleDrawer}
             onNodeChange={handleNodeChange}
           />

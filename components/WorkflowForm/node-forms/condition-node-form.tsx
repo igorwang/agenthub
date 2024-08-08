@@ -25,16 +25,6 @@ export default function ConditionNodeForm({
     onNodeChange?.(data);
     onToggleDrawer?.();
   };
-  const uiSchema = {
-    "ui:order": ["label", "conditions", "outputSchema"],
-    conditions: {
-      items: {
-        "ui:order": ["name", "expression", "condition", "value"],
-        expression: { "ui:field": "expression" },
-      },
-    },
-    outputSchema: { "ui:field": "json" },
-  };
   return (
     <div className="flex flex-col gap-4 p-4">
       <div className="text-2xl font-bold">Edit Condition Node</div>
