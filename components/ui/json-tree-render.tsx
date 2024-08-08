@@ -28,6 +28,7 @@ const JsonTreeRenderer: React.FC<JsonTreeRendererProps> = ({
   canDrop,
   expandedPaths,
 }) => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const treeData = useMemo(() => convertJsonToTreeData(jsonData), [jsonData]);
 
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(() => {

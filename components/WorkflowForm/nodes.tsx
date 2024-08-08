@@ -177,8 +177,8 @@ export const OutputParserNodeComponent: React.FC<NodeProps<outputParserNode>> = 
     );
   },
 );
-export type ConditionNode = Node<ConditionNodeData, "conditionNode">;
 
+export type ConditionNode = Node<ConditionNodeData, "conditionNode">;
 export const ConditionNodeComponent: React.FC<NodeProps<ConditionNode>> = memo(
   ({ id, data, selected }) => {
     const updateNodeInternals = useUpdateNodeInternals();
@@ -236,12 +236,48 @@ export const ConditionNodeComponent: React.FC<NodeProps<ConditionNode>> = memo(
     );
   },
 );
+
+export type ChatTriggerNode = Node<CustomNodeData, "chatTriggerNode">;
+
+export const ChatTriggerNodeComponent: React.FC<NodeProps<ChatTriggerNode>> = memo(
+  ({ data, selected }) => {
+    const borderColor = selected ? "border-blue-500" : "border-gray-200";
+
+    return (
+      <div
+        className={`rounded-md border ${borderColor} bg-white p-2 shadow-sm transition-colors duration-200`}>
+        <div className="flex flex-col items-center">
+          <div className="mb-1 flex h-8 w-8 items-center justify-center text-gray-500">
+            <Icon icon="lets-icons:chat-plus-light" fontSize={20} />
+          </div>
+          <div className="overflow-hidden">
+            <div className="w-16 truncate text-center text-xs font-medium text-gray-700">
+              {data.label}
+            </div>
+          </div>
+        </div>
+        <Handle
+          type="source"
+          position={Position.Right}
+          className="h-2 w-2 !border-1 !border-white !bg-slate-300"
+        />
+        <Handle
+          type="target"
+          position={Position.Left}
+          className="h-4 w-2 !border-1 !border-white !bg-slate-300"
+        />
+      </div>
+    );
+  },
+);
+
 StartNodeComponent.displayName = "StartNodeComponent";
 InputNodeComponent.displayName = "InputNodeComponent";
 llmNodeComponent.displayName = "llmNodeComponent";
 EndNodeComponent.displayName = "EndNodeComponent";
 OutputParserNodeComponent.displayName = "outputParserNode";
 ConditionNodeComponent.displayName = "ConditionNodeComponent";
+ChatTriggerNodeComponent.displayName = "ChatTriggerNodeComponent";
 
 export const nodeTypes: NodeTypes = {
   startNode: StartNodeComponent,
@@ -250,4 +286,5 @@ export const nodeTypes: NodeTypes = {
   endNode: EndNodeComponent,
   outputParserNode: OutputParserNodeComponent,
   conditionNode: ConditionNodeComponent,
+  chatTriggerNode: ChatTriggerNodeComponent,
 };

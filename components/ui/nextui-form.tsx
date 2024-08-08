@@ -6,10 +6,10 @@ import {
   CardBody,
   CardHeader,
   Checkbox,
-  Input,
   Select,
   SelectItem,
   Switch,
+  Textarea,
 } from "@nextui-org/react";
 import { ThemeProps, withTheme } from "@rjsf/core";
 import {
@@ -68,7 +68,7 @@ const CustomSwitch: React.FC<WidgetProps> = (props) => {
   );
 };
 
-const CustomTextWidget: React.FC<WidgetProps> = (props) => {
+const CustomTextareaWidget: React.FC<WidgetProps> = (props) => {
   const {
     id,
     value,
@@ -84,7 +84,7 @@ const CustomTextWidget: React.FC<WidgetProps> = (props) => {
   } = props;
 
   return (
-    <Input
+    <Textarea
       id={id}
       value={value || ""}
       isRequired={required}
@@ -92,6 +92,7 @@ const CustomTextWidget: React.FC<WidgetProps> = (props) => {
       isDisabled={disabled || readonly}
       autoFocus={autofocus}
       placeholder={options.placeholder}
+      minRows={1}
       onChange={(event) => onChange(event.target.value)}
       onBlur={(event) => onBlur(id, event.target)}
       onFocus={(event) => onFocus(id, event.target)}
@@ -286,7 +287,7 @@ const CustomExpressionInputField: React.FC<FieldProps> = (props) => {
 const defaultWidgets: RegistryWidgetsType = {
   CheckboxWidget: CustomCheckbox,
   SwitchWidget: CustomSwitch,
-  TextWidget: CustomTextWidget,
+  TextWidget: CustomTextareaWidget,
   SelectWidget: CustomSelectWidget,
 };
 
