@@ -11,7 +11,7 @@ export default function DefaultChatPage() {
 
   useEffect(() => {
     if (chatList.length > 0 && chatList[0].agents.length > 0) {
-      router.push(`/chat/${chatList[0].agents[0].id}`);
+      router.push(`/chat/${chatList[0].agents[0].id}?openStatus=1`);
     } else {
       router.push(`/chat/default`);
     }
