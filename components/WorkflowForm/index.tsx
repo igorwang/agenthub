@@ -42,6 +42,7 @@ export default function WorkflowForm({
 }: WorkflowFormProps) {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
+  const [inputValue, setInputValue] = useState("");
 
   const flowId = initialData.id;
 
@@ -80,6 +81,7 @@ export default function WorkflowForm({
   const onSubmit: SubmitHandler<FormValues> = async (data, event) => {
     event?.preventDefault();
     const formData = new FormData();
+
     formData.append("id", data.id);
     formData.append("name", data.name);
     formData.append("description", data.description);
@@ -157,6 +159,16 @@ export default function WorkflowForm({
           {"Save Workflow"}
         </Button>
       </form>
+      {/* <div className="flex flex-row">
+        <div className="w-1/2">
+          <JsonTreeRenderer jsonData={defaultDocumentSchemaExample}></JsonTreeRenderer>
+        </div>
+        <div className="w-full">
+          <JsonExpressionInput
+            onSubmit={() => {}}
+            jsonData={defaultDocumentSchemaExample}></JsonExpressionInput>
+        </div>
+      </div> */}
     </div>
   );
 }
