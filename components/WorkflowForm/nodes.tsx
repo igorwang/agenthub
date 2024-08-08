@@ -201,7 +201,7 @@ export const ConditionNodeComponent: React.FC<NodeProps<ConditionNode>> = memo(
             key={index}
             type="source"
             position={Position.Right}
-            id={`input-${index}`}
+            id={`output-${index}`}
             className="h-3 w-3 !border-2 !border-white !bg-slate-200"
             style={{ top: `${(index + 1) * 25}%` }}
           />

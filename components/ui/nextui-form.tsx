@@ -132,7 +132,8 @@ const CustomArrayFieldTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
 };
 
 const CustomSelectWidget: React.FC<WidgetProps> = (props) => {
-  const { id, name, value, required, disabled, readonly, onChange, options } = props;
+  const { id, name, label, value, required, disabled, readonly, onChange, options } =
+    props;
   return (
     <Select
       id={id}
