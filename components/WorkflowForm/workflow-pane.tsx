@@ -128,7 +128,6 @@ function Flow({
         // toast.error("Error parsing JSON data");
         return null;
       }
-      console.log("nodeTypeData", nodeTypeData);
       if (!nodeTypeData || !nodeTypeData.type || !nodeTypeData.type.endsWith("Node")) {
         return;
       }
@@ -196,8 +195,6 @@ function Flow({
     const newLabel = existingLabels.has(label)
       ? `${label}-${generateRandomLetters()}`
       : label;
-
-    console.log("handleNodeChange", data, label, existingLabels);
 
     setNodes((nds) =>
       nds.map((n) => {

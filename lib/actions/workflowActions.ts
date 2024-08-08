@@ -147,7 +147,6 @@ export async function updateWorkflow(formData: FormData) {
       DeleteWorkflowByIdDocument,
       deleteVariables,
     );
-    console.log("deleteResult");
 
     const insertResult = await performMutation(
       CreateNewWorkflowDocument,
@@ -166,7 +165,6 @@ export async function updateWorkflow(formData: FormData) {
 export async function bindWorkflowToLibrary(id: string, formData: FormData) {
   try {
     const flowId = formData.get("id") as string;
-    console.log("bindWorkflowToLibrary");
     const createRepsonse = await updateWorkflow(formData);
     console.log(createRepsonse);
 
@@ -179,7 +177,6 @@ export async function bindWorkflowToLibrary(id: string, formData: FormData) {
       UpdateKnowledgeBaseDocument,
       updateVariables,
     );
-    console.log("updateResponse", updateResponse);
   } catch (error) {
     console.error("Error save prompt", error);
     throw new Error("Error save prompt");

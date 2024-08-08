@@ -18,7 +18,6 @@ export default function InputNodeForm({
   onToggleDrawer,
 }: InputNodeFormProps) {
   const nodeData = node.data || {};
-  console.log("nodeData", node);
 
   const onSubmit = (data: any) => {
     onNodeChange?.(data);

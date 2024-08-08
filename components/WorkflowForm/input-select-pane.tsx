@@ -35,7 +35,6 @@ export const InputSelectionPane: React.FC<InputSelectionPaneProps> = ({ nodes })
     const selectedKey = Array.from(keys)[0] as string;
     const newSelectedNode = nodes.find((node) => node.id === selectedKey);
     if (newSelectedNode) {
-      console.log("newSelectedNode", newSelectedNode);
       setSelectedNode(newSelectedNode);
     }
   };
