@@ -24,7 +24,7 @@ import { nodeTypes } from "@/components/WorkflowForm/nodes";
 import { NodeTypeFragmentFragment } from "@/graphql/generated/types";
 import { alg, Graph } from "@dagrejs/graphlib";
 import "@xyflow/react/dist/base.css";
-import { JSONSchemaFaker } from "json-schema-faker";
+
 import { v4 } from "uuid";
 
 interface WorkflowPaneProps {
@@ -47,6 +47,7 @@ function Flow({
   const [workflowTestResult, setWorkflowTestResult] = useState<{ [key: string]: any }>(
     {},
   );
+  const [JSONSchemaFaker, setJSONSchemaFaker] = useState<any>(null);
 
   const [prevSelectedNodes, setPrevSelectedNodes] = useState<Node[]>([]); // record the nodes before selected
 
@@ -54,6 +55,12 @@ function Flow({
   const { screenToFlowPosition } = useReactFlow();
 
   const graphRef = useRef<Graph>(new Graph({ directed: true }));
+
+  useEffect(() => {
+    import("json-schema-faker").then((module) => {
+      setJSONSchemaFaker(module.JSONSchemaFaker);
+    });
+  }, []);
 
   const generateFakeData = async (nodes: Node[] | undefined) => {
     if (!nodes || !Array.isArray(nodes) || nodes.length === 0) {
