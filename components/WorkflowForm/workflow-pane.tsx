@@ -24,6 +24,7 @@ import { nodeTypes } from "@/components/WorkflowForm/nodes";
 import { NodeTypeFragmentFragment } from "@/graphql/generated/types";
 import { alg, Graph } from "@dagrejs/graphlib";
 import "@xyflow/react/dist/base.css";
+import { JSONSchemaFaker } from "json-schema-faker";
 import { v4 } from "uuid";
 
 interface WorkflowPaneProps {
@@ -54,6 +55,49 @@ function Flow({
 
   const graphRef = useRef<Graph>(new Graph({ directed: true }));
 
+  const generateFakeData = async (nodes: Node[] | undefined) => {
+    if (!nodes || !Array.isArray(nodes) || nodes.length === 0) {
+      console.warn("No valid nodes provided for generating fake data");
+      return {};
+    }
+
+    const newWorkflowTestResult = await nodes.reduce(
+      async (accPromise, node) => {
+        const acc = await accPromise;
+
+        if (!node || typeof node !== "object" || !node.data) {
+          console.warn("Invalid node structure encountered");
+          return acc;
+        }
+
+        const { label, outputSchema } = node.data;
+
+        if (!label || typeof label !== "string") {
+          console.warn("Node is missing a valid label");
+          return acc;
+        }
+
+        const schema = outputSchema || {};
+
+        if (schema && Object.keys(schema).length > 0) {
+          try {
+            acc[label] = await JSONSchemaFaker.resolve(schema);
+          } catch (error) {
+            console.error(`Error generating fake data for ${label}:`, error);
+            acc[label] = {};
+          }
+        } else {
+          acc[label] = {};
+        }
+
+        return acc;
+      },
+      Promise.resolve({} as { [key: string]: any }),
+    );
+
+    return newWorkflowTestResult;
+  };
+
   useEffect(() => {
     onWorkflowChange?.(nodes, edges);
     const graph = new Graph({ directed: true });
@@ -61,17 +105,23 @@ function Flow({
     edges.forEach((edge) => graph.setEdge(edge.source, edge.target));
     graphRef.current = graph;
 
+    const updateFakeData = async () => {
+      const newWorkflowTestResult = await generateFakeData(nodes);
+      setWorkflowTestResult(newWorkflowTestResult);
+    };
+
     // 根据 nodes 设置 workflowTestResult
-    const newWorkflowTestResult = nodes.reduce(
-      (acc, node) => {
-        acc[node.data.label as string] = node.data.outputSchema
-          ? node.data.outputSchema
-          : { hello: "world" };
-        return acc;
-      },
-      {} as { [key: string]: any },
-    );
-    setWorkflowTestResult(newWorkflowTestResult);
+    // const newWorkflowTestResult = nodes.reduce(
+    //   (acc, node) => {
+    //     acc[node.data.label as string] = node.data.outputSchema
+    //       ? node.data.outputSchema
+    //       : { hello: "world" };
+    //     return acc;
+    //   },
+    //   {} as { [key: string]: any },
+    // );
+    // setWorkflowTestResult(newWorkflowTestResult);
+    updateFakeData();
   }, [nodes, edges, onWorkflowChange]);
 
   const findPrevNodes = useCallback(
