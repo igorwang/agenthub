@@ -261,11 +261,11 @@ export const ChatTriggerNodeComponent: React.FC<NodeProps<ChatTriggerNode>> = me
           position={Position.Right}
           className="h-2 w-2 !border-1 !border-white !bg-slate-300"
         />
-        <Handle
+        {/* <Handle
           type="target"
           position={Position.Left}
           className="h-4 w-2 !border-1 !border-white !bg-slate-300"
-        />
+        /> */}
       </div>
     );
   },

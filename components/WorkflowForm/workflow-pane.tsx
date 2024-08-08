@@ -216,6 +216,7 @@ function Flow({
           uiSchema: nodeTypeData.uiSchema,
           flow_id: flowId,
           node_type_id: nodeTypeData.id,
+          outputSchema: nodeTypeData.default_data["outputSchema"] || {},
         },
       };
       setNodes((nds) => nds.concat(newNode));
