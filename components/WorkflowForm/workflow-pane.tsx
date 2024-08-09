@@ -19,8 +19,10 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import NodeDrawer from "@/components/WorkflowForm/node-drawer";
+import { nodeFormComponents } from "@/components/WorkflowForm/node-forms";
 import { nodeTypes } from "@/components/WorkflowForm/nodes";
 import { NodeTypeFragmentFragment } from "@/graphql/generated/types";
+import { alg, Graph } from "@dagrejs/graphlib";
 import "@xyflow/react/dist/base.css";
 import { v4 } from "uuid";
 
@@ -41,12 +43,46 @@ function Flow({
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
+  const [prevSelectedNodes, setPrevSelectedNodes] = useState<Node[]>([]); // record the nodes before selected
+
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const { screenToFlowPosition } = useReactFlow();
 
+  const graphRef = useRef<Graph>(new Graph({ directed: true }));
+
   useEffect(() => {
     onWorkflowChange?.(nodes, edges);
-  }, [nodes, edges]);
+    const graph = new Graph({ directed: true });
+    nodes.forEach((node) => graph.setNode(node.id, node));
+    edges.forEach((edge) => graph.setEdge(edge.source, edge.target));
+    graphRef.current = graph;
+  }, [nodes, edges, onWorkflowChange]);
+
+  const findPrevNodes = useCallback(
+    (nodeId: string) => {
+      const graph = graphRef.current;
+      const prevNodeIds = new Set<string>();
+
+      function dfs(currentId: string) {
+        graph.predecessors(currentId)?.forEach((predId) => {
+          if (!prevNodeIds.has(predId)) {
+            prevNodeIds.add(predId);
+            dfs(predId);
+          }
+        });
+      }
+      dfs(nodeId);
+
+      const sortedNodes = alg.topsort(graph);
+      const sortedPrevNodeIds = sortedNodes.filter((id) => prevNodeIds.has(id));
+      const prevNodes = nodes.filter((node) =>
+        sortedPrevNodeIds.some((id) => String(id) === String(node.id)),
+      );
+
+      return prevNodes;
+    },
+    [nodes],
+  );
 
   const onConnect = useCallback(
     (params: Connection) => {
@@ -62,6 +98,14 @@ function Flow({
     },
     [setEdges],
   );
+
+  const generateRandomLetters = () => {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    return Array(6)
+      .fill(0)
+      .map(() => chars.charAt(Math.floor(Math.random() * chars.length)))
+      .join("");
+  };
 
   const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -84,9 +128,11 @@ function Flow({
         // toast.error("Error parsing JSON data");
         return null;
       }
-      if (!nodeTypeData || !nodeTypeData.type) {
+      console.log("nodeTypeData", nodeTypeData);
+      if (!nodeTypeData || !nodeTypeData.type || !nodeTypeData.type.endsWith("Node")) {
         return;
       }
+
       const position = screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,
@@ -99,17 +145,18 @@ function Flow({
         type: nodeTypeData.type,
         position,
         data: {
-          label: nodeTypeData.label,
+          label: `${nodeTypeData.label}-${generateRandomLetters()}`,
           schema: nodeTypeData.schema,
+          uiSchema: nodeTypeData.uiSchema,
           flow_id: flowId,
           node_type_id: nodeTypeData.id,
         },
       };
       setNodes((nds) => nds.concat(newNode));
       setSelectedNode(newNode);
-      setOpenDrawer(true);
+      // setOpenDrawer(true);
     },
-    [screenToFlowPosition, nodes, setNodes],
+    [screenToFlowPosition, flowId],
   );
 
   const onNodeDoubleClick = useCallback<NodeMouseHandler>(
@@ -117,57 +164,51 @@ function Flow({
       // Prevent the default browser behavior
       event.preventDefault();
 
-      // Example: Update node data
-      // setNodes((nds) =>
-      //   nds.map((n) => {
-      //     if (n.id === node.id) {
-      //       // This is the double clicked node, update it
-      //       return {
-      //         ...n,
-      //         data: {
-      //           ...n.data,
-      //           label: `${n.data.label} (Edited)`,
-      //         },
-      //       };
-      //     }
-      //     return n;
-      //   }),
-      // );
-      // Example: You can also update edges if needed
-      // setEdges((eds) => [...]);
-      // Example: Use reactFlowInstance if needed
-
       const { x, y } = screenToFlowPosition({ x: event.clientX, y: event.clientY });
       setSelectedNode(node);
-      setOpenDrawer(true);
-      // You can add more logic here, such as opening a modal for editing the node
+
+      const prevNodes = findPrevNodes(node.id);
+      setPrevSelectedNodes(prevNodes);
+
+      const hasFormComponent = nodeFormComponents.has(node.type || "");
+
+      if (hasFormComponent) {
+        setOpenDrawer(true);
+      }
     },
-    [setNodes, screenToFlowPosition],
+    [screenToFlowPosition, nodes],
   );
 
-  const onNodeClick: NodeMouseHandler = useCallback(
-    (event, node) => {
-      // setSelectedNode((prevNode) => (prevNode?.id === node.id ? null : node));
-      // console.log(node);
-    },
-    [setNodes, selectedNode],
-  );
+  const onNodeClick: NodeMouseHandler = useCallback((event, node) => {}, []);
 
   const toggleDrawer = () => {
     setOpenDrawer((prevState) => !prevState);
   };
 
   const handleNodeChange = (data: { [key: string]: any }) => {
-    console.log("handleNodeChange", data);
+    const { id, ...nodeData } = data;
+    const label = nodeData.label;
+
+    const existingLabels = new Set(
+      nodes.filter((n) => n.id !== id).map((n) => n.data.label),
+    );
+
+    const newLabel = existingLabels.has(label)
+      ? `${label}-${generateRandomLetters()}`
+      : label;
+
+    console.log("handleNodeChange", data, label, existingLabels);
+
     setNodes((nds) =>
       nds.map((n) => {
-        if (n.id === data.id) {
+        if (n.id === id) {
           // This is the update node
           return {
             ...n,
             data: {
               ...n.data,
-              ...data,
+              ...nodeData,
+              label: newLabel,
             },
           };
         }
@@ -193,9 +234,10 @@ function Flow({
         <Controls />
         <MiniMap />
         <Background variant={BackgroundVariant.Dots} gap={16} size={1} />
-        {selectedNode && (
+        {openDrawer && (
           <NodeDrawer
             node={selectedNode}
+            prevNodes={prevSelectedNodes}
             isOpen={openDrawer}
             onToggleDrawer={toggleDrawer}
             onNodeChange={handleNodeChange}

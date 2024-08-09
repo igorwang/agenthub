@@ -16,8 +16,6 @@ import {
 } from "@/lib/jsonSchema";
 import { Icon } from "@iconify/react";
 import {
-  Accordion,
-  AccordionItem,
   Button,
   Divider,
   Input,
@@ -214,7 +212,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
                 label="Chunking Strategy"
                 labelPlacement="outside"
                 placeholder="Select your chunking strategy for this library"
-                selectedKeys={field.value ? [field.value] : []}
+                selectedKeys={field.value ? [field.value] : ["length"]}
                 disallowEmptySelection={false}
                 onSelectionChange={(keys) => {
                   field.onChange(Array.from(keys)[0] || null);
@@ -288,9 +286,10 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
             <Select
               label="Library Document Mode"
               className="pt-2"
+              isRequired
               labelPlacement="outside"
               placeholder="Select your mode for this library"
-              selectedKeys={field.value ? [field.value] : []}
+              selectedKeys={field.value ? [field.value] : ["simple"]}
               disallowEmptySelection={false}
               onSelectionChange={(keys) => {
                 field.onChange(Array.from(keys)[0] || null);
@@ -304,7 +303,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
           )}
         />
 
-        <div className="flex flex-col gap-4">
+        {/* <div className="flex flex-col gap-4">
           <Controller
             name="doc_schema"
             control={control}
@@ -345,12 +344,12 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
               </div>
             )}
           />
-        </div>
+        </div> */}
       </div>
-      <Divider className="my-2" />
+      {/* <Divider className="my-2" /> */}
 
       {/* 高级功能配置 */}
-      <Accordion defaultChecked={isAdvancedOpen}>
+      {/* <Accordion defaultChecked={isAdvancedOpen}>
         <AccordionItem
           key="advanced"
           aria-label="Advanced Features"
@@ -374,7 +373,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
             />
           </div>
         </AccordionItem>
-      </Accordion>
+      </Accordion> */}
 
       <div className="flex items-end justify-end gap-2 pb-1">
         {/* <span className="text-foreground-500">Library Information</span> */}
