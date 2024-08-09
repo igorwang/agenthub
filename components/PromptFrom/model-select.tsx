@@ -92,6 +92,7 @@ const ModelSelect = React.forwardRef<HTMLDivElement, ModelSelectProps>(
         isRequired={isRequired}
         label={label}
         labelPlacement={labelPlacement}
+        aria-label="model-select"
         placeholder="Select an Model"
         // selectedKeys={value}
         selectedKeys={value}

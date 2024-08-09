@@ -1,3 +1,4 @@
+import ModelSelect from "@/components/PromptFrom/model-select";
 import JsonExpressionInput from "@/components/ui/json-expression-input";
 import JsonSchemaTooltip from "@/components/ui/json-schema-tooltip";
 import { Icon } from "@iconify/react";
@@ -318,6 +319,30 @@ const CustomExpressionInputField: React.FC<FieldProps> = (props) => {
   );
 };
 
+const CustomModelField: React.FC<FieldProps> = (props) => {
+  const { name, schema, value, uiSchema, required, formData, onChange, registry } = props;
+
+  if (schema.format === "model" || uiSchema?.["ui:field"] === "model") {
+    return (
+      <div className="mb-2">
+        <label>{schema.title || "model"}</label>
+        <ModelSelect
+          label=""
+          defaultModel={formData || ""}
+          onSelectionChange={(modelName, limit) => {
+            console.log("onSelectionChange", modelName, limit);
+            // Update the form data with the new model name
+            onChange(modelName);
+          }}
+        />
+      </div>
+    );
+  }
+
+  // Fall back to default ObjectField if not a model field
+  return <registry.fields.ObjectField {...props} />;
+};
+
 // Define default widgets
 const defaultWidgets: RegistryWidgetsType = {
   CheckboxWidget: CustomCheckbox,
@@ -379,6 +404,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
   const fields: RegistryFieldsType = {
     json: CustomJsonField,
     expression: CustomExpressionInputField,
+    model: CustomModelField,
   };
 
   return (

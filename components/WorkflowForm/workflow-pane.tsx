@@ -195,6 +195,7 @@ function Flow({
         // toast.error("Error parsing JSON data");
         return null;
       }
+
       if (!nodeTypeData || !nodeTypeData.type || !nodeTypeData.type.endsWith("Node")) {
         return;
       }
@@ -253,6 +254,7 @@ function Flow({
   };
 
   const handleNodeChange = (data: { [key: string]: any }) => {
+    console.log("handleNodeChange", data);
     const { id, ...nodeData } = data;
     const label = nodeData.label;
 

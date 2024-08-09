@@ -271,6 +271,37 @@ export const ChatTriggerNodeComponent: React.FC<NodeProps<ChatTriggerNode>> = me
   },
 );
 
+export type llmV1Node = Node<CustomNodeData, "llmV1Node">;
+export const llmV1NodeComponent: React.FC<NodeProps<InputNode>> = memo(
+  ({ data, selected }) => {
+    const borderColor = selected ? "border-blue-500" : "border-gray-200";
+
+    return (
+      <div
+        className={`rounded-md border ${borderColor} bg-white px-4 py-2 shadow-sm transition-colors duration-200`}>
+        <div className="flex items-center">
+          <div className="mr-2 flex h-12 w-8 items-center justify-center text-gray-500">
+            <Icon icon={"hugeicons:chat-bot"} fontSize={24} />
+          </div>
+          <div>
+            <div className="text-sm font-medium text-gray-700">{data.label}</div>
+          </div>
+        </div>
+        <Handle
+          type="target"
+          position={Position.Left}
+          className="h-4 w-1 !border-1 !border-white !bg-gray-300"
+        />
+        <Handle
+          type="source"
+          position={Position.Right}
+          className="h-3 w-3 !border-2 !border-white !bg-gray-300"
+        />
+      </div>
+    );
+  },
+);
+
 StartNodeComponent.displayName = "StartNodeComponent";
 InputNodeComponent.displayName = "InputNodeComponent";
 llmNodeComponent.displayName = "llmNodeComponent";
@@ -278,6 +309,7 @@ EndNodeComponent.displayName = "EndNodeComponent";
 OutputParserNodeComponent.displayName = "outputParserNode";
 ConditionNodeComponent.displayName = "ConditionNodeComponent";
 ChatTriggerNodeComponent.displayName = "ChatTriggerNodeComponent";
+llmV1NodeComponent.displayName = "llmV1NodeComponent";
 
 export const nodeTypes: NodeTypes = {
   startNode: StartNodeComponent,
@@ -287,4 +319,5 @@ export const nodeTypes: NodeTypes = {
   outputParserNode: OutputParserNodeComponent,
   conditionNode: ConditionNodeComponent,
   chatTriggerNode: ChatTriggerNodeComponent,
+  llmV1Node: llmV1NodeComponent,
 };
