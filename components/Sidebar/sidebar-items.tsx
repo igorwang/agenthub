@@ -20,19 +20,19 @@ export const sectionItems: SidebarItem[] = [
           />
         ),
       },
-      {
-        key: "search",
-        href: "/search",
-        icon: "mingcute:search-3-line",
-        title: "Search",
-        endContent: (
-          <Icon
-            className="text-default-400"
-            icon="solar:add-circle-line-duotone"
-            width={24}
-          />
-        ),
-      },
+      // {
+      //   key: "search",
+      //   href: "/search",
+      //   icon: "mingcute:search-3-line",
+      //   title: "Search",
+      //   endContent: (
+      //     <Icon
+      //       className="text-default-400"
+      //       icon="solar:add-circle-line-duotone"
+      //       width={24}
+      //     />
+      //   ),
+      // },
       {
         key: "library",
         href: "/library",
