@@ -56,10 +56,11 @@ export default function SideBar() {
           />
         </div>
         <div className="mt-auto flex flex-col items-center gap-1">
-          <ThemeSwitch className="pb-2" />
+          <ThemeSwitch className="hidden pb-2" />
           <Tooltip content="GitHub" placement="right">
             <Button
               isIconOnly
+              className="hidden"
               // className="data-[hover=true]:text-foreground"
               variant="light">
               <Icon className="text-default-500" icon="grommet-icons:github" width={24} />
@@ -68,6 +69,7 @@ export default function SideBar() {
           <Tooltip content="Help & Feedback" placement="right">
             <Button
               isIconOnly
+              className="hidden"
               // className="data-[hover=true]:text-foreground"
               variant="light">
               <Icon

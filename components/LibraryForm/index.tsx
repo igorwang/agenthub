@@ -97,9 +97,8 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
       variables: { id: initLibrary?.id },
     });
     toast.success("Delete library success");
-    router.push("/library");
-    router.refresh();
     setDeleteModal(false);
+    router.push("/library");
   };
 
   const deleteModalContent = (
