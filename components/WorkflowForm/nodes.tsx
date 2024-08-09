@@ -218,9 +218,8 @@ export const ConditionNodeComponent: React.FC<NodeProps<ConditionNode>> = memo(
         <Handle
           type="target"
           position={Position.Left}
-          className="h-3 w-1 !border-1 !border-white !bg-slate-200"
-        />
-        {data.conditions?.map((_, index) => (
+          className="h-3 w-1 !border-1 !border-white !bg-slate-200"></Handle>
+        {data.conditions?.map((cond, index) => (
           <Handle
             key={index}
             type="source"
@@ -229,8 +228,11 @@ export const ConditionNodeComponent: React.FC<NodeProps<ConditionNode>> = memo(
             className="h-2 w-2 !border-2 !border-white !bg-slate-200"
             style={{
               top: `${((index + 1) * 100) / ((data.conditions?.length ?? 0) + 1)}%`,
-            }}
-          />
+            }}>
+            <div className="absolute left-full top-1/2 ml-1 -translate-y-1/2 whitespace-nowrap text-xs">
+              {cond.name || `cond-${index}`}
+            </div>
+          </Handle>
         ))}
       </div>
     );
