@@ -46,19 +46,19 @@ export const sectionItems: SidebarItem[] = [
           />
         ),
       },
-      {
-        key: "discover",
-        href: "/discover",
-        icon: "iconamoon:discover",
-        title: "Discover",
-        endContent: (
-          <Icon
-            className="text-default-400"
-            icon="solar:add-circle-line-duotone"
-            width={24}
-          />
-        ),
-      },
+      // {
+      //   key: "discover",
+      //   href: "/discover",
+      //   icon: "iconamoon:discover",
+      //   title: "Discover",
+      //   endContent: (
+      //     <Icon
+      //       className="text-default-400"
+      //       icon="solar:add-circle-line-duotone"
+      //       width={24}
+      //     />
+      //   ),
+      // },
     ],
   },
 ];
