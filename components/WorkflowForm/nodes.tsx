@@ -304,6 +304,38 @@ export const llmV1NodeComponent: React.FC<NodeProps<InputNode>> = memo(
   },
 );
 
+export type SearchLibraryNode = Node<CustomNodeData, "searchLibraryNode">;
+
+export const SearchLibraryNodeComponent: React.FC<NodeProps<InputNode>> = memo(
+  ({ data, selected }) => {
+    const borderColor = selected ? "border-purple-500" : "border-gray-200";
+
+    return (
+      <div
+        className={`rounded-md border ${borderColor} bg-purple-50 px-2 py-1 shadow-sm transition-colors duration-200`}>
+        <div className="flex flex-col items-center">
+          <div className="mb-0.5 flex h-6 w-6 items-center justify-center text-purple-500">
+            <Icon icon="et:search" fontSize={16} />
+          </div>
+          <div className="text-center text-[10px] font-medium text-purple-700">
+            {data.label}
+          </div>
+        </div>
+        <Handle
+          type="target"
+          position={Position.Left}
+          className="-ml-0.5 h-3 w-0.5 !border-1 !border-purple-100 !bg-purple-300"
+        />
+        <Handle
+          type="source"
+          position={Position.Right}
+          className="-mr-0.5 h-1 w-1 !border-1 !border-purple-100 !bg-purple-300"
+        />
+      </div>
+    );
+  },
+);
+
 StartNodeComponent.displayName = "StartNodeComponent";
 InputNodeComponent.displayName = "InputNodeComponent";
 llmNodeComponent.displayName = "llmNodeComponent";
@@ -312,6 +344,7 @@ OutputParserNodeComponent.displayName = "outputParserNode";
 ConditionNodeComponent.displayName = "ConditionNodeComponent";
 ChatTriggerNodeComponent.displayName = "ChatTriggerNodeComponent";
 llmV1NodeComponent.displayName = "llmV1NodeComponent";
+SearchLibraryNodeComponent.displayName = "SearchLibraryNodeComponent";
 
 export const nodeTypes: NodeTypes = {
   startNode: StartNodeComponent,
@@ -322,4 +355,5 @@ export const nodeTypes: NodeTypes = {
   conditionNode: ConditionNodeComponent,
   chatTriggerNode: ChatTriggerNodeComponent,
   llmV1Node: llmV1NodeComponent,
+  SearchLibraryNode: SearchLibraryNodeComponent,
 };

@@ -325,7 +325,9 @@ const CustomModelField: React.FC<FieldProps> = (props) => {
   if (schema.format === "model" || uiSchema?.["ui:field"] === "model") {
     return (
       <div className="mb-2">
-        <label>{schema.title || "model"}</label>
+        <label>
+          {schema.title || "model"} {required ? "*" : ""}
+        </label>
         <ModelSelect
           label=""
           defaultModel={formData || ""}
