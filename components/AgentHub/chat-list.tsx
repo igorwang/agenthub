@@ -131,29 +131,33 @@ export const ChatList: React.FC<ChatListProps> = ({
     setFixedChatList(groupedChatList);
   };
 
+  console.log("fixedChatList", fixedChatList);
   const chatListContent = (fixedChatList || []).map((group) => (
     <div className="relative flex w-full flex-col" key={group.id}>
-      {group.name && group.name != "system" && chatListOpenStatus && (
-        <div className="flex h-12 flex-row items-center justify-between bg-slate-100 px-2 pb-2 hover:bg-slate-200">
-          <div className="overflow-hidden text-ellipsis text-nowrap text-sm">
-            {group.name}
+      {group.name &&
+        group.name != "system" &&
+        group.name != "default" &&
+        chatListOpenStatus && (
+          <div className="flex h-12 flex-row items-center justify-between bg-slate-100 px-2 pb-2 hover:bg-slate-200">
+            <div className="overflow-hidden text-ellipsis text-nowrap text-sm">
+              {group.name}
+            </div>
+            <div className="flex flex-row items-center">
+              <Button isIconOnly variant="light">
+                <Icon icon="octicon:kebab-horizontal-16" />
+              </Button>
+              <Button isIconOnly variant="light" onClick={() => toggleListbox(group.id)}>
+                <Icon
+                  icon={
+                    openStates[group.id]
+                      ? "octicon:chevron-down-16"
+                      : "octicon:chevron-right-16"
+                  }
+                />
+              </Button>
+            </div>
           </div>
-          <div className="flex flex-row items-center">
-            <Button isIconOnly variant="light">
-              <Icon icon="octicon:kebab-horizontal-16" />
-            </Button>
-            <Button isIconOnly variant="light" onClick={() => toggleListbox(group.id)}>
-              <Icon
-                icon={
-                  openStates[group.id]
-                    ? "octicon:chevron-down-16"
-                    : "octicon:chevron-right-16"
-                }
-              />
-            </Button>
-          </div>
-        </div>
-      )}
+        )}
       {openStates[group.id] && (
         <Listbox
           key={group.id}

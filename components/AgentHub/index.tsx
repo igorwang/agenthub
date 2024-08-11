@@ -49,7 +49,7 @@ const ChatHub = () => {
       where: {
         _or: [
           { user_id: { _eq: userId } },
-          { agent: { agent_type: { name: { _eq: "system" } } } },
+          // { agent: { agent_type: { name: { _eq: "system" } } } },
         ],
       },
     },

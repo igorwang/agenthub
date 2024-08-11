@@ -263,7 +263,7 @@ export default function PromptInputWithFaq({
         hideScrollBar
         className="flex max-w-full flex-nowrap gap-2 overflow-auto"
         orientation="horizontal">
-        <div className="flex gap-2">
+        <div className="flex gap-2 pb-2">
           {selectedSources?.map((item, index) => (
             <Tooltip key={index} content={item.fileName}>
               <div className="flex items-center gap-2 rounded-full bg-default-100 px-3 py-2 transition-colors hover:bg-default-200">
