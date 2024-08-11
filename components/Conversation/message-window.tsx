@@ -60,6 +60,7 @@ type MessageWindowProps = {
   handleChatingStatus?: (stauts: boolean) => void;
   selectedSources?: SourceType[];
   onSelectedSource?: (source: SourceType, selected: boolean) => void;
+  onMessageChange?: (messages: MessageType[]) => void;
   handleCreateNewMessage?: (params: {
     id: string;
     query: string;
@@ -78,6 +79,7 @@ export default function MessageWindow({
   handleChatingStatus,
   handleCreateNewMessage,
   onSelectedSource,
+  onMessageChange,
 }: MessageWindowProps) {
   const dispatch: AppDispatch = useDispatch();
   const selectedChatId = useSelector(selectSelectedChatId);
@@ -168,21 +170,21 @@ export default function MessageWindow({
 
   useEffect(() => {
     if (data && data.message) {
-      setMessages(
-        data.message.map((item) => ({
-          id: item.id,
-          role: item.role,
-          message: item.content,
-          status: item.status,
-          feedback: item.feedback,
-          files:
-            item.attachments?.map((attachment: { fileName: string }, index: number) => ({
-              key: index,
-              fileName: attachment.fileName,
-            })) || [],
-          sources: item.sources?.map((item: SourceType) => ({ ...item })),
-        })),
-      );
+      const newMessages = data.message.map((item) => ({
+        id: item.id,
+        role: item.role,
+        message: item.content,
+        status: item.status,
+        feedback: item.feedback,
+        files:
+          item.attachments?.map((attachment: { fileName: string }, index: number) => ({
+            key: index,
+            fileName: attachment.fileName,
+          })) || [],
+        sources: item.sources?.map((item: SourceType) => ({ ...item })),
+      }));
+      setMessages(newMessages);
+      onMessageChange?.(newMessages);
     }
   }, [data]);
 

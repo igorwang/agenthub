@@ -258,7 +258,7 @@ export default function PromptInputWithFaq({
   );
 
   return (
-    <div className="flex w-full max-w-full flex-col items-center gap-4 overflow-auto p-2">
+    <div className="flex w-full max-w-full flex-col items-center overflow-auto px-2">
       <ScrollShadow
         hideScrollBar
         className="flex max-w-full flex-nowrap gap-2 overflow-auto"

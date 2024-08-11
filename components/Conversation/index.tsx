@@ -8,11 +8,20 @@ import {
   useCreateNewMessageMutation,
   useGetAgentByIdQuery,
 } from "@/graphql/generated/types";
-import { CHAT_MODE, SourceType } from "@/types/chatTypes";
+import { selectSelectedSessionId, selectSession } from "@/lib/features/chatListSlice";
+import { AppDispatch } from "@/lib/store";
+import { CHAT_MODE, MessageType, SourceType } from "@/types/chatTypes";
 import { Avatar, Button, Tooltip } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 
 // Define the shape of our context
@@ -58,12 +67,15 @@ export const Conversation: React.FC<ConversationProps> = ({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const session = useSession();
+  const dispatch: AppDispatch = useDispatch();
+  const selectedSessionId = useSelector(selectSelectedSessionId);
 
+  const [messageCount, setMessageCount] = useState<number>(0);
   const [isChating, setIsChating] = useState<boolean>(false);
   const [chatMode, setChatMode] = useState<string>(CHAT_MODE.simple.toString());
   const [selectedSources, setSelectedSources] = useState<SourceType[]>([]);
 
-  const selectedSessionId = searchParams.get("session_id");
+  // const selectedSessionId = searchParams.get("session_id");
 
   const [agent, setAgent] = useState<Agent>();
   const { data, loading, error } = useGetAgentByIdQuery({
@@ -80,6 +92,10 @@ export const Conversation: React.FC<ConversationProps> = ({
     setIsChating(false);
     setSelectedSources([]);
   }, [selectedSessionId]);
+
+  const handleMessageChange = useCallback((messages: MessageType[]) => {
+    setMessageCount(messages.length);
+  }, []);
 
   useEffect(() => {
     if (data) {
@@ -180,31 +196,8 @@ export const Conversation: React.FC<ConversationProps> = ({
           </Tooltip>
         </div>
       </div>
-      {/* <Tabs
-        className="justify-center"
-        selectedKey={chatMode}
-        onSelectionChange={(key) => setChatMode(key.toString())}>
-        <Tab key={CHAT_MODE.simple.toString()} title="simple" />
-        <Tab key={CHAT_MODE.deep.toString()} title="deep" />
-        <Tab key={CHAT_MODE.creative.toString()} title="creative" />
-      </Tabs> */}
     </div>
   );
-
-  // const selectedSourceContent = (
-  //   <ScrollShadow
-  //     orientation="horizontal"
-  //     className="flex flex-row flex-nowrap gap-2 overflow-auto"
-  //     hideScrollBar={true}>
-  //     {selectedSources.map((item) => {
-  //       return (
-  //         <div key={item.fileId} className="max-w-[160px] text-ellipsis text-nowrap">
-  //           {item.fileName}
-  //         </div>
-  //       );
-  //     })}
-  //   </ScrollShadow>
-  // );
 
   const contextValue: ConversationContextType = {
     selectedSources,
@@ -215,17 +208,38 @@ export const Conversation: React.FC<ConversationProps> = ({
     <ConversationContext.Provider value={contextValue}>
       <div className="flex h-full w-full max-w-full flex-col overflow-auto">
         {headerElement}
-        <div className="flex max-w-full flex-grow flex-row overflow-auto">
+        <div className="flex max-h-full max-w-full flex-grow flex-row overflow-auto">
           <div className="min-[400px] mx-auto flex max-w-7xl flex-grow flex-col items-center overflow-auto pt-4">
             <MessageWindow
               isChating={isChating}
+              selectedSources={selectedSources}
               handleChatingStatus={setIsChating}
               handleCreateNewMessage={handleCreateNewMessage}
               onSelectedSource={handleSelectedSource}
-              selectedSources={selectedSources}
+              onMessageChange={handleMessageChange}
             />
             <div className="flex w-full max-w-full flex-col">
-              {/* {selectedSourceContent} */}
+              {messageCount >= 20 && (
+                <div className="mx-6 flex max-w-full items-center justify-between rounded-lg bg-sky-100 px-6 py-3 shadow-sm">
+                  <div className="flex flex-1 items-center">
+                    <span className="mr-2 font-semibold text-sky-700">Tip:</span>
+                    <span className="text-sky-800">
+                      Long chats may affect the AI performance.
+                    </span>
+                  </div>
+                  <Button
+                    color="primary"
+                    variant="flat"
+                    size="sm"
+                    className="ml-2"
+                    onClick={() => {
+                      dispatch(selectSession(null));
+                    }}>
+                    Start a new chat
+                  </Button>
+                </div>
+              )}
+
               <PromptInputWithFaq
                 isChating={isChating}
                 selectedSources={selectedSources}
