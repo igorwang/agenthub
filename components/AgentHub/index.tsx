@@ -115,7 +115,7 @@ const ChatHub = () => {
       <SearchBar />
       <Spacer y={4} />
       <div className="flex-grow overflow-hidden">
-        <ScrollShadow className="h-full w-full">
+        <ScrollShadow className="h-full w-full" hideScrollBar={true}>
           <ChatList
             groupedChatList={chatList}
             chatListOpenStatus={chatListOpenStatus}
