@@ -1,5 +1,6 @@
 import {
   Knowledge_Base_Type_Enum,
+  Role_Enum,
   Run_Type_Enum,
   Tool_Type_Enum,
 } from "@/graphql/generated/types";
@@ -28,6 +29,7 @@ export type ChatDTO = {
   name: string;
   description?: string | null | undefined;
   avatar?: string | null | undefined;
+  role?: string | Role_Enum;
 };
 
 export type GroupedChatListDTO = {

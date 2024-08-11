@@ -3,10 +3,13 @@
 import MessageWindow from "@/components/Conversation/message-window";
 import PromptInputWithFaq from "@/components/Conversation/prompt-input-with-faq";
 import { ConfigIcon } from "@/components/ui/icons";
+import { RoleChip } from "@/components/ui/role-icons";
 import {
   Message_Role_Enum,
+  Role_Enum,
   useCreateNewMessageMutation,
   useGetAgentByIdQuery,
+  useGetAgentUserRelationQuery,
 } from "@/graphql/generated/types";
 import { selectSelectedSessionId, selectSession } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
@@ -48,6 +51,7 @@ export type Agent = {
   description?: string;
   avatar?: string;
   creator_id?: string;
+  role?: string | Role_Enum;
 };
 
 export type ConversationProps = {
@@ -85,6 +89,15 @@ export const Conversation: React.FC<ConversationProps> = ({
     skip: !agentId,
   });
 
+  const relationQuery = useGetAgentUserRelationQuery({
+    variables: {
+      limit: 1,
+      where: { user_id: { _eq: session.data?.user?.id }, agent_id: { _eq: agentId } },
+      //  order_by: {}
+    },
+    skip: !agentId || !session.data?.user?.id,
+  });
+
   const [createNewMessageMutation, { error: createError }] =
     useCreateNewMessageMutation();
 
@@ -96,6 +109,19 @@ export const Conversation: React.FC<ConversationProps> = ({
   const handleMessageChange = useCallback((messages: MessageType[]) => {
     setMessageCount(messages.length);
   }, []);
+
+  useEffect(() => {
+    if (
+      relationQuery.data &&
+      relationQuery.data?.r_agent_user &&
+      relationQuery.data?.r_agent_user[0]
+    ) {
+      setAgent((prev) => {
+        if (!prev) return prev; // 如果 prev 是 undefined，则返回 undefined
+        return { ...prev, role: relationQuery.data?.r_agent_user[0].role || "user" };
+      });
+    }
+  }, [relationQuery]);
 
   useEffect(() => {
     if (data) {
@@ -189,11 +215,15 @@ export const Conversation: React.FC<ConversationProps> = ({
               </Tooltip>
             )}
           </div>
-          <Tooltip content={agent.description}>
-            <p className="max-w-sm overflow-hidden text-ellipsis text-nowrap text-sm font-light">
-              {agent.description}
-            </p>
-          </Tooltip>
+          <div className="flex flex-row items-center gap-2">
+            {agent.role && <RoleChip role={agent.role || "user"} />}
+
+            <Tooltip content={agent.description}>
+              <p className="max-w-sm overflow-hidden text-ellipsis text-nowrap text-sm font-light">
+                {agent.description}
+              </p>
+            </Tooltip>
+          </div>
         </div>
       </div>
     </div>

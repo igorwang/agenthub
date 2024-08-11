@@ -135,8 +135,8 @@ export const ChatList: React.FC<ChatListProps> = ({
   const chatListContent = (fixedChatList || []).map((group) => (
     <div className="relative flex w-full flex-col" key={group.id}>
       {group.name &&
-        group.name != "system" &&
-        group.name != "default" &&
+        group.name !== "system" &&
+        group.name !== "default" &&
         chatListOpenStatus && (
           <div className="flex h-12 flex-row items-center justify-between bg-slate-100 px-2 pb-2 hover:bg-slate-200">
             <div className="overflow-hidden text-ellipsis text-nowrap text-sm">
@@ -172,7 +172,7 @@ export const ChatList: React.FC<ChatListProps> = ({
           {group.agents.map((item) => (
             <ListboxItem
               key={item.id}
-              textValue={item.name}
+              textValue={item.name} // Added textValue prop for accessibility
               className={`relative ${item.id == params?.id ? "bg-blue-200" : ""}`}
               onClick={() => {
                 handleSelectChat(item.id);

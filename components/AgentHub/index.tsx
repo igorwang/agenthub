@@ -59,6 +59,7 @@ const ChatHub = () => {
   useEffect(() => {
     if (agentListData) {
       const groupedChatList: GroupedChatListDTO[] = [];
+
       agentListData.r_agent_user.forEach((item) => {
         const agentType = item.agent?.agent_type;
         const group = groupedChatList.find((g) => g.name == agentType?.name);
@@ -69,11 +70,12 @@ const ChatHub = () => {
             groupedChatList.push({
               id: agentType.id,
               name: agentType?.name,
-              agents: [{ ...item.agent }],
+              agents: [{ ...item.agent, role: item.role || "" }],
             });
           }
         }
       });
+
       dispatch(setChatList(groupedChatList));
       if (!params.id || params.id == "default") {
         const defaultChatId = agentListData.r_agent_user?.[0].agent?.id;
