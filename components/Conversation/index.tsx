@@ -12,8 +12,26 @@ import { CHAT_MODE, SourceType } from "@/types/chatTypes";
 import { Avatar, Button, Tooltip } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
+
+// Define the shape of our context
+type ConversationContextType = {
+  selectedSources: SourceType[];
+  handleSelectedSource: (source: SourceType, selected: boolean) => void;
+};
+
+// Create the context
+const ConversationContext = createContext<ConversationContextType | undefined>(undefined);
+
+// Create a custom hook to use the context
+export const useConversationContext = () => {
+  const context = useContext(ConversationContext);
+  if (context === undefined) {
+    throw new Error("useConversationContext must be used within Conversation component");
+  }
+  return context;
+};
 
 export type Agent = {
   id: string;
@@ -188,34 +206,41 @@ export const Conversation: React.FC<ConversationProps> = ({
   //   </ScrollShadow>
   // );
 
+  const contextValue: ConversationContextType = {
+    selectedSources,
+    handleSelectedSource,
+  };
+
   return (
-    <div className="flex h-full w-full max-w-full flex-col overflow-auto">
-      {headerElement}
-      <div className="flex max-w-full flex-grow flex-row overflow-auto">
-        <div className="min-[400px] mx-auto flex max-w-7xl flex-grow flex-col items-center overflow-auto pt-4">
-          <MessageWindow
-            isChating={isChating}
-            handleChatingStatus={setIsChating}
-            handleCreateNewMessage={handleCreateNewMessage}
-            onSelectedSource={handleSelectedSource}
-            selectedSources={selectedSources}
-          />
-          <div className="flex w-full max-w-full flex-col">
-            {/* {selectedSourceContent} */}
-            <PromptInputWithFaq
+    <ConversationContext.Provider value={contextValue}>
+      <div className="flex h-full w-full max-w-full flex-col overflow-auto">
+        {headerElement}
+        <div className="flex max-w-full flex-grow flex-row overflow-auto">
+          <div className="min-[400px] mx-auto flex max-w-7xl flex-grow flex-col items-center overflow-auto pt-4">
+            <MessageWindow
               isChating={isChating}
-              selectedSources={selectedSources}
+              handleChatingStatus={setIsChating}
+              handleCreateNewMessage={handleCreateNewMessage}
               onSelectedSource={handleSelectedSource}
-              onChatingStatus={setIsChating}></PromptInputWithFaq>
-            <p className="px-2 text-tiny text-default-400">
-              AI can also make mistakes. Please verify important information.
-            </p>
+              selectedSources={selectedSources}
+            />
+            <div className="flex w-full max-w-full flex-col">
+              {/* {selectedSourceContent} */}
+              <PromptInputWithFaq
+                isChating={isChating}
+                selectedSources={selectedSources}
+                onSelectedSource={handleSelectedSource}
+                onChatingStatus={setIsChating}></PromptInputWithFaq>
+              <p className="px-2 text-tiny text-default-400">
+                AI can also make mistakes. Please verify important information.
+              </p>
+            </div>
           </div>
-        </div>
-        {/* <div className="max-w-100 m-2 hidden w-80 rounded-lg border-2 md:flex">
+          {/* <div className="max-w-100 m-2 hidden w-80 rounded-lg border-2 md:flex">
           <FunctionTab agentId={agentId}></FunctionTab>
         </div> */}
+        </div>
       </div>
-    </div>
+    </ConversationContext.Provider>
   );
 };
