@@ -105,6 +105,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
       }`}
       startContent={<DiscussionIcon className="mr-2 h-4 w-4" />}
       endContent={dropdownContent}
+      textValue={item.title} // Add this line to fix the warning
       onClick={() => handleSelect(item.id)}>
       <div className="w-full truncate pr-8">{item.title}</div>
     </ListboxItem>
