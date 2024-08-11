@@ -291,6 +291,7 @@ export default function MessageWindow({
                   contents: item.contents || [],
                   sourceType: SOURCE_TYPE_ENUM.file,
                   knowledgeBaseId: item.knowledge_base_id || "",
+                  ext: item.ext || "Unknow",
                 }),
               );
 
@@ -304,6 +305,7 @@ export default function MessageWindow({
                     contents: item.contents || [],
                     sourceType: SOURCE_TYPE_ENUM.webpage,
                     knowledgeBaseId: item.knowledge_base_id || "",
+                    ext: "webpage",
                   }),
                 ) || [];
               const searchResults = [...libraryResults, ...webResults]
@@ -439,7 +441,6 @@ export default function MessageWindow({
           role: Message_Role_Enum.Assistant,
           sources: searchResults,
         });
-        console.log("handleCreateNewMessage");
         handleChatingStatus?.(false);
       };
       generateAnswer();

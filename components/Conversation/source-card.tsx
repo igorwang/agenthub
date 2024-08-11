@@ -1,3 +1,4 @@
+import FileIcon from "@/components/ui/file-icons";
 import { SOURCE_TYPE_ENUM, SourceType } from "@/types/chatTypes";
 import { Icon } from "@iconify/react";
 import {
@@ -50,7 +51,8 @@ export const SourceCard = ({
       <CardHeader className="justify-center px-1 py-0">
         <div className="flex flex-row items-center gap-1">
           {/* <SourceFileIcon size={20}></SourceFileIcon> */}
-          <Icon className="text-md text-default-600" icon="mdi:tag-search-outline" />
+          {/* <Icon className="text-md text-default-600" icon="mdi:tag-search-outline" /> */}
+          <FileIcon fileExtension={source.ext || "Unknow"} size={20} />
           <p className="text-nowrap text-small font-semibold text-default-400">
             Source - {source.index || index}
           </p>
