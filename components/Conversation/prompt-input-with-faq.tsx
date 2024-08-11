@@ -6,6 +6,7 @@ import { Button, ScrollShadow, Tooltip } from "@nextui-org/react";
 import React, { useRef, useState } from "react";
 
 import { UploadFile, UploadFileProps } from "@/components/Conversation/upload-file";
+import FileIcon from "@/components/ui/file-icons";
 import {
   Message_Role_Enum,
   useAddNewTopicMutationMutation,
@@ -257,36 +258,26 @@ export default function PromptInputWithFaq({
   );
 
   return (
-    <div className="flex w-full max-w-full flex-col items-center gap-4 overflow-auto p-2">
+    <div className="flex w-full max-w-full flex-col items-center overflow-auto px-2">
       <ScrollShadow
         hideScrollBar
         className="flex max-w-full flex-nowrap gap-2 overflow-auto"
         orientation="horizontal">
-        <div className="flex gap-2">
+        <div className="flex gap-2 pb-2">
           {selectedSources?.map((item, index) => (
             <Tooltip key={index} content={item.fileName}>
-              <Button
-                disableRipple
-                disableAnimation
-                key={index}
-                className="flex h-14 w-full flex-row items-center justify-between gap-2"
-                variant="flat"
-                // disabled={true}
-                endContent={
-                  <Icon
-                    icon={"clarity:remove-line"}
-                    onClick={() => {
-                      console.log("click");
-                      onSelectedSource?.(item, false);
-                    }}
-                    className="cursor-pointer"
-                    fontSize={20}></Icon>
-                }>
+              <div className="flex items-center gap-2 rounded-full bg-default-100 px-3 py-2 transition-colors hover:bg-default-200">
+                <FileIcon fileExtension={item.ext || "Unknow"} />
                 <p className="max-w-[200px] overflow-hidden text-ellipsis text-nowrap">
                   {item.fileName}
                 </p>
-                {/* <p className="text-default-500">{description}</p> */}
-              </Button>
+                <Icon
+                  icon="clarity:remove-line"
+                  onClick={() => onSelectedSource?.(item, false)}
+                  className="cursor-pointer text-default-500 hover:text-default-700"
+                  fontSize={20}
+                />
+              </div>
             </Tooltip>
           ))}
         </div>

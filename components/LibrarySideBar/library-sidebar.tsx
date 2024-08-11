@@ -8,7 +8,7 @@ import {
 import { Icon } from "@iconify/react";
 import { Divider, Tooltip } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -23,14 +23,17 @@ export default function LibrarySideBar({ items }: LibrarySideBarProps) {
   const [createOneKnowledgeBaseMutation] = useCreateOneKnowledgeBaseMutation();
   const { data: sessionData, status } = useSession();
   const userId = sessionData?.user?.id;
-  const pathname = usePathname();
+  const params: { id: string } = useParams();
 
   useEffect(() => {
-    if (listItems.length > 0 && selectedItemId === null && pathname.endsWith("library")) {
-      setSelectedItemId(listItems[0].id);
-      router.push(`/library/${listItems[0].id}`);
+    if (params.id) {
+      setSelectedItemId(params.id);
     }
-  }, [listItems, selectedItemId]);
+    // } else if (listItems.length > 0 && selectedItemId === null) {
+    //   setSelectedItemId(listItems[0].id);
+    //   router.push(`/library/${listItems[0].id}`);
+    // }
+  }, [params]);
 
   function handleCreateOneKnowledgeBase() {
     createOneKnowledgeBaseMutation({

@@ -86,6 +86,5 @@ export async function createPrompt(
 
   const promptFromQuery = `${latestMessages[0]}:${latestMessages[1]}`;
   const prompt = `${promptFromTemplate}\n${promptFromContext}\n${promptFromQuery}`;
-  console.log("prompt:", prompt);
   return prompt;
 }

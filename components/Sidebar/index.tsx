@@ -60,6 +60,7 @@ export default function SideBar() {
           <Tooltip content="GitHub" placement="right">
             <Button
               isIconOnly
+              className="hidden"
               // className="data-[hover=true]:text-foreground"
               className="hidden"
               variant="light">
@@ -69,6 +70,7 @@ export default function SideBar() {
           <Tooltip content="Help & Feedback" placement="right">
             <Button
               isIconOnly
+              className="hidden"
               // className="data-[hover=true]:text-foreground"
               className="hidden"
               variant="light">

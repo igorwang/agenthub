@@ -1,15 +1,17 @@
+import ModelSelect from "@/components/PromptFrom/model-select";
 import JsonExpressionInput from "@/components/ui/json-expression-input";
 import JsonSchemaTooltip from "@/components/ui/json-schema-tooltip";
+import { Icon } from "@iconify/react";
 import {
   Button,
   Card,
   CardBody,
   CardHeader,
   Checkbox,
-  Input,
   Select,
   SelectItem,
   Switch,
+  Textarea,
 } from "@nextui-org/react";
 import { ThemeProps, withTheme } from "@rjsf/core";
 import {
@@ -24,7 +26,7 @@ import {
 import validator from "@rjsf/validator-ajv8";
 import { Node } from "@xyflow/react";
 import { JsonEditor } from "json-edit-react";
-import React from "react";
+import React, { useState } from "react";
 
 // Custom Widgets
 const CustomCheckbox: React.FC<WidgetProps> = (props) => {
@@ -68,7 +70,7 @@ const CustomSwitch: React.FC<WidgetProps> = (props) => {
   );
 };
 
-const CustomTextWidget: React.FC<WidgetProps> = (props) => {
+const CustomTextareaWidget: React.FC<WidgetProps> = (props) => {
   const {
     id,
     value,
@@ -84,7 +86,7 @@ const CustomTextWidget: React.FC<WidgetProps> = (props) => {
   } = props;
 
   return (
-    <Input
+    <Textarea
       id={id}
       value={value || ""}
       isRequired={required}
@@ -92,6 +94,7 @@ const CustomTextWidget: React.FC<WidgetProps> = (props) => {
       isDisabled={disabled || readonly}
       autoFocus={autofocus}
       placeholder={options.placeholder}
+      minRows={1}
       onChange={(event) => onChange(event.target.value)}
       onBlur={(event) => onBlur(id, event.target)}
       onFocus={(event) => onFocus(id, event.target)}
@@ -100,33 +103,67 @@ const CustomTextWidget: React.FC<WidgetProps> = (props) => {
 };
 
 const CustomArrayFieldTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
+  const [isExpanded, setIsExpanded] = useState(true);
+
   return (
     <Card className="mb-2">
-      <CardHeader>
+      <CardHeader
+        className="flex cursor-pointer items-center justify-between"
+        onClick={() => setIsExpanded(!isExpanded)}>
         <h4 className="text-lg font-bold">{props.title}</h4>
-        {/* {props.description && <p className="text-sm text-gray-500">{props.description}</p>} */}
+        <Icon
+          icon={isExpanded ? "mdi:chevron-up" : "mdi:chevron-down"}
+          width="24"
+          height="24"
+        />
       </CardHeader>
-      <CardBody>
-        {props.items.map((element, index) => (
-          <Card key={element.key} className="mb-4">
-            <CardBody>
-              {element.children}
-              <Button
-                color="danger"
-                size="md"
-                onClick={element.onDropIndexClick(index)}
-                className="mt-2">
-                Remove
-              </Button>
-            </CardBody>
-          </Card>
-        ))}
-        {props.canAdd && (
-          <Button color="primary" onClick={props.onAddClick} className="mt-2">
-            Add Item
-          </Button>
-        )}
-      </CardBody>
+      {isExpanded && (
+        <CardBody>
+          {props.items.map((element, index) => (
+            <Card key={element.key} className="mb-4">
+              <CardBody>
+                {element.children}
+                <div className="mt-2 flex justify-between">
+                  <div>
+                    <Button
+                      isIconOnly
+                      variant="light"
+                      onClick={() => element.onReorderClick(index, index - 1)()}
+                      isDisabled={index === 0}
+                      className="mr-1">
+                      <Icon icon="mdi:arrow-up" width="20" height="20" />
+                    </Button>
+                    <Button
+                      isIconOnly
+                      variant="light"
+                      onClick={() => element.onReorderClick(index, index + 1)()}
+                      isDisabled={index === props.items.length - 1}>
+                      <Icon icon="mdi:arrow-down" width="20" height="20" />
+                    </Button>
+                  </div>
+                  <Button
+                    color="danger"
+                    variant="flat"
+                    onPress={() => element.onDropIndexClick(index)()}>
+                    Remove
+                  </Button>
+                </div>
+              </CardBody>
+            </Card>
+          ))}
+          {props.canAdd && (
+            <Button
+              color="primary"
+              onClick={(e) => {
+                e.preventDefault();
+                props.onAddClick();
+              }}
+              className="mt-2">
+              Add Item
+            </Button>
+          )}
+        </CardBody>
+      )}
     </Card>
   );
 };
@@ -139,6 +176,7 @@ const CustomSelectWidget: React.FC<WidgetProps> = (props) => {
       id={id}
       className="mb-2"
       value={value}
+      aria-label={`Select-${id}`}
       isRequired={required}
       selectedKeys={new Set([value])}
       isDisabled={disabled || readonly}
@@ -156,29 +194,6 @@ const CustomJsonField: React.FC<FieldProps> = (props) => {
   const { name, schema, uiSchema, idSchema, formData, onChange, registry, formContext } =
     props;
 
-  const outputSchemaDocstring = {
-    type: "object",
-    required: ["properties"],
-    properties: {
-      properties: {
-        type: "object",
-        additionalProperties: {
-          type: "object",
-          required: ["type"],
-          properties: {
-            type: {
-              type: "string",
-              enum: ["string", "number", "boolean", "object", "array"],
-            },
-            title: {
-              type: "string",
-            },
-          },
-        },
-      },
-    },
-    additionalProperties: false,
-  };
   const taskOutputFormatIntro =
     "This field defines the output format for the current task node. Follow these principles:\n\n1. The output must be a JSON object.\n2. Define properties with appropriate types (string, number, boolean, object, array).\n3. Use 'title' to provide a human-readable name for each property.\n\nAdhering to this format ensures consistency and facilitates data processing in subsequent steps.";
   const jsonInputPrompt = `Please enter data that conforms to JSON standards.
@@ -273,8 +288,7 @@ const CustomExpressionInputField: React.FC<FieldProps> = (props) => {
     formContext,
   } = props;
 
-  const { prevNodes } = formContext || {};
-
+  const { prevNodes, workflowTestResult } = formContext || {};
   const jsonData = prevNodes
     ? prevNodes.reduce((acc: { [key: string]: any }, item: Node) => {
         const key = (item.data.label as string) || "Node Label";
@@ -291,7 +305,7 @@ const CustomExpressionInputField: React.FC<FieldProps> = (props) => {
       <JsonExpressionInput
         id={id}
         value={formData || ""}
-        jsonData={jsonData}
+        jsonData={workflowTestResult}
         isRequired={required}
         className="mb-2"
         isDisabled={disabled || readonly}
@@ -305,11 +319,35 @@ const CustomExpressionInputField: React.FC<FieldProps> = (props) => {
   );
 };
 
+const CustomModelField: React.FC<FieldProps> = (props) => {
+  const { name, schema, value, uiSchema, required, formData, onChange, registry } = props;
+
+  if (schema.format === "model" || uiSchema?.["ui:field"] === "model") {
+    return (
+      <div className="mb-2">
+        <label>{schema.title || "model"}</label>
+        <ModelSelect
+          label=""
+          defaultModel={formData || ""}
+          onSelectionChange={(modelName, limit) => {
+            console.log("onSelectionChange", modelName, limit);
+            // Update the form data with the new model name
+            onChange(modelName);
+          }}
+        />
+      </div>
+    );
+  }
+
+  // Fall back to default ObjectField if not a model field
+  return <registry.fields.ObjectField {...props} />;
+};
+
 // Define default widgets
 const defaultWidgets: RegistryWidgetsType = {
   CheckboxWidget: CustomCheckbox,
   SwitchWidget: CustomSwitch,
-  TextWidget: CustomTextWidget,
+  TextWidget: CustomTextareaWidget,
   SelectWidget: CustomSelectWidget,
 };
 
@@ -347,6 +385,7 @@ interface CustomFormProps {
   formData?: any; // Add this line to accept default values
   customWidgets?: RegistryWidgetsType;
   prevNodes?: Node[];
+  workflowTestResult?: { [key: string]: any };
   onSubmit: (formData: any) => void;
   onClose?: () => void;
 }
@@ -356,6 +395,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
   uiSchema,
   prevNodes,
   customWidgets,
+  workflowTestResult,
   formData = {},
   onSubmit,
   onClose,
@@ -364,6 +404,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
   const fields: RegistryFieldsType = {
     json: CustomJsonField,
     expression: CustomExpressionInputField,
+    model: CustomModelField,
   };
 
   return (
@@ -374,9 +415,8 @@ const CustomForm: React.FC<CustomFormProps> = ({
       validator={validator}
       widgets={widgets}
       fields={fields}
-      formContext={{ onClose, prevNodes }}
+      formContext={{ onClose, prevNodes, workflowTestResult }}
       onSubmit={({ formData }) => {
-        console.log(formData);
         onSubmit(formData);
       }}
     />

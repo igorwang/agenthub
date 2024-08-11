@@ -3,17 +3,47 @@
 import MessageWindow from "@/components/Conversation/message-window";
 import PromptInputWithFaq from "@/components/Conversation/prompt-input-with-faq";
 import { ConfigIcon } from "@/components/ui/icons";
+import { RoleChip } from "@/components/ui/role-icons";
 import {
   Message_Role_Enum,
+  Role_Enum,
   useCreateNewMessageMutation,
   useGetAgentByIdQuery,
+  useGetAgentUserRelationQuery,
 } from "@/graphql/generated/types";
-import { CHAT_MODE, SourceType } from "@/types/chatTypes";
+import { selectSelectedSessionId, selectSession } from "@/lib/features/chatListSlice";
+import { AppDispatch } from "@/lib/store";
+import { CHAT_MODE, MessageType, SourceType } from "@/types/chatTypes";
 import { Avatar, Button, Tooltip } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
+
+// Define the shape of our context
+type ConversationContextType = {
+  selectedSources: SourceType[];
+  handleSelectedSource: (source: SourceType, selected: boolean) => void;
+};
+
+// Create the context
+const ConversationContext = createContext<ConversationContextType | undefined>(undefined);
+
+// Create a custom hook to use the context
+export const useConversationContext = () => {
+  const context = useContext(ConversationContext);
+  if (context === undefined) {
+    throw new Error("useConversationContext must be used within Conversation component");
+  }
+  return context;
+};
 
 export type Agent = {
   id: string;
@@ -21,6 +51,7 @@ export type Agent = {
   description?: string;
   avatar?: string;
   creator_id?: string;
+  role?: string | Role_Enum;
 };
 
 export type ConversationProps = {
@@ -40,12 +71,15 @@ export const Conversation: React.FC<ConversationProps> = ({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const session = useSession();
+  const dispatch: AppDispatch = useDispatch();
+  const selectedSessionId = useSelector(selectSelectedSessionId);
 
+  const [messageCount, setMessageCount] = useState<number>(0);
   const [isChating, setIsChating] = useState<boolean>(false);
   const [chatMode, setChatMode] = useState<string>(CHAT_MODE.simple.toString());
   const [selectedSources, setSelectedSources] = useState<SourceType[]>([]);
 
-  const selectedSessionId = searchParams.get("session_id");
+  // const selectedSessionId = searchParams.get("session_id");
 
   const [agent, setAgent] = useState<Agent>();
   const { data, loading, error } = useGetAgentByIdQuery({
@@ -55,6 +89,15 @@ export const Conversation: React.FC<ConversationProps> = ({
     skip: !agentId,
   });
 
+  const relationQuery = useGetAgentUserRelationQuery({
+    variables: {
+      limit: 1,
+      where: { user_id: { _eq: session.data?.user?.id }, agent_id: { _eq: agentId } },
+      //  order_by: {}
+    },
+    skip: !agentId || !session.data?.user?.id,
+  });
+
   const [createNewMessageMutation, { error: createError }] =
     useCreateNewMessageMutation();
 
@@ -62,6 +105,23 @@ export const Conversation: React.FC<ConversationProps> = ({
     setIsChating(false);
     setSelectedSources([]);
   }, [selectedSessionId]);
+
+  const handleMessageChange = useCallback((messages: MessageType[]) => {
+    setMessageCount(messages.length);
+  }, []);
+
+  useEffect(() => {
+    if (
+      relationQuery.data &&
+      relationQuery.data?.r_agent_user &&
+      relationQuery.data?.r_agent_user[0]
+    ) {
+      setAgent((prev) => {
+        if (!prev) return prev; // 如果 prev 是 undefined，则返回 undefined
+        return { ...prev, role: relationQuery.data?.r_agent_user[0].role || "user" };
+      });
+    }
+  }, [relationQuery]);
 
   useEffect(() => {
     if (data) {
@@ -155,67 +215,76 @@ export const Conversation: React.FC<ConversationProps> = ({
               </Tooltip>
             )}
           </div>
-          <Tooltip content={agent.description}>
-            <p className="max-w-sm overflow-hidden text-ellipsis text-nowrap text-sm font-light">
-              {agent.description}
-            </p>
-          </Tooltip>
+          <div className="flex flex-row items-center gap-2">
+            {agent.role && <RoleChip role={agent.role || "user"} />}
+
+            <Tooltip content={agent.description}>
+              <p className="max-w-sm overflow-hidden text-ellipsis text-nowrap text-sm font-light">
+                {agent.description}
+              </p>
+            </Tooltip>
+          </div>
         </div>
       </div>
-      {/* <Tabs
-        className="justify-center"
-        selectedKey={chatMode}
-        onSelectionChange={(key) => setChatMode(key.toString())}>
-        <Tab key={CHAT_MODE.simple.toString()} title="simple" />
-        <Tab key={CHAT_MODE.deep.toString()} title="deep" />
-        <Tab key={CHAT_MODE.creative.toString()} title="creative" />
-      </Tabs> */}
     </div>
   );
 
-  // const selectedSourceContent = (
-  //   <ScrollShadow
-  //     orientation="horizontal"
-  //     className="flex flex-row flex-nowrap gap-2 overflow-auto"
-  //     hideScrollBar={true}>
-  //     {selectedSources.map((item) => {
-  //       return (
-  //         <div key={item.fileId} className="max-w-[160px] text-ellipsis text-nowrap">
-  //           {item.fileName}
-  //         </div>
-  //       );
-  //     })}
-  //   </ScrollShadow>
-  // );
+  const contextValue: ConversationContextType = {
+    selectedSources,
+    handleSelectedSource,
+  };
 
   return (
-    <div className="flex h-full w-full max-w-full flex-col overflow-auto">
-      {headerElement}
-      <div className="flex max-w-full flex-grow flex-row overflow-auto">
-        <div className="min-[400px] mx-auto flex max-w-7xl flex-grow flex-col items-center overflow-auto pt-4">
-          <MessageWindow
-            isChating={isChating}
-            handleChatingStatus={setIsChating}
-            handleCreateNewMessage={handleCreateNewMessage}
-            onSelectedSource={handleSelectedSource}
-            selectedSources={selectedSources}
-          />
-          <div className="flex w-full max-w-full flex-col">
-            {/* {selectedSourceContent} */}
-            <PromptInputWithFaq
+    <ConversationContext.Provider value={contextValue}>
+      <div className="flex h-full w-full max-w-full flex-col overflow-auto">
+        {headerElement}
+        <div className="flex max-h-full max-w-full flex-grow flex-row overflow-auto">
+          <div className="min-[400px] mx-auto flex max-w-7xl flex-grow flex-col items-center overflow-auto pt-4">
+            <MessageWindow
               isChating={isChating}
               selectedSources={selectedSources}
+              handleChatingStatus={setIsChating}
+              handleCreateNewMessage={handleCreateNewMessage}
               onSelectedSource={handleSelectedSource}
-              onChatingStatus={setIsChating}></PromptInputWithFaq>
-            <p className="px-2 text-tiny text-default-400">
-              AI can also make mistakes. Please verify important information.
-            </p>
+              onMessageChange={handleMessageChange}
+            />
+            <div className="flex w-full max-w-full flex-col">
+              {messageCount >= 20 && (
+                <div className="mx-6 flex max-w-full items-center justify-between rounded-lg bg-sky-100 px-6 py-3 shadow-sm">
+                  <div className="flex flex-1 items-center">
+                    <span className="mr-2 font-semibold text-sky-700">Tip:</span>
+                    <span className="text-sky-800">
+                      Long chats may affect the AI performance.
+                    </span>
+                  </div>
+                  <Button
+                    color="primary"
+                    variant="flat"
+                    size="sm"
+                    className="ml-2"
+                    onClick={() => {
+                      dispatch(selectSession(null));
+                    }}>
+                    Start a new chat
+                  </Button>
+                </div>
+              )}
+
+              <PromptInputWithFaq
+                isChating={isChating}
+                selectedSources={selectedSources}
+                onSelectedSource={handleSelectedSource}
+                onChatingStatus={setIsChating}></PromptInputWithFaq>
+              <p className="px-2 text-tiny text-default-400">
+                AI can also make mistakes. Please verify important information.
+              </p>
+            </div>
           </div>
-        </div>
-        {/* <div className="max-w-100 m-2 hidden w-80 rounded-lg border-2 md:flex">
+          {/* <div className="max-w-100 m-2 hidden w-80 rounded-lg border-2 md:flex">
           <FunctionTab agentId={agentId}></FunctionTab>
         </div> */}
+        </div>
       </div>
-    </div>
+    </ConversationContext.Provider>
   );
 };

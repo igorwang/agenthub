@@ -1,6 +1,9 @@
 "use client";
-import React, { useEffect, useState } from "react";
-
+import { useDeleteAgentUserRelationMutation } from "@/graphql/generated/types";
+import { selectChat } from "@/lib/features/chatListSlice";
+import { AppDispatch } from "@/lib/store";
+import { ChatDTO, GroupedChatListDTO } from "@/types/chatTypes";
+import { Icon } from "@iconify/react";
 import {
   Avatar,
   Button,
@@ -12,22 +15,10 @@ import {
   ModalFooter,
   ModalHeader,
   ScrollShadow,
-  Tooltip,
 } from "@nextui-org/react";
-
-import { useDeleteAgentUserRelationMutation } from "@/graphql/generated/types";
-import {
-  OcticonChevronDownIcon,
-  OcticonChevronRightIcon,
-  OcticonKebabHorizontalIcon,
-} from "../ui/icons";
-
-import { selectChat } from "@/lib/features/chatListSlice";
-import { AppDispatch } from "@/lib/store";
-import { ChatDTO, GroupedChatListDTO } from "@/types/chatTypes";
-import { Icon } from "@iconify/react";
 import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 interface ChatListProps {
@@ -35,6 +26,26 @@ interface ChatListProps {
   setChatListOpenStatus?: (status: boolean) => void;
   groupedChatList: GroupedChatListDTO[];
 }
+
+interface ReturnButtonProps {
+  onClick: () => void;
+  isVisible: boolean;
+}
+
+const ReturnButton: React.FC<ReturnButtonProps> = ({ onClick, isVisible }) => {
+  if (!isVisible) return null;
+  return (
+    <Button
+      color="primary"
+      variant="light"
+      size="sm"
+      startContent={<Icon icon="mdi:arrow-left" />}
+      className="h-auto min-h-0 justify-start font-normal hover:bg-transparent active:bg-transparent data-[hover]:bg-transparent"
+      onClick={onClick}>
+      Return to Agent List
+    </Button>
+  );
+};
 
 export const ChatList: React.FC<ChatListProps> = ({
   chatListOpenStatus = false,
@@ -94,14 +105,6 @@ export const ChatList: React.FC<ChatListProps> = ({
     router.push(`/chat/${selectId}?openStatus=0`);
   };
 
-  function handleMouseEnter(id: string) {
-    setShowIconId(id);
-  }
-
-  function handleMouseLeave() {
-    setShowIconId("");
-  }
-
   const handleUnsubscribeClick = (item: ChatDTO) => {
     setIsModalOpen(true);
     setDeleteAgent(item);
@@ -122,42 +125,39 @@ export const ChatList: React.FC<ChatListProps> = ({
       router.push("/chat");
     }
   };
-  const backElement = (
-    <Tooltip content="Back">
-      <Button
-        isIconOnly
-        size="sm"
-        variant="light"
-        onClick={() => {
-          setChatListOpenStatus?.(true);
-          setFixedChatList(groupedChatList);
-        }}
-        startContent={
-          <Icon icon={"weui:back-filled"} className="ml-0 pl-0" fontSize={24}></Icon>
-        }></Button>
-    </Tooltip>
-  );
+
+  const handleReturn = () => {
+    setChatListOpenStatus?.(true);
+    setFixedChatList(groupedChatList);
+  };
+
+  console.log("fixedChatList", fixedChatList);
   const chatListContent = (fixedChatList || []).map((group) => (
-    <div className="flex flex-col" key={group.id}>
-      {group.name && group.name != "system" && chatListOpenStatus && (
-        <div className="flex h-12 flex-row items-center justify-between bg-slate-100 px-2 py-2 hover:bg-slate-200">
-          <div className="overflow-hidden text-ellipsis text-nowrap text-sm">
-            {group.name}
+    <div className="relative flex w-full flex-col" key={group.id}>
+      {group.name &&
+        group.name !== "system" &&
+        group.name !== "default" &&
+        chatListOpenStatus && (
+          <div className="flex h-12 flex-row items-center justify-between bg-slate-100 px-2 pb-2 hover:bg-slate-200">
+            <div className="overflow-hidden text-ellipsis text-nowrap text-sm">
+              {group.name}
+            </div>
+            <div className="flex flex-row items-center">
+              <Button isIconOnly variant="light">
+                <Icon icon="octicon:kebab-horizontal-16" />
+              </Button>
+              <Button isIconOnly variant="light" onClick={() => toggleListbox(group.id)}>
+                <Icon
+                  icon={
+                    openStates[group.id]
+                      ? "octicon:chevron-down-16"
+                      : "octicon:chevron-right-16"
+                  }
+                />
+              </Button>
+            </div>
           </div>
-          <div className="flex flex-row items-center">
-            <Button isIconOnly variant="light">
-              <OcticonKebabHorizontalIcon />
-            </Button>
-            <Button isIconOnly variant="light" onClick={() => toggleListbox(group.id)}>
-              {openStates[group.id] ? (
-                <OcticonChevronDownIcon />
-              ) : (
-                <OcticonChevronRightIcon />
-              )}
-            </Button>
-          </div>
-        </div>
-      )}
+        )}
       {openStates[group.id] && (
         <Listbox
           key={group.id}
@@ -167,20 +167,21 @@ export const ChatList: React.FC<ChatListProps> = ({
           }}
           label="Assigned to"
           selectionMode="single"
-          //   onSelectionChange={setValues}
           variant="flat"
           hideSelectedIcon={true}>
           {group.agents.map((item) => (
             <ListboxItem
               key={item.id}
-              textValue={item.name}
-              className={item.id == params?.id ? "bg-blue-200" : ""}
+              textValue={item.name} // Added textValue prop for accessibility
+              className={`relative ${item.id == params?.id ? "bg-blue-200" : ""}`}
               onClick={() => {
                 handleSelectChat(item.id);
                 setChatListOpenStatus?.(false);
-              }}
-              startContent={!chatListOpenStatus && backElement}>
-              <div className={"flex justify-between"}>
+              }}>
+              <div
+                className="flex w-full justify-between"
+                onMouseEnter={() => setShowIconId(item.id)}
+                onMouseLeave={() => setShowIconId("")}>
                 <div className="flex items-center gap-2">
                   {item.avatar ? (
                     <Avatar
@@ -202,31 +203,23 @@ export const ChatList: React.FC<ChatListProps> = ({
                   )}
                   <div className="flex flex-col">
                     <span className="text-small">{item.name}</span>
-                    {/* <Tooltip content={item.description}> */}
                     <span className="max-w-[120px] truncate text-nowrap text-tiny text-default-400">
                       {item.description}
                     </span>
-                    {/* </Tooltip> */}
                   </div>
                 </div>
-                {item?.id === showIconId && (
-                  <Button
-                    isIconOnly
-                    // disableAnimation
-                    // disableRipple
-                    onPress={() => handleUnsubscribeClick(item)}
-                    className="bg-transparent data-[hover]:bg-transparent"
-                    startContent={
-                      chatListOpenStatus && (
-                        <Icon
-                          className={"cursor-pointer"}
-                          // onClick={(e) => handleUnsubscribe(e, item.id)}
-                          icon="material-symbols:delete-outline-rounded"
-                          fontSize={20}
-                        />
-                      )
-                    }></Button>
-                )}
+                <Button
+                  isIconOnly
+                  className={`absolute right-0 bg-transparent transition-opacity duration-300 data-[hover]:bg-transparent ${
+                    item.id === showIconId ? "opacity-100" : "opacity-0"
+                  }`}
+                  onPress={() => handleUnsubscribeClick(item)}>
+                  <Icon
+                    className="cursor-pointer"
+                    icon="material-symbols:delete-outline-rounded"
+                    fontSize={20}
+                  />
+                </Button>
               </div>
             </ListboxItem>
           ))}
@@ -241,18 +234,13 @@ export const ChatList: React.FC<ChatListProps> = ({
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">Unsubscribe Agent</ModalHeader>
           <ModalBody>
-            <p>Are you sure you want to unsubscribe this agent : {deleteAgent?.name}?</p>
+            <p>Are you sure you want to unsubscribe this agent: {deleteAgent?.name}?</p>
           </ModalBody>
           <ModalFooter>
             <Button color="primary" variant="light" onPress={() => setIsModalOpen(false)}>
               Close
             </Button>
-            <Button
-              color="danger"
-              onPress={() => {
-                // setIsModalOpen(false);
-                handleDeleteAgentRelation();
-              }}>
+            <Button color="danger" onPress={handleDeleteAgentRelation}>
               Affirm
             </Button>
           </ModalFooter>
@@ -262,11 +250,12 @@ export const ChatList: React.FC<ChatListProps> = ({
   }
 
   return (
-    <ScrollShadow
-      className={"flex max-h-full min-h-[60px] flex-col justify-between py-2"}
-      size={0}>
-      {_renderModal()}
-      <div>{chatListContent}</div>
-    </ScrollShadow>
+    <div className="flex flex-col">
+      <ScrollShadow className="flex-grow" size={0}>
+        {_renderModal()}
+        <div>{chatListContent}</div>
+      </ScrollShadow>
+      <ReturnButton onClick={handleReturn} isVisible={!chatListOpenStatus} />
+    </div>
   );
 };

@@ -1,6 +1,13 @@
 import { Icon } from "@iconify/react";
-import { Handle, Node, NodeProps, NodeTypes, Position } from "@xyflow/react";
-import React, { memo } from "react";
+import {
+  Handle,
+  Node,
+  NodeProps,
+  NodeTypes,
+  Position,
+  useUpdateNodeInternals,
+} from "@xyflow/react";
+import React, { memo, useEffect, useMemo } from "react";
 
 type CustomNodeData = {
   label?: string;
@@ -37,25 +44,28 @@ export const StartNodeComponent: React.FC<NodeProps<StartNode>> = memo(({ data }
 });
 
 export type InputNode = Node<CustomNodeData, "inputNode">;
+
 export const InputNodeComponent: React.FC<NodeProps<InputNode>> = memo(
   ({ data, selected }) => {
     const borderColor = selected ? "border-blue-500" : "border-gray-200";
 
     return (
       <div
-        className={`rounded-md border ${borderColor} bg-white px-4 py-2 shadow-sm transition-colors duration-200`}>
+        className={`rounded-md border ${borderColor} bg-white px-2 py-1 shadow-sm transition-colors duration-200`}>
         <div className="flex items-center">
-          <div className="mr-2 flex h-8 w-8 items-center justify-center text-gray-500">
-            <Icon icon={"ic:baseline-input"} fontSize={24} />
+          <div className="mr-1 flex h-6 w-6 items-center justify-center text-gray-500">
+            <Icon icon={"ic:baseline-input"} fontSize={16} />
           </div>
-          <div>
-            <div className="text-sm font-medium text-gray-700">{data.label}</div>
+          <div className="overflow-hidden">
+            <div className="w-20 truncate text-xs font-medium text-gray-700">
+              {data.label}
+            </div>
           </div>
         </div>
         <Handle
           type="source"
           position={Position.Right}
-          className="h-3 w-3 !border-2 !border-white !bg-gray-300"
+          className="h-2 w-2 !border-2 !border-white !bg-gray-300"
         />
       </div>
     );
@@ -169,43 +179,126 @@ export const OutputParserNodeComponent: React.FC<NodeProps<outputParserNode>> = 
 );
 
 export type ConditionNode = Node<ConditionNodeData, "conditionNode">;
-
 export const ConditionNodeComponent: React.FC<NodeProps<ConditionNode>> = memo(
-  ({ data, selected }) => {
+  ({ id, data, selected }) => {
+    const updateNodeInternals = useUpdateNodeInternals();
+    useEffect(() => {
+      updateNodeInternals(id);
+    }, [data, id, updateNodeInternals]);
+
     const borderColor = selected ? "border-blue-500" : "border-gray-200";
+
+    // Calculate dynamic height based on number of conditions
+    const nodeHeight = useMemo(() => {
+      const baseHeight = 16; // Reduced base height
+      const heightPerCondition = 16; // Slightly reduced height per condition
+      const minConditions = 2; // Minimum number of conditions to show
+      const conditionCount = Math.max(data.conditions?.length ?? 0, minConditions);
+      return baseHeight + conditionCount * heightPerCondition;
+    }, [data.conditions]);
 
     return (
       <div
-        className={`rounded-md border ${borderColor} bg-yellow-100 px-4 py-2 shadow-sm transition-colors duration-200`}>
+        className={`rounded-md border ${borderColor} flex items-center justify-center bg-yellow-100 px-2 py-1 shadow-sm transition-colors duration-200`}
+        style={{ height: `${nodeHeight}px` }}>
         <div className="flex items-center">
-          <div className="mr-1 flex h-12 w-6 items-center justify-center text-yellow-500">
-            <Icon icon="typcn:flow-switch" fontSize={24} />
+          <div className="mr-1 flex h-6 w-4 items-center justify-center text-yellow-500">
+            <Icon icon="typcn:flow-switch" fontSize={14} />
           </div>
-          <div>
-            <div className="text-sm font-medium text-yellow-700">
+          <div className="overflow-hidden">
+            <div className="w-20 truncate text-xs font-medium text-yellow-700">
               {data.label || "Condition"}
             </div>
-            <div className="text-xs text-yellow-600">
-              {data.conditions?.length} condition
-              {data.conditions?.length !== 1 ? "s" : ""}
+            <div className="text-[10px] text-yellow-600">
+              {data.conditions?.length ?? 0} condition
+              {(data.conditions?.length ?? 0) !== 1 ? "s" : ""}
             </div>
           </div>
         </div>
         <Handle
           type="target"
           position={Position.Left}
-          className="h-4 w-1 !border-1 !border-white !bg-slate-200"
-        />
-        {data.conditions?.map((_, index) => (
+          className="h-3 w-1 !border-1 !border-white !bg-slate-200"></Handle>
+        {data.conditions?.map((cond, index) => (
           <Handle
             key={index}
             type="source"
             position={Position.Right}
             id={`output-${index}`}
-            className="h-3 w-3 !border-2 !border-white !bg-slate-200"
-            style={{ top: `${(index + 1) * 25}%` }}
-          />
+            className="h-2 w-2 !border-2 !border-white !bg-slate-200"
+            style={{
+              top: `${((index + 1) * 100) / ((data.conditions?.length ?? 0) + 1)}%`,
+            }}>
+            <div className="absolute left-full top-1/2 ml-1 -translate-y-1/2 whitespace-nowrap text-xs">
+              {cond.name || `cond-${index}`}
+            </div>
+          </Handle>
         ))}
+      </div>
+    );
+  },
+);
+
+export type ChatTriggerNode = Node<CustomNodeData, "chatTriggerNode">;
+
+export const ChatTriggerNodeComponent: React.FC<NodeProps<ChatTriggerNode>> = memo(
+  ({ data, selected }) => {
+    const borderColor = selected ? "border-blue-500" : "border-gray-200";
+
+    return (
+      <div
+        className={`rounded-md border ${borderColor} bg-white p-2 shadow-sm transition-colors duration-200`}>
+        <div className="flex flex-col items-center">
+          <div className="mb-1 flex h-8 w-8 items-center justify-center text-gray-500">
+            <Icon icon="lets-icons:chat-plus-light" fontSize={20} />
+          </div>
+          <div className="overflow-hidden">
+            <div className="w-16 truncate text-center text-xs font-medium text-gray-700">
+              {data.label}
+            </div>
+          </div>
+        </div>
+        <Handle
+          type="source"
+          position={Position.Right}
+          className="h-2 w-2 !border-1 !border-white !bg-slate-300"
+        />
+        {/* <Handle
+          type="target"
+          position={Position.Left}
+          className="h-4 w-2 !border-1 !border-white !bg-slate-300"
+        /> */}
+      </div>
+    );
+  },
+);
+
+export type llmV1Node = Node<CustomNodeData, "llmV1Node">;
+export const llmV1NodeComponent: React.FC<NodeProps<InputNode>> = memo(
+  ({ data, selected }) => {
+    const borderColor = selected ? "border-blue-500" : "border-gray-200";
+
+    return (
+      <div
+        className={`rounded-md border ${borderColor} bg-white px-4 py-2 shadow-sm transition-colors duration-200`}>
+        <div className="flex items-center">
+          <div className="mr-2 flex h-12 w-8 items-center justify-center text-gray-500">
+            <Icon icon={"hugeicons:chat-bot"} fontSize={24} />
+          </div>
+          <div>
+            <div className="text-sm font-medium text-gray-700">{data.label}</div>
+          </div>
+        </div>
+        <Handle
+          type="target"
+          position={Position.Left}
+          className="h-4 w-1 !border-1 !border-white !bg-gray-300"
+        />
+        <Handle
+          type="source"
+          position={Position.Right}
+          className="h-3 w-3 !border-2 !border-white !bg-gray-300"
+        />
       </div>
     );
   },
@@ -217,6 +310,8 @@ llmNodeComponent.displayName = "llmNodeComponent";
 EndNodeComponent.displayName = "EndNodeComponent";
 OutputParserNodeComponent.displayName = "outputParserNode";
 ConditionNodeComponent.displayName = "ConditionNodeComponent";
+ChatTriggerNodeComponent.displayName = "ChatTriggerNodeComponent";
+llmV1NodeComponent.displayName = "llmV1NodeComponent";
 
 export const nodeTypes: NodeTypes = {
   startNode: StartNodeComponent,
@@ -225,4 +320,6 @@ export const nodeTypes: NodeTypes = {
   endNode: EndNodeComponent,
   outputParserNode: OutputParserNodeComponent,
   conditionNode: ConditionNodeComponent,
+  chatTriggerNode: ChatTriggerNodeComponent,
+  llmV1Node: llmV1NodeComponent,
 };

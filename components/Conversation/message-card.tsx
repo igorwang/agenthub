@@ -272,11 +272,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
             ) : (
               <div className="mr-10 gap-3">
                 {sourceResults && sourceResults.length > 0 && (
-                  <SourceSection
-                    title="library Sources"
-                    items={librarySources || []}
-                    onSelectedSource={onSelectedSource}
-                  />
+                  <SourceSection title="library Sources" items={librarySources || []} />
                 )}
                 <Spacer x={2} />
                 {webSources && webSources.length > 0 && (

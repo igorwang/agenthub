@@ -9,6 +9,7 @@ interface NodeData {
 interface ConditionNodeFormProps {
   node: Node<NodeData>;
   prevNodes?: Node[];
+  workflowTestResult?: { [key: string]: any };
   onNodeChange?: (data: { [key: string]: any }) => void;
   onToggleDrawer?: () => void;
 }
@@ -16,6 +17,7 @@ interface ConditionNodeFormProps {
 export default function ConditionNodeForm({
   node,
   prevNodes,
+  workflowTestResult,
   onNodeChange,
   onToggleDrawer,
 }: ConditionNodeFormProps) {
@@ -24,16 +26,6 @@ export default function ConditionNodeForm({
   const onSubmit = (data: any) => {
     onNodeChange?.(data);
     onToggleDrawer?.();
-  };
-  const uiSchema = {
-    "ui:order": ["label", "conditions", "outputSchema"],
-    conditions: {
-      items: {
-        "ui:order": ["name", "expression", "condition", "value"],
-        expression: { "ui:field": "expression" },
-      },
-    },
-    outputSchema: { "ui:field": "json" },
   };
   return (
     <div className="flex flex-col gap-4 p-4">
@@ -50,6 +42,7 @@ export default function ConditionNodeForm({
           onToggleDrawer?.();
         }}
         prevNodes={prevNodes}
+        workflowTestResult={workflowTestResult}
       />
     </div>
   );

@@ -84,7 +84,6 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
     event.stopPropagation();
 
     const jsonData = event.dataTransfer.getData("application/json");
-    console.log("JSON data:", jsonData);
     const path = JSON.parse(jsonData).path;
     if (path) {
       const newExpression = `${expression} {{ ${path} }}`;

@@ -30,7 +30,9 @@ async function getNodeTypeListData() {
   const session = await auth();
   if (!session?.user) return null;
 
-  const variables: GetNodeTypeListQueryVariables = {};
+  const variables: GetNodeTypeListQueryVariables = {
+    where: { visible: { _eq: true } },
+  };
 
   return await fetchData<GetNodeTypeListQuery, GetNodeTypeListQueryVariables>(
     GetNodeTypeListDocument,

@@ -24,6 +24,7 @@ import { nodeTypes } from "@/components/WorkflowForm/nodes";
 import { NodeTypeFragmentFragment } from "@/graphql/generated/types";
 import { alg, Graph } from "@dagrejs/graphlib";
 import "@xyflow/react/dist/base.css";
+
 import { v4 } from "uuid";
 
 interface WorkflowPaneProps {
@@ -43,6 +44,11 @@ function Flow({
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
+  const [workflowTestResult, setWorkflowTestResult] = useState<{ [key: string]: any }>(
+    {},
+  );
+  const [JSONSchemaFaker, setJSONSchemaFaker] = useState<any>(null);
+
   const [prevSelectedNodes, setPrevSelectedNodes] = useState<Node[]>([]); // record the nodes before selected
 
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
@@ -51,11 +57,72 @@ function Flow({
   const graphRef = useRef<Graph>(new Graph({ directed: true }));
 
   useEffect(() => {
+    import("json-schema-faker").then((module) => {
+      setJSONSchemaFaker(module.JSONSchemaFaker);
+    });
+  }, []);
+
+  const generateFakeData = async (nodes: Node[] | undefined) => {
+    if (!JSONSchemaFaker) {
+      return {};
+    }
+
+    if (!nodes || !Array.isArray(nodes) || nodes.length === 0) {
+      console.warn("No valid nodes provided for generating fake data");
+      return {};
+    }
+
+    const newWorkflowTestResult = await nodes.reduce(
+      async (accPromise, node) => {
+        const acc = await accPromise;
+
+        if (!node || typeof node !== "object" || !node.data) {
+          console.warn("Invalid node structure encountered");
+          return acc;
+        }
+
+        const { label, outputSchema } = node.data;
+
+        if (!label || typeof label !== "string") {
+          console.warn("Node is missing a valid label");
+          return acc;
+        }
+
+        const schema = outputSchema || {};
+
+        if (schema && Object.keys(schema).length > 0) {
+          try {
+            acc[label] = await JSONSchemaFaker.resolve(schema);
+          } catch (error) {
+            console.error(`Error generating fake data for ${label}:`, error);
+            acc[label] = {};
+          }
+        } else {
+          acc[label] = {};
+        }
+
+        return acc;
+      },
+      Promise.resolve({} as { [key: string]: any }),
+    );
+
+    return newWorkflowTestResult;
+  };
+
+  useEffect(() => {
     onWorkflowChange?.(nodes, edges);
     const graph = new Graph({ directed: true });
     nodes.forEach((node) => graph.setNode(node.id, node));
     edges.forEach((edge) => graph.setEdge(edge.source, edge.target));
     graphRef.current = graph;
+
+    const updateFakeData = async () => {
+      const newWorkflowTestResult = await generateFakeData(nodes);
+      setWorkflowTestResult(newWorkflowTestResult);
+    };
+
+    updateFakeData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nodes, edges, onWorkflowChange]);
 
   const findPrevNodes = useCallback(
@@ -128,7 +195,7 @@ function Flow({
         // toast.error("Error parsing JSON data");
         return null;
       }
-      console.log("nodeTypeData", nodeTypeData);
+
       if (!nodeTypeData || !nodeTypeData.type || !nodeTypeData.type.endsWith("Node")) {
         return;
       }
@@ -150,13 +217,14 @@ function Flow({
           uiSchema: nodeTypeData.uiSchema,
           flow_id: flowId,
           node_type_id: nodeTypeData.id,
+          outputSchema: nodeTypeData.default_data?.outputSchema || {},
         },
       };
       setNodes((nds) => nds.concat(newNode));
       setSelectedNode(newNode);
       // setOpenDrawer(true);
     },
-    [screenToFlowPosition, flowId],
+    [screenToFlowPosition, flowId, setNodes],
   );
 
   const onNodeDoubleClick = useCallback<NodeMouseHandler>(
@@ -176,7 +244,7 @@ function Flow({
         setOpenDrawer(true);
       }
     },
-    [screenToFlowPosition, nodes],
+    [screenToFlowPosition, findPrevNodes],
   );
 
   const onNodeClick: NodeMouseHandler = useCallback((event, node) => {}, []);
@@ -186,6 +254,7 @@ function Flow({
   };
 
   const handleNodeChange = (data: { [key: string]: any }) => {
+    console.log("handleNodeChange", data);
     const { id, ...nodeData } = data;
     const label = nodeData.label;
 
@@ -196,8 +265,6 @@ function Flow({
     const newLabel = existingLabels.has(label)
       ? `${label}-${generateRandomLetters()}`
       : label;
-
-    console.log("handleNodeChange", data, label, existingLabels);
 
     setNodes((nds) =>
       nds.map((n) => {
@@ -239,6 +306,7 @@ function Flow({
             node={selectedNode}
             prevNodes={prevSelectedNodes}
             isOpen={openDrawer}
+            workflowTestResult={workflowTestResult}
             onToggleDrawer={toggleDrawer}
             onNodeChange={handleNodeChange}
           />

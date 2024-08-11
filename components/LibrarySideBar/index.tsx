@@ -26,7 +26,6 @@ async function fetchLibraryData() {
 
 export default async function LibrarySideBarContainer() {
   const data = await fetchLibraryData();
-  console.log("fetchLibraryData", data);
 
   if (!data) return null;
 

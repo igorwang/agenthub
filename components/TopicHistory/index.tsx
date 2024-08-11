@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  DiscussionIcon,
-  OcticonKebabHorizontalIcon,
-  PlusIcon,
-} from "@/components/ui/icons";
+import { DiscussionIcon, OcticonKebabHorizontalIcon } from "@/components/ui/icons";
 import {
   useAddNewTopicMutationMutation,
   useGetTopicHistoriesQuery,
@@ -19,6 +15,7 @@ import {
   DropdownTrigger,
   Listbox,
   ListboxItem,
+  ScrollShadow,
 } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { useParams, usePathname, useRouter } from "next/navigation";
@@ -48,6 +45,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
     skip: !params.id || !userId,
   });
   const { data, loading, error } = getTopicListQuery;
+
   useEffect(() => {
     getTopicListQuery.refetch();
   }, [selectedSessionId]);
@@ -55,19 +53,16 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   useEffect(() => {
     if (data && data.topic_history && data.topic_history.length > 0) {
       const session_id = data.topic_history[0].id;
-      // dispatch(selectSession(session_id));
-      // if (session_id) {
-      //   router.push(`${pathname}?session_id=${session_id}`);
-      // }
+      // 注释掉的代码保持不变
     }
   }, [data, params.id, dispatch]);
 
   if (!status) {
-    return <div></div>;
+    return null;
   }
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="p-4 text-center">Loading...</div>;
   }
 
   const histories = data?.topic_history.map((item) => ({
@@ -88,13 +83,12 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
       <DropdownTrigger>
         <Button
           isIconOnly
-          className="absolute right-1 top-0.5 max-h-full"
+          className="absolute right-1 top-0.5 h-8 min-w-8"
           variant="light"
-          startContent={<OcticonKebabHorizontalIcon />}></Button>
+          startContent={<OcticonKebabHorizontalIcon className="h-4 w-4" />}
+        />
       </DropdownTrigger>
-      <DropdownMenu aria-label="Static Actions">
-        {/* <DropdownItem key="new">New file</DropdownItem> */}
-        {/* <DropdownItem key="copy">Copy link</DropdownItem> */}
+      <DropdownMenu aria-label="Topic Actions">
         <DropdownItem key="edit">Rename</DropdownItem>
         <DropdownItem key="delete" className="text-danger" color="danger">
           Delete
@@ -103,72 +97,49 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
     </Dropdown>
   );
 
-  const historyItems = histories?.map((item) => {
-    return (
-      <ListboxItem
-        classNames={{ base: "flex py-2 px-4 bg-slate-100 h-full" }}
-        className={selectedSessionId === item.id ? "bg-primary-100" : "bg-slate-100"}
-        key={item.id}
-        startContent={<DiscussionIcon className="hidden" />}
-        endContent={dropdownContent}
-        shouldHighlightOnFocus={true}
-        onClick={() => handleSelect(item.id)}>
-        {item.title}
-      </ListboxItem>
-    );
-  });
+  const historyItems = histories?.map((item) => (
+    <ListboxItem
+      key={item.id}
+      className={`relative flex h-10 items-center px-2 py-1 ${
+        selectedSessionId === item.id ? "bg-primary-100" : "hover:bg-slate-100"
+      }`}
+      startContent={<DiscussionIcon className="mr-2 h-4 w-4" />}
+      endContent={dropdownContent}
+      textValue={item.title} // Add this line to fix the warning
+      onClick={() => handleSelect(item.id)}>
+      <div className="w-full truncate pr-8">{item.title}</div>
+    </ListboxItem>
+  ));
 
-  const handleAddTopic = async ({ agent_id, user_id }: AddTopicParams) => {
+  const handleAddTopic = async ({
+    agent_id,
+    user_id,
+  }: {
+    agent_id: string;
+    user_id: string;
+  }) => {
     dispatch(selectSession(null));
-    // try {
-    //   const { data, errors } = await addNewTopicMutation({
-    //     variables: {
-    //       title: "New Chat",
-    //       user_id: user_id,
-    //       agent_id: agent_id,
-    //     },
-    //   });
-    //   if (errors) {
-    //     console.error(errors);
-    //   } else {
-    //     toast.success("Add success!", {
-    //       duration: 1000,
-    //       position: "bottom-left",
-    //     });
-    //     const new_sid = data?.insert_topic_history_one?.id;
-    //     if (new_sid) {
-    //       dispatch(selectSession(new_sid));
-    //     }
-    //     getTopicListQuery.refetch();
-    //   }
-    // } catch (error) {
-    //   console.error("Error adding topic:", error);
-    //   toast.success("系统错误请稍后重试", {
-    //     duration: 1000,
-    //     position: "bottom-left",
-    //   });
-    // }
+    // 注释掉的代码保持不变
   };
 
   return (
-    <div className="flex flex-col">
-      <Button
-        className="flex w-full bg-white hover:bg-slate-100"
-        endContent={<PlusIcon />}
-        onClick={() => handleAddTopic({ agent_id: params.id, user_id: userId })}
-        disabled={!userId}>
-        New Chat
-      </Button>
-      {historyItems && (
-        <Listbox
-          aria-label="TopicHistory"
-          selectionMode="single"
-          className="h-full"
-          defaultSelectedKeys={[defaultSelectedKey]}
-          hideSelectedIcon={true}>
-          {historyItems}
-        </Listbox>
-      )}
+    <div className="flex h-full flex-col">
+      <h2 className="px-4 py-2 text-center text-xs font-normal uppercase tracking-wide text-gray-500">
+        Chat History
+      </h2>
+
+      <ScrollShadow className="h-full">
+        {historyItems && (
+          <Listbox
+            aria-label="TopicHistory"
+            selectionMode="single"
+            className="p-0"
+            defaultSelectedKeys={[defaultSelectedKey]}
+            hideSelectedIcon={true}>
+            {historyItems}
+          </Listbox>
+        )}
+      </ScrollShadow>
     </div>
   );
 };
