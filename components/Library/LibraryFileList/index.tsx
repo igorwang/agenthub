@@ -1,5 +1,5 @@
 "use client";
-import FileTable, { FileDTO } from "@/components/LibraryFileList/file-table";
+import FileTable, { FileDTO } from "@/components/Library/LibraryFileList/file-table";
 import DeleteConfirmModal from "@/components/ui/delete-modal";
 import { PlusIcon } from "@/components/ui/icons";
 import UploadZone from "@/components/UploadZone";

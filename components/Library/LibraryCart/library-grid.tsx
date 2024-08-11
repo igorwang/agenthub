@@ -1,7 +1,7 @@
 "use client";
 
-import { selectedLibrariesType } from "@/components/LibraryCart";
-import LibraryListItem from "@/components/LibraryCart/library-item";
+import { selectedLibrariesType } from "@/components/Library/LibraryCart";
+import LibraryListItem from "@/components/Library/LibraryCart/library-item";
 import { LibraryCardType } from "@/types/chatTypes";
 import { cn } from "@nextui-org/react";
 import React from "react";

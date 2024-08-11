@@ -1,4 +1,4 @@
-import LibrarySideBarContainer from "@/components/LibrarySideBar";
+import LibrarySideBarContainer from "@/components/Library/LibrarySideBar";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

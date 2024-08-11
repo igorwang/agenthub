@@ -1,5 +1,5 @@
 "use client";
-import LibraryGrid from "@/components/LibraryCart/library-grid";
+import LibraryGrid from "@/components/Library/LibraryCart/library-grid";
 import {
   useAddALibraryToAgentMutation,
   useGetKbListQuery,

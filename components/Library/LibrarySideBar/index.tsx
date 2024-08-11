@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import LibrarySideBar from "@/components/LibrarySideBar/library-sidebar";
+import LibrarySideBar from "@/components/Library/LibrarySideBar/library-sidebar";
 import {
   KnowledgeBaseListDocument,
   KnowledgeBaseListQuery,

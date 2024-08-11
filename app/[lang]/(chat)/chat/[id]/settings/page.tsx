@@ -2,8 +2,8 @@
 
 import HorizontalSteps from "@/app/[lang]/(chat)/chat/[id]/settings/horizontal-steps";
 import AgentInformation, { AgentInfoRef } from "@/components/AgentInformation";
-import { LibraryCart } from "@/components/LibraryCart";
-import LibraryFile, { LibraryFileHandle } from "@/components/LibraryFile";
+import { LibraryCart } from "@/components/Library/LibraryCart";
+import LibraryFile, { LibraryFileHandle } from "@/components/Library/LibraryFile";
 import PromptFrom, { PromptFormHandle } from "@/components/PromptFrom";
 import RightHeader from "@/components/RightHeader";
 import {

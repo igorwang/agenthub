@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import LibraryForm from "@/components/LibraryForm";
+import LibraryForm from "@/components/Library/LibraryForm";
 import {
   KnowledgeBaseDetailDocument,
   KnowledgeBaseDetailQuery,
