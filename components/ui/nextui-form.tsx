@@ -299,9 +299,17 @@ const CustomExpressionInputField: React.FC<FieldProps> = (props) => {
 
   return (
     <div>
-      <label>
-        {schema.title || "Expression"} {required ? "*" : ""}
-      </label>
+      <div className="flex flex-row items-center gap-1">
+        <label>
+          {schema.title || "Expression"} {required ? "*" : ""}
+        </label>
+        {schema.description && (
+          <JsonSchemaTooltip
+            title={schema.title || "Document"}
+            content={schema.description || "Document"}></JsonSchemaTooltip>
+        )}
+      </div>
+
       <JsonExpressionInput
         id={id}
         value={formData || ""}

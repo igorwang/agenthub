@@ -29,7 +29,7 @@ export default function ChatTriggerNodeForm({
   };
   return (
     <div className="flex flex-col gap-4 p-4">
-      <div className="text-2xl font-bold">Edit ChatTrigger Node</div>
+      <div className="text-2xl font-bold">Edit Chat Trigger Node</div>
       <Divider />
       <CustomForm
         schema={nodeData.schema}

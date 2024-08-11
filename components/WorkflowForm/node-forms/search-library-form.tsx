@@ -29,7 +29,7 @@ export default function SearchLibraryNodeForm({
   };
   return (
     <div className="flex flex-col gap-4 p-4">
-      <div className="text-2xl font-bold">Edit Condition Node</div>
+      <div className="text-2xl font-bold">Edit Search Library Node</div>
       <Divider />
       <CustomForm
         schema={nodeData.schema}
