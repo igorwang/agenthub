@@ -215,25 +215,45 @@ const CustomJsonField: React.FC<FieldProps> = (props) => {
     5. Write numbers directly, without quotes`;
 
   const outputSchemaDataExample = {
-    name: {
-      type: "string",
-      title: "Name",
-    },
-    age: {
-      type: "number",
-      title: "Age",
-    },
-    isStudent: {
-      type: "boolean",
-      title: "Is Student",
-    },
-    address: {
-      type: "object",
-      title: "Address",
-    },
-    hobbies: {
-      type: "array",
-      title: "Hobbies",
+    type: "object",
+    properties: {
+      name: {
+        type: "string",
+        title: "Name",
+      },
+      age: {
+        type: "number",
+        title: "Age",
+      },
+      isStudent: {
+        type: "boolean",
+        title: "Is Student",
+      },
+      address: {
+        type: "object",
+        title: "Address",
+        properties: {
+          street: {
+            type: "string",
+            title: "Street",
+          },
+          city: {
+            type: "string",
+            title: "City",
+          },
+          zipCode: {
+            type: "string",
+            title: "Zip Code",
+          },
+        },
+      },
+      hobbies: {
+        type: "array",
+        title: "Hobbies",
+        items: {
+          type: "string",
+        },
+      },
     },
   };
 
@@ -243,6 +263,7 @@ const CustomJsonField: React.FC<FieldProps> = (props) => {
         title="outputSchema"
         content={taskOutputFormatIntro}
         format={JSON.stringify(outputSchemaDataExample)}
+        iconSize={20}
       />
     ) : (
       <JsonSchemaTooltip title="jsonSchema" content={jsonInputPrompt} />
@@ -251,7 +272,7 @@ const CustomJsonField: React.FC<FieldProps> = (props) => {
   if (schema.format === "json" || uiSchema?.["ui:field"] === "json") {
     return (
       <div className="flex max-w-full flex-col">
-        <div className="flex flex-row items-center justify-start">
+        <div className="flex flex-row items-center justify-start gap-1">
           <label>{schema.title || "Schema"}</label>
           {tooltipContent}
         </div>
