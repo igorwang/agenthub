@@ -249,7 +249,7 @@ export const Conversation: React.FC<ConversationProps> = ({
               onMessageChange={handleMessageChange}
             />
             <div className="flex w-full max-w-full flex-col">
-              {messageCount >= 20 && (
+              {messageCount >= 1 && (
                 <div className="mx-6 flex max-w-full items-center justify-between rounded-lg bg-sky-100 px-6 py-3 shadow-sm">
                   <div className="flex flex-1 items-center">
                     <span className="mr-2 font-semibold text-sky-700">Tip:</span>

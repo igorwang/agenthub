@@ -1,3 +1,4 @@
+import LibrarySearch from "@/components/Library/LibrarySearch";
 import ModelSelect from "@/components/PromptFrom/model-select";
 import JsonExpressionInput from "@/components/ui/json-expression-input";
 import JsonSchemaTooltip from "@/components/ui/json-schema-tooltip";
@@ -353,6 +354,28 @@ const CustomModelField: React.FC<FieldProps> = (props) => {
   return <registry.fields.ObjectField {...props} />;
 };
 
+const CustomLibrarySearchField: React.FC<FieldProps> = (props) => {
+  const { name, schema, uiSchema, required, formData, onChange, registry } = props;
+
+  if (schema.format === "librarySearch" || uiSchema?.["ui:field"] === "librarySearch") {
+    return (
+      <div className="mb-2">
+        <label>
+          {schema.title || "Libraries"} {required ? "*" : ""}
+        </label>
+        <LibrarySearch
+          defaultSelectedLibraries={formData || []}
+          onSelectChange={(selectedLibraries) => {
+            onChange(selectedLibraries);
+          }}
+        />
+      </div>
+    );
+  }
+
+  return <registry.fields.ObjectField {...props} />;
+};
+
 // Define default widgets
 const defaultWidgets: RegistryWidgetsType = {
   CheckboxWidget: CustomCheckbox,
@@ -415,6 +438,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
     json: CustomJsonField,
     expression: CustomExpressionInputField,
     model: CustomModelField,
+    librarySearch: CustomLibrarySearchField,
   };
 
   return (
