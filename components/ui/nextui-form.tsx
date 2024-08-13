@@ -425,7 +425,6 @@ const CustomModelField: React.FC<FieldProps> = (props) => {
           defaultModel={formData || ""}
           modelType={schema.modelType || "llm"}
           onSelectionChange={(modelName, limit) => {
-            console.log("onSelectionChange", modelName, limit);
             // Update the form data with the new model name
             onChange(modelName);
           }}

@@ -31,7 +31,7 @@ export const InputSelectionPane: React.FC<InputSelectionPaneProps> = ({
 
   useEffect(() => {
     if (nodes.length > 0) {
-      setSelectedNode(nodes[0]);
+      setSelectedNode(nodes[nodes.length - 1]);
     }
   }, [nodes]);
 
@@ -48,8 +48,6 @@ export const InputSelectionPane: React.FC<InputSelectionPaneProps> = ({
     return `${baseLabel} (${nodes.length - index} nodes back)`;
   };
 
-  const reversedNodes = [...nodes].reverse();
-
   return (
     <Card className="h-full w-full max-w-md">
       <CardHeader className="flex items-center justify-between">
@@ -62,7 +60,7 @@ export const InputSelectionPane: React.FC<InputSelectionPaneProps> = ({
           className="mb-4"
           selectedKeys={selectedNode ? new Set([selectedNode.id]) : new Set()}
           onSelectionChange={handleSelectionChange}>
-          {reversedNodes.map((node, index) => (
+          {nodes.map((node, index) => (
             <SelectItem
               key={node.id}
               textValue={node.data.label || node.data.type || `Node ${node.id}`}>

@@ -152,11 +152,16 @@ function Flow({
       }
       dfs(nodeId);
 
+      // Get a topologically sorted list of all nodes
       const sortedNodes = alg.topsort(graph);
-      const sortedPrevNodeIds = sortedNodes.filter((id) => prevNodeIds.has(id));
-      const prevNodes = nodes.filter((node) =>
-        sortedPrevNodeIds.some((id) => String(id) === String(node.id)),
-      );
+
+      // Filter the sorted nodes to include only the predecessors
+      const sortedPrevNodes = sortedNodes.filter((id) => prevNodeIds.has(id));
+
+      // Map the sorted node IDs back to their full node objects
+      const prevNodes = sortedPrevNodes
+        .map((id) => nodes.find((node) => String(node.id) === String(id)))
+        .filter((node): node is Node => node !== undefined);
 
       return prevNodes;
     },
