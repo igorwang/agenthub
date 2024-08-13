@@ -31,7 +31,7 @@ export const InputSelectionPane: React.FC<InputSelectionPaneProps> = ({
 
   useEffect(() => {
     if (nodes.length > 0) {
-      setSelectedNode(nodes[nodes.length - 1]);
+      setSelectedNode(nodes[0]);
     }
   }, [nodes]);
 
@@ -48,6 +48,8 @@ export const InputSelectionPane: React.FC<InputSelectionPaneProps> = ({
     return `${baseLabel} (${nodes.length - index} nodes back)`;
   };
 
+  const reversedNodes = [...nodes].reverse();
+
   return (
     <Card className="h-full w-full max-w-md">
       <CardHeader className="flex items-center justify-between">
@@ -60,7 +62,7 @@ export const InputSelectionPane: React.FC<InputSelectionPaneProps> = ({
           className="mb-4"
           selectedKeys={selectedNode ? new Set([selectedNode.id]) : new Set()}
           onSelectionChange={handleSelectionChange}>
-          {nodes.map((node, index) => (
+          {reversedNodes.map((node, index) => (
             <SelectItem
               key={node.id}
               textValue={node.data.label || node.data.type || `Node ${node.id}`}>
@@ -71,18 +73,13 @@ export const InputSelectionPane: React.FC<InputSelectionPaneProps> = ({
 
         {nodes.length > 0 && selectedNode && (
           <div className="flex h-full flex-col items-center justify-center">
-            {/* <h3 className="text-md font-medium">
-              {getNodeLabel(selectedNode, nodes.indexOf(selectedNode))}
-            </h3> */}
             {workflowTestResult[selectedNode?.data.label ?? ""] ? (
               <pre className="mt-2 max-w-full p-2 text-sm">
-                {/* {JSON.stringify(selectedNode.data.outputSchema, null, 2)} */}
                 <JsonTreeRenderer
                   jsonData={{
-                    [selectedNode.data.label || "Unamed Node"]:
+                    [selectedNode.data.label || "Unnamed Node"]:
                       workflowTestResult[selectedNode?.data.label ?? ""] ?? {},
                   }}
-                  // defaultPath={selectedNode.data.label}
                 />
               </pre>
             ) : (
