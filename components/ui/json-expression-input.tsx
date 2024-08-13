@@ -1,5 +1,7 @@
 "use client";
 
+import { Icon } from "@iconify/react";
+import { Tooltip } from "@nextui-org/react";
 import { Extension } from "@tiptap/core";
 import { Plugin, PluginKey } from "@tiptap/pm/state";
 import { Decoration, DecorationSet } from "@tiptap/pm/view";
@@ -123,6 +125,19 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
     }
   }, [editor, value]);
 
+  const copyToClipboard = useCallback((text: string, event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        console.log("Copied to clipboard");
+      })
+      .catch((err) => {
+        console.error("Failed to copy: ", err);
+      });
+  }, []);
+
   const parseExpression = useCallback(
     (content: string) => {
       if (!content.includes("{{")) {
@@ -193,17 +208,22 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
           <EditorContent editor={editor as ReactEditor} />
         </div>
       </div>
-      <div className="max-w-[400px]">
+      <div className="relative max-w-[400px]">
         {parsedExpression && (
           <div className="max-w-full overflow-hidden">
-            <div className="overflow-x-auto">
-              <div className="inline-block min-w-full">
-                <div className="overflow-wrap-anywhere whitespace-pre-wrap break-words px-2 py-1 text-sm text-gray-500">
-                  {parsedExpression}
-                </div>
-              </div>
+            <div className="overflow-wrap-anywhere line-clamp-3 whitespace-pre-wrap break-words px-2 py-1 text-sm text-gray-500">
+              {parsedExpression}
             </div>
           </div>
+        )}
+        {parsedExpression && (
+          <Tooltip content="Copy path">
+            <button
+              onClick={(e) => copyToClipboard(parsedExpression, e)}
+              className="absolute bottom-1 right-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+              <Icon icon="mdi:content-copy" className="h-4 w-4" />
+            </button>
+          </Tooltip>
         )}
       </div>
     </div>
