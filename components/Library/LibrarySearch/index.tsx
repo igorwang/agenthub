@@ -93,7 +93,7 @@ const LibrarySearch: React.FC<LibrarySearchProps> = ({
   }, [refetch]);
 
   return (
-    <div className="w-full max-w-md space-y-2" ref={searchRef}>
+    <div className="w-full space-y-2" ref={searchRef}>
       <Input
         placeholder="Search libraries..."
         value={searchTerm}

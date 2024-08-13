@@ -423,6 +423,66 @@ export const NewDocumentNodeComponent: React.FC<NodeProps<newDocumentNode>> = me
   },
 );
 
+export type ChunkingNode = Node<CustomNodeData, "ChunkingNode">;
+export const ChunkingNodeComponent: React.FC<NodeProps<ChunkingNode>> = memo(
+  ({ data, selected }) => {
+    const borderColor = selected ? "border-blue-500" : "border-gray-200";
+
+    return (
+      <div
+        className={`rounded-md border ${borderColor} bg-white px-2 py-1 shadow-sm transition-colors duration-200`}>
+        <div className="flex items-center">
+          <div className="mr-1 flex h-6 w-6 items-center justify-center text-gray-500">
+            <Icon icon="ic:baseline-horizontal-split" fontSize={16} />
+          </div>
+          <div>
+            <div className="text-xs font-medium text-gray-700">{data.label}</div>
+          </div>
+        </div>
+        <Handle
+          type="target"
+          position={Position.Left}
+          className="-ml-0.5 h-3 w-0.5 !border-1 !border-white !bg-gray-300"
+        />
+        <Handle
+          type="source"
+          position={Position.Right}
+          className="-mr-0.5 h-2 w-0.5 !border-1 !border-white !bg-gray-300"
+        />
+      </div>
+    );
+  },
+);
+
+export type IndexingNode = Node<CustomNodeData, "IndexingNode">;
+
+export const IndexingNodeComponent: React.FC<NodeProps<PreChatOutputNode>> = memo(
+  ({ data, selected }) => {
+    const borderColor = selected ? "border-blue-500" : "border-gray-200";
+
+    return (
+      <div
+        className={`rounded-md border ${borderColor} bg-blue-50 px-2 py-1 shadow-sm transition-colors duration-200`}>
+        <div className="flex flex-col items-center">
+          <div className="mb-0.5 flex h-6 w-6 items-center justify-center text-blue-500">
+            <Icon icon="gravity-ui:database-fill" fontSize={16} />
+          </div>
+          <div className="overflow-hidden">
+            <div className="w-24 truncate text-center text-xs font-medium text-gray-700">
+              {data.label || "Pre-Chat"}
+            </div>
+          </div>
+        </div>
+        <Handle
+          type="target"
+          position={Position.Left}
+          className="-ml-0.5 h-3 w-0.5 !border-1 !border-blue-100 !bg-blue-300"
+        />
+      </div>
+    );
+  },
+);
+
 StartNodeComponent.displayName = "StartNodeComponent";
 InputNodeComponent.displayName = "InputNodeComponent";
 llmNodeComponent.displayName = "llmNodeComponent";
@@ -435,6 +495,8 @@ SearchLibraryNodeComponent.displayName = "SearchLibraryNodeComponent";
 PreChatOutputNodeComponent.displayName = "PreChatOutputNodeComponent";
 LoopLLMNodeComponent.displayName = "LoopLLMNodeComponent";
 NewDocumentNodeComponent.displayName = "NewDocumentNodeComponent";
+ChunkingNodeComponent.displayName = "ChunkingNodeComponent";
+IndexingNodeComponent.displayName = "IndexingNodeComponent";
 
 export const nodeTypes: NodeTypes = {
   startNode: StartNodeComponent,
@@ -449,4 +511,6 @@ export const nodeTypes: NodeTypes = {
   preChatOutputNode: PreChatOutputNodeComponent,
   loopLLMNode: LoopLLMNodeComponent,
   newDocumentNode: NewDocumentNodeComponent,
+  chunkingNode: ChunkingNodeComponent,
+  indexingNode: IndexingNodeComponent,
 };

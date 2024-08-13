@@ -94,6 +94,7 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
   const [isDragOver, setIsDragOver] = useState(false);
 
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [StarterKit, JsonExpression],
     content: value || defaultValue,
     editable: !isDisabled && !isReadOnly,

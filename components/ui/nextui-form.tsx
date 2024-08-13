@@ -2,6 +2,7 @@ import LibrarySearch from "@/components/Library/LibrarySearch";
 import ModelSelect from "@/components/PromptFrom/model-select";
 import JsonExpressionInput from "@/components/ui/json-expression-input";
 import JsonSchemaTooltip from "@/components/ui/json-schema-tooltip";
+import { Chunking_Strategy_Enum } from "@/graphql/generated/types";
 import { Icon } from "@iconify/react";
 import {
   Button,
@@ -267,7 +268,8 @@ const CustomJsonField: React.FC<FieldProps> = (props) => {
       />
     ) : (
       <JsonSchemaTooltip
-        title="jsonSchema"
+        title={schema.title || "document"}
+        iconSize={20}
         content={schema.description || jsonInputPrompt}
       />
     );
@@ -331,7 +333,8 @@ const CustomExpressionInputField: React.FC<FieldProps> = (props) => {
         {schema.description && (
           <JsonSchemaTooltip
             title={schema.title || "Document"}
-            content={schema.description || "Document"}></JsonSchemaTooltip>
+            content={schema.description || "Document"}
+            iconSize={20}></JsonSchemaTooltip>
         )}
       </div>
 
@@ -352,6 +355,62 @@ const CustomExpressionInputField: React.FC<FieldProps> = (props) => {
   );
 };
 
+const CustomChunkingSelectField: React.FC<FieldProps> = (props) => {
+  const {
+    id,
+    formData,
+    required,
+    disabled,
+    readonly,
+    onChange,
+    onBlur,
+    onFocus,
+    autofocus,
+    schema,
+    uiSchema,
+  } = props;
+
+  return (
+    <div className="max-w-full overflow-auto">
+      <div className="flex flex-row items-center gap-1">
+        <label htmlFor={id}>
+          {schema.title || "Chunking Strategy"} {required ? "*" : ""}
+        </label>
+        {schema.description && (
+          <JsonSchemaTooltip
+            title={schema.title || "Chunking Strategy"}
+            content={schema.description}
+            iconSize={20}
+          />
+        )}
+      </div>
+      <Select
+        id={id}
+        aria-label="Chunking-Strategy-Select"
+        // label="Chunking Strategy"
+        // labelPlacement="outside"
+        // placeholder={uiSchema?.["ui:placeholder"] || "Select your chunking strategy"}
+        selectedKeys={formData ? [formData] : ["length"]}
+        disallowEmptySelection={required}
+        isDisabled={disabled || readonly}
+        autoFocus={autofocus}
+        onSelectionChange={(keys) => {
+          const selectedValue = (Array.from(keys)[0] as string) || null;
+          onChange(selectedValue);
+        }}
+        // onBlur={(e) => onBlur(id, e.target)}
+        // onFocus={(e) => onFocus(id, e.target)}
+      >
+        {Object.values(Chunking_Strategy_Enum).map((strategy) => (
+          <SelectItem key={strategy} value={strategy}>
+            {strategy}
+          </SelectItem>
+        ))}
+      </Select>
+    </div>
+  );
+};
+
 const CustomModelField: React.FC<FieldProps> = (props) => {
   const { name, schema, value, uiSchema, required, formData, onChange, registry } = props;
 
@@ -364,6 +423,7 @@ const CustomModelField: React.FC<FieldProps> = (props) => {
         <ModelSelect
           label=""
           defaultModel={formData || ""}
+          modelType={schema.modelType || "llm"}
           onSelectionChange={(modelName, limit) => {
             console.log("onSelectionChange", modelName, limit);
             // Update the form data with the new model name
@@ -463,6 +523,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
     expression: CustomExpressionInputField,
     model: CustomModelField,
     librarySearch: CustomLibrarySearchField,
+    chunkingStrategy: CustomChunkingSelectField,
   };
 
   return (
