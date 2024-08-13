@@ -261,12 +261,15 @@ const CustomJsonField: React.FC<FieldProps> = (props) => {
     name === "outputSchema" ? (
       <JsonSchemaTooltip
         title="outputSchema"
-        content={taskOutputFormatIntro}
+        content={schema.description || taskOutputFormatIntro}
         format={JSON.stringify(outputSchemaDataExample)}
         iconSize={20}
       />
     ) : (
-      <JsonSchemaTooltip title="jsonSchema" content={jsonInputPrompt} />
+      <JsonSchemaTooltip
+        title="jsonSchema"
+        content={schema.description || jsonInputPrompt}
+      />
     );
 
   if (schema.format === "json" || uiSchema?.["ui:field"] === "json") {
@@ -320,7 +323,7 @@ const CustomExpressionInputField: React.FC<FieldProps> = (props) => {
     : {};
 
   return (
-    <div>
+    <div className="max-w-full overflow-auto">
       <div className="flex flex-row items-center gap-1">
         <label>
           {schema.title || "Expression"} {required ? "*" : ""}
@@ -342,8 +345,8 @@ const CustomExpressionInputField: React.FC<FieldProps> = (props) => {
         autoFocus={autofocus}
         placeholder={uiSchema?.["ui:placeholder"]}
         onChange={(value) => onChange(value)}
-        onBlur={(id, e) => onBlur(id, e.target.value)}
-        onFocus={(id, e) => onFocus(id, e.target.value)}
+        onBlur={(id, e) => onBlur(id, e.target)}
+        onFocus={(id, e) => onFocus(id, e.target)}
       />
     </div>
   );

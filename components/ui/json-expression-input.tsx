@@ -1,11 +1,16 @@
+"use client";
+
+import { Extension } from "@tiptap/core";
+import { Plugin, PluginKey } from "@tiptap/pm/state";
+import { Decoration, DecorationSet } from "@tiptap/pm/view";
+import { EditorContent, Editor as ReactEditor, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 import { JSONPath } from "jsonpath-plus";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 interface JsonExpressionInputProps {
   defaultValue?: string;
   jsonData?: object;
-  // onSubmit: (expression: string) => void;
-  // 新添加的属性
   id?: string;
   value?: string;
   isRequired?: boolean;
@@ -15,95 +20,117 @@ interface JsonExpressionInputProps {
   placeholder?: string;
   className?: string;
   onChange?: (value: string) => void;
-  onBlur?: (id: string, e: React.FocusEvent<HTMLTextAreaElement>) => void;
-  onFocus?: (id: string, e: React.FocusEvent<HTMLTextAreaElement>) => void;
+  onBlur?: (id: string, e: React.FocusEvent<HTMLDivElement>) => void;
+  onFocus?: (id: string, e: React.FocusEvent<HTMLDivElement>) => void;
 }
+
+const highlightPlugin = new PluginKey("highlight");
+
+const JsonExpression = Extension.create({
+  name: "jsonExpression",
+  immediatelyRender: false,
+  addProseMirrorPlugins() {
+    return [
+      new Plugin({
+        key: highlightPlugin,
+        props: {
+          decorations(state) {
+            const decorations: Decoration[] = [];
+            const doc = state.doc;
+
+            doc.descendants((node, pos) => {
+              if (node.isText) {
+                const text = node.text || "";
+                let match;
+                const regex = /\{\{(.*?)\}\}/g;
+
+                while ((match = regex.exec(text)) !== null) {
+                  const start = pos + match.index;
+                  const end = start + match[0].length;
+                  decorations.push(
+                    Decoration.inline(start, end, {
+                      class: "bg-green-200 rounded px-1",
+                    }),
+                  );
+                }
+              }
+            });
+
+            return DecorationSet.create(doc, decorations);
+          },
+
+          handlePaste: (view, event) => {
+            const text = event.clipboardData?.getData("text/plain");
+            if (text && /\{\{.*?\}\}/.test(text)) {
+              view.dispatch(view.state.tr.insertText(text));
+              return true;
+            }
+            return false;
+          },
+        },
+      }),
+    ];
+  },
+});
 
 const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
   defaultValue = "",
   jsonData = {},
-  // onSubmit,
-  // 新添加的属性
   id,
   value,
   isRequired = false,
   isDisabled = false,
   isReadOnly = false,
   autoFocus = false,
-  placeholder,
+  placeholder = "Enter JSON expression",
   className = "",
   onChange,
   onBlur,
   onFocus,
 }) => {
-  const [expression, setExpression] = useState(value || defaultValue);
   const [parsedExpression, setParsedExpression] = useState("");
   const [isDragOver, setIsDragOver] = useState(false);
 
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const highlightRef = useRef<HTMLDivElement>(null);
-
-  const highlightSyntax = useCallback((text: string) => {
-    const regex = /(\{\{.*?\}\})/g;
-    return text.replace(regex, (match) => {
-      return `<span class="relative inline-block whitespace-nowrap"><span class="invisible">${match}</span><span class="absolute left-0 bg-green-200 text-green-800 px-1 rounded">${match}</span></span>`;
-    });
-  }, []);
-
-  const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = e.target.value;
-    setExpression(newValue);
-    onChange && onChange(newValue);
-  };
-
-  // const handleSubmit = () => {
-  //   onSubmit(expression);
-  // };
-
-  const syncScroll = () => {
-    if (highlightRef.current && textareaRef.current) {
-      highlightRef.current.scrollTop = textareaRef.current.scrollTop;
-      highlightRef.current.scrollLeft = textareaRef.current.scrollLeft;
-    }
-  };
-
-  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setIsDragOver(true);
-  };
-
-  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setIsDragOver(false);
-  };
-
-  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-
-    const jsonData = event.dataTransfer.getData("application/json");
-    const path = JSON.parse(jsonData).path;
-    if (path) {
-      const newExpression = `${expression} {{ ${path} }}`;
-      setExpression(newExpression);
-      onChange && onChange(newExpression);
-    }
-    setIsDragOver(false);
-  };
+  const editor = useEditor({
+    extensions: [StarterKit, JsonExpression],
+    content: value || defaultValue,
+    editable: !isDisabled && !isReadOnly,
+    autofocus: autoFocus,
+    editorProps: {
+      attributes: {
+        class: `w-full resize-none overflow-auto whitespace-pre-wrap break-words border border-gray-300 rounded p-2 font-mono focus:outline-none focus:border-blue-500 ${className} ${
+          isDragOver ? "border-blue-500" : ""
+        }`,
+        style: "min-height: 40px;",
+      },
+    },
+    onUpdate: ({ editor }) => {
+      const content = editor.getText();
+      onChange && onChange(content);
+      parseExpression(content);
+    },
+  });
 
   useEffect(() => {
-    if (highlightRef.current) {
-      const html = highlightSyntax(expression);
-      highlightRef.current.innerHTML = html + "\n";
+    if (editor && (isDisabled !== undefined || isReadOnly !== undefined)) {
+      editor.setEditable(!isDisabled && !isReadOnly);
     }
-  }, [expression, highlightSyntax]);
+  }, [editor, isDisabled, isReadOnly]);
 
   useEffect(() => {
-    const parseExpression = (exp: string) => {
-      if (!exp.includes("{{")) return "";
-      return exp.replace(/\{\{\s*(.*?)\s*\}\}/g, (match, path) => {
+    if (editor && value !== undefined && value !== editor.getText()) {
+      editor.commands.setContent(value);
+    }
+  }, [editor, value]);
+
+  const parseExpression = useCallback(
+    (content: string) => {
+      if (!content.includes("{{")) {
+        setParsedExpression("");
+        return;
+      }
+
+      const parsedContent = content.replace(/\{\{\s*(.*?)\s*\}\}/g, (match, path) => {
         try {
           const value = JSONPath({ path: path.trim(), json: jsonData });
           if (Array.isArray(value) && value.length === 1) {
@@ -117,59 +144,68 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
           return match;
         }
       });
-    };
 
-    setParsedExpression(parseExpression(expression));
-  }, [expression, jsonData]);
+      setParsedExpression(parsedContent);
+    },
+    [jsonData],
+  );
+
+  const handleDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsDragOver(true);
+  }, []);
+
+  const handleDragLeave = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsDragOver(false);
+  }, []);
+
+  const handleDrop = useCallback(
+    (event: React.DragEvent<HTMLDivElement>) => {
+      event.preventDefault();
+      event.stopPropagation();
+      setIsDragOver(false);
+      const jsonData = event.dataTransfer.getData("application/json");
+      try {
+        const path = JSON.parse(jsonData).path;
+        if (path && editor) {
+          editor.commands.insertContent(`{{ ${path} }}`);
+        }
+      } catch (error) {
+        console.error("Error parsing dropped JSON data:", error);
+      }
+    },
+    [editor],
+  );
+
+  if (!editor) {
+    return null;
+  }
 
   return (
-    <div className={`flex flex-col space-y-2 rounded-lg ${className}`}>
-      <div
-        className="relative"
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}>
-        <textarea
-          id={id}
-          ref={textareaRef}
-          value={expression}
-          onChange={handleInput}
-          onScroll={syncScroll}
-          required={isRequired}
-          disabled={isDisabled}
-          readOnly={isReadOnly}
-          autoFocus={autoFocus}
-          placeholder={placeholder}
-          onBlur={(e) => onBlur && onBlur(id || "", e)}
-          onFocus={(e) => onFocus && onFocus(id || "", e)}
-          className={`w-full resize-none overflow-auto whitespace-pre-wrap break-words border-1 bg-transparent p-2 font-mono text-transparent caret-black focus:outline-none ${
-            isDragOver ? "border-blue-500" : ""
-          }`}
-          style={{
-            WebkitTextFillColor: "transparent",
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 1,
-          }}
-        />
+    <div className="flex w-full flex-col space-y-2 rounded-lg">
+      <div onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
         <div
-          ref={highlightRef}
-          className="pointer-events-none whitespace-pre-wrap break-words p-2 font-mono"
-          aria-hidden="true"
-          style={{
-            position: "relative",
-            zIndex: 0,
-          }}
-        />
-      </div>
-      {parsedExpression && (
-        <div className="border-gray-200 px-2 py-1 text-sm text-gray-500">
-          {parsedExpression}
+          onBlur={(e) => onBlur && onBlur(id || "", e)}
+          onFocus={(e) => onFocus && onFocus(id || "", e)}>
+          <EditorContent editor={editor as ReactEditor} />
         </div>
-      )}
+      </div>
+      <div className="max-w-[400px]">
+        {parsedExpression && (
+          <div className="max-w-full overflow-hidden">
+            <div className="overflow-x-auto">
+              <div className="inline-block min-w-full">
+                <div className="overflow-wrap-anywhere whitespace-pre-wrap break-words px-2 py-1 text-sm text-gray-500">
+                  {parsedExpression}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

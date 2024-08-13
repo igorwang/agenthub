@@ -1,6 +1,5 @@
 "use client";
 
-import LibrarySearch from "@/components/Library/LibrarySearch";
 import { PromptFormHandle } from "@/components/PromptFrom";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RJSFSchema } from "@rjsf/utils";
@@ -15,6 +14,8 @@ export default function Blog() {
     "The lift coefficient $C_L$ is a dimensionless coefficient. aa **bb** \n  #1222 \name";
 
   const [isOpen, setIsOpen] = useState(false);
+  const [value, setValue] = useState("X Y Z and then XYZ");
+  const onChange = (value: string) => setValue(value);
 
   const toggleDrawer = () => {
     setIsOpen((prevState) => !prevState);
@@ -71,7 +72,6 @@ export default function Blog() {
 
   return (
     <div className="h-full w-full">
-      <LibrarySearch></LibrarySearch>
       {/* <CustomForm
         schema={schema}
         // validator={validator}

@@ -240,7 +240,6 @@ export const ConditionNodeComponent: React.FC<NodeProps<ConditionNode>> = memo(
 );
 
 export type ChatTriggerNode = Node<CustomNodeData, "chatTriggerNode">;
-
 export const ChatTriggerNodeComponent: React.FC<NodeProps<ChatTriggerNode>> = memo(
   ({ data, selected }) => {
     const borderColor = selected ? "border-blue-500" : "border-gray-200";
@@ -306,7 +305,7 @@ export const llmV1NodeComponent: React.FC<NodeProps<InputNode>> = memo(
 
 export type SearchLibraryNode = Node<CustomNodeData, "searchLibraryNode">;
 
-export const SearchLibraryNodeComponent: React.FC<NodeProps<InputNode>> = memo(
+export const SearchLibraryNodeComponent: React.FC<NodeProps<SearchLibraryNode>> = memo(
   ({ data, selected }) => {
     const borderColor = selected ? "border-purple-500" : "border-gray-200";
 
@@ -365,6 +364,65 @@ export const PreChatOutputNodeComponent: React.FC<NodeProps<PreChatOutputNode>> 
   },
 );
 
+export type LoopLLMNode = Node<CustomNodeData, "LoopLLMNode">;
+export const LoopLLMNodeComponent: React.FC<NodeProps<LoopLLMNode>> = memo(
+  ({ data, selected }) => {
+    const borderColor = selected ? "border-blue-500" : "border-gray-200";
+
+    return (
+      <div
+        className={`rounded-md border ${borderColor} bg-white px-2 py-1 shadow-sm transition-colors duration-200`}>
+        <div className="flex items-center">
+          <div className="mr-1 flex h-6 w-6 items-center justify-center text-gray-500">
+            <Icon icon="fluent:bot-add-20-regular" fontSize={16} />
+          </div>
+          <div>
+            <div className="text-xs font-medium text-gray-700">{data.label}</div>
+          </div>
+        </div>
+        <Handle
+          type="target"
+          position={Position.Left}
+          className="-ml-0.5 h-3 w-0.5 !border-1 !border-white !bg-gray-300"
+        />
+        <Handle
+          type="source"
+          position={Position.Right}
+          className="-mr-0.5 h-2 w-0.5 !border-1 !border-white !bg-gray-300"
+        />
+      </div>
+    );
+  },
+);
+
+export type newDocumentNode = Node<CustomNodeData, "newDocumentNode">;
+export const NewDocumentNodeComponent: React.FC<NodeProps<newDocumentNode>> = memo(
+  ({ data, selected }) => {
+    const borderColor = selected ? "border-blue-500" : "border-gray-200";
+
+    return (
+      <div
+        className={`rounded-md border ${borderColor} bg-white p-2 shadow-sm transition-colors duration-200`}>
+        <div className="flex flex-col items-center">
+          <div className="mb-1 flex h-8 w-8 items-center justify-center text-gray-500">
+            <Icon icon="fluent:document-add-16-regular" fontSize={20} />
+          </div>
+          <div className="overflow-hidden">
+            <div className="w-16 truncate text-center text-xs font-medium text-gray-700">
+              {data.label}
+            </div>
+          </div>
+        </div>
+        <Handle
+          type="source"
+          position={Position.Right}
+          className="h-2 w-2 !border-1 !border-white !bg-slate-300"
+        />
+      </div>
+    );
+  },
+);
+
 StartNodeComponent.displayName = "StartNodeComponent";
 InputNodeComponent.displayName = "InputNodeComponent";
 llmNodeComponent.displayName = "llmNodeComponent";
@@ -375,6 +433,8 @@ ChatTriggerNodeComponent.displayName = "ChatTriggerNodeComponent";
 llmV1NodeComponent.displayName = "llmV1NodeComponent";
 SearchLibraryNodeComponent.displayName = "SearchLibraryNodeComponent";
 PreChatOutputNodeComponent.displayName = "PreChatOutputNodeComponent";
+LoopLLMNodeComponent.displayName = "LoopLLMNodeComponent";
+NewDocumentNodeComponent.displayName = "NewDocumentNodeComponent";
 
 export const nodeTypes: NodeTypes = {
   startNode: StartNodeComponent,
@@ -387,4 +447,6 @@ export const nodeTypes: NodeTypes = {
   llmV1Node: llmV1NodeComponent,
   searchLibraryNode: SearchLibraryNodeComponent,
   preChatOutputNode: PreChatOutputNodeComponent,
+  loopLLMNode: LoopLLMNodeComponent,
+  newDocumentNode: NewDocumentNodeComponent,
 };
