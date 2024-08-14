@@ -137,6 +137,7 @@ export async function updateWorkflow(formData: FormData) {
           id: item.id,
           source_id: item.source,
           target_id: item.target,
+          sourceHandle: item.sourceHandle,
         })),
       },
     },

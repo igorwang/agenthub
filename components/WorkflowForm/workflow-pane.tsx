@@ -40,6 +40,7 @@ function Flow({
   initialEdges,
   onWorkflowChange,
 }: WorkflowPaneProps) {
+  console.log("initialEdges", initialEdges);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);

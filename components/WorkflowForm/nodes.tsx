@@ -224,7 +224,7 @@ export const ConditionNodeComponent: React.FC<NodeProps<ConditionNode>> = memo(
             key={index}
             type="source"
             position={Position.Right}
-            id={`output-${index}`}
+            id={cond.name || `output-${index}`}
             className="h-2 w-2 !border-2 !border-white !bg-slate-200"
             style={{
               top: `${((index + 1) * 100) / ((data.conditions?.length ?? 0) + 1)}%`,
