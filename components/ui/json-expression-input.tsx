@@ -27,6 +27,13 @@ interface JsonExpressionInputProps {
 }
 
 const highlightPlugin = new PluginKey("highlight");
+type JsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JsonValue[]
+  | { [key: string]: JsonValue };
 
 const JsonExpression = Extension.create({
   name: "jsonExpression",
@@ -140,23 +147,44 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
   }, []);
 
   const parseExpression = useCallback(
-    (content: string) => {
+    (content: string): void => {
       if (!content.includes("{{")) {
         setParsedExpression("");
         return;
       }
 
-      const parsedContent = content.replace(/\{\{\s*(.*?)\s*\}\}/g, (match, path) => {
+      const parsedContent = content.replace(/\{\{\s*(.*?)\s*\}\}/g, (match, expr) => {
+        expr = expr.trim();
         try {
-          const value = JSONPath({ path: path.trim(), json: jsonData });
-          if (Array.isArray(value) && value.length === 1) {
-            return typeof value[0] === "object"
-              ? JSON.stringify(value[0])
-              : String(value[0]);
+          if (expr.startsWith("_.")) {
+            // Lodash-style operations
+            const lodashMatch = expr.match(/^_\.(\w+)\((.*)\)$/);
+            if (!lodashMatch) {
+              throw new Error("Invalid Lodash-style expression");
+            }
+            const [operation, args] = lodashMatch.slice(1);
+            const argList = args.split(",").map((arg: string) => arg.trim());
+
+            switch (operation) {
+              case "map":
+                return handleMapOperation(argList, jsonData);
+              case "zip":
+                return handleZipOperation(argList, jsonData);
+              default:
+                throw new Error(`Unsupported operation: ${operation}`);
+            }
+          } else {
+            // Standard JSONPath
+            const value = JSONPath({ path: expr, json: jsonData });
+            if (Array.isArray(value) && value.length === 1) {
+              return typeof value[0] === "object"
+                ? JSON.stringify(value[0])
+                : String(value[0]);
+            }
+            return typeof value === "object" ? JSON.stringify(value) : String(value);
           }
-          return typeof value === "object" ? JSON.stringify(value) : String(value);
         } catch (error) {
-          console.error("Error parsing JSONPath:", error);
+          console.error("Error parsing expression:", error);
           return match;
         }
       });
@@ -165,6 +193,56 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
     },
     [jsonData],
   );
+
+  const handleMapOperation = (args: string[], data: Record<string, any>): string => {
+    const [path, fields] = args;
+    const items = JSONPath({ path, json: data }) as JsonValue[];
+
+    if (fields.startsWith("'") && fields.endsWith("'")) {
+      // Single field selection
+      const field = fields.slice(1, -1);
+      return JSON.stringify(
+        items.map((item) => (item as Record<string, JsonValue>)[field]),
+      );
+    } else if (fields.startsWith("[") && fields.endsWith("]")) {
+      // Multiple field selection
+      const fieldList = fields
+        .slice(1, -1)
+        .split(",")
+        .map((f) => f.trim().slice(1, -1));
+      return JSON.stringify(
+        items.map((item) => {
+          const result: Record<string, JsonValue> = {};
+          fieldList.forEach((field) => {
+            const keys = field.split(".");
+            let value: JsonValue = item;
+            for (const key of keys) {
+              value = (value as Record<string, JsonValue>)?.[key];
+              if (value === undefined) break;
+            }
+            if (value !== undefined) {
+              result[field] = value;
+            }
+          });
+          return result;
+        }),
+      );
+    }
+
+    return JSON.stringify(items);
+  };
+
+  const handleZipOperation = (args: string[], data: Record<string, any>): string => {
+    const arrays = args.map((arg) => JSONPath({ path: arg, json: data }) as JsonValue[]);
+    const zipped = arrays[0].map((_, i) => {
+      const obj: Record<string, JsonValue> = {};
+      arrays.forEach((arr, j) => {
+        Object.assign(obj, arr[i] as Record<string, JsonValue>);
+      });
+      return obj;
+    });
+    return JSON.stringify(zipped);
+  };
 
   const handleDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
