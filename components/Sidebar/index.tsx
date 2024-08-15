@@ -62,7 +62,6 @@ export default function SideBar() {
               isIconOnly
               className="hidden"
               // className="data-[hover=true]:text-foreground"
-              className="hidden"
               variant="light">
               <Icon className="text-default-500" icon="grommet-icons:github" width={24} />
             </Button>
@@ -72,7 +71,6 @@ export default function SideBar() {
               isIconOnly
               className="hidden"
               // className="data-[hover=true]:text-foreground"
-              className="hidden"
               variant="light">
               <Icon
                 className="text-default-500"
