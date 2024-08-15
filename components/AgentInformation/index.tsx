@@ -8,7 +8,7 @@ import {
 } from "@/graphql/generated/types";
 import { formatTokenLimit } from "@/lib/utils/formatTokenLimit";
 import { Input } from "@nextui-org/input";
-import { Avatar, Button, Divider, Switch, Textarea } from "@nextui-org/react";
+import { Avatar, Button, Divider, Textarea } from "@nextui-org/react";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { toast } from "sonner";
 
@@ -143,7 +143,7 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
             }}
           />
         </div>
-        <div className={"mt-8"}>
+        {/* <div className={"mt-8"}>
           <Switch
             defaultSelected
             aria-label="Enable Web Search"
@@ -156,8 +156,8 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
             }}>
             Enable Web Search
           </Switch>
-        </div>
-        <div className={"mt-8"}>
+        </div> */}
+        {/* <div className={"mt-8"}>
           <Switch
             defaultSelected
             aria-label="Force Search"
@@ -170,7 +170,7 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
             }}>
             Force Library Search
           </Switch>
-        </div>
+        </div> */}
       </form>
     </div>
   );

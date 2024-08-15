@@ -1,5 +1,5 @@
 "use client";
-import LibraryList from "@/components/LibrarySideBar/library-list";
+import LibraryList from "@/components/Library/LibrarySideBar/library-list";
 import {
   Knowledge_Base_Type_Enum,
   KnowledgeBaseFragmentFragment,

@@ -43,12 +43,14 @@ export type SourceType = {
   fileId: string;
   url: string;
   fileName: string;
+  title?: string;
   pages: number[];
   contents: string[];
   knowledgeBaseId?: string;
   index?: number;
   metadata?: string | null;
   ext?: string;
+  content?: string;
 };
 
 export type MessageType = {

@@ -37,22 +37,26 @@ export default function NodeDrawer({
       open={isOpen}
       onClose={onToggleDrawer}
       direction="right"
-      className="z-20 flex h-full min-w-[800px] flex-row overflow-auto">
-      <div className="my-10 w-1/2 px-2">
-        <InputSelectionPane
-          nodes={prevNodes || []}
-          workflowTestResult={workflowTestResult}
-        />
-      </div>
-      <div className="w-1/2">
-        <FormComponent
-          key={node.id}
-          node={node}
-          onNodeChange={onNodeChange}
-          onToggleDrawer={onToggleDrawer}
-          prevNodes={prevNodes}
-          workflowTestResult={workflowTestResult}
-        />
+      size={1024} // 设置抽屉宽度为 1024px
+      className="!w-[1024px]" // 使用 !important 来覆盖默认样式
+    >
+      <div className="flex h-full w-full">
+        <div className="my-10 w-1/2 overflow-auto px-2">
+          <InputSelectionPane
+            nodes={prevNodes || []}
+            workflowTestResult={workflowTestResult}
+          />
+        </div>
+        <div className="w-1/2 overflow-auto">
+          <FormComponent
+            key={node.id}
+            node={node}
+            onNodeChange={onNodeChange}
+            onToggleDrawer={onToggleDrawer}
+            prevNodes={prevNodes}
+            workflowTestResult={workflowTestResult}
+          />
+        </div>
       </div>
     </Drawer>
   );

@@ -1,9 +1,6 @@
 "use client";
 
 import { PromptFormHandle } from "@/components/PromptFrom";
-import JsonExpressionInput from "@/components/ui/json-expression-input";
-import JsonTreeRenderer from "@/components/ui/json-tree-render";
-import CustomForm from "@/components/ui/nextui-form";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { RJSFSchema } from "@rjsf/utils";
 import { useRef, useState } from "react";
@@ -17,6 +14,8 @@ export default function Blog() {
     "The lift coefficient $C_L$ is a dimensionless coefficient. aa **bb** \n  #1222 \name";
 
   const [isOpen, setIsOpen] = useState(false);
+  const [value, setValue] = useState("X Y Z and then XYZ");
+  const onChange = (value: string) => setValue(value);
 
   const toggleDrawer = () => {
     setIsOpen((prevState) => !prevState);
@@ -69,15 +68,17 @@ export default function Blog() {
     },
   };
 
+  const handleSelectionChange = () => {};
+
   return (
     <div className="h-full w-full">
-      <CustomForm
+      {/* <CustomForm
         schema={schema}
         // validator={validator}
         onSubmit={(formData) => console.log("formData", formData)}
-      />
-      <JsonTreeRenderer jsonData={schema}></JsonTreeRenderer>
-      <JsonExpressionInput jsonData={schema}></JsonExpressionInput>
+      /> */}
+      {/* <JsonTreeRenderer jsonData={schema}></JsonTreeRenderer> */}
+      {/* <JsonExpressionInput jsonData={schema}></JsonExpressionInput> */}
     </div>
   );
 }

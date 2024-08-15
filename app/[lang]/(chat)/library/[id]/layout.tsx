@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
-import LibraryHeader from "@/components/LibraryHeader";
-import LibraryBreadcrumbs from "@/components/LibraryHeader/library-bread";
+import LibraryHeader from "@/components/Library/LibraryHeader";
+import LibraryBreadcrumbs from "@/components/Library/LibraryHeader/library-bread";
 import {
   KnowledgeBaseDetailDocument,
   KnowledgeBaseDetailQuery,

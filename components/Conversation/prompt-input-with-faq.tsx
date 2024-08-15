@@ -13,7 +13,6 @@ import {
   useCreateMessageAndUpdateTopicHistoryMutation,
 } from "@/graphql/generated/types";
 import {
-  selectIsFollowUp,
   selectSelectedChatId,
   selectSelectedSessionId,
   selectSession,
@@ -74,7 +73,6 @@ export default function PromptInputWithFaq({
   const dispatch: AppDispatch = useDispatch();
   const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
-  const isFollowUp = useSelector(selectIsFollowUp);
 
   const [files, setFiles] = useState<UploadFileProps[]>([]);
   const [prompt, setPrompt] = useState<string>("");
@@ -159,8 +157,8 @@ export default function PromptInputWithFaq({
   };
 
   const sendMessageHanlder = async () => {
-    let data;
     handleChatingStatus?.(true);
+    let data;
     if (!selectedSessionId) {
       try {
         const response = await addNewTopicMutation({
@@ -172,7 +170,7 @@ export default function PromptInputWithFaq({
         });
         data = response.data;
         if (data?.insert_topic_history_one) {
-          dispatch(dispatch(selectSession(data?.insert_topic_history_one?.id)));
+          dispatch(selectSession(data?.insert_topic_history_one?.id));
         }
       } catch (error) {
         console.error("Error adding topic:", error);

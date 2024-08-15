@@ -5,7 +5,11 @@ import {
   useAddNewTopicMutationMutation,
   useGetTopicHistoriesQuery,
 } from "@/graphql/generated/types";
-import { selectSelectedSessionId, selectSession } from "@/lib/features/chatListSlice";
+import {
+  selectSelectedChatId,
+  selectSelectedSessionId,
+  selectSession,
+} from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
 import {
   Button,
@@ -28,6 +32,7 @@ interface TopicHistoryProps {
 
 export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   const dispatch: AppDispatch = useDispatch();
+  const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
   const { data: sessionData, status } = useSession();
   const userId = sessionData?.user?.id;
@@ -36,6 +41,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   const pathname = usePathname();
   const params: { id: string } = useParams();
   const [addNewTopicMutation] = useAddNewTopicMutationMutation();
+
   const getTopicListQuery = useGetTopicHistoriesQuery({
     variables: {
       agent_id: params.id,
@@ -51,9 +57,16 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   }, [selectedSessionId]);
 
   useEffect(() => {
+    console.log("selectSelectedChatId", 111);
+    if (!selectedSessionId) {
+    }
+  }, [selectSelectedChatId]);
+
+  useEffect(() => {
     if (data && data.topic_history && data.topic_history.length > 0) {
       const session_id = data.topic_history[0].id;
-      // 注释掉的代码保持不变
+      // dispatch(selectSession(session_id));
+      // router.push(`${pathname}?session_id=${session_id}`);
     }
   }, [data, params.id, dispatch]);
 
@@ -110,17 +123,6 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
       <div className="w-full truncate pr-8">{item.title}</div>
     </ListboxItem>
   ));
-
-  const handleAddTopic = async ({
-    agent_id,
-    user_id,
-  }: {
-    agent_id: string;
-    user_id: string;
-  }) => {
-    dispatch(selectSession(null));
-    // 注释掉的代码保持不变
-  };
 
   return (
     <div className="flex h-full flex-col">

@@ -6,7 +6,7 @@ import { Button } from "@nextui-org/react";
 import React from "react";
 
 import { cn } from "@/cn";
-import { selectedLibrariesType } from "@/components/LibraryCart";
+import { selectedLibrariesType } from "@/components/Library/LibraryCart";
 import { LibraryCardType } from "@/types/chatTypes";
 
 export type LibraryListItemColor = {

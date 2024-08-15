@@ -6,7 +6,7 @@ interface NodeData {
   [key: string]: any;
 }
 
-interface LlmV1NodeFormProps {
+interface IndexingNodeFormProps {
   node: Node<NodeData>;
   prevNodes?: Node[];
   workflowTestResult?: { [key: string]: any };
@@ -14,13 +14,13 @@ interface LlmV1NodeFormProps {
   onToggleDrawer?: () => void;
 }
 
-export default function LlmV1NodeForm({
+export default function IndexingNodeForm({
   node,
   prevNodes,
   workflowTestResult,
   onNodeChange,
   onToggleDrawer,
-}: LlmV1NodeFormProps) {
+}: IndexingNodeFormProps) {
   const nodeData = node.data || {};
 
   const onSubmit = (data: any) => {
@@ -29,7 +29,7 @@ export default function LlmV1NodeForm({
   };
   return (
     <div className="flex flex-col gap-4 p-4">
-      <div className="text-2xl font-bold">Edit LLM s Node</div>
+      <div className="text-2xl font-bold">Edit Indexing Node</div>
       <Divider />
       <CustomForm
         schema={nodeData.schema}

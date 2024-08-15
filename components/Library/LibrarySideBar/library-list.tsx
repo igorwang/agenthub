@@ -16,7 +16,7 @@ const LibraryList: React.FC<LibraryListProps> = ({
 }) => {
   return (
     <div>
-      <ScrollShadow className="w-full max-w-[260px] border-default-200 px-1">
+      <ScrollShadow className="w-full min-w-[260px] border-default-200 px-1">
         <Listbox
           aria-label="Actions"
           //   onAction={(key) => router.push("/library/" + key.toString())}

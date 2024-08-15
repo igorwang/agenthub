@@ -1,6 +1,8 @@
+import LibrarySearch from "@/components/Library/LibrarySearch";
 import ModelSelect from "@/components/PromptFrom/model-select";
 import JsonExpressionInput from "@/components/ui/json-expression-input";
 import JsonSchemaTooltip from "@/components/ui/json-schema-tooltip";
+import { Chunking_Strategy_Enum } from "@/graphql/generated/types";
 import { Icon } from "@iconify/react";
 import {
   Button,
@@ -214,25 +216,45 @@ const CustomJsonField: React.FC<FieldProps> = (props) => {
     5. Write numbers directly, without quotes`;
 
   const outputSchemaDataExample = {
-    name: {
-      type: "string",
-      title: "Name",
-    },
-    age: {
-      type: "number",
-      title: "Age",
-    },
-    isStudent: {
-      type: "boolean",
-      title: "Is Student",
-    },
-    address: {
-      type: "object",
-      title: "Address",
-    },
-    hobbies: {
-      type: "array",
-      title: "Hobbies",
+    type: "object",
+    properties: {
+      name: {
+        type: "string",
+        title: "Name",
+      },
+      age: {
+        type: "number",
+        title: "Age",
+      },
+      isStudent: {
+        type: "boolean",
+        title: "Is Student",
+      },
+      address: {
+        type: "object",
+        title: "Address",
+        properties: {
+          street: {
+            type: "string",
+            title: "Street",
+          },
+          city: {
+            type: "string",
+            title: "City",
+          },
+          zipCode: {
+            type: "string",
+            title: "Zip Code",
+          },
+        },
+      },
+      hobbies: {
+        type: "array",
+        title: "Hobbies",
+        items: {
+          type: "string",
+        },
+      },
     },
   };
 
@@ -240,17 +262,22 @@ const CustomJsonField: React.FC<FieldProps> = (props) => {
     name === "outputSchema" ? (
       <JsonSchemaTooltip
         title="outputSchema"
-        content={taskOutputFormatIntro}
+        content={schema.description || taskOutputFormatIntro}
         format={JSON.stringify(outputSchemaDataExample)}
+        iconSize={20}
       />
     ) : (
-      <JsonSchemaTooltip title="jsonSchema" content={jsonInputPrompt} />
+      <JsonSchemaTooltip
+        title={schema.title || "document"}
+        iconSize={20}
+        content={schema.description || jsonInputPrompt}
+      />
     );
 
   if (schema.format === "json" || uiSchema?.["ui:field"] === "json") {
     return (
       <div className="flex max-w-full flex-col">
-        <div className="flex flex-row items-center justify-start">
+        <div className="flex flex-row items-center justify-start gap-1">
           <label>{schema.title || "Schema"}</label>
           {tooltipContent}
         </div>
@@ -298,10 +325,19 @@ const CustomExpressionInputField: React.FC<FieldProps> = (props) => {
     : {};
 
   return (
-    <div>
-      <label>
-        {schema.title || "Expression"} {required ? "*" : ""}
-      </label>
+    <div className="max-w-full overflow-auto">
+      <div className="flex flex-row items-center gap-1">
+        <label>
+          {schema.title || "Expression"} {required ? "*" : ""}
+        </label>
+        {schema.description && (
+          <JsonSchemaTooltip
+            title={schema.title || "Document"}
+            content={schema.description || "Document"}
+            iconSize={20}></JsonSchemaTooltip>
+        )}
+      </div>
+
       <JsonExpressionInput
         id={id}
         value={formData || ""}
@@ -312,9 +348,65 @@ const CustomExpressionInputField: React.FC<FieldProps> = (props) => {
         autoFocus={autofocus}
         placeholder={uiSchema?.["ui:placeholder"]}
         onChange={(value) => onChange(value)}
-        onBlur={(id, e) => onBlur(id, e.target.value)}
-        onFocus={(id, e) => onFocus(id, e.target.value)}
+        onBlur={(id, e) => onBlur(id, e.target)}
+        onFocus={(id, e) => onFocus(id, e.target)}
       />
+    </div>
+  );
+};
+
+const CustomChunkingSelectField: React.FC<FieldProps> = (props) => {
+  const {
+    id,
+    formData,
+    required,
+    disabled,
+    readonly,
+    onChange,
+    onBlur,
+    onFocus,
+    autofocus,
+    schema,
+    uiSchema,
+  } = props;
+
+  return (
+    <div className="max-w-full overflow-auto">
+      <div className="flex flex-row items-center gap-1">
+        <label htmlFor={id}>
+          {schema.title || "Chunking Strategy"} {required ? "*" : ""}
+        </label>
+        {schema.description && (
+          <JsonSchemaTooltip
+            title={schema.title || "Chunking Strategy"}
+            content={schema.description}
+            iconSize={20}
+          />
+        )}
+      </div>
+      <Select
+        id={id}
+        aria-label="Chunking-Strategy-Select"
+        // label="Chunking Strategy"
+        // labelPlacement="outside"
+        // placeholder={uiSchema?.["ui:placeholder"] || "Select your chunking strategy"}
+        selectedKeys={formData ? [formData] : ["length"]}
+        disallowEmptySelection={required}
+        isDisabled={disabled || readonly}
+        autoFocus={autofocus}
+        onSelectionChange={(keys) => {
+          const selectedValue = (Array.from(keys)[0] as string) || null;
+          onChange(selectedValue);
+        }}
+        // onBlur={(e) => onBlur(id, e.target)}
+        // onFocus={(e) => onFocus(id, e.target)}
+      >
+        {Object.values(Chunking_Strategy_Enum).map((strategy) => (
+          <SelectItem key={strategy} value={strategy}>
+            {strategy}
+          </SelectItem>
+        ))}
+      </Select>
     </div>
   );
 };
@@ -325,12 +417,14 @@ const CustomModelField: React.FC<FieldProps> = (props) => {
   if (schema.format === "model" || uiSchema?.["ui:field"] === "model") {
     return (
       <div className="mb-2">
-        <label>{schema.title || "model"}</label>
+        <label>
+          {schema.title || "model"} {required ? "*" : ""}
+        </label>
         <ModelSelect
           label=""
           defaultModel={formData || ""}
+          modelType={schema.modelType || "llm"}
           onSelectionChange={(modelName, limit) => {
-            console.log("onSelectionChange", modelName, limit);
             // Update the form data with the new model name
             onChange(modelName);
           }}
@@ -340,6 +434,28 @@ const CustomModelField: React.FC<FieldProps> = (props) => {
   }
 
   // Fall back to default ObjectField if not a model field
+  return <registry.fields.ObjectField {...props} />;
+};
+
+const CustomLibrarySearchField: React.FC<FieldProps> = (props) => {
+  const { name, schema, uiSchema, required, formData, onChange, registry } = props;
+
+  if (schema.format === "librarySearch" || uiSchema?.["ui:field"] === "librarySearch") {
+    return (
+      <div className="mb-2">
+        <label>
+          {schema.title || "Libraries"} {required ? "*" : ""}
+        </label>
+        <LibrarySearch
+          defaultSelectedLibraries={formData || []}
+          onSelectChange={(selectedLibraries) => {
+            onChange(selectedLibraries);
+          }}
+        />
+      </div>
+    );
+  }
+
   return <registry.fields.ObjectField {...props} />;
 };
 
@@ -405,6 +521,8 @@ const CustomForm: React.FC<CustomFormProps> = ({
     json: CustomJsonField,
     expression: CustomExpressionInputField,
     model: CustomModelField,
+    librarySearch: CustomLibrarySearchField,
+    chunkingStrategy: CustomChunkingSelectField,
   };
 
   return (

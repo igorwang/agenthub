@@ -131,7 +131,6 @@ export const ChatList: React.FC<ChatListProps> = ({
     setFixedChatList(groupedChatList);
   };
 
-  console.log("fixedChatList", fixedChatList);
   const chatListContent = (fixedChatList || []).map((group) => (
     <div className="relative flex w-full flex-col" key={group.id}>
       {group.name &&

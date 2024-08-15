@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import LibraryFileList from "@/components/LibraryFileList";
+import LibraryFileList from "@/components/Library/LibraryFileList";
 import {
   FilesListDocument,
   FilesListQuery,

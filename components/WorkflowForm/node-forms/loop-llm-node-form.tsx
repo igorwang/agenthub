@@ -6,7 +6,7 @@ interface NodeData {
   [key: string]: any;
 }
 
-interface LlmV1NodeFormProps {
+interface LoopLLMNodeFormProps {
   node: Node<NodeData>;
   prevNodes?: Node[];
   workflowTestResult?: { [key: string]: any };
@@ -14,22 +14,21 @@ interface LlmV1NodeFormProps {
   onToggleDrawer?: () => void;
 }
 
-export default function LlmV1NodeForm({
+export default function LoopLLMNodeForm({
   node,
   prevNodes,
   workflowTestResult,
   onNodeChange,
   onToggleDrawer,
-}: LlmV1NodeFormProps) {
+}: LoopLLMNodeFormProps) {
   const nodeData = node.data || {};
-
   const onSubmit = (data: any) => {
     onNodeChange?.(data);
     onToggleDrawer?.();
   };
   return (
     <div className="flex flex-col gap-4 p-4">
-      <div className="text-2xl font-bold">Edit LLM s Node</div>
+      <div className="text-2xl font-bold">Edit Loop LLM Node</div>
       <Divider />
       <CustomForm
         schema={nodeData.schema}

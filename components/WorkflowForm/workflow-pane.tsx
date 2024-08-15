@@ -72,6 +72,18 @@ function Flow({
       return {};
     }
 
+    JSONSchemaFaker.option({
+      alwaysFakeOptionals: true, // This is the key option to generate all fields
+      optionalsProbability: 1.0, // This ensures 100% chance of generating optional fields
+      useDefaultValue: false, // This allows generation of new values instead of using defaults
+      minItems: 1,
+      maxItems: 5,
+      ignoreMissingRefs: true, // This helps prevent errors with missing references
+      failOnInvalidFormat: false, // This prevents failures due to unrecognized formats
+      maxLength: 4096, // Adjust as needed for your use case
+      minLength: 1,
+    });
+
     const newWorkflowTestResult = await nodes.reduce(
       async (accPromise, node) => {
         const acc = await accPromise;
@@ -140,11 +152,16 @@ function Flow({
       }
       dfs(nodeId);
 
+      // Get a topologically sorted list of all nodes
       const sortedNodes = alg.topsort(graph);
-      const sortedPrevNodeIds = sortedNodes.filter((id) => prevNodeIds.has(id));
-      const prevNodes = nodes.filter((node) =>
-        sortedPrevNodeIds.some((id) => String(id) === String(node.id)),
-      );
+
+      // Filter the sorted nodes to include only the predecessors
+      const sortedPrevNodes = sortedNodes.filter((id) => prevNodeIds.has(id));
+
+      // Map the sorted node IDs back to their full node objects
+      const prevNodes = sortedPrevNodes
+        .map((id) => nodes.find((node) => String(node.id) === String(id)))
+        .filter((node): node is Node => node !== undefined);
 
       return prevNodes;
     },

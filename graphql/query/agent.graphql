@@ -51,6 +51,17 @@ query GetAgentByID($id: uuid!) {
         tool_type
       }
     }
+    workflow {
+      id
+      name
+      description
+      flow_edges {
+        ...flowEdgeFragment
+      }
+      flow_nodes {
+        ...flowNodeFragment
+      }
+    }
   }
 }
 

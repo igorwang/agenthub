@@ -71,18 +71,13 @@ export const InputSelectionPane: React.FC<InputSelectionPaneProps> = ({
 
         {nodes.length > 0 && selectedNode && (
           <div className="flex h-full flex-col items-center justify-center">
-            {/* <h3 className="text-md font-medium">
-              {getNodeLabel(selectedNode, nodes.indexOf(selectedNode))}
-            </h3> */}
             {workflowTestResult[selectedNode?.data.label ?? ""] ? (
               <pre className="mt-2 max-w-full p-2 text-sm">
-                {/* {JSON.stringify(selectedNode.data.outputSchema, null, 2)} */}
                 <JsonTreeRenderer
                   jsonData={{
-                    [selectedNode.data.label || "Unamed Node"]:
+                    [selectedNode.data.label || "Unnamed Node"]:
                       workflowTestResult[selectedNode?.data.label ?? ""] ?? {},
                   }}
-                  // defaultPath={selectedNode.data.label}
                 />
               </pre>
             ) : (

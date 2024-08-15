@@ -60,6 +60,7 @@ export default function WorkflowForm({
         id: item.id,
         source: item.source_id,
         target: item.target_id,
+        sourceHandle: item.sourceHandle,
       }))
     : [];
 
@@ -101,6 +102,7 @@ export default function WorkflowForm({
   };
 
   const handleWorkflowChange = (nodes: Node[], edges: Edge[]) => {
+    console.log("handleWorkflowChange", nodes, edges);
     setValue("nodes", nodes);
     setValue("edges", edges);
   };

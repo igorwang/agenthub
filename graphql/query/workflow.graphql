@@ -62,6 +62,7 @@ fragment flowEdgeFragment on flow_edge {
   created_at
   updated_at
   label
+  sourceHandle
 }
 
 query getWorkflowById($id: uuid = "") {
