@@ -31,7 +31,7 @@ const LibraryGrid = React.forwardRef<HTMLDivElement, LibraryGridProps>(
       <div
         ref={ref}
         className={cn(
-          "grid w-full grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
+          "grid max-h-[80vh] w-full grid-cols-1 gap-2 overflow-auto overflow-y-auto p-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
           className,
         )}
         {...props}>

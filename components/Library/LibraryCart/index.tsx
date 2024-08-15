@@ -1,6 +1,7 @@
 "use client";
 import LibraryGrid from "@/components/Library/LibraryCart/library-grid";
 import {
+  Order_By,
   useAddALibraryToAgentMutation,
   useGetKbListQuery,
   useKnowledgeBaseListQuery,
@@ -44,9 +45,14 @@ function LibraryCart({ agentId, className }: LibraryCartProps) {
       //    distinct_on: // value for 'distinct_on'
       //    limit: // value for 'limit'
       //    offset: // value for 'offset'
-      //    order_by:
-
-      where: { is_publish: { _eq: true } },
+      order_by: { updated_at: Order_By.Desc },
+      where: {
+        _or: [
+          { is_publish: { _eq: true } },
+          { creator_id: { _eq: session.data?.user?.id } },
+        ],
+      },
+      // where: { is_publish: { _eq: true } },
     },
   });
 
