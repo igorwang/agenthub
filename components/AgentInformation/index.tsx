@@ -143,7 +143,7 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
             }}
           />
         </div>
-        <div className={"mt-8"}>
+        {/* <div className={"mt-8"}>
           <Switch
             defaultSelected
             aria-label="Enable Web Search"
@@ -156,7 +156,7 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
             }}>
             Enable Web Search
           </Switch>
-        </div>
+        </div> */}
         <div className={"mt-8"}>
           <Switch
             defaultSelected

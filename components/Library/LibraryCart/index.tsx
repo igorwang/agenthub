@@ -45,6 +45,7 @@ function LibraryCart({ agentId, className }: LibraryCartProps) {
       //    limit: // value for 'limit'
       //    offset: // value for 'offset'
       //    order_by:
+
       where: { is_publish: { _eq: true } },
     },
   });
@@ -98,6 +99,7 @@ function LibraryCart({ agentId, className }: LibraryCartProps) {
             return prev;
           }
         });
+        selectedLibrariesQuery.refetch();
       } catch (error) {
         toast.error("System error. Please try later.");
       }
