@@ -1,6 +1,7 @@
 "use client";
 
 import MessageWindow from "@/components/Conversation/message-window";
+import MessageWindowWithWorkflow from "@/components/Conversation/message-windown-with-workflow";
 import PromptInputWithFaq from "@/components/Conversation/prompt-input-with-faq";
 import { ConfigIcon } from "@/components/ui/icons";
 import { RoleChip } from "@/components/ui/role-icons";
@@ -52,6 +53,7 @@ export type Agent = {
   avatar?: string;
   creator_id?: string;
   role?: string | Role_Enum;
+  workflow_id?: string | null;
 };
 
 export type ConversationProps = {
@@ -78,8 +80,6 @@ export const Conversation: React.FC<ConversationProps> = ({
   const [isChating, setIsChating] = useState<boolean>(false);
   const [chatMode, setChatMode] = useState<string>(CHAT_MODE.simple.toString());
   const [selectedSources, setSelectedSources] = useState<SourceType[]>([]);
-
-  // const selectedSessionId = searchParams.get("session_id");
 
   const [agent, setAgent] = useState<Agent>();
   const { data, loading, error } = useGetAgentByIdQuery({
@@ -131,6 +131,7 @@ export const Conversation: React.FC<ConversationProps> = ({
         description: data?.agent_by_pk?.description || "",
         avatar: data?.agent_by_pk?.avatar || "",
         creator_id: data?.agent_by_pk?.creator_id || "",
+        workflow_id: data?.agent_by_pk?.workflow?.id || null,
       });
     }
   }, [agentId, data]);
@@ -240,16 +241,28 @@ export const Conversation: React.FC<ConversationProps> = ({
         {headerElement}
         <div className="flex max-h-full max-w-full flex-grow flex-row overflow-auto">
           <div className="min-[400px] mx-auto flex max-w-7xl flex-grow flex-col items-center overflow-auto pt-4">
-            <MessageWindow
-              isChating={isChating}
-              selectedSources={selectedSources}
-              handleChatingStatus={setIsChating}
-              handleCreateNewMessage={handleCreateNewMessage}
-              onSelectedSource={handleSelectedSource}
-              onMessageChange={handleMessageChange}
-            />
+            {!agent.workflow_id ? (
+              <MessageWindow
+                isChating={isChating}
+                selectedSources={selectedSources}
+                handleChatingStatus={setIsChating}
+                handleCreateNewMessage={handleCreateNewMessage}
+                onSelectedSource={handleSelectedSource}
+                onMessageChange={handleMessageChange}
+              />
+            ) : (
+              <MessageWindowWithWorkflow
+                workflow_id={agent.workflow_id}
+                isChating={isChating}
+                selectedSources={selectedSources}
+                handleChatingStatus={setIsChating}
+                handleCreateNewMessage={handleCreateNewMessage}
+                onSelectedSource={handleSelectedSource}
+                onMessageChange={handleMessageChange}
+              />
+            )}
             <div className="flex w-full max-w-full flex-col">
-              {messageCount >= 1 && (
+              {messageCount >= 20 && (
                 <div className="mx-6 flex max-w-full items-center justify-between rounded-lg bg-sky-100 px-6 py-3 shadow-sm">
                   <div className="flex flex-1 items-center">
                     <span className="mr-2 font-semibold text-sky-700">Tip:</span>
@@ -280,9 +293,6 @@ export const Conversation: React.FC<ConversationProps> = ({
               </p>
             </div>
           </div>
-          {/* <div className="max-w-100 m-2 hidden w-80 rounded-lg border-2 md:flex">
-          <FunctionTab agentId={agentId}></FunctionTab>
-        </div> */}
         </div>
       </div>
     </ConversationContext.Provider>
