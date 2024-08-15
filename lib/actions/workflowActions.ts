@@ -8,6 +8,8 @@ import {
   DeleteNodesAndEdgesMutationVariables,
   DeleteWorkflowByIdDocument,
   DeleteWorkflowByIdMutationVariables,
+  UpdateAgentDocument,
+  UpdateAgentMutationVariables,
   UpdateKnowledgeBaseDocument,
   UpdateKnowledgeBaseMutationVariables,
 } from "@/graphql/generated/types";
@@ -178,8 +180,27 @@ export async function bindWorkflowToLibrary(id: string, formData: FormData) {
       updateVariables,
     );
   } catch (error) {
-    console.error("Error save prompt", error);
-    throw new Error("Error save prompt");
+    console.error("Error bind workflow to library", error);
+    throw new Error("Error bind workflow to library");
+  }
+
+  return { success: true };
+}
+
+export async function bindWorkflowToAgent(id: string, formData: FormData) {
+  try {
+    const flowId = formData.get("id") as string;
+    const createRepsonse = await updateWorkflow(formData);
+
+    const updateVariables: UpdateAgentMutationVariables = {
+      _set: { workflow_id: flowId },
+      pk_columns: { id: id },
+    };
+
+    const updateResponse = await performMutation(UpdateAgentDocument, updateVariables);
+  } catch (error) {
+    console.error("Error bind workflow to agent", error);
+    throw new Error("Error bind workflow to agent");
   }
 
   return { success: true };
