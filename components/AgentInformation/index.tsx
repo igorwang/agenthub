@@ -2,13 +2,14 @@
 
 import ModelSelect from "@/components/PromptFrom/model-select";
 import {
+  Agent_Mode_Enum,
   Agent_Set_Input,
   useGetAgentByIdQuery,
   useUpdateAgentMutation,
 } from "@/graphql/generated/types";
 import { formatTokenLimit } from "@/lib/utils/formatTokenLimit";
 import { Input } from "@nextui-org/input";
-import { Avatar, Button, Divider, Textarea } from "@nextui-org/react";
+import { Avatar, Button, Divider, Select, SelectItem, Textarea } from "@nextui-org/react";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { toast } from "sonner";
 
@@ -26,6 +27,7 @@ interface Agent {
   token_limit?: number | null;
   enable_search?: boolean | null;
   force_search?: boolean | null;
+  mode?: Agent_Mode_Enum | null;
 }
 
 export interface AgentInfoRef {
@@ -57,6 +59,7 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
       token_limit: agent?.token_limit,
       enable_search: agent?.enable_search,
       force_search: agent?.force_search,
+      mode: agent?.mode,
     };
     delete input.id;
     updateAgentMutation({
@@ -104,7 +107,7 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
             />
           )}
         </div>
-        <div className={"mt-8"}>
+        <div className={"mt-4"}>
           <Input
             isRequired
             label="Agent Name"
@@ -128,6 +131,26 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
           />
         </div>
         <div className={"mt-8"}>
+          <Select
+            label="Agent Work Mode"
+            className="pt-2"
+            isRequired
+            labelPlacement="outside"
+            placeholder="Select your mode for this agent"
+            selectedKeys={agent?.mode ? [agent?.mode] : []}
+            disallowEmptySelection={false}
+            onSelectionChange={(keys) => {
+              const selectedMode = Array.from(keys)[0];
+              setAgent({ ...agent, mode: selectedMode as Agent_Mode_Enum });
+            }}>
+            {Object.values(Agent_Mode_Enum).map((mode) => (
+              <SelectItem key={mode} value={mode}>
+                {mode}
+              </SelectItem>
+            ))}
+          </Select>
+        </div>
+        <div className={"mt-10"}>
           <ModelSelect
             label={
               agent?.token_limit ? `LLM (${formatTokenLimit(agent.token_limit)})` : "LLM"

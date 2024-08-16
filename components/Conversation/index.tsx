@@ -6,6 +6,7 @@ import PromptInputWithFaq from "@/components/Conversation/prompt-input-with-faq"
 import { ConfigIcon } from "@/components/ui/icons";
 import { RoleChip } from "@/components/ui/role-icons";
 import {
+  Agent_Mode_Enum,
   Message_Role_Enum,
   Role_Enum,
   useCreateNewMessageMutation,
@@ -20,7 +21,7 @@ import {
 } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
 import { MessageType, SourceType } from "@/types/chatTypes";
-import { Avatar, Button, Tooltip } from "@nextui-org/react";
+import { Avatar, Button, Chip, Tooltip } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import React, {
@@ -59,6 +60,7 @@ export type Agent = {
   creator_id?: string;
   role?: string | Role_Enum;
   workflow_id?: string | null;
+  mode?: Agent_Mode_Enum | null;
 };
 
 export type ConversationProps = {
@@ -81,7 +83,7 @@ export const Conversation: React.FC<ConversationProps> = ({
   const dispatch: AppDispatch = useDispatch();
   const selectedSessionId = useSelector(selectSelectedSessionId);
   const isChangeSession = useSelector(selectIsChangeSession);
-
+  const userId = session.data?.user?.id;
   const [messageCount, setMessageCount] = useState<number>(0);
   const [isChating, setIsChating] = useState<boolean>(false);
   const [selectedSources, setSelectedSources] = useState<SourceType[]>([]);
@@ -140,6 +142,7 @@ export const Conversation: React.FC<ConversationProps> = ({
         avatar: data?.agent_by_pk?.avatar || "",
         creator_id: data?.agent_by_pk?.creator_id || "",
         workflow_id: data?.agent_by_pk?.workflow?.id || null,
+        mode: data?.agent_by_pk?.mode || null,
       });
     }
   }, [agentId, data]);
@@ -235,6 +238,15 @@ export const Conversation: React.FC<ConversationProps> = ({
           </div>
         </div>
       </div>
+      {agent.mode === Agent_Mode_Enum.Workflow &&
+        agent.workflow_id &&
+        agent.creator_id == userId && (
+          <div className="inline-block rounded-md px-2 py-1">
+            <Chip color="primary" variant="flat">
+              workflow
+            </Chip>
+          </div>
+        )}
     </div>
   );
 
@@ -249,8 +261,9 @@ export const Conversation: React.FC<ConversationProps> = ({
         {headerElement}
         <div className="flex max-h-full max-w-full flex-grow flex-row overflow-auto">
           <div className="min-[400px] mx-auto flex max-w-7xl flex-grow flex-col items-center overflow-auto pt-4">
-            {!agent.workflow_id ? (
-              <MessageWindow
+            {agent.mode === Agent_Mode_Enum.Workflow && agent.workflow_id ? (
+              <MessageWindowWithWorkflow
+                workflow_id={agent.workflow_id}
                 isChating={isChating}
                 selectedSources={selectedSources}
                 handleChatingStatus={setIsChating}
@@ -259,8 +272,7 @@ export const Conversation: React.FC<ConversationProps> = ({
                 onMessageChange={handleMessageChange}
               />
             ) : (
-              <MessageWindowWithWorkflow
-                workflow_id={agent.workflow_id}
+              <MessageWindow
                 isChating={isChating}
                 selectedSources={selectedSources}
                 handleChatingStatus={setIsChating}

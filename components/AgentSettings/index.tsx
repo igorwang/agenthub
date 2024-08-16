@@ -55,8 +55,6 @@ export default function AgentSettings({
   const { id } = params;
   const query = useGetAgentByIdQuery({ variables: { id: id } });
   const router = useRouter();
-  // const agent = query?.data?.agent_by_pk;
-  // const libraryId = query?.data?.agent_by_pk?.kbs[0]?.knowledge_base?.id;
 
   const promptFormRef = useRef<PromptFormHandle>(null);
   const agentRef = useRef<AgentInfoRef>(null);
@@ -98,7 +96,7 @@ export default function AgentSettings({
         return <LibraryCart agentId={id} />;
       case 3:
         return (
-          <div className="h-full w-full min-w-[600px] px-20">
+          <div className="h-[80vh] w-full min-w-[600px] px-20">
             <WorkflowForm
               initialData={initialData}
               action={action}
@@ -132,42 +130,45 @@ export default function AgentSettings({
   }
 
   return (
-    <div className={"flex h-full w-full flex-col gap-4 overflow-auto"}>
+    <div className="flex h-screen flex-col">
       <RightHeader title={"Agent Setting"} callBackUri={`/chat/${id}`} />
-      <div className={"mx-auto mt-10 flex w-full flex-col items-center px-4"}>
-        <HorizontalSteps
-          // defaultStep={step}
-          currentStep={step}
-          className={"items-start"}
-          steps={[
-            {
-              title: "Edit Agent",
-            },
-            {
-              title: "Configure Prompt",
-            },
-            {
-              title: "Select Library",
-            },
-            {
-              title: "Agent Workflow",
-            },
-          ]}
-        />
-        {_renderContent(step)}
-        <div className={"flex items-start justify-start space-x-8 pt-4"}>
-          {step === 0 ? null : (
+      <div className="flex-grow overflow-auto">
+        <div className="mx-auto mt-10 flex w-full flex-col items-center px-4">
+          <HorizontalSteps
+            currentStep={step}
+            className={"items-start"}
+            steps={[
+              {
+                title: "Edit Agent",
+              },
+              {
+                title: "Configure Prompt",
+              },
+              {
+                title: "Select Library",
+              },
+              {
+                title: "Agent Workflow",
+              },
+            ]}
+          />
+          {_renderContent(step)}
+        </div>
+      </div>
+      <div className="border-t bg-white p-4">
+        <div className="flex justify-center space-x-8">
+          {step > 0 && (
             <Button color={"primary"} onClick={() => setStep(step - 1)}>
               Previous
             </Button>
           )}
-          {step === 3 ? (
-            <Button color={"primary"} onClick={() => router.push(`/chat/${id}`)}>
-              Save
-            </Button>
-          ) : (
+          {step < 3 ? (
             <Button color={"primary"} onClick={() => onClickNext()}>
               Next
+            </Button>
+          ) : (
+            <Button color={"primary"} onClick={() => router.push(`/chat/${id}`)}>
+              Save
             </Button>
           )}
         </div>

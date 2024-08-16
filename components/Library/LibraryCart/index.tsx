@@ -1,4 +1,3 @@
-"use client";
 import LibraryGrid from "@/components/Library/LibraryCart/library-grid";
 import {
   Order_By,
@@ -10,7 +9,7 @@ import {
 import { LibraryCardType } from "@/types/chatTypes";
 import { cn } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface LibraryCartProps {
@@ -29,10 +28,8 @@ function LibraryCart({ agentId, className }: LibraryCartProps) {
   const [libraries, setLibraries] = useState<LibraryCardType[]>();
   const [selectedLibraries, setSelectedLibraries] = useState<selectedLibrariesType[]>([]);
 
-  useAddALibraryToAgentMutation;
-  const [addALibraryToAgentMutation, addResponse] = useAddALibraryToAgentMutation();
-  const [removeALibraryFromAgentMutation, removeResponse] =
-    useRemoveALibraryFromAgentMutation();
+  const [addALibraryToAgentMutation] = useAddALibraryToAgentMutation();
+  const [removeALibraryFromAgentMutation] = useRemoveALibraryFromAgentMutation();
 
   const selectedLibrariesQuery = useGetKbListQuery({
     variables: {
@@ -40,11 +37,9 @@ function LibraryCart({ agentId, className }: LibraryCartProps) {
     },
     skip: !agentId,
   });
+
   const publicLibrariesQuery = useKnowledgeBaseListQuery({
     variables: {
-      //    distinct_on: // value for 'distinct_on'
-      //    limit: // value for 'limit'
-      //    offset: // value for 'offset'
       order_by: { updated_at: Order_By.Desc },
       where: {
         _or: [
@@ -52,31 +47,32 @@ function LibraryCart({ agentId, className }: LibraryCartProps) {
           { creator_id: { _eq: session.data?.user?.id } },
         ],
       },
-      // where: { is_publish: { _eq: true } },
     },
   });
 
   useEffect(() => {
     if (publicLibrariesQuery.data?.knowledge_base) {
-      const libraries = publicLibrariesQuery.data?.knowledge_base.map((item) => ({
+      const librariesData = publicLibrariesQuery.data?.knowledge_base.map((item) => ({
         id: item.id,
         name: item.name,
         base_type: item.base_type,
         description: item.description || "",
         updatedAt: item.updated_at,
       }));
-      setLibraries(libraries);
+      setLibraries(librariesData);
     }
   }, [publicLibrariesQuery.data]);
 
   useEffect(() => {
     if (selectedLibrariesQuery.data?.r_agent_kb) {
-      const libraries = selectedLibrariesQuery.data?.r_agent_kb.map((item) => ({
-        id: item.id,
-        agentId: item.agent_id,
-        libraryId: item.kb_id,
-      }));
-      setSelectedLibraries(libraries);
+      const selectedLibrariesData = selectedLibrariesQuery.data?.r_agent_kb.map(
+        (item) => ({
+          id: item.id,
+          agentId: item.agent_id,
+          libraryId: item.kb_id,
+        }),
+      );
+      setSelectedLibraries(selectedLibrariesData);
     }
   }, [selectedLibrariesQuery.data]);
 
@@ -86,12 +82,10 @@ function LibraryCart({ agentId, className }: LibraryCartProps) {
         const response = await addALibraryToAgentMutation({
           variables: { object: { agent_id: agentId, kb_id: libraryId } },
         });
-        toast.info("Add successed");
+        toast.info("Add succeeded");
         setSelectedLibraries((prev) => {
-          // 检查 response.data 是否存在以及所需的数据是否存在
           const newLibraryId = response.data?.insert_r_agent_kb_one?.id;
           if (newLibraryId) {
-            // 如果新的 libraryId 存在，更新状态
             return [
               ...prev,
               {
@@ -100,10 +94,8 @@ function LibraryCart({ agentId, className }: LibraryCartProps) {
                 agentId: agentId,
               },
             ];
-          } else {
-            // 如果新的 libraryId 不存在，返回原始状态
-            return prev;
           }
+          return prev;
         });
         selectedLibrariesQuery.refetch();
       } catch (error) {
@@ -116,18 +108,35 @@ function LibraryCart({ agentId, className }: LibraryCartProps) {
     const removeLibrary = selectedLibraries?.find((item) => item.libraryId === libraryId);
     if (removeLibrary) {
       try {
-        const response = await removeALibraryFromAgentMutation({
+        await removeALibraryFromAgentMutation({
           variables: { id: removeLibrary.id },
         });
         setSelectedLibraries((prev) =>
-          prev?.filter((item) => item.id != removeLibrary.id),
+          prev?.filter((item) => item.id !== removeLibrary.id),
         );
-        toast.info("Remove successed");
-      } catch (erro) {
+        toast.info("Remove success");
+
+        // 添加重新获取数据的调用
+        await Promise.all([
+          selectedLibrariesQuery.refetch(),
+          publicLibrariesQuery.refetch(),
+        ]);
+      } catch (error) {
         toast.error("System error. Please try later.");
       }
     }
   };
+
+  const sortedLibraries = React.useMemo(() => {
+    if (!libraries) return [];
+    return libraries.sort((a, b) => {
+      const aSelected = selectedLibraries.some((sl) => sl.libraryId === a.id);
+      const bSelected = selectedLibraries.some((sl) => sl.libraryId === b.id);
+      if (aSelected && !bSelected) return -1;
+      if (!aSelected && bSelected) return 1;
+      return 0;
+    });
+  }, [libraries, selectedLibraries]);
 
   return (
     <div
@@ -136,7 +145,7 @@ function LibraryCart({ agentId, className }: LibraryCartProps) {
         className,
       )}>
       <LibraryGrid
-        libraries={libraries}
+        libraries={sortedLibraries}
         selectedLibraries={selectedLibraries}
         onAddLibrary={handleAddLibrary}
         onRemoveLibrary={handleRemoveLibrary}
