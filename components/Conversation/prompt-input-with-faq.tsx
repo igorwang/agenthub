@@ -9,8 +9,8 @@ import { UploadFile, UploadFileProps } from "@/components/Conversation/upload-fi
 import FileIcon from "@/components/ui/file-icons";
 import {
   Message_Role_Enum,
-  useAddNewTopicMutationMutation,
   useCreateMessageAndUpdateTopicHistoryMutation,
+  useCreateNewTopicWithMessageMutation,
 } from "@/graphql/generated/types";
 import {
   selectSelectedChatId,
@@ -20,6 +20,7 @@ import {
 import { AppDispatch } from "@/lib/store";
 import { SourceType } from "@/types/chatTypes";
 import { useSession } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import PromptInput from "./prompt-input";
@@ -70,6 +71,8 @@ export default function PromptInputWithFaq({
   onSelectedSource,
   selectedSources,
 }: PromptInputWithFaqProps) {
+  const router = useRouter();
+  const pathname = usePathname();
   const dispatch: AppDispatch = useDispatch();
   const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
@@ -79,8 +82,8 @@ export default function PromptInputWithFaq({
 
   const [createMessageAndUpdateTopicHistoryMutation, { data, loading, error }] =
     useCreateMessageAndUpdateTopicHistoryMutation();
-  const [addNewTopicMutation] = useAddNewTopicMutationMutation();
 
+  const [createNewTopicWithMessageMutation] = useCreateNewTopicWithMessageMutation();
   const session = useSession();
   const user_id = session.data?.user?.id;
   const agent_id = selectedChatId;
@@ -158,19 +161,38 @@ export default function PromptInputWithFaq({
 
   const sendMessageHanlder = async () => {
     handleChatingStatus?.(true);
-    let data;
+    const attachments = files.map((item) => ({
+      // key: item.key,
+      fileName: item.fileName,
+      bucket: item.bucket,
+      fileKey: item.fileKey,
+    }));
     if (!selectedSessionId) {
       try {
-        const response = await addNewTopicMutation({
+        const response = await createNewTopicWithMessageMutation({
           variables: {
-            title: prompt.slice(0, 15),
-            user_id: user_id,
-            agent_id: agent_id,
+            object: {
+              title: prompt.slice(0, 15),
+              user_id: user_id,
+              agent_id: agent_id,
+              messages: {
+                data: [
+                  {
+                    content: prompt,
+                    role: Message_Role_Enum.User,
+                    attachments: attachments,
+                  },
+                ],
+              },
+            },
           },
         });
-        data = response.data;
+        const data = response.data;
         if (data?.insert_topic_history_one) {
-          dispatch(selectSession(data?.insert_topic_history_one?.id));
+          const newSessionId = data?.insert_topic_history_one?.id;
+          dispatch(selectSession(newSessionId));
+          router.push(`${pathname}?session_id=${newSessionId}&isNew=true`);
+          handleChatingStatus?.(true);
         }
       } catch (error) {
         console.error("Error adding topic:", error);
@@ -179,22 +201,16 @@ export default function PromptInputWithFaq({
         });
         handleChatingStatus?.(false);
       }
+    } else {
+      createMessageAndUpdateTopicHistoryMutation({
+        variables: {
+          content: prompt,
+          session_id: selectedSessionId,
+          role: Message_Role_Enum.User,
+          attachments: attachments,
+        },
+      });
     }
-
-    const attachments = files.map((item) => ({
-      // key: item.key,
-      fileName: item.fileName,
-      bucket: item.bucket,
-      fileKey: item.fileKey,
-    }));
-    createMessageAndUpdateTopicHistoryMutation({
-      variables: {
-        content: prompt,
-        session_id: selectedSessionId || data?.insert_topic_history_one?.id,
-        role: Message_Role_Enum.User,
-        attachments: attachments,
-      },
-    });
     setPrompt("");
     setFiles([]);
   };

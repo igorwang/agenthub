@@ -8,3 +8,18 @@ mutation CreateNewTopic($object: topic_history_insert_input = {}) {
     created_at
   }
 }
+
+mutation CreateNewTopicWithMessage($object: topic_history_insert_input = {}) {
+  insert_topic_history_one(object: $object) {
+    ...topic_historyFragment
+  }
+}
+
+fragment topic_historyFragment on topic_history {
+  id
+  short_url
+  title
+  user_id
+  updated_at
+  created_at
+}

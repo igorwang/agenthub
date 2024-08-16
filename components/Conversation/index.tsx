@@ -12,12 +12,17 @@ import {
   useGetAgentByIdQuery,
   useGetAgentUserRelationQuery,
 } from "@/graphql/generated/types";
-import { selectSelectedSessionId, selectSession } from "@/lib/features/chatListSlice";
+import {
+  selectIsChangeSession,
+  selectSelectedSessionId,
+  selectSession,
+  setIsChangeSession,
+} from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
-import { CHAT_MODE, MessageType, SourceType } from "@/types/chatTypes";
+import { MessageType, SourceType } from "@/types/chatTypes";
 import { Avatar, Button, Tooltip } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, {
   createContext,
   useCallback,
@@ -71,14 +76,14 @@ export const Conversation: React.FC<ConversationProps> = ({
 }) => {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
+
   const session = useSession();
   const dispatch: AppDispatch = useDispatch();
   const selectedSessionId = useSelector(selectSelectedSessionId);
+  const isChangeSession = useSelector(selectIsChangeSession);
 
   const [messageCount, setMessageCount] = useState<number>(0);
   const [isChating, setIsChating] = useState<boolean>(false);
-  const [chatMode, setChatMode] = useState<string>(CHAT_MODE.simple.toString());
   const [selectedSources, setSelectedSources] = useState<SourceType[]>([]);
 
   const [agent, setAgent] = useState<Agent>();
@@ -102,9 +107,12 @@ export const Conversation: React.FC<ConversationProps> = ({
     useCreateNewMessageMutation();
 
   useEffect(() => {
-    setIsChating(false);
     setSelectedSources([]);
-  }, [selectedSessionId]);
+    if (isChangeSession) {
+      setIsChating(false);
+      dispatch(setIsChangeSession(false));
+    }
+  }, [pathname, router, selectedSessionId, isChangeSession, dispatch]);
 
   const handleMessageChange = useCallback((messages: MessageType[]) => {
     setMessageCount(messages.length);
