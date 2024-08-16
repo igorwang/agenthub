@@ -11,27 +11,26 @@ fragment FilesItem on files {
   knowledge_base_id
   creator_id
   updated_at
+  error_message
 }
 
 query FilesList(
   $distinct_on: [files_select_column!]
   $limit: Int
   $offset: Int
-  $order_by:[files_order_by!]
+  $order_by: [files_order_by!]
   $where: files_bool_exp
-){
+) {
   files(
-    distinct_on: $distinct_on,
-    limit: $limit,
-    offset:$offset,
-    order_by: $order_by ,
-    where:$where
-  ){
+    distinct_on: $distinct_on
+    limit: $limit
+    offset: $offset
+    order_by: $order_by
+    where: $where
+  ) {
     ...FilesItem
   }
-  files_aggregate(
-    where:$where
-  ){
+  files_aggregate(where: $where) {
     aggregate {
       count
     }

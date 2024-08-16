@@ -7,6 +7,7 @@ import {
   GetNodeTypeListDocument,
   GetNodeTypeListQuery,
   GetNodeTypeListQueryVariables,
+  Node_Use_Type_Enum,
 } from "@/graphql/generated/types";
 import { bindWorkflowToAgent } from "@/lib/actions/workflowActions";
 import { fetchData } from "@/lib/apolloRequest";
@@ -31,7 +32,14 @@ async function getNodeTypeListData() {
   if (!session?.user) return null;
 
   const variables: GetNodeTypeListQueryVariables = {
-    where: { visible: { _eq: true } },
+    where: {
+      _and: [
+        {
+          visible: { _eq: true },
+          node_use_type: { _in: [Node_Use_Type_Enum.Default, Node_Use_Type_Enum.Agent] },
+        },
+      ],
+    },
   };
 
   return await fetchData<GetNodeTypeListQuery, GetNodeTypeListQueryVariables>(

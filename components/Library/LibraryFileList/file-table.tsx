@@ -12,7 +12,7 @@ import {
   TableRow,
   Tooltip,
 } from "@nextui-org/react";
-import React, { FC, useCallback, useMemo, useState } from "react";
+import React, { FC, useCallback, useMemo } from "react";
 
 export interface FileDTO {
   id: string;
@@ -20,6 +20,7 @@ export interface FileDTO {
   size: number;
   status: Status_Enum;
   updateTime: string;
+  errorMessage: string;
 }
 
 interface FileTableProps {
@@ -31,6 +32,7 @@ interface FileTableProps {
   onDelete: (file: FileDTO) => void;
   onPage: (page: number) => void;
   maxWidth?: string;
+  reprocessingFiles: Set<string>;
 }
 
 const columns = [
@@ -61,12 +63,12 @@ const FileTable: FC<FileTableProps> = ({
   onDelete,
   onPage,
   maxWidth = "1280px",
+  reprocessingFiles,
 }) => {
   const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
     column: "updateTime",
     direction: "descending",
   });
-  const [deleteModal, setDeleteModal] = useState(false);
 
   const sortedFiles = useMemo(() => {
     return [...files].sort((a, b) => {
@@ -93,13 +95,23 @@ const FileTable: FC<FileTableProps> = ({
         case "status":
           return (
             <div className="flex justify-center">
-              <Chip
-                className="capitalize"
-                color={statusColorMap[file.status]}
-                size="sm"
-                variant="flat">
-                {file.status}
-              </Chip>
+              <Tooltip
+                classNames={{
+                  base: "max-w-xs",
+                  content: "break-words text-sm",
+                }}
+                content={
+                  file.status === Status_Enum.Failed ? file.errorMessage : file.status
+                }
+                color={file.status === Status_Enum.Failed ? "danger" : "default"}>
+                <Chip
+                  className="capitalize"
+                  color={statusColorMap[file.status]}
+                  size="sm"
+                  variant="flat">
+                  {file.status}
+                </Chip>
+              </Tooltip>
             </div>
           );
         case "updateTime":
@@ -117,23 +129,32 @@ const FileTable: FC<FileTableProps> = ({
                 <span
                   className="cursor-pointer text-lg text-default-400 active:opacity-50"
                   onClick={() => onView(file)}>
-                  <Icon icon={"lets-icons:view"} />
+                  <Icon icon="lets-icons:view" />
                 </span>
               </Tooltip>
-              <Tooltip content="Reprocess">
+              <Tooltip
+                content={
+                  reprocessingFiles.has(file.id) ? "Reprocessing..." : "Reprocess"
+                }>
                 <span
-                  className="cursor-pointer text-lg text-default-400 active:opacity-50"
-                  onClick={() => onRedo(file)}>
-                  <Icon icon={"fad:redo"} />
+                  className={`cursor-pointer text-lg ${
+                    reprocessingFiles.has(file.id)
+                      ? "text-default-300"
+                      : "text-default-400"
+                  } ${reprocessingFiles.has(file.id) ? "" : "active:opacity-50"}`}
+                  onClick={() => !reprocessingFiles.has(file.id) && onRedo(file)}>
+                  <Icon
+                    icon={
+                      reprocessingFiles.has(file.id) ? "eos-icons:loading" : "fad:redo"
+                    }
+                  />
                 </span>
               </Tooltip>
               <Tooltip color="danger" content="Delete">
                 <span
                   className="cursor-pointer text-lg text-danger active:opacity-50"
-                  onClick={() => {
-                    onDelete(file);
-                  }}>
-                  <Icon icon={"openmoji:delete"} />
+                  onClick={() => onDelete(file)}>
+                  <Icon icon="openmoji:delete" />
                 </span>
               </Tooltip>
             </div>
@@ -142,7 +163,7 @@ const FileTable: FC<FileTableProps> = ({
           return <div className="text-center">{file[columnKey as keyof FileDTO]}</div>;
       }
     },
-    [onView, onRedo, onDelete],
+    [onView, onRedo, onDelete, reprocessingFiles],
   );
 
   return (
