@@ -24,6 +24,7 @@ query GetAgentByID($id: uuid!) {
     creator_id
     enable_search
     force_search
+    mode
     system_prompt {
       id
       name
