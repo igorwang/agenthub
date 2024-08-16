@@ -9,6 +9,7 @@ import {
   selectSelectedChatId,
   selectSelectedSessionId,
   selectSession,
+  setIsChangeSession,
 } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
 import {
@@ -54,21 +55,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
 
   useEffect(() => {
     getTopicListQuery.refetch();
-  }, [selectedSessionId]);
-
-  useEffect(() => {
-    console.log("selectSelectedChatId", 111);
-    if (!selectedSessionId) {
-    }
-  }, [selectSelectedChatId]);
-
-  useEffect(() => {
-    if (data && data.topic_history && data.topic_history.length > 0) {
-      const session_id = data.topic_history[0].id;
-      // dispatch(selectSession(session_id));
-      // router.push(`${pathname}?session_id=${session_id}`);
-    }
-  }, [data, params.id, dispatch]);
+  }, [getTopicListQuery, selectedSessionId]);
 
   if (!status) {
     return null;
@@ -88,6 +75,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
 
   const handleSelect = (sId: string) => {
     dispatch(selectSession(sId));
+    dispatch(setIsChangeSession(true));
     router.push(`${pathname}?session_id=${sId}`);
   };
 

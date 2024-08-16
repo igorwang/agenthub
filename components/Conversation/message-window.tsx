@@ -127,7 +127,7 @@ export default function MessageWindow({
       setMessages([]);
     }
     query.refetch();
-  }, [selectedChatId, selectedSessionId, isChating, query]);
+  }, [selectedChatId, isChating, selectedSessionId, query]);
 
   useEffect(() => {
     if (agentData) {
