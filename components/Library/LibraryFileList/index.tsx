@@ -41,6 +41,7 @@ export default function LibraryFileList({
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedFile, setSelectFile] = useState<File | null>();
   const [deleteFileById] = useDeleteFileByIdMutation();
+  const [reprocessingFiles, setReprocessingFiles] = useState<Set<string>>(new Set());
 
   const pageSize = 10;
   const [files, setFiles] = useState<FilesListQuery["files"]>(initialFiles?.files || []);
@@ -88,12 +89,45 @@ export default function LibraryFileList({
   const handleViewFile = useCallback((file: FileDTO) => {
     console.log("Viewing file:", file.name);
     // 实现查看文件的逻辑
+    toast.error("Wating for implement");
   }, []);
 
-  const handleRedoFile = useCallback((file: FileDTO) => {
-    console.log("Editing file:", file.name);
-    // 实现编辑文件的逻辑
-  }, []);
+  const handleRedoFile = useCallback(
+    async (file: FileDTO) => {
+      if (reprocessingFiles.has(file.id)) return;
+
+      setReprocessingFiles((prev) => new Set(prev).add(file.id));
+      try {
+        const response = await fetch("/api/file/reprocess", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            file_id: file.id,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to reprocess file");
+        }
+        const result = await response.json();
+        toast.success(`File "${file.name}" is being reprocessed.`);
+
+        refetch();
+      } catch (error) {
+        console.error("Error reprocessing file:", error);
+        toast.error(`Failed to reprocess file "${file.name}". Please try again.`);
+      } finally {
+        setReprocessingFiles((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(file.id);
+          return newSet;
+        });
+      }
+    },
+    [refetch, reprocessingFiles],
+  );
 
   const handleDeleteFile = useCallback((id: string) => {
     // 实现删除文件的逻辑
@@ -148,7 +182,8 @@ export default function LibraryFileList({
             size: file.size,
             status: file.status as Status_Enum,
             updateTime: file.updated_at,
-          }, // 确保状态与 Status_Enum 兼容
+            errorMessage: file.error_message || "",
+          },
         }))}
         page={page}
         pages={pages}
@@ -159,6 +194,7 @@ export default function LibraryFileList({
           setDeleteModal(true);
           setSelectFile(file);
         }}
+        reprocessingFiles={reprocessingFiles}
       />
       <Modal
         isOpen={isUploadOpen}
