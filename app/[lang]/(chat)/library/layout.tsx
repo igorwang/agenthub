@@ -14,7 +14,7 @@ export default function LibraryLayout({
   return (
     <div className="h-full w-full max-w-full">
       <div className="flex h-full w-full max-w-full flex-row">
-        <LibrarySideBarContainer />
+        <LibrarySideBarContainer params={{}} />
         {children}
       </div>
     </div>
