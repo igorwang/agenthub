@@ -370,6 +370,12 @@ const CustomChunkingSelectField: React.FC<FieldProps> = (props) => {
     uiSchema,
   } = props;
 
+  React.useEffect(() => {
+    if (!formData && required) {
+      onChange("length");
+    }
+  }, [formData, required, onChange]);
+
   return (
     <div className="max-w-full overflow-auto">
       <div className="flex flex-row items-center gap-1">
