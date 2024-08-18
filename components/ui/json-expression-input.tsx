@@ -174,7 +174,6 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
                 throw new Error(`Unsupported operation: ${operation}`);
             }
           } else {
-            // Standard JSONPath
             const value = JSONPath({ path: expr, json: jsonData });
             if (Array.isArray(value) && value.length === 1) {
               return typeof value[0] === "object"
@@ -289,8 +288,8 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
       </div>
       <div className="relative max-w-[400px]">
         {parsedExpression && (
-          <div className="max-w-full overflow-hidden">
-            <div className="overflow-wrap-anywhere line-clamp-3 whitespace-pre-wrap break-words px-2 py-1 text-sm text-gray-500">
+          <div className="max-h-[300px] max-w-full overflow-auto">
+            <div className="overflow-wrap-anywhere whitespace-pre-wrap break-words px-2 py-1 text-sm text-gray-500">
               {parsedExpression}
             </div>
           </div>

@@ -1,6 +1,7 @@
 "use client";
 import { InputSelectionPane } from "@/components/WorkflowForm/input-select-pane";
 import { nodeFormComponents } from "@/components/WorkflowForm/node-forms";
+import { OutputPane } from "@/components/WorkflowForm/output-pane";
 import { Node } from "@xyflow/react";
 import Drawer from "react-modern-drawer";
 
@@ -41,13 +42,13 @@ export default function NodeDrawer({
       className="!w-[1024px]" // 使用 !important 来覆盖默认样式
     >
       <div className="flex h-full w-full">
-        <div className="my-10 w-1/2 overflow-auto px-2">
+        <div className="my-10 w-1/3 overflow-auto px-2">
           <InputSelectionPane
             nodes={prevNodes || []}
             workflowTestResult={workflowTestResult}
           />
         </div>
-        <div className="w-1/2 overflow-auto">
+        <div className="w-1/3 overflow-auto">
           <FormComponent
             key={node.id}
             node={node}
@@ -56,6 +57,9 @@ export default function NodeDrawer({
             prevNodes={prevNodes}
             workflowTestResult={workflowTestResult}
           />
+        </div>
+        <div className="my-10 w-1/3 overflow-auto px-2">
+          <OutputPane node={node} />
         </div>
       </div>
     </Drawer>

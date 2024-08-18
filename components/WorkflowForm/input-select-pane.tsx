@@ -69,6 +69,14 @@ export const InputSelectionPane: React.FC<InputSelectionPaneProps> = ({
           ))}
         </Select>
 
+        {nodes.length > 0 && (
+          <p className="mb-4 text-sm text-gray-600">
+            Please select the input data for the current node. Each node can use the
+            output of preceding nodes as input. The data shown below simulates the output
+            from preceding nodes for your reference and selection.
+          </p>
+        )}
+
         {nodes.length > 0 && selectedNode && (
           <div className="flex h-full flex-col items-center justify-center">
             {workflowTestResult[selectedNode?.data.label ?? ""] ? (
