@@ -163,18 +163,28 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
               throw new Error("Invalid Lodash-style expression");
             }
             const [operation, args] = lodashMatch.slice(1);
-            const argList = args.split(",").map((arg: string) => arg.trim());
+            const [path, ...otherArgs] = args.split(",").map((arg: string) => arg.trim());
+
+            // Get the array using JSONPath
+            const array = JSONPath({ path, json: jsonData });
+
+            if (!Array.isArray(array)) {
+              throw new Error(`Path ${path} did not resolve to an array`);
+            }
 
             switch (operation) {
+              case "take":
+                return JSON.stringify(array.slice(0, Number(otherArgs[0])));
+              case "takeRight":
+                return JSON.stringify(array.slice(-Number(otherArgs[0])));
               case "map":
-                return handleMapOperation(argList, jsonData);
+                return handleMapOperation([path, ...otherArgs], jsonData);
               case "zip":
-                return handleZipOperation(argList, jsonData);
+                return handleZipOperation([path, ...otherArgs], jsonData);
               default:
                 throw new Error(`Unsupported operation: ${operation}`);
             }
           } else {
-            // Standard JSONPath
             const value = JSONPath({ path: expr, json: jsonData });
             if (Array.isArray(value) && value.length === 1) {
               return typeof value[0] === "object"
@@ -289,8 +299,8 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
       </div>
       <div className="relative max-w-[400px]">
         {parsedExpression && (
-          <div className="max-w-full overflow-hidden">
-            <div className="overflow-wrap-anywhere line-clamp-3 whitespace-pre-wrap break-words px-2 py-1 text-sm text-gray-500">
+          <div className="max-h-[300px] max-w-full overflow-auto">
+            <div className="overflow-wrap-anywhere whitespace-pre-wrap break-words px-2 py-1 text-sm text-gray-500">
               {parsedExpression}
             </div>
           </div>

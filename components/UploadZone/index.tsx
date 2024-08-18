@@ -150,7 +150,7 @@ export default function UploadZone({ knowledgeBaseId, onAfterUpload }: UploadZon
         value={files}
         accept=".doc,.docx,.pdf,.ppt,.pptx,.xls,.xlsx,.txt,.json"
         label="Drop or Click to upload your files"
-        maxFiles={5}
+        maxFiles={20}
         maxFileSize={10 * 1024 * 1024}
         footer={false}
         header={false}>

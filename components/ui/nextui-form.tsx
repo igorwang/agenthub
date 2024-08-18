@@ -281,7 +281,6 @@ const CustomJsonField: React.FC<FieldProps> = (props) => {
           <label>{schema.title || "Schema"}</label>
           {tooltipContent}
         </div>
-
         <JsonEditor
           id={idSchema.$id}
           collapse={true}
@@ -369,6 +368,12 @@ const CustomChunkingSelectField: React.FC<FieldProps> = (props) => {
     schema,
     uiSchema,
   } = props;
+
+  React.useEffect(() => {
+    if (!formData && required) {
+      onChange("length");
+    }
+  }, [formData, required, onChange]);
 
   return (
     <div className="max-w-full overflow-auto">
