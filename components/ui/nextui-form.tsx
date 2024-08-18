@@ -281,7 +281,6 @@ const CustomJsonField: React.FC<FieldProps> = (props) => {
           <label>{schema.title || "Schema"}</label>
           {tooltipContent}
         </div>
-
         <JsonEditor
           id={idSchema.$id}
           collapse={true}

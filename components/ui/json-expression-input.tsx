@@ -163,13 +163,24 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
               throw new Error("Invalid Lodash-style expression");
             }
             const [operation, args] = lodashMatch.slice(1);
-            const argList = args.split(",").map((arg: string) => arg.trim());
+            const [path, ...otherArgs] = args.split(",").map((arg: string) => arg.trim());
+
+            // Get the array using JSONPath
+            const array = JSONPath({ path, json: jsonData });
+
+            if (!Array.isArray(array)) {
+              throw new Error(`Path ${path} did not resolve to an array`);
+            }
 
             switch (operation) {
+              case "take":
+                return JSON.stringify(array.slice(0, Number(otherArgs[0])));
+              case "takeRight":
+                return JSON.stringify(array.slice(-Number(otherArgs[0])));
               case "map":
-                return handleMapOperation(argList, jsonData);
+                return handleMapOperation([path, ...otherArgs], jsonData);
               case "zip":
-                return handleZipOperation(argList, jsonData);
+                return handleZipOperation([path, ...otherArgs], jsonData);
               default:
                 throw new Error(`Unsupported operation: ${operation}`);
             }

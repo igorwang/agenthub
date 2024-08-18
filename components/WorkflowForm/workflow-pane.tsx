@@ -74,7 +74,7 @@ function Flow({
 
     JSONSchemaFaker.option({
       alwaysFakeOptionals: true, // Always generate optional fields
-      optionalsProbability: 1.0, // 100% chance of generating optional fields
+      optionalsProbability: 1, // 100% chance of generating optional fields
       useDefaultValue: false, // Generate new values instead of using defaults
       minItems: 1,
       maxItems: 5,
