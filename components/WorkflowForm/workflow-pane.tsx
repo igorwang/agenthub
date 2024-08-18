@@ -73,15 +73,17 @@ function Flow({
     }
 
     JSONSchemaFaker.option({
-      alwaysFakeOptionals: true, // This is the key option to generate all fields
-      optionalsProbability: 1.0, // This ensures 100% chance of generating optional fields
-      useDefaultValue: false, // This allows generation of new values instead of using defaults
+      alwaysFakeOptionals: true, // Always generate optional fields
+      optionalsProbability: 1.0, // 100% chance of generating optional fields
+      useDefaultValue: false, // Generate new values instead of using defaults
       minItems: 1,
       maxItems: 5,
-      ignoreMissingRefs: true, // This helps prevent errors with missing references
-      failOnInvalidFormat: false, // This prevents failures due to unrecognized formats
-      maxLength: 4096, // Adjust as needed for your use case
+      ignoreMissingRefs: true, // Prevent errors with missing references
+      failOnInvalidFormat: false, // Prevent failures due to unrecognized formats
+      maxLength: 4096,
       minLength: 1,
+      useExamplesValue: false, // Don't use example values from the schema
+      random: () => 0.5,
     });
 
     const newWorkflowTestResult = await nodes.reduce(
