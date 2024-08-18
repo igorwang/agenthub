@@ -24,14 +24,33 @@ async function fetchLibraryData() {
   );
 }
 
-export default async function LibrarySideBarContainer() {
+async function refreshLibraryData() {
+  "use server";
+  const data = await fetchLibraryData();
+  // revalidatePath("/library"); // Adjust the path as needed
+  return data?.knowledge_base || [];
+}
+
+interface LibrarySideBarContainerProps {
+  params: {
+    id?: string;
+  };
+}
+
+export default async function LibrarySideBarContainer({
+  params,
+}: LibrarySideBarContainerProps) {
   const data = await fetchLibraryData();
 
   if (!data) return null;
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <LibrarySideBar items={data.knowledge_base || []} />
+      <LibrarySideBar
+        items={data.knowledge_base || []}
+        refreshAction={refreshLibraryData}
+        currentLibraryId={params?.id}
+      />
     </Suspense>
   );
 }

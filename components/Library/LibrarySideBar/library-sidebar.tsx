@@ -9,14 +9,16 @@ import { Icon } from "@iconify/react";
 import { Divider, Tooltip } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { startTransition, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface LibrarySideBarProps {
   items: KnowledgeBaseFragmentFragment[];
+  refreshAction: () => Promise<KnowledgeBaseFragmentFragment[]>;
+  currentLibraryId?: string;
 }
 
-export default function LibrarySideBar({ items }: LibrarySideBarProps) {
+export default function LibrarySideBar({ items, refreshAction }: LibrarySideBarProps) {
   const [listItems, setListItems] = useState(items);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const router = useRouter();
@@ -25,10 +27,18 @@ export default function LibrarySideBar({ items }: LibrarySideBarProps) {
   const userId = sessionData?.user?.id;
   const params: { id: string } = useParams();
 
+  async function handleRefresh() {
+    startTransition(async () => {
+      const refreshedItems = await refreshAction();
+      setListItems(refreshedItems);
+    });
+  }
+
   useEffect(() => {
     if (params.id) {
       setSelectedItemId(params.id);
     }
+    handleRefresh();
     // } else if (listItems.length > 0 && selectedItemId === null) {
     //   setSelectedItemId(listItems[0].id);
     //   router.push(`/library/${listItems[0].id}`);
