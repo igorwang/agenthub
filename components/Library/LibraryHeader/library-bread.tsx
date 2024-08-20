@@ -1,7 +1,7 @@
 "use client";
 import { BreadcrumbItem, Breadcrumbs } from "@nextui-org/react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 interface LibraryBreadcrumbsProps {
   libraryId: string;
@@ -9,7 +9,10 @@ interface LibraryBreadcrumbsProps {
 
 export default function LibraryBreadcrumbs({ libraryId }: LibraryBreadcrumbsProps) {
   const pathname = usePathname();
-  let currentPage: "files" | "settings" | "workflow";
+  const searchParams = useSearchParams();
+
+  let currentPage: "files" | "settings" | "workflow" | "file-detail";
+  let filename = "";
 
   switch (true) {
     case pathname.endsWith("/settings"):
@@ -18,26 +21,40 @@ export default function LibraryBreadcrumbs({ libraryId }: LibraryBreadcrumbsProp
     case pathname.endsWith("/workflow"):
       currentPage = "workflow";
       break;
+    case pathname.includes("/chunk"):
+      currentPage = "file-detail";
+      filename = searchParams.get("filename") || "";
+      break;
     default:
       currentPage = "files";
   }
+
   return (
     <Breadcrumbs
-      hideSeparator
-      disableAnimation
+      separator="/"
       classNames={{
         list: "gap-2",
       }}
       itemClasses={{
         item: [
           "px-2 py-0.5 rounded-small",
-          "border-1", // 默认无边框
+          "border-1",
           "data-[current=true]:border-1 data-[current=true]:border-default-800 data-[current=true]:bg-foreground data-[current=true]:text-background",
           "transition-colors",
         ],
+        separator: "px-2",
       }}>
-      <BreadcrumbItem key="files" isCurrent={currentPage === "files"}>
-        <Link href={`/library/${libraryId}`}>Files</Link>
+      <BreadcrumbItem
+        key="files"
+        isCurrent={currentPage === "files" || currentPage === "file-detail"}>
+        <Link href={`/library/${libraryId}`} className="hover:underline">
+          Files
+        </Link>
+        {currentPage === "file-detail" && (
+          <span className="ml-1 max-w-sm overflow-hidden text-ellipsis">
+            / {filename}
+          </span>
+        )}
       </BreadcrumbItem>
       <BreadcrumbItem key="settings" isCurrent={currentPage === "settings"}>
         <Link href={`/library/${libraryId}/settings`}>Settings</Link>

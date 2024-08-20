@@ -19,6 +19,7 @@ import {
   ModalContent,
   ModalHeader,
 } from "@nextui-org/react";
+import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -42,6 +43,8 @@ export default function LibraryFileList({
   const [selectedFile, setSelectFile] = useState<File | null>();
   const [deleteFileById] = useDeleteFileByIdMutation();
   const [reprocessingFiles, setReprocessingFiles] = useState<Set<string>>(new Set());
+  const router = useRouter();
+  const pathname = usePathname();
 
   const pageSize = 10;
   const [files, setFiles] = useState<FilesListQuery["files"]>(initialFiles?.files || []);
@@ -87,9 +90,9 @@ export default function LibraryFileList({
   };
 
   const handleViewFile = useCallback((file: FileDTO) => {
-    console.log("Viewing file:", file.name);
+    router.push(`${pathname}/chunk?filename=${file.name}&fileId=${file.id}`);
     // 实现查看文件的逻辑
-    toast.error("Wating for implement");
+    // toast.error("Wating for implement");
   }, []);
 
   const handleRedoFile = useCallback(

@@ -56,6 +56,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
     handleSubmit,
     formState: { errors },
     trigger,
+    watch,
   } = useForm<Knowledge_Base_Set_Input>({
     defaultValues: {
       name: initLibrary?.name || "",
@@ -76,6 +77,8 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
     },
     mode: "onChange",
   });
+
+  const mode = watch("mode");
 
   const onSubmit = async (data: Knowledge_Base_Set_Input) => {
     try {
@@ -179,7 +182,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
               </Switch>
             )}
           />
-          <Controller
+          {/* <Controller
             name="model_name"
             control={control}
             render={({ field }) => (
@@ -191,88 +194,11 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
                 }}
               />
             )}
-          />
+          /> */}
         </div>
       </div>
       <Divider className="my-2" />
-      {/* 索引配置 */}
-      <div className="mb-6">
-        <div className="mb-2 flex flex-row items-center gap-2">
-          <Icon icon={"solar:graph-broken"} fontSize={20} />
-          <h3 className="text-lg font-semibold">Indexing Configuration</h3>
-        </div>
-        <div className="flex flex-col gap-4">
-          <Controller
-            name="chunking_strategy"
-            control={control}
-            render={({ field }) => (
-              <Select
-                label="Chunking Strategy"
-                labelPlacement="outside"
-                placeholder="Select your chunking strategy for this library"
-                selectedKeys={field.value ? [field.value] : ["length"]}
-                disallowEmptySelection={false}
-                onSelectionChange={(keys) => {
-                  field.onChange(Array.from(keys)[0] || null);
-                }}>
-                {Object.values(Chunking_Strategy_Enum).map((strategy) => (
-                  <SelectItem key={strategy} value={strategy}>
-                    {strategy}
-                  </SelectItem>
-                ))}
-              </Select>
-            )}
-          />
-          <Controller
-            name="chunking_parameters"
-            control={control}
-            render={({ field }) => (
-              <div>
-                <label className="font-sans text-sm text-gray-900">
-                  Chunking Parameters
-                </label>
-                <JsonEditor
-                  collapse={true} // This will collapse the editor by default
-                  maxWidth={400}
-                  data={field.value}
-                  onUpdate={({ newData }) => {
-                    const valid = chunkingStrategyValidate(newData);
-                    if (!valid) {
-                      const errorMessage = chunkingStrategyValidate.errors
-                        ?.map(
-                          (error) =>
-                            `${error.instancePath}${error.instancePath ? ": " : ""}${error.message}`,
-                        )
-                        .join("\n");
-                      toast.error(`Not compliant with JSON Schema:${errorMessage}`);
-                      return "JSON Schema error";
-                    }
-                    field.onChange(newData);
-                  }}
-                  rootName=""
-                />
-              </div>
-            )}
-          />
-          <Controller
-            name="embedding_model"
-            control={control}
-            render={({ field }) => (
-              <ModelSelect
-                label="Embedding model"
-                modelType="embedding"
-                labelPlacement="outside"
-                isRequired={false}
-                defaultModel={field.value as string}
-                onSelectionChange={(modelName) => field.onChange(modelName || null)}
-              />
-            )}
-          />
-        </div>
-      </div>
-      <Divider className="my-2" />
-      {/* 文档结构配置 */}
-      <div className="mb-6">
+      <div className="mb-4">
         <div className="mb-4 flex flex-row items-center gap-2">
           <Icon icon={"solar:document-add-linear"} fontSize={20} />
           <h3 className="text-lg font-semibold">Document Structure</h3>
@@ -344,34 +270,85 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
           />
         </div> */}
       </div>
-      {/* <Divider className="my-2" /> */}
-
-      {/* 高级功能配置 */}
-      {/* <Accordion defaultChecked={isAdvancedOpen}>
-        <AccordionItem
-          key="advanced"
-          aria-label="Advanced Features"
-          title="Advanced Features"
-          startContent={
-            <Icon icon={"material-symbols-light:add-chart-outline"} fontSize={24} />
-          }
-          classNames={{ title: "text-lg font-semibold pl-0" }}>
-          <div className="flex flex-col gap-2">
+      {/* 索引配置 */}
+      {mode === "simple" && (
+        <div className="mb-6">
+          <div className="mb-2 flex flex-row items-center gap-2">
+            <Icon icon={"solar:graph-broken"} fontSize={20} />
+            <h3 className="text-lg font-semibold">Indexing Configuration</h3>
+          </div>
+          <div className="flex flex-col gap-4">
             <Controller
-              name="is_extraction"
+              name="chunking_strategy"
               control={control}
-              render={({ field: { value, onChange } }) => (
-                <Switch
-                  size={"sm"}
-                  isSelected={value as boolean}
-                  onValueChange={onChange}>
-                  Enable Extraction Process
-                </Switch>
+              render={({ field }) => (
+                <Select
+                  label="Chunking Strategy"
+                  labelPlacement="outside"
+                  placeholder="Select your chunking strategy for this library"
+                  selectedKeys={field.value ? [field.value] : ["length"]}
+                  disallowEmptySelection={false}
+                  onSelectionChange={(keys) => {
+                    field.onChange(Array.from(keys)[0] || null);
+                  }}>
+                  {Object.values(Chunking_Strategy_Enum).map((strategy) => (
+                    <SelectItem key={strategy} value={strategy}>
+                      {strategy}
+                    </SelectItem>
+                  ))}
+                </Select>
+              )}
+            />
+            <Controller
+              name="chunking_parameters"
+              control={control}
+              render={({ field }) => (
+                <div>
+                  <label className="font-sans text-sm text-gray-900">
+                    Chunking Parameters
+                  </label>
+                  <JsonEditor
+                    collapse={true} // This will collapse the editor by default
+                    maxWidth={400}
+                    data={field.value}
+                    onUpdate={({ newData }) => {
+                      const valid = chunkingStrategyValidate(newData);
+                      if (!valid) {
+                        const errorMessage = chunkingStrategyValidate.errors
+                          ?.map(
+                            (error) =>
+                              `${error.instancePath}${error.instancePath ? ": " : ""}${error.message}`,
+                          )
+                          .join("\n");
+                        toast.error(`Not compliant with JSON Schema:${errorMessage}`);
+                        return "JSON Schema error";
+                      }
+                      field.onChange(newData);
+                    }}
+                    rootName=""
+                  />
+                </div>
+              )}
+            />
+            <Controller
+              name="embedding_model"
+              control={control}
+              render={({ field }) => (
+                <ModelSelect
+                  label="Embedding model"
+                  modelType="embedding"
+                  labelPlacement="outside"
+                  isRequired={false}
+                  defaultModel={field.value as string}
+                  onSelectionChange={(modelName) => field.onChange(modelName || null)}
+                />
               )}
             />
           </div>
-        </AccordionItem>
-      </Accordion> */}
+        </div>
+      )}
+
+      <Divider className="my-2" />
 
       <div className="flex items-end justify-end gap-2 pb-1">
         {/* <span className="text-foreground-500">Library Information</span> */}
