@@ -8,20 +8,29 @@ import { toast } from "sonner";
 import { v4 } from "uuid";
 
 export type UploadZoneProps = {
+  maxNumberOfFile?: number;
   knowledgeBaseId?: string;
   onAfterUpload?: () => void;
+  onFileUploadCallback?: (files: { id: string | number; name: string }[]) => void;
 };
 
-export default function UploadZone({ knowledgeBaseId, onAfterUpload }: UploadZoneProps) {
+export default function UploadZone({
+  knowledgeBaseId,
+  maxNumberOfFile = 10,
+  onAfterUpload,
+  onFileUploadCallback,
+}: UploadZoneProps) {
   const [files, setFiles] = useState<ExtFile[]>([]);
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
   const session = useSession();
+
   const updateFiles = (incommingFiles: ExtFile[]) => {
+    const fileId = `${v4()}`;
     const files = incommingFiles.map((item) => {
       if (item) {
         const fileType = item.name?.split(".").pop() || "default";
-        return { ...item, imageUrl: getFileImage(fileType) };
+        return { ...item, imageUrl: getFileImage(fileType), id: fileId };
       }
       return item;
     });
@@ -52,6 +61,7 @@ export default function UploadZone({ knowledgeBaseId, onAfterUpload }: UploadZon
   const handleClear = () => {
     setFiles([]);
   };
+
   const handleUploadStart = async () => {
     setIsUploading(true);
     setFiles(
@@ -62,12 +72,13 @@ export default function UploadZone({ knowledgeBaseId, onAfterUpload }: UploadZon
     );
 
     const uploadSingleFile = async (file: ExtFile) => {
+      const fileId = v4();
       const ext = file.name?.split(".").pop();
-      const fileName = `${v4()}.${ext}`;
+      const objectName = `knowledge_base/${knowledgeBaseId}/${fileId}.${ext}`;
 
       const body = {
         bucket: "chat",
-        objectName: `knowledge_base/${knowledgeBaseId}/${fileName}`,
+        objectName: objectName,
         contentType: file.type || "application/octet-stream",
         metadata: {
           fileName: file.name,
@@ -98,16 +109,21 @@ export default function UploadZone({ knowledgeBaseId, onAfterUpload }: UploadZon
           if (!uploadResponse.ok) {
             throw new Error("Failed to upload file");
           }
+
           setFiles((prevFiles) =>
             prevFiles.map((item) =>
-              item.id === file.id ? { ...item, uploadStatus: "success" } : item,
+              item.id === file.id
+                ? { ...item, uploadStatus: "success", id: fileId }
+                : item,
             ),
           );
 
           return {
             ...file,
+            id: fileId,
             uploadUrl: presignedPutUrl,
             uploadStatus: "success",
+            objectName: objectName,
           };
         } else {
           throw new Error("Failed to get presigned URL");
@@ -118,6 +134,7 @@ export default function UploadZone({ knowledgeBaseId, onAfterUpload }: UploadZon
         return {
           ...file,
           uploadStatus: "Failed",
+          objectName: objectName,
         };
       }
     };
@@ -131,9 +148,14 @@ export default function UploadZone({ knowledgeBaseId, onAfterUpload }: UploadZon
 
     handleUploadFiles(files)
       .then((updatedFiles) => {
+        const callbackFiles = updatedFiles.map((item) => ({
+          id: item.id || "",
+          name: item.file?.name || "",
+        }));
         toast.success(
           "Files uploaded successfully! AI will take a little time to process.",
         );
+        onFileUploadCallback?.(callbackFiles);
       })
       .catch((error) => {
         console.error("Error uploading files:", error);
@@ -150,7 +172,7 @@ export default function UploadZone({ knowledgeBaseId, onAfterUpload }: UploadZon
         value={files}
         accept=".doc,.docx,.pdf,.ppt,.pptx,.xls,.xlsx,.txt,.json"
         label="Drop or Click to upload your files"
-        maxFiles={20}
+        maxFiles={maxNumberOfFile}
         maxFileSize={20 * 1024 * 1024}
         footer={false}
         header={false}>

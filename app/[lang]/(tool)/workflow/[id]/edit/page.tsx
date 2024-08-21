@@ -57,6 +57,7 @@ export default async function EditWorkflowPage({ params }: Props) {
   return (
     <div className="container mx-auto p-4">
       <WorkflowForm
+        workflowType="library"
         initialData={initialData}
         action={updateWorkflow}
         nodeTypeList={nodeTypeList?.node_type || []}

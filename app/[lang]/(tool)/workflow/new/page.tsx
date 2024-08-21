@@ -27,6 +27,7 @@ export default async function NewWorkflowPage() {
   return (
     <div className="container mx-auto p-4">
       <WorkflowForm
+        workflowType="library"
         initialData={{ id: flowId, name: "new flow", description: "" }}
         action={createNewWorkflow}
         nodeTypeList={nodeTypeList?.node_type || []}

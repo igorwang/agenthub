@@ -71,6 +71,8 @@ export default async function LibraryWorkflowPage({
   return (
     <div className="mx-auto h-full w-full min-w-[600px] px-20">
       <WorkflowForm
+        knowledgeBaseId={params.id}
+        workflowType="library"
         initialData={initialData}
         action={bindWorkflowToLibraryWithId}
         nodeTypeList={nodeTypeList?.node_type || []}
