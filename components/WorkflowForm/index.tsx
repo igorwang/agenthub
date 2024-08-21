@@ -7,11 +7,11 @@ import {
   FlowNodeFragmentFragment,
   NodeTypeFragmentFragment,
 } from "@/graphql/generated/types";
-import { Button, Input } from "@nextui-org/react";
+import { Button, Input, Spacer } from "@nextui-org/react";
 import { Edge, Node } from "@xyflow/react";
 import "@xyflow/react/dist/base.css";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -31,8 +31,8 @@ type FormValues = {
   id: string;
   name: string;
   description: string;
-  nodes?: Node[];
-  edges?: Edge[];
+  nodes: Node[];
+  edges: Edge[];
 };
 
 export default function WorkflowForm({
@@ -42,35 +42,33 @@ export default function WorkflowForm({
 }: WorkflowFormProps) {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
-  const [inputValue, setInputValue] = useState("");
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   const flowId = initialData.id;
 
-  const initialNodes = initialData?.nodes
-    ? initialData.nodes.map((item) => ({
+  const initialNodes = useMemo(
+    () =>
+      initialData?.nodes?.map((item) => ({
         id: item.id,
         position: { x: item.position_x, y: item.position_y },
         type: item.node_type.type,
         data: { ...item.data },
-      }))
-    : [];
+      })) || [],
+    [initialData?.nodes],
+  );
 
-  const initialEdges = initialData?.edges
-    ? initialData.edges.map((item) => ({
+  const initialEdges = useMemo(
+    () =>
+      initialData?.edges?.map((item) => ({
         id: item.id,
         source: item.source_id,
         target: item.target_id,
         sourceHandle: item.sourceHandle,
-      }))
-    : [];
+      })) || [],
+    [initialData?.edges],
+  );
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-    setValue,
-  } = useForm<FormValues>({
+  const { control, handleSubmit, setValue, watch } = useForm<FormValues>({
     defaultValues: {
       id: flowId,
       name: initialData?.name || "",
@@ -79,54 +77,69 @@ export default function WorkflowForm({
       edges: initialEdges,
     },
   });
-  const onSubmit: SubmitHandler<FormValues> = async (data, event) => {
-    event?.preventDefault();
-    const formData = new FormData();
+  const currentNodes = watch("nodes");
+  const currentEdges = watch("edges");
 
-    formData.append("id", data.id);
-    formData.append("name", data.name);
-    formData.append("description", data.description);
-    formData.append("nodes", JSON.stringify(data.nodes));
-    formData.append("edges", JSON.stringify(data.edges));
+  const onSubmit: SubmitHandler<FormValues> = useCallback(
+    async (data) => {
+      const formData = new FormData();
+      formData.append("id", data.id);
+      formData.append("name", data.name);
+      formData.append("description", data.description);
+      formData.append("nodes", JSON.stringify(data.nodes));
+      formData.append("edges", JSON.stringify(data.edges));
 
-    const result = await action(formData);
-    if (result.success) {
+      const result = await action(formData);
+      if (result.success) {
+        toast.success("Save workflow success");
+        setHasUnsavedChanges(false);
+      } else {
+        toast.error("Create error");
+      }
+    },
+    [action],
+  );
+
+  const handleWorkflowChange = useCallback(
+    (newNodes: Node[], newEdges: Edge[]) => {
+      console.log("Workflow changed:", { newNodes, newEdges });
+      const hasNodeChanges = JSON.stringify(newNodes) !== JSON.stringify(currentNodes);
+      const hasEdgeChanges = JSON.stringify(newEdges) !== JSON.stringify(currentEdges);
+
+      if (hasNodeChanges) {
+        setValue("nodes", newNodes);
+      }
+      if (hasEdgeChanges) {
+        setValue("edges", newEdges);
+      }
+    },
+    [setValue, currentNodes, currentEdges],
+  );
+
+  const handleRunWorkflow = useCallback(() => {
+    if (hasUnsavedChanges) {
+      toast.warning("Please save your changes before running the workflow");
     } else {
-      toast.error("Create error");
+      toast.info("Running workflow...");
     }
-
-    if (result.success) {
-      toast.success("Save workflow success");
-      // router.push(`/workflow/${flowId}/edit`);
-    }
-  };
-
-  const handleWorkflowChange = (nodes: Node[], edges: Edge[]) => {
-    console.log("handleWorkflowChange", nodes, edges);
-    setValue("nodes", nodes);
-    setValue("edges", edges);
-  };
+  }, [hasUnsavedChanges]);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="relative flex flex-col gap-4">
       <Controller
-        name={"name"}
+        name="name"
         control={control}
-        rules={{ required: "name  is required" }}
+        rules={{ required: "name is required" }}
         render={({ field }) => (
           <div className="max-w-1/2 w-[300px]">
             {isEditing ? (
               <Input
                 autoFocus
                 {...field}
-                onBlur={(e) => {
-                  field.onBlur();
-                  setIsEditing(false);
-                }}
+                onBlur={() => setIsEditing(false)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    e.preventDefault(); // 防止表单提交
-                    field.onBlur(); // 触发 react-hook-form 的 onBlur
+                    e.preventDefault();
                     setIsEditing(false);
                   }
                 }}
@@ -141,9 +154,6 @@ export default function WorkflowForm({
           </div>
         )}
       />
-      {errors.name && (
-        <p className="mt-1 text-sm text-red-500">{errors.name.message as string}</p>
-      )}
 
       <div className="flex w-full flex-row gap-2">
         <NodeTypeList nodeTypeList={nodeTypeList} />
@@ -152,25 +162,27 @@ export default function WorkflowForm({
             flowId={flowId}
             initialEdges={initialEdges}
             initialNodes={initialNodes}
-            onWorkflowChange={handleWorkflowChange}></WorkflowPane>
+            onWorkflowChange={handleWorkflowChange}
+            onEditStatusChange={() => setHasUnsavedChanges(true)}
+          />
         </div>
       </div>
 
       <form className="flex justify-end" onSubmit={handleSubmit(onSubmit)}>
-        <Button type="submit" color="primary" className="">
-          {"Save Workflow"}
+        <Button color="secondary" onClick={handleRunWorkflow} className="mr-2">
+          Run Workflow Test
+        </Button>
+        <Spacer />
+        <Button type="submit" color="primary">
+          Save Workflow
         </Button>
       </form>
-      {/* <div className="flex flex-row">
-        <div className="w-1/2">
-          <JsonTreeRenderer jsonData={defaultDocumentSchemaExample}></JsonTreeRenderer>
-        </div>
-        <div className="w-full">
-          <JsonExpressionInput
-            onSubmit={() => {}}
-            jsonData={defaultDocumentSchemaExample}></JsonExpressionInput>
-        </div>
-      </div> */}
+
+      {hasUnsavedChanges && (
+        <p className="absolute bottom-0 left-0 text-sm text-yellow-600">
+          You have unsaved changes.
+        </p>
+      )}
     </div>
   );
 }

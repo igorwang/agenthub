@@ -32,6 +32,7 @@ interface WorkflowPaneProps {
   initialNodes: Node[];
   initialEdges: Edge[];
   onWorkflowChange?: (nodes: Node[], edges: Edge[]) => void;
+  onEditStatusChange?: () => void;
 }
 
 function Flow({
@@ -39,6 +40,7 @@ function Flow({
   initialNodes,
   initialEdges,
   onWorkflowChange,
+  onEditStatusChange,
 }: WorkflowPaneProps) {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -181,6 +183,7 @@ function Flow({
         };
         return addEdge(newEdge, eds);
       });
+      onEditStatusChange?.();
     },
     [setEdges],
   );
@@ -241,6 +244,7 @@ function Flow({
       };
       setNodes((nds) => nds.concat(newNode));
       setSelectedNode(newNode);
+      onEditStatusChange?.();
       // setOpenDrawer(true);
     },
     [screenToFlowPosition, flowId, setNodes],
@@ -301,6 +305,7 @@ function Flow({
         return n;
       }),
     );
+    onEditStatusChange?.();
   };
 
   return (
