@@ -94,7 +94,7 @@ const LibraryListItem = React.forwardRef<HTMLDivElement, LibraryListItemProps>(
                 {library?.name}
               </h3>
             </div>
-            <p className="... max-h-20 overflow-auto text-ellipsis text-small text-default-500">
+            <p className="... custom-scrollbar max-h-20 overflow-auto text-ellipsis text-small text-default-500">
               {library?.description || "No description"}
             </p>
 
