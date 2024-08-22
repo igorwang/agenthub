@@ -40,7 +40,7 @@ const ReturnButton: React.FC<ReturnButtonProps> = ({ onClick, isVisible }) => {
       variant="light"
       size="sm"
       startContent={<Icon icon="mdi:arrow-left" />}
-      className="h-auto min-h-0 justify-start font-normal hover:bg-transparent active:bg-transparent data-[hover]:bg-transparent"
+      className="h-auto min-h-0 justify-start font-normal data-[hover]:bg-transparent hover:bg-transparent active:bg-transparent"
       onClick={onClick}>
       Return to Agent List
     </Button>

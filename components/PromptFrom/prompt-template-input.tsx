@@ -115,7 +115,7 @@ const PromptTemplateInput = React.forwardRef<
             <Button
               isIconOnly
               variant="light"
-              className="absolute right-0 top-0 hidden hover:cursor-pointer group-hover:block data-[hover=true]:bg-transparent"
+              className="absolute right-0 top-0 hidden group-hover:block data-[hover=true]:bg-transparent hover:cursor-pointer"
               onClick={() => handleDeleteMessage && handleDeleteMessage(template.id)}
               startContent={<DeleteOutlineIcon />}></Button>
           }

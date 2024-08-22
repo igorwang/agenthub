@@ -74,7 +74,7 @@ export const UploadFile = React.forwardRef<HTMLDivElement, UploadFileProps>(
         )}>
         {removeFileHandler && (
           <DeleteIcon
-            className="absolute right-0 top-0 m-1 hidden size-4 -translate-y-1/2 translate-x-1/2 transform rounded-full border border-gray-400 hover:cursor-pointer hover:border-gray-600 group-hover:block"
+            className="absolute right-0 top-0 m-1 hidden size-4 -translate-y-1/2 translate-x-1/2 transform rounded-full border border-gray-400 group-hover:block hover:cursor-pointer hover:border-gray-600"
             onClick={() => removeFileHandler(key)}
           />
         )}
