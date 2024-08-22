@@ -8,6 +8,7 @@ subscription SubExecuteResults(
     results
     file_id
     error_message
+    status
     created_at
     updated_at
   }

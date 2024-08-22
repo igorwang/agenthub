@@ -1,4 +1,8 @@
-import { Order_By, useSubExecuteResultsSubscription } from "@/graphql/generated/types";
+import {
+  Order_By,
+  Status_Enum,
+  useSubExecuteResultsSubscription,
+} from "@/graphql/generated/types";
 import { TaskRunResult } from "@/restful/generated";
 import { Icon } from "@iconify/react";
 import { Button, Tab, Tabs, Tooltip } from "@nextui-org/react";
@@ -19,6 +23,7 @@ export default function LibraryWorkflowRunningPane({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [expandedSteps, setExpandedSteps] = useState<{ [key: number]: boolean }>({});
   const [isRetrying, setIsRetrying] = useState(false);
+  const [status, setStatus] = useState<Status_Enum | null>(null);
 
   const { data, loading, error } = useSubExecuteResultsSubscription({
     variables: {
@@ -37,10 +42,12 @@ export default function LibraryWorkflowRunningPane({
 
   useEffect(() => {
     if (data && data.execute_results && data.execute_results.length > 0) {
+      console.log("execute_results", data.execute_results);
       setResults(data.execute_results[0].results);
       setErrorMessage(data.execute_results[0].error_message || null);
       setExecuteId(data.execute_results[0].id || null);
       setIsRetrying(false);
+      setStatus(data.execute_results[0].status || null);
     }
   }, [data]);
 
@@ -79,15 +86,6 @@ export default function LibraryWorkflowRunningPane({
   }, [fileId, fileName]);
 
   const renderExecutionFlow = () => {
-    if (isRetrying && !results) {
-      return (
-        <div className="flex items-center justify-center p-8">
-          <Icon icon="eos-icons:loading" className="mr-2 h-6 w-6 animate-spin" />
-          <span className="text-lg font-medium">Running workflow...</span>
-        </div>
-      );
-    }
-
     if (
       !results ||
       !results.topological_order ||
@@ -193,6 +191,12 @@ export default function LibraryWorkflowRunningPane({
         </div>
       )}
       {renderExecutionFlow()}
+      {status == Status_Enum.Running ? (
+        <div className="flex items-center justify-center p-8">
+          <Icon icon="eos-icons:loading" className="mr-2 h-6 w-6 animate-spin" />
+          <span className="text-lg font-medium">Running...</span>
+        </div>
+      ) : null}
     </div>
   );
 }
