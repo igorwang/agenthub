@@ -15,8 +15,12 @@ const LibraryList: React.FC<LibraryListProps> = ({
   onItemClick,
 }) => {
   return (
-    <div className="group h-full overflow-auto">
-      {/* <ScrollShadow className="w-full border-default-200 px-1 scrollbar-hide"> */}
+    <div
+      className={cn(
+        "h-full overflow-auto",
+        "scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent",
+        "scrollbar-none hover:scrollbar-default",
+      )}>
       <Listbox
         aria-label="Actions"
         //   onAction={(key) => router.push("/library/" + key.toString())}
@@ -38,7 +42,6 @@ const LibraryList: React.FC<LibraryListProps> = ({
           </ListboxItem>
         ))}
       </Listbox>
-      {/* </ScrollShadow> */}
     </div>
   );
 };
