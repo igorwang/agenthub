@@ -250,7 +250,7 @@ export default function WorkflowForm({
         </div>
         {testFile && isWorkflowRunOpen && (
           <div className="flex-1 overflow-hidden border-1">
-            <div className="h-full overflow-auto">
+            <div className="custom-scrollbar h-full overflow-auto">
               <LibraryWorkflowRunningPane
                 fileId={testFile.id}
                 fileName={testFile.filename}

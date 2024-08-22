@@ -272,17 +272,17 @@ export default function PromptInputWithFaq({
   );
 
   return (
-    <div className="flex w-full max-w-full flex-col items-center overflow-auto px-2">
+    <div className="flex w-full max-w-full flex-col items-center px-2">
       <ScrollShadow
         hideScrollBar
-        className="flex max-w-full flex-nowrap gap-2 overflow-auto"
+        className="flex max-w-full flex-nowrap gap-2 overflow-auto scrollbar-none"
         orientation="horizontal">
         <div className="flex gap-2 pb-2">
           {selectedSources?.map((item, index) => (
             <Tooltip key={index} content={item.fileName}>
               <div className="flex items-center gap-2 rounded-full bg-default-100 px-3 py-2 transition-colors hover:bg-default-200">
                 <FileIcon fileExtension={item.ext || "Unknow"} />
-                <p className="max-w-[200px] overflow-hidden text-ellipsis text-nowrap">
+                <p className="max-w-[200px] overflow-hidden text-ellipsis text-nowrap scrollbar-none">
                   {item.fileName}
                 </p>
                 <Icon
@@ -297,11 +297,11 @@ export default function PromptInputWithFaq({
         </div>
       </ScrollShadow>
       <form className="flex w-full flex-col items-start rounded-medium bg-default-100 transition-colors hover:bg-default-200/70">
-        <ScrollShadow
+        {/* <ScrollShadow
           className="flex w-full flex-row flex-nowrap gap-2"
           orientation="horizontal">
           {uploadFileListElement}
-        </ScrollShadow>
+        </ScrollShadow> */}
         <PromptInput
           classNames={{
             inputWrapper: "!bg-transparent shadow-none",
@@ -320,7 +320,7 @@ export default function PromptInputWithFaq({
           variant="flat"
           onValueChange={setPrompt}
         />
-        <div className="flex items-center justify-between gap-2 overflow-scroll px-4 pb-4">
+        <div className="flex items-center justify-between gap-2 px-4 pb-4">
           <div className="flex gap-1 md:gap-3">
             <input
               type="file"

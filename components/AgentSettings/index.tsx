@@ -133,7 +133,7 @@ export default function AgentSettings({
   return (
     <div className="flex h-screen flex-col">
       <RightHeader title={"Agent Setting"} callBackUri={`/chat/${id}`} />
-      <div className="flex-grow overflow-auto">
+      <div className="flex-grow overflow-auto scrollbar-none">
         <div className="mx-auto mt-10 flex w-full flex-col items-center px-4">
           <HorizontalSteps
             currentStep={step}
