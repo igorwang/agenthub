@@ -299,7 +299,7 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
       </div>
       <div className="relative max-w-[400px]">
         {parsedExpression && (
-          <div className="max-h-[300px] max-w-full overflow-auto">
+          <div className="custom-scrollbar max-h-[300px] max-w-full overflow-auto">
             <div className="overflow-wrap-anywhere whitespace-pre-wrap break-words px-2 py-1 text-sm text-gray-500">
               {parsedExpression}
             </div>

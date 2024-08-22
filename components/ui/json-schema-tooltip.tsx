@@ -16,13 +16,13 @@ const JsonSchemaTooltip: React.FC<JsonSchemaTooltipProps> = ({
   iconSize = 24,
 }) => {
   const tooltipContent = (
-    <div className="max-h-[300px] max-w-xs overflow-y-auto">
+    <div className="custom-scrollbar max-h-[300px] max-w-xs overflow-y-auto">
       <h4 className="mb-2 font-bold">{title}</h4>
       <div className="whitespace-pre-wrap">{content}</div>
       {format && (
         <div className="mt-2">
           <h5 className="mb-1 font-semibold">Example:</h5>
-          <pre className="overflow-auto rounded bg-gray-100 p-2 text-xs">
+          <pre className="custom-scrollbar overflow-auto rounded bg-gray-100 p-2 text-xs">
             {JSON.stringify(JSON.parse(format), null, 2)}
           </pre>
         </div>

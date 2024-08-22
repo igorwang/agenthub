@@ -42,13 +42,13 @@ export default function NodeDrawer({
       className="!w-[1024px]" // 使用 !important 来覆盖默认样式
     >
       <div className="flex h-full w-full">
-        <div className="my-10 w-1/3 overflow-auto px-2">
+        <div className="custom-scrollbar my-10 w-1/3 overflow-auto px-2">
           <InputSelectionPane
             nodes={prevNodes || []}
             workflowTestResult={workflowTestResult}
           />
         </div>
-        <div className="w-1/3 overflow-auto">
+        <div className="custom-scrollbar w-1/3 overflow-auto">
           <FormComponent
             key={node.id}
             node={node}
@@ -58,7 +58,7 @@ export default function NodeDrawer({
             workflowTestResult={workflowTestResult}
           />
         </div>
-        <div className="my-10 w-1/3 overflow-auto px-2">
+        <div className="custom-scrollbar my-10 w-1/3 overflow-auto px-2">
           <OutputPane node={node} />
         </div>
       </div>
