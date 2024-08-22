@@ -567,7 +567,7 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
                   onSelectionChange={(modelName, limit) => setSelectedModel(modelName)}
                   defaultModel={selectedModel}></ModelSelect>
               </div>
-              <div className="max-h-[600px] w-full overflow-scroll pb-16">
+              <div className="custom-scrollbar max-h-[600px] w-full overflow-auto pb-16">
                 {message && "Assistant:"}
                 <></>
                 <MarkdownRenderer content={message}></MarkdownRenderer>
