@@ -18,7 +18,7 @@ const LibraryList: React.FC<LibraryListProps> = ({
     <div
       className={cn(
         "h-full overflow-auto",
-        "scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent",
+        "scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300",
         "scrollbar-none hover:scrollbar-default",
       )}>
       <Listbox
