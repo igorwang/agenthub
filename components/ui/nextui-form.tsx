@@ -376,7 +376,7 @@ const CustomChunkingSelectField: React.FC<FieldProps> = (props) => {
   }, [formData, required, onChange]);
 
   return (
-    <div className="max-w-full overflow-auto">
+    <div className="max-w-full">
       <div className="flex flex-row items-center gap-1">
         <label htmlFor={id}>
           {schema.title || "Chunking Strategy"} {required ? "*" : ""}
