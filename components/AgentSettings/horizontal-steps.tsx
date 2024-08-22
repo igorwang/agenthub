@@ -153,7 +153,7 @@ const HorizontalSteps = React.forwardRef<HTMLButtonElement, HorizontalStepsProps
       <nav aria-label="Progress" className="max-w-fit">
         <ol
           className={cn(
-            "flex flex-row flex-nowrap overflow-x-scroll",
+            "custom-scrollbar flex flex-row flex-nowrap overflow-x-scroll",
             colors,
             className,
           )}>
