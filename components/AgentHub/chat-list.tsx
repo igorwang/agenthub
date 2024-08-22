@@ -14,7 +14,6 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  ScrollShadow,
 } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
@@ -162,7 +161,7 @@ export const ChatList: React.FC<ChatListProps> = ({
           key={group.id}
           classNames={{
             base: "max-w-xs",
-            list: "max-h-[300px] overflow-scroll",
+            list: "max-h-[300px] overflow-auto scrollbar-thin scrollbar-none scrollbar-track-transparent scrollbar-thumb-gray-300 hover:scrollbar-default",
           }}
           label="Assigned to"
           selectionMode="single"
@@ -250,10 +249,12 @@ export const ChatList: React.FC<ChatListProps> = ({
 
   return (
     <div className="flex flex-col">
-      <ScrollShadow className="flex-grow" size={0}>
-        {_renderModal()}
-        <div>{chatListContent}</div>
-      </ScrollShadow>
+      {/* <ScrollShadow
+        className="flex-grow"
+        size={0}> */}
+      <div>{chatListContent}</div>
+      {_renderModal()}
+      {/* </ScrollShadow> */}
       <ReturnButton onClick={handleReturn} isVisible={!chatListOpenStatus} />
     </div>
   );
