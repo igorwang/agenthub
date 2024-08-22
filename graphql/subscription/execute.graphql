@@ -1,0 +1,14 @@
+subscription SubExecuteResults(
+  $where: execute_results_bool_exp = {}
+  $limit: Int = 10
+  $order_by: [execute_results_order_by!] = {}
+) {
+  execute_results(where: $where, limit: $limit, order_by: $order_by) {
+    id
+    results
+    file_id
+    error_message
+    created_at
+    updated_at
+  }
+}

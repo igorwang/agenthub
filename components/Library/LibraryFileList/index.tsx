@@ -43,6 +43,8 @@ export default function LibraryFileList({
   const [selectedFile, setSelectFile] = useState<File | null>();
   const [deleteFileById] = useDeleteFileByIdMutation();
   const [reprocessingFiles, setReprocessingFiles] = useState<Set<string>>(new Set());
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
+
   const router = useRouter();
   const pathname = usePathname();
 
@@ -51,7 +53,6 @@ export default function LibraryFileList({
   const pages = Math.ceil(
     (initialFiles?.files_aggregate.aggregate?.count || 0) / pageSize,
   );
-  const [isUploadOpen, setIsUploadOpen] = useState(false);
 
   const queryVariables = useMemo(
     () => ({
