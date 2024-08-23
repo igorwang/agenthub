@@ -12,11 +12,13 @@ import { toast } from "sonner";
 interface LibraryWorkflowRunningPaneProps {
   fileId: string;
   fileName: string;
+  onNewFile?: () => void;
 }
 
 export default function LibraryWorkflowRunningPane({
   fileId,
   fileName,
+  onNewFile,
 }: LibraryWorkflowRunningPaneProps) {
   const [executeId, setExecuteId] = useState<string | null>(null);
   const [results, setResults] = useState<{ [key: string]: any } | null>(null);
@@ -84,6 +86,10 @@ export default function LibraryWorkflowRunningPane({
     }
     setIsRetrying(false);
   }, [fileId, fileName]);
+
+  const handleNewFile = () => {
+    onNewFile?.();
+  };
 
   const renderExecutionFlow = () => {
     if (
@@ -155,15 +161,23 @@ export default function LibraryWorkflowRunningPane({
     );
   };
 
-  // if (loading) return <div className="p-4">Loading...</div>;
-  // if (error) return <div className="p-4 text-red-500">Error: {error.message}</div>;
-
   return (
     <div className="max-h-full w-full overflow-auto p-4">
       <div className="mb-4 flex flex-row items-center justify-between">
         <h1 className="max-w-xl overflow-hidden text-ellipsis text-nowrap text-xl font-bold">
           Workflow input file: {fileName}
         </h1>
+        <Tooltip content="New File">
+          <Button
+            color="primary"
+            variant="bordered"
+            size="sm"
+            onClick={handleNewFile}
+            startContent={<Icon icon="mdi:file-plus" className="h-4 w-4" />}>
+            New File
+          </Button>
+        </Tooltip>
+
         <Tooltip content={isRetrying ? "Retrying..." : "Retry"}>
           <Button
             color="primary"

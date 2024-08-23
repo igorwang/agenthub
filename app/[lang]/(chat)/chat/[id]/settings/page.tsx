@@ -63,7 +63,7 @@ export default async function AgentSettingsPage({ params }: { params: { id: stri
   const bindWorkflowToAgentWithId = bindWorkflowToAgent.bind(null, params.id);
 
   return (
-    <div className="h-full w-full">
+    <div className="custom-scrollbar h-full w-full overflow-auto">
       <AgentSettings
         initialData={initialData}
         action={bindWorkflowToAgentWithId}

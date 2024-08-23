@@ -152,7 +152,11 @@ export default function WorkflowForm({
       toast.warning("Please save your changes before running the workflow");
     } else {
       if (workflowType == "library") {
-        setIsUploadOpen(true);
+        if (!testFile) {
+          setIsUploadOpen(true);
+        } else {
+          setIsWorkflowRunOpen(true);
+        }
       } else if (workflowType == "agent") {
         setIsWorkflowRunOpen(true);
       }
@@ -164,10 +168,6 @@ export default function WorkflowForm({
   }, []);
 
   const closeUploadModal = () => {
-    setIsUploadOpen(false);
-  };
-
-  const handleAfterUploadFile = () => {
     setIsUploadOpen(false);
   };
 
@@ -259,12 +259,16 @@ export default function WorkflowForm({
               <LibraryWorkflowRunningPane
                 fileId={testFile.id}
                 fileName={testFile.filename}
+                onNewFile={() => {
+                  setIsUploadOpen(true);
+                }}
               />
             </div>
           </div>
         )}
-        {agentId && isWorkflowRunOpen && (
-          <div className="custom-scrollbar flex-1 overflow-hidden border-1">
+        {agentId && (
+          <div
+            className={`custom-scrollbar flex-1 overflow-hidden border-1 ${isWorkflowRunOpen ? "visible" : "invisible"}`}>
             <Conversation agentId={agentId} hiddenHeader={true} isTestMode={true} />
           </div>
         )}
