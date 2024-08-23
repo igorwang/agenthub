@@ -266,9 +266,8 @@ export default function WorkflowForm({
             </div>
           </div>
         )}
-        {agentId && (
-          <div
-            className={`custom-scrollbar flex-1 overflow-hidden border-1 ${isWorkflowRunOpen ? "visible" : "invisible"}`}>
+        {agentId && isWorkflowRunOpen && (
+          <div className={`custom-scrollbar flex-1 overflow-hidden border-1`}>
             <Conversation agentId={agentId} hiddenHeader={true} isTestMode={true} />
           </div>
         )}
