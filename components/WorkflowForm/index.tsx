@@ -25,8 +25,10 @@ import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { Conversation } from "../Conversation";
 
 interface WorkflowFormProps {
+  agentId?: string;
   knowledgeBaseId?: string;
   workflowType: "library" | "agent";
   initialData: {
@@ -52,6 +54,7 @@ export default function WorkflowForm({
   knowledgeBaseId,
   workflowType,
   initialData,
+  agentId,
   action,
   nodeTypeList,
 }: WorkflowFormProps) {
@@ -150,6 +153,8 @@ export default function WorkflowForm({
     } else {
       if (workflowType == "library") {
         setIsUploadOpen(true);
+      } else if (workflowType == "agent") {
+        setIsWorkflowRunOpen(true);
       }
     }
   }, [hasUnsavedChanges, workflowType]);
@@ -235,7 +240,7 @@ export default function WorkflowForm({
           </Button>
         </form>
       </div>
-      <div className="flex h-[calc(100vh-200px)] w-full flex-row gap-2">
+      <div className="flex h-[calc(100vh-340px)] w-full flex-row gap-2">
         <div>
           <NodeTypeList nodeTypeList={nodeTypeList} />
         </div>
@@ -256,6 +261,11 @@ export default function WorkflowForm({
                 fileName={testFile.filename}
               />
             </div>
+          </div>
+        )}
+        {agentId && isWorkflowRunOpen && (
+          <div className="custom-scrollbar flex-1 overflow-hidden border-1">
+            <Conversation agentId={agentId} hiddenHeader={true} isTestMode={true} />
           </div>
         )}
       </div>

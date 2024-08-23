@@ -17,7 +17,7 @@ export const viewport: Viewport = {
 
 export default function ToolLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning={true}>
       <head />
       <body
         className={clsx(

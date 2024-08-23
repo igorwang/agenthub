@@ -98,6 +98,7 @@ export default function AgentSettings({
         return (
           <div className="h-[80vh] w-full min-w-[600px] px-20">
             <WorkflowForm
+              agentId={id}
               workflowType="agent"
               initialData={initialData}
               action={action}

@@ -8,6 +8,7 @@ import { RoleChip } from "@/components/ui/role-icons";
 import {
   Agent_Mode_Enum,
   Message_Role_Enum,
+  Message_Status_Enum,
   Role_Enum,
   useCreateNewMessageMutation,
   useGetAgentByIdQuery,
@@ -20,8 +21,9 @@ import {
   setIsChangeSession,
 } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
-import { MessageType, SourceType } from "@/types/chatTypes";
-import { Avatar, Button, Chip, Tooltip } from "@nextui-org/react";
+import { CHAT_STATUS_ENUM, MessageType, SourceType } from "@/types/chatTypes";
+import { Icon } from "@iconify/react";
+import { Avatar, Button, Chip, ScrollShadow, Spacer, Tooltip } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import React, {
@@ -33,9 +35,11 @@ import React, {
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
+import FileIcon from "../ui/file-icons";
 
 // Define the shape of our context
 type ConversationContextType = {
+  chatStatus: CHAT_STATUS_ENUM | null;
   selectedSources: SourceType[];
   handleSelectedSource: (source: SourceType, selected: boolean) => void;
 };
@@ -68,12 +72,16 @@ export type ConversationProps = {
   sessionId?: string;
   className?: string;
   scrollShadowClassname?: string;
+  hiddenHeader?: boolean;
+  isTestMode?: boolean;
 };
 
 export const Conversation: React.FC<ConversationProps> = ({
   agentId,
   sessionId,
   className,
+  hiddenHeader = false,
+  isTestMode = false,
   scrollShadowClassname,
 }) => {
   const router = useRouter();
@@ -87,6 +95,7 @@ export const Conversation: React.FC<ConversationProps> = ({
   const [messageCount, setMessageCount] = useState<number>(0);
   const [isChating, setIsChating] = useState<boolean>(false);
   const [selectedSources, setSelectedSources] = useState<SourceType[]>([]);
+  const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
 
   const [agent, setAgent] = useState<Agent>();
   const { data, loading, error } = useGetAgentByIdQuery({
@@ -100,7 +109,6 @@ export const Conversation: React.FC<ConversationProps> = ({
     variables: {
       limit: 1,
       where: { user_id: { _eq: session.data?.user?.id }, agent_id: { _eq: agentId } },
-      //  order_by: {}
     },
     skip: !agentId || !session.data?.user?.id,
   });
@@ -153,6 +161,7 @@ export const Conversation: React.FC<ConversationProps> = ({
     content: string;
     session_id: string;
     role: Message_Role_Enum;
+    status?: Message_Status_Enum;
     attachments?: any;
     sources?: any;
   }) => {
@@ -167,6 +176,7 @@ export const Conversation: React.FC<ConversationProps> = ({
             session_id: params.session_id,
             attachments: params.attachments,
             sources: params.sources,
+            status: params.status,
           },
           session_id: params.session_id,
         },
@@ -189,6 +199,14 @@ export const Conversation: React.FC<ConversationProps> = ({
     } else {
       setSelectedSources((prev) => prev.filter((item) => item.fileId != source.fileId));
     }
+  };
+
+  const handleSetChatStatus = (
+    isChating: boolean,
+    chatStatus: CHAT_STATUS_ENUM | null,
+  ) => {
+    setIsChating(isChating);
+    setChatStatus(chatStatus);
   };
 
   if (!agent || loading) {
@@ -251,6 +269,7 @@ export const Conversation: React.FC<ConversationProps> = ({
   );
 
   const contextValue: ConversationContextType = {
+    chatStatus,
     selectedSources,
     handleSelectedSource,
   };
@@ -258,15 +277,16 @@ export const Conversation: React.FC<ConversationProps> = ({
   return (
     <ConversationContext.Provider value={contextValue}>
       <div className="flex h-full w-full max-w-full flex-col overflow-auto">
-        {headerElement}
+        {!hiddenHeader && headerElement}
         <div className="flex max-h-full max-w-full flex-grow flex-row overflow-auto">
           <div className="min-[400px] mx-auto flex max-w-7xl flex-grow flex-col items-center overflow-auto pt-4">
             {agent.mode === Agent_Mode_Enum.Workflow && agent.workflow_id ? (
               <MessageWindowWithWorkflow
                 workflow_id={agent.workflow_id}
                 isChating={isChating}
+                chatStatus={chatStatus}
                 selectedSources={selectedSources}
-                handleChatingStatus={setIsChating}
+                onChatingStatusChange={handleSetChatStatus}
                 handleCreateNewMessage={handleCreateNewMessage}
                 onSelectedSource={handleSelectedSource}
                 onMessageChange={handleMessageChange}
@@ -274,20 +294,56 @@ export const Conversation: React.FC<ConversationProps> = ({
             ) : (
               <MessageWindow
                 isChating={isChating}
+                chatStatus={chatStatus}
                 selectedSources={selectedSources}
-                handleChatingStatus={setIsChating}
+                onChatingStatusChange={handleSetChatStatus}
                 handleCreateNewMessage={handleCreateNewMessage}
                 onSelectedSource={handleSelectedSource}
                 onMessageChange={handleMessageChange}
               />
             )}
+            <div className="max-w-[calc(100%-40px)]">
+              <ScrollShadow
+                hideScrollBar
+                className="flex max-w-full flex-nowrap gap-2 overflow-auto"
+                orientation="horizontal">
+                <div className="flex gap-2 pb-2">
+                  {selectedSources?.map((item, index) => (
+                    <Tooltip key={index} content={item.fileName}>
+                      <div className="flex items-center gap-2 rounded-full bg-default-100 px-3 py-2 transition-colors hover:bg-default-200">
+                        <FileIcon fileExtension={item.ext || "Unknow"} />
+                        <p className="max-w-[200px] overflow-hidden text-ellipsis text-nowrap scrollbar-none">
+                          {item.fileName}
+                        </p>
+                        <Icon
+                          icon="clarity:remove-line"
+                          onClick={() => handleSelectedSource?.(item, false)}
+                          className="cursor-pointer text-default-500 hover:text-default-700"
+                          fontSize={20}
+                        />
+                      </div>
+                    </Tooltip>
+                  ))}
+                </div>
+              </ScrollShadow>
+            </div>
             <div className="flex w-full max-w-full flex-col">
-              {messageCount >= 20 && (
+              {(messageCount >= 20 || isTestMode) && (
                 <div className="mx-6 flex max-w-full items-center justify-between rounded-lg bg-sky-100 px-6 py-3 shadow-sm">
                   <div className="flex flex-1 items-center">
                     <span className="mr-2 font-semibold text-sky-700">Tip:</span>
                     <span className="text-sky-800">
-                      Long chats may affect the AI performance.
+                      {isTestMode ? (
+                        <div>
+                          You are test in a{" "}
+                          <strong className="font-bold text-gray-700">
+                            {agent.mode || "simple"}
+                          </strong>{" "}
+                          agent mode.
+                        </div>
+                      ) : (
+                        "Long chats may affect the AI performance."
+                      )}
                     </span>
                   </div>
                   <Button
@@ -302,12 +358,12 @@ export const Conversation: React.FC<ConversationProps> = ({
                   </Button>
                 </div>
               )}
-
+              <Spacer />
               <PromptInputWithFaq
                 isChating={isChating}
                 selectedSources={selectedSources}
                 onSelectedSource={handleSelectedSource}
-                onChatingStatus={setIsChating}></PromptInputWithFaq>
+                onChatingStatus={handleSetChatStatus}></PromptInputWithFaq>
               <p className="px-2 text-tiny text-default-400">
                 AI can also make mistakes. Please verify important information.
               </p>

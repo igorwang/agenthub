@@ -2,11 +2,10 @@
 
 import { cn } from "@/cn";
 import { Icon } from "@iconify/react";
-import { Button, ScrollShadow, Tooltip } from "@nextui-org/react";
+import { Button, Tooltip } from "@nextui-org/react";
 import React, { useRef, useState } from "react";
 
 import { UploadFile, UploadFileProps } from "@/components/Conversation/upload-file";
-import FileIcon from "@/components/ui/file-icons";
 import {
   Message_Role_Enum,
   useCreateMessageAndUpdateTopicHistoryMutation,
@@ -18,7 +17,7 @@ import {
   selectSession,
 } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
-import { SourceType } from "@/types/chatTypes";
+import { CHAT_STATUS_ENUM, SourceType } from "@/types/chatTypes";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
@@ -59,15 +58,14 @@ const ideas = [
 
 type PromptInputWithFaqProps = {
   isChating?: boolean;
-  onChatingStatus?: (stauts: boolean) => void;
+  onChatingStatus?: (isChating: boolean, stauts: CHAT_STATUS_ENUM | null) => void;
   onSelectedSource?: (source: SourceType, selected: boolean) => void;
-
   selectedSources?: SourceType[];
 };
 
 export default function PromptInputWithFaq({
   isChating: isChating,
-  onChatingStatus: handleChatingStatus,
+  onChatingStatus,
   onSelectedSource,
   selectedSources,
 }: PromptInputWithFaqProps) {
@@ -156,11 +154,11 @@ export default function PromptInputWithFaq({
   };
 
   const stopSendMessageHanlder = () => {
-    handleChatingStatus?.(false);
+    onChatingStatus?.(false, CHAT_STATUS_ENUM.Interpret);
   };
 
   const sendMessageHanlder = async () => {
-    handleChatingStatus?.(true);
+    onChatingStatus?.(true, null);
     const attachments = files.map((item) => ({
       // key: item.key,
       fileName: item.fileName,
@@ -192,14 +190,14 @@ export default function PromptInputWithFaq({
           const newSessionId = data?.insert_topic_history_one?.id;
           dispatch(selectSession(newSessionId));
           router.push(`${pathname}?session_id=${newSessionId}&isNew=true`);
-          handleChatingStatus?.(true);
+          onChatingStatus?.(true, null);
         }
       } catch (error) {
         console.error("Error adding topic:", error);
         toast.error("System error, please try later.", {
           position: "bottom-left",
         });
-        handleChatingStatus?.(false);
+        onChatingStatus?.(false, null);
       }
     } else {
       createMessageAndUpdateTopicHistoryMutation({
@@ -273,29 +271,6 @@ export default function PromptInputWithFaq({
 
   return (
     <div className="flex w-full max-w-full flex-col items-center px-2">
-      <ScrollShadow
-        hideScrollBar
-        className="flex max-w-full flex-nowrap gap-2 overflow-auto scrollbar-none"
-        orientation="horizontal">
-        <div className="flex gap-2 pb-2">
-          {selectedSources?.map((item, index) => (
-            <Tooltip key={index} content={item.fileName}>
-              <div className="flex items-center gap-2 rounded-full bg-default-100 px-3 py-2 transition-colors hover:bg-default-200">
-                <FileIcon fileExtension={item.ext || "Unknow"} />
-                <p className="max-w-[200px] overflow-hidden text-ellipsis text-nowrap scrollbar-none">
-                  {item.fileName}
-                </p>
-                <Icon
-                  icon="clarity:remove-line"
-                  onClick={() => onSelectedSource?.(item, false)}
-                  className="cursor-pointer text-default-500 hover:text-default-700"
-                  fontSize={20}
-                />
-              </div>
-            </Tooltip>
-          ))}
-        </div>
-      </ScrollShadow>
       <form className="flex w-full flex-col items-start rounded-medium bg-default-100 transition-colors hover:bg-default-200/70">
         {/* <ScrollShadow
           className="flex w-full flex-row flex-nowrap gap-2"
