@@ -99,12 +99,6 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
 
     const hasFailed = status === Message_Status_Enum.Failed;
 
-    // useEffect(() => {
-    //   console.log("maxWidth", maxWidth);
-    //   const currentWidth = maxWidth ? maxWidth - 60 : 600;
-    //   setWidthClassname(`w-[${currentWidth}px] max-w-[${currentWidth}px]`);
-    // }, [maxWidth]);
-
     const handleCopy = React.useCallback(() => {
       let stringValue = "";
 
@@ -201,19 +195,17 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
     };
 
     const avatarBadgeContent = (
-      <div className="relative flex-shrink">
-        <Badge
-          isOneChar
-          color="danger"
-          content={
-            <Icon className="text-background" icon="gravity-ui:circle-exclamation-fill" />
-          }
-          placement="bottom-right"
-          isInvisible={!hasFailed}
-          shape="circle">
-          {avatar}
-        </Badge>
-      </div>
+      <Badge
+        isOneChar
+        color="danger"
+        content={
+          <Icon className="text-background" icon="gravity-ui:circle-exclamation-fill" />
+        }
+        placement="bottom-right"
+        isInvisible={!hasFailed}
+        shape="circle">
+        {avatar}
+      </Badge>
     );
 
     const librarySources = sourceResults?.filter(
@@ -253,11 +245,12 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
         </div>
       </div>
     );
+
     const aiMessageContent = (
       <div className="mr-14 flex max-w-full flex-grow flex-col gap-4">
         <div
           className={cn(
-            "relative w-full flex-grow rounded-medium bg-content2 px-4 py-1 text-default-600",
+            "relative w-full rounded-medium bg-content2 px-4 py-1 text-default-600",
             failedMessageClassName,
             messageClassName,
           )}>
@@ -442,16 +435,16 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
     );
 
     return (
-      <div {...props} ref={ref} className={cn("flex max-w-7xl gap-3", className)}>
+      <div {...props} ref={ref} className={cn("flex w-full max-w-7xl", className)}>
         {isUser ? (
-          <>
-            {userMessageContent}
-            {avatarBadgeContent}
-          </>
+          <div className="flex w-full flex-row">
+            <div className="flex-grow">{userMessageContent}</div>
+            <div className="ml-3 w-10 flex-shrink-0">{avatarBadgeContent}</div>
+          </div>
         ) : (
-          <div className="flex flex-row gap-3">
-            {avatarBadgeContent}
-            <div className="relative flex flex-col gap-2">
+          <div className="flex w-full flex-row">
+            <div className="mr-3 w-10 flex-shrink-0">{avatarBadgeContent}</div>
+            <div className="relative flex flex-grow flex-col gap-2">
               {aiMessageContent}
               {tool?.id && featureToolComponent}
             </div>

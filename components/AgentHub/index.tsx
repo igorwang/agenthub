@@ -97,7 +97,7 @@ const ChatHub = () => {
   }
 
   return (
-    <div className="flex h-full w-[220px] min-w-[220px] flex-col border-r-1">
+    <div className="flex h-full w-full flex-col border-r-1">
       <div className="flex items-center justify-between px-2 pt-4 text-3xl font-semibold">
         <div>AgentHub</div>
         {isCreatorView && (
