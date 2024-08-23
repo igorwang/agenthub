@@ -286,6 +286,7 @@ export const Conversation: React.FC<ConversationProps> = ({
                 isChating={isChating}
                 chatStatus={chatStatus}
                 selectedSources={selectedSources}
+                isTestMode={isTestMode}
                 onChatingStatusChange={handleSetChatStatus}
                 handleCreateNewMessage={handleCreateNewMessage}
                 onSelectedSource={handleSelectedSource}
@@ -334,7 +335,7 @@ export const Conversation: React.FC<ConversationProps> = ({
                     <span className="mr-2 font-semibold text-sky-700">Tip:</span>
                     <span className="text-sky-800">
                       {isTestMode ? (
-                        <div>
+                        <div className="">
                           You are test in a{" "}
                           <strong className="font-bold text-gray-700">
                             {agent.mode || "simple"}

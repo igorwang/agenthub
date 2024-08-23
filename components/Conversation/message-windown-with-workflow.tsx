@@ -30,6 +30,7 @@ import {
 } from "@/types/chatTypes";
 import { Avatar, ScrollShadow } from "@nextui-org/react";
 import { v4 } from "uuid";
+import AgentWorkflowResultsPane from "./agent-workflow-result-pane";
 import MessageCard from "./message-card";
 
 type AgentProps = {
@@ -55,6 +56,7 @@ type MessageWindowProps = {
   workflow_id: string;
   chatStatus: CHAT_STATUS_ENUM | null;
   isChating: boolean;
+  isTestMode?: boolean;
   chatMode?: CHAT_MODE;
   onChatingStatusChange: (isChating: boolean, status: CHAT_STATUS_ENUM | null) => void;
   selectedSources?: SourceType[];
@@ -77,6 +79,7 @@ export default function MessageWindowWithWorkflow({
   isChating,
   chatStatus,
   chatMode,
+  isTestMode = false,
   selectedSources,
   onChatingStatusChange,
   handleCreateNewMessage,
@@ -96,6 +99,9 @@ export default function MessageWindowWithWorkflow({
   const [promptTemplates, setPromptTemplates] = useState<PromptTemplateType[]>();
   // const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
   const [libraries, setLibraries] = useState<LibraryCardType[]>();
+  const [workflowResults, setWorkflowResults] = useState<ChatFlowResponseSchema | null>(
+    null,
+  );
 
   const session = useSession();
   const user_id = session.data?.user?.id;
@@ -122,7 +128,6 @@ export default function MessageWindowWithWorkflow({
 
   useEffect(() => {
     setRefineQuery(null);
-    setSearchResults(null);
     onChatingStatusChange(isChating, null);
     if (!selectedSessionId) {
       setMessages([]);
@@ -218,6 +223,7 @@ export default function MessageWindowWithWorkflow({
       messages[messages.length - 1].status != "draft"
     ) {
       const newMessageId = v4();
+      setSearchResults(null);
       setMessages((prev) => [
         ...prev,
         {
@@ -270,11 +276,16 @@ export default function MessageWindowWithWorkflow({
         if (!response.ok) {
           console.log("Workflow failed");
           setSearchResults([]);
+          return;
         }
 
         const workflowResults: ChatFlowResponseSchema = await response.json();
         const workflowOutput = workflowResults.workflow_output;
         console.log("workflowResults", workflowResults);
+
+        if (isTestMode) {
+          setWorkflowResults(workflowResults);
+        }
 
         if (workflowOutput.sources) {
           const newSources = workflowOutput.sources.map((item) => ({
@@ -464,7 +475,7 @@ export default function MessageWindowWithWorkflow({
   return (
     <ScrollShadow
       ref={scrollRef}
-      className="flex w-full flex-grow flex-col gap-6 pb-8"
+      className="flex w-full flex-grow flex-col gap-2 pb-2"
       hideScrollBar={true}>
       <div className="flex flex-1 flex-grow flex-col gap-1 px-1" ref={ref}>
         {messages.length === 0 && featureContent}
@@ -472,6 +483,11 @@ export default function MessageWindowWithWorkflow({
           <MessageCard key={props.messageId} {...props} />
         ))}
       </div>
+      {isTestMode && workflowResults && isChating != true && (
+        <div className="px-1">
+          <AgentWorkflowResultsPane data={workflowResults} />
+        </div>
+      )}
     </ScrollShadow>
   );
 }
