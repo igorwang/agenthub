@@ -15,7 +15,7 @@ import {
   useGetAgentByIdQuery,
 } from "@/graphql/generated/types";
 import { Button } from "@nextui-org/react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 interface SystemPrompt {
@@ -49,9 +49,11 @@ export default function AgentSettings({
 }: AgentSettingsProps) {
   const [agent, setAgent] = useState<Agent | null>();
   const [libraryId, setLibraryId] = useState<string | null>();
+  const searchParams = useSearchParams();
+  const [step, setStep] = useState<number>(parseInt(searchParams.get("step") || "1") - 1);
 
-  const [step, setStep] = useState<number>(0);
   const params = useParams<{ id: string }>();
+  const pathname = usePathname();
   const { id } = params;
   const query = useGetAgentByIdQuery({ variables: { id: id } });
   const router = useRouter();
@@ -64,19 +66,42 @@ export default function AgentSettings({
     query.refetch();
   };
 
+  // useEffect for initializing step from URL and updating URL when step changes
+  useEffect(() => {
+    const stepParam = searchParams.get("step");
+    if (stepParam) {
+      const newStep = parseInt(stepParam);
+      if (newStep >= 0 && newStep <= 3) {
+        setStep(newStep);
+      }
+    } else {
+      // If no step parameter, set to first step (0) and update URL
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set("step", "0");
+      router.push(`${pathname}?${newSearchParams.toString()}`, { scroll: false });
+    }
+  }, [searchParams, pathname, router]);
+
+  // useEffect for updating URL when step changes
+  useEffect(() => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set("step", step.toString());
+    router.push(`${pathname}?${newSearchParams.toString()}`, { scroll: false });
+  }, [step, pathname, router, searchParams]);
+
   useEffect(() => {
     if (query.data) {
-      const defautlLibrary = query?.data.agent_by_pk?.kbs.find(
+      const defaultLibrary = query?.data.agent_by_pk?.kbs.find(
         (item) => item.knowledge_base.base_type == Knowledge_Base_Type_Enum.Agent,
       );
-      if (defautlLibrary) {
-        setLibraryId(defautlLibrary.knowledge_base?.id);
+      if (defaultLibrary) {
+        setLibraryId(defaultLibrary.knowledge_base?.id);
       }
       setAgent(query?.data?.agent_by_pk);
     }
   }, [query]);
 
-  const _renderContent = (currentStep: Number) => {
+  const _renderContent = (currentStep: number) => {
     switch (currentStep) {
       case 0:
         return <AgentInformation agentId={id} isHiddenSaveButton={true} ref={agentRef} />;
@@ -112,23 +137,26 @@ export default function AgentSettings({
 
   function onClickNext() {
     const currentStep = step;
-    setStep(currentStep + 1);
     switch (currentStep) {
       case 0:
         if (agentRef?.current) {
           agentRef?.current?.handleSubmit();
         }
+        break;
       case 1:
         if (promptFormRef.current) {
           promptFormRef.current.clickButton();
         }
+        break;
       case 2:
         if (libraryRef.current) {
           libraryRef?.current?.saveLibraryInfo();
         }
+        break;
       default:
         break;
     }
+    setStep(currentStep + 1);
   }
 
   return (
