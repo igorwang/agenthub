@@ -258,9 +258,9 @@ export default function MessageWindowWithWorkflow({
           })),
           workflow_id: workflow_id,
           sources: selectedSources?.map((item) => ({
-            title: item.title,
+            title: item.title || item.fileName,
             url: item.url,
-            content: item.content || "",
+            content: item.content || item.contents.join("\n") || "",
             ext: item.ext,
             file_id: item.fileId,
             knowledge_base_id: item.knowledgeBaseId,
