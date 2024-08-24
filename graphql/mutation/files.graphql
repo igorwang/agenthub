@@ -1,16 +1,11 @@
-mutation DeleteFileById(
-  $id:uuid!
-) {
-  delete_files_by_pk(id:$id) {
+mutation DeleteFileById($id: uuid!) {
+  delete_files_by_pk(id: $id) {
     id
     name
   }
 }
 
-
-mutation BatchDeleteFiles( 
-  $where: files_bool_exp!
-) {
+mutation BatchDeleteFiles($where: files_bool_exp!) {
   delete_files(where: $where) {
     returning {
       id

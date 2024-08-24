@@ -1,12 +1,14 @@
 "use client";
 import FileTable, { FileDTO } from "@/components/Library/LibraryFileList/file-table";
 import DeleteConfirmModal from "@/components/ui/delete-modal";
+import DeleteMultipleModal from "@/components/ui/delete-mutiple-modal";
 import { PlusIcon } from "@/components/ui/icons";
 import UploadZone from "@/components/UploadZone";
 import {
   FilesListQuery,
   Order_By,
   Status_Enum,
+  useBatchDeleteFilesMutation,
   useDeleteFileByIdMutation,
   useFilesListQuery,
 } from "@/graphql/generated/types";
@@ -43,6 +45,8 @@ export default function LibraryFileList({
   const [deleteFilesModal, setDeleteFilesModal] = useState(false);
   const [selectedFile, setSelectFile] = useState<File | null>();
   const [deleteFileById] = useDeleteFileByIdMutation();
+  useBatchDeleteFilesMutation();
+  const [batchDeleteFilesMutation] = useBatchDeleteFilesMutation();
   const [reprocessingFiles, setReprocessingFiles] = useState<Set<string>>(new Set());
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [selectedFileList, setSelectedFileList] = useState<string[]>([]);
@@ -135,13 +139,22 @@ export default function LibraryFileList({
     [refetch, reprocessingFiles],
   );
 
-  const handleDeleteFile = useCallback((id: string) => {
-    // 实现删除文件的逻辑
-    deleteFileById({ variables: { id: id } }).then(async (res) => {
-      toast.success(`${res?.data?.delete_files_by_pk?.name} was successfully deleted`);
-      refetch();
-    });
-  }, []);
+  const handleDeleteFile = useCallback(
+    (ids: string[]) => {
+      // 实现删除文件的逻辑
+      batchDeleteFilesMutation({
+        variables: {
+          where: { id: { _in: ids } },
+        },
+      }).then(async (res) => {
+        toast.success(
+          `Successfully deleted ${res.data?.delete_files?.returning.length || 0} files`,
+        );
+        refetch();
+      });
+    },
+    [batchDeleteFilesMutation, refetch, toast],
+  );
 
   const handleAfterUploadFile = useCallback(() => {
     setPage(1);
@@ -177,7 +190,11 @@ export default function LibraryFileList({
         />
         <div className="flex flex-row gap-2">
           {selectedFileList.length > 0 && (
-            <Button color="danger" onClick={openUploadModal}>
+            <Button
+              color="danger"
+              onClick={() => {
+                setDeleteFilesModal(true);
+              }}>
               Delete Files
             </Button>
           )}
@@ -242,24 +259,26 @@ export default function LibraryFileList({
             setSelectFile(null);
           }}
           onAffirm={() => {
-            handleDeleteFile(selectedFile?.id || "");
+            if (selectedFile?.id) {
+              handleDeleteFile([selectedFile?.id]);
+            }
             setSelectFile(null);
           }}
         />
       )}
       {deleteFilesModal && (
-        <DeleteConfirmModal
+        <DeleteMultipleModal
           isOpen={deleteFilesModal}
           title={"Delete Files"}
-          name={""}
-          id={selectedFile?.id || ""}
+          name={"file"}
+          ids={selectedFileList}
           onClose={() => {
-            setDeleteModal(false);
-            setSelectFile(null);
+            setDeleteFilesModal(false);
+            // setSelectedFileList([]);
           }}
           onAffirm={() => {
-            handleDeleteFile(selectedFile?.id || "");
-            setSelectFile(null);
+            handleDeleteFile(selectedFileList);
+            setSelectedFileList([]);
           }}
         />
       )}
