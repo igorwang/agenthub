@@ -51,7 +51,7 @@ export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) =
     <Card
       key={source.fileId}
       className={clsx(
-        "rounded-lg border-1 bg-card shadow-sm transition-all",
+        "ounded-lg border-1 bg-card shadow-sm transition-all",
         isSelected ? "border-primary" : "border-default",
       )}>
       <CardHeader className="justify-center px-1 py-0">

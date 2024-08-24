@@ -131,6 +131,7 @@ export default function MessageWindowWithWorkflow({
     onChatingStatusChange(isChating, null);
     if (!selectedSessionId) {
       setMessages([]);
+      setWorkflowResults(null);
     }
     if (
       chatStatus == CHAT_STATUS_ENUM.Interpret &&
