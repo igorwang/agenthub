@@ -46,6 +46,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
   const [deleteKnowledgeBaseByIdMutation] = useDeleteKnowledgeBaseByIdMutation();
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(true);
   const [deleteModal, setDeleteModal] = useState(false);
+
   const ajv = new Ajv();
   const chunkingStrategyValidate = ajv.compile(chunkingParamsSchema);
 
@@ -213,7 +214,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
               isRequired
               labelPlacement="outside"
               placeholder="Select your mode for this library"
-              selectedKeys={field.value ? [field.value] : ["simple"]}
+              selectedKeys={field.value ? [field.value] : [""]}
               disallowEmptySelection={false}
               onSelectionChange={(keys) => {
                 field.onChange(Array.from(keys)[0] || null);
@@ -271,7 +272,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
         </div> */}
       </div>
       {/* 索引配置 */}
-      {mode === "simple" && (
+      {mode != "workflow" && (
         <div className="mb-6">
           <div className="mb-2 flex flex-row items-center gap-2">
             <Icon icon={"solar:graph-broken"} fontSize={20} />

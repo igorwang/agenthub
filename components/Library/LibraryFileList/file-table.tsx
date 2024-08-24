@@ -1,8 +1,10 @@
 import { Status_Enum } from "@/graphql/generated/types";
 import { Icon } from "@iconify/react";
 import {
+  Button,
   Chip,
   Pagination,
+  Selection,
   SortDescriptor,
   Table,
   TableBody,
@@ -31,6 +33,7 @@ interface FileTableProps {
   onRedo: (file: FileDTO) => void;
   onDelete: (file: FileDTO) => void;
   onPage: (page: number) => void;
+  onFileListSelectedChange: (fileIds: string[]) => void;
   maxWidth?: string;
   reprocessingFiles: Set<string>;
 }
@@ -52,6 +55,8 @@ const statusColorMap: Record<
   [Status_Enum.Extracted]: "secondary",
   [Status_Enum.Indexed]: "success",
   [Status_Enum.Failed]: "danger",
+  [Status_Enum.Running]: "secondary",
+  [Status_Enum.Success]: "success",
 };
 
 const FileTable: FC<FileTableProps> = ({
@@ -62,6 +67,7 @@ const FileTable: FC<FileTableProps> = ({
   onRedo,
   onDelete,
   onPage,
+  onFileListSelectedChange,
   maxWidth = "1280px",
   reprocessingFiles,
 }) => {
@@ -78,6 +84,23 @@ const FileTable: FC<FileTableProps> = ({
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
     });
   }, [files, sortDescriptor]);
+
+  const handleSelectionChange = useCallback(
+    (keys: Selection) => {
+      let fileIds: string[];
+
+      if (keys === "all") {
+        fileIds = files.map((file) => file.id);
+      } else if (keys instanceof Set) {
+        fileIds = Array.from(keys).map((key) => key.toString());
+      } else {
+        console.error("Unexpected keys type:", keys);
+        fileIds = [];
+      }
+      onFileListSelectedChange(fileIds);
+    },
+    [files, onFileListSelectedChange],
+  );
 
   const renderCell = useCallback(
     (file: FileDTO, columnKey: React.Key) => {
@@ -124,38 +147,55 @@ const FileTable: FC<FileTableProps> = ({
           );
         case "actions":
           return (
-            <div className="flex items-center justify-center gap-2">
+            <div className="flex items-center justify-center gap-1">
               <Tooltip content="View">
-                <span
-                  className="cursor-pointer text-lg text-default-400 active:opacity-50"
-                  onClick={() => onView(file)}>
-                  <Icon icon="lets-icons:view" />
-                </span>
+                <Button
+                  isIconOnly
+                  size="sm"
+                  variant="light"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onView(file);
+                  }}>
+                  <Icon icon="lets-icons:view" className="text-lg" />
+                </Button>
               </Tooltip>
               <Tooltip
                 content={
                   reprocessingFiles.has(file.id) ? "Reprocessing..." : "Reprocess"
                 }>
-                <span
-                  className={`cursor-pointer text-lg ${
-                    reprocessingFiles.has(file.id)
-                      ? "text-default-300"
-                      : "text-default-400"
-                  } ${reprocessingFiles.has(file.id) ? "" : "active:opacity-50"}`}
-                  onClick={() => !reprocessingFiles.has(file.id) && onRedo(file)}>
+                <Button
+                  isIconOnly
+                  size="sm"
+                  variant="light"
+                  isDisabled={reprocessingFiles.has(file.id)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (!reprocessingFiles.has(file.id)) onRedo(file);
+                  }}>
                   <Icon
                     icon={
                       reprocessingFiles.has(file.id) ? "eos-icons:loading" : "fad:redo"
                     }
+                    className="text-lg"
                   />
-                </span>
+                </Button>
               </Tooltip>
               <Tooltip color="danger" content="Delete">
-                <span
-                  className="cursor-pointer text-lg text-danger active:opacity-50"
-                  onClick={() => onDelete(file)}>
-                  <Icon icon="openmoji:delete" />
-                </span>
+                <Button
+                  isIconOnly
+                  size="sm"
+                  color="danger"
+                  variant="light"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onDelete(file);
+                  }}>
+                  <Icon icon="openmoji:delete" className="text-lg" />
+                </Button>
               </Tooltip>
             </div>
           );
@@ -171,6 +211,8 @@ const FileTable: FC<FileTableProps> = ({
       aria-label="File table with custom cells"
       sortDescriptor={sortDescriptor}
       onSortChange={setSortDescriptor}
+      selectionMode="multiple"
+      onSelectionChange={handleSelectionChange}
       classNames={{
         base: `max-w-[${maxWidth}]`,
       }}

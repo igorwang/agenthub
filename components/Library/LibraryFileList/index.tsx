@@ -40,10 +40,12 @@ export default function LibraryFileList({
   const [page, setPage] = useState<number>(1);
   const [searchValue, setSearchValue] = useState("");
   const [deleteModal, setDeleteModal] = useState(false);
+  const [deleteFilesModal, setDeleteFilesModal] = useState(false);
   const [selectedFile, setSelectFile] = useState<File | null>();
   const [deleteFileById] = useDeleteFileByIdMutation();
   const [reprocessingFiles, setReprocessingFiles] = useState<Set<string>>(new Set());
   const [isUploadOpen, setIsUploadOpen] = useState(false);
+  const [selectedFileList, setSelectedFileList] = useState<string[]>([]);
 
   const router = useRouter();
   const pathname = usePathname();
@@ -173,9 +175,16 @@ export default function LibraryFileList({
             />
           }
         />
-        <Button color="primary" endContent={<PlusIcon />} onClick={openUploadModal}>
-          Add New
-        </Button>
+        <div className="flex flex-row gap-2">
+          {selectedFileList.length > 0 && (
+            <Button color="danger" onClick={openUploadModal}>
+              Delete Files
+            </Button>
+          )}
+          <Button color="primary" endContent={<PlusIcon />} onClick={openUploadModal}>
+            Add New
+          </Button>
+        </div>
       </div>
 
       <FileTable
@@ -198,6 +207,7 @@ export default function LibraryFileList({
           setDeleteModal(true);
           setSelectFile(file);
         }}
+        onFileListSelectedChange={setSelectedFileList}
         reprocessingFiles={reprocessingFiles}
       />
       <Modal
@@ -226,6 +236,22 @@ export default function LibraryFileList({
           isOpen={deleteModal}
           title={"Delete File"}
           name={selectedFile?.name || ""}
+          id={selectedFile?.id || ""}
+          onClose={() => {
+            setDeleteModal(false);
+            setSelectFile(null);
+          }}
+          onAffirm={() => {
+            handleDeleteFile(selectedFile?.id || "");
+            setSelectFile(null);
+          }}
+        />
+      )}
+      {deleteFilesModal && (
+        <DeleteConfirmModal
+          isOpen={deleteFilesModal}
+          title={"Delete Files"}
+          name={""}
           id={selectedFile?.id || ""}
           onClose={() => {
             setDeleteModal(false);
