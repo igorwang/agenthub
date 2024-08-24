@@ -32,7 +32,7 @@ export default function SideBar() {
       <ScrollShadow className="-mr-2 flex h-full max-h-full flex-col justify-between py-2 pr-2">
         <div>
           <div className="flex flex-col items-center gap-4">
-            <Tooltip content="User" placement="right">
+            <Tooltip content="User Center" placement="right">
               <Button
                 isIconOnly
                 // className="data-[hover=true]:text-foreground"
@@ -40,11 +40,7 @@ export default function SideBar() {
                 target="_blank"
                 as={Link}
                 variant="light">
-                <Avatar
-                  isBordered
-                  size="sm"
-                  src="https://i.pravatar.cc/150?u=a04258114e29026708c"
-                />
+                <Avatar isBordered size="sm" name={session.data?.user?.name || "User"} />
               </Button>
             </Tooltip>
           </div>

@@ -12,6 +12,7 @@ import FeatureCards from "@/components/Conversation/feature-cards";
 import { PromptTemplateType } from "@/components/PromptFrom";
 import {
   Message_Role_Enum,
+  Message_Status_Enum,
   Order_By,
   useFetchAllMessageListQuery,
   useGetAgentByIdQuery,
@@ -55,9 +56,10 @@ type QueryAnalyzeResultSchema = {
 };
 
 type MessageWindowProps = {
-  isChating?: boolean;
+  isChating: boolean;
+  chatStatus: CHAT_STATUS_ENUM | null;
   chatMode?: CHAT_MODE;
-  handleChatingStatus?: (stauts: boolean) => void;
+  onChatingStatusChange: (isChating: boolean, status: CHAT_STATUS_ENUM | null) => void;
   selectedSources?: SourceType[];
   onSelectedSource?: (source: SourceType, selected: boolean) => void;
   onMessageChange?: (messages: MessageType[]) => void;
@@ -69,14 +71,16 @@ type MessageWindowProps = {
     role: Message_Role_Enum;
     attachments?: any;
     sources?: any;
+    status?: Message_Status_Enum;
   }) => void;
 };
 
 export default function MessageWindow({
   isChating,
   chatMode,
+  chatStatus,
   selectedSources,
-  handleChatingStatus,
+  onChatingStatusChange,
   handleCreateNewMessage,
   onSelectedSource,
   onMessageChange,
@@ -93,7 +97,6 @@ export default function MessageWindow({
   const [refineQuery, setRefineQuery] = useState<QueryAnalyzeResultSchema | null>(null);
   const [searchResults, setSearchResults] = useState<SourceType[] | null>(null);
   const [promptTemplates, setPromptTemplates] = useState<PromptTemplateType[]>();
-  const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
   const [libraries, setLibraries] = useState<LibraryCardType[]>();
 
   const session = useSession();
@@ -122,7 +125,7 @@ export default function MessageWindow({
   useEffect(() => {
     setRefineQuery(null);
     setSearchResults(null);
-    setChatStatus(null);
+    onChatingStatusChange(isChating, null);
     if (!selectedSessionId) {
       setMessages([]);
     }
@@ -207,7 +210,7 @@ export default function MessageWindow({
           // query: query,
         },
       ]);
-      setChatStatus(CHAT_STATUS_ENUM.New);
+      onChatingStatusChange(isChating, CHAT_STATUS_ENUM.New);
     }
   }, [messages]);
 
@@ -218,7 +221,7 @@ export default function MessageWindow({
       messages.length > 0 &&
       messages[messages.length - 1].status == "draft"
     ) {
-      setChatStatus(CHAT_STATUS_ENUM.Analyzing);
+      onChatingStatusChange(isChating, CHAT_STATUS_ENUM.Analyzing);
       const fetchRefineQuery = async () => {
         const historyMessage = messages.filter((item) => item.status != "draft");
         console.log("historyMessage", historyMessage);
@@ -233,7 +236,7 @@ export default function MessageWindow({
         } catch (error) {
           console.error("Error fetching refine query:", error);
           toast.error("System error, please try later.");
-          handleChatingStatus?.(false);
+          onChatingStatusChange(false, CHAT_STATUS_ENUM.Interpret);
           return;
         }
       };
@@ -243,7 +246,7 @@ export default function MessageWindow({
 
   useEffect(() => {
     if (isChating && refineQuery != null && chatStatus == CHAT_STATUS_ENUM.Analyzing) {
-      setChatStatus(CHAT_STATUS_ENUM.Searching);
+      onChatingStatusChange(isChating, CHAT_STATUS_ENUM.Searching);
       const filter_kb_ids = selectedSources
         ?.map((item) => item.knowledgeBaseId || null)
         .filter((id) => id !== null);
@@ -324,12 +327,12 @@ export default function MessageWindow({
               console.error(error);
               console.error("Error searching library:", error);
               toast.error("Search Error: please try later.");
-              handleChatingStatus?.(false);
+              onChatingStatusChange(false, CHAT_STATUS_ENUM.Interpret);
             });
         } catch (error) {
           console.error("Error searching library:", error);
           toast.error("Search Error: please try later.");
-          handleChatingStatus?.(false);
+          onChatingStatusChange(false, CHAT_STATUS_ENUM.Interpret);
         }
       };
       const latestSources = messages?.filter(
@@ -359,7 +362,7 @@ export default function MessageWindow({
       ) {
         searchLibrary();
       } else {
-        setSearchResults([]); // empty result
+        setSearchResults([]);
       }
     }
   }, [refineQuery]);
@@ -369,7 +372,7 @@ export default function MessageWindow({
       const controller = new AbortController(); // Create a new AbortController
       const signal = controller.signal; // Get the signal from the controller
 
-      setChatStatus(CHAT_STATUS_ENUM.Generating);
+      onChatingStatusChange(isChating, CHAT_STATUS_ENUM.Generating);
       const generateAnswer = async () => {
         const historyMessage = selectedSources
           ? messages.filter((item) => item.status != "draft").slice(-1) // only last message need to generation
@@ -442,8 +445,9 @@ export default function MessageWindow({
           session_id: selectedSessionId || "",
           role: Message_Role_Enum.Assistant,
           sources: searchResults,
+          status: Message_Status_Enum.Success,
         });
-        handleChatingStatus?.(false);
+        onChatingStatusChange(false, CHAT_STATUS_ENUM.Finished);
       };
       generateAnswer();
       return () => {
@@ -499,7 +503,7 @@ export default function MessageWindow({
         msg.role === "assistant" ? (
           agentAvatarElement
         ) : (
-          <Avatar src="https://d2u8k2ocievbld.cloudfront.net/memojis/male/6.png" />
+          <Avatar name={session.data?.user?.name || "User"} size="md" />
         ),
       currentAttempt: index === 1 ? 2 : 1,
       message: msg.message || "",
@@ -512,6 +516,7 @@ export default function MessageWindow({
       onSelectedSource: onSelectedSource,
       tools: agent?.tools,
       agentId: agent?.id,
+      status: msg.status,
     }));
   }, [messages, isChating, chatStatus, agentAvatarElement, onSelectedSource]);
 

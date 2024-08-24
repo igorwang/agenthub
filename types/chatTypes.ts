@@ -1,5 +1,6 @@
 import {
   Knowledge_Base_Type_Enum,
+  Message_Status_Enum,
   Role_Enum,
   Run_Type_Enum,
   Tool_Type_Enum,
@@ -10,6 +11,8 @@ export enum CHAT_STATUS_ENUM {
   Analyzing,
   Searching,
   Generating,
+  Interpret,
+  Finished,
 }
 
 export enum CHAT_MODE {
@@ -58,7 +61,7 @@ export type MessageType = {
   role: string;
   message?: string | null;
   feedback?: string | null;
-  status?: string | null;
+  status?: string | null | Message_Status_Enum;
   files?: any;
   sources?: SourceType[];
   query?: string;

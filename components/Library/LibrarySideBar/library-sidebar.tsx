@@ -71,7 +71,7 @@ export default function LibrarySideBar({ items, refreshAction }: LibrarySideBarP
   }
 
   return (
-    <div className="flex h-full w-[260px] flex-col gap-2 border-r-small">
+    <div className="flex h-full w-64 min-w-64 flex-col gap-2 border-r-small">
       <div className="sticky top-0 z-10 flex items-center justify-between bg-white px-2 py-2 text-3xl font-semibold leading-7">
         <div>Library</div>
         <Tooltip content="Add new library">

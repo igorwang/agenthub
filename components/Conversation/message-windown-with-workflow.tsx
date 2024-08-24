@@ -1,5 +1,4 @@
 import {
-  selectIsFollowUp,
   selectSelectedChatId,
   selectSelectedSessionId,
 } from "@/lib/features/chatListSlice";
@@ -12,6 +11,7 @@ import FeatureCards from "@/components/Conversation/feature-cards";
 import { PromptTemplateType } from "@/components/PromptFrom";
 import {
   Message_Role_Enum,
+  Message_Status_Enum,
   Order_By,
   useFetchAllMessageListQuery,
   useGetAgentByIdQuery,
@@ -30,6 +30,7 @@ import {
 } from "@/types/chatTypes";
 import { Avatar, ScrollShadow } from "@nextui-org/react";
 import { v4 } from "uuid";
+import AgentWorkflowResultsPane from "./agent-workflow-result-pane";
 import MessageCard from "./message-card";
 
 type AgentProps = {
@@ -53,9 +54,11 @@ type QueryAnalyzeResultSchema = {
 
 type MessageWindowProps = {
   workflow_id: string;
-  isChating?: boolean;
+  chatStatus: CHAT_STATUS_ENUM | null;
+  isChating: boolean;
+  isTestMode?: boolean;
   chatMode?: CHAT_MODE;
-  handleChatingStatus?: (stauts: boolean) => void;
+  onChatingStatusChange: (isChating: boolean, status: CHAT_STATUS_ENUM | null) => void;
   selectedSources?: SourceType[];
   onSelectedSource?: (source: SourceType, selected: boolean) => void;
   onMessageChange?: (messages: MessageType[]) => void;
@@ -65,6 +68,7 @@ type MessageWindowProps = {
     content: string;
     session_id: string;
     role: Message_Role_Enum;
+    status?: Message_Status_Enum;
     attachments?: any;
     sources?: any;
   }) => void;
@@ -73,9 +77,11 @@ type MessageWindowProps = {
 export default function MessageWindowWithWorkflow({
   workflow_id,
   isChating,
+  chatStatus,
   chatMode,
+  isTestMode = false,
   selectedSources,
-  handleChatingStatus,
+  onChatingStatusChange,
   handleCreateNewMessage,
   onSelectedSource,
   onMessageChange,
@@ -83,7 +89,6 @@ export default function MessageWindowWithWorkflow({
   const dispatch: AppDispatch = useDispatch();
   const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
-  const isFollowUp = useSelector(selectIsFollowUp);
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -92,8 +97,11 @@ export default function MessageWindowWithWorkflow({
   const [refineQuery, setRefineQuery] = useState<QueryAnalyzeResultSchema | null>(null);
   const [searchResults, setSearchResults] = useState<SourceType[] | null>(null);
   const [promptTemplates, setPromptTemplates] = useState<PromptTemplateType[]>();
-  const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
+  // const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
   const [libraries, setLibraries] = useState<LibraryCardType[]>();
+  const [workflowResults, setWorkflowResults] = useState<ChatFlowResponseSchema | null>(
+    null,
+  );
 
   const session = useSession();
   const user_id = session.data?.user?.id;
@@ -120,13 +128,29 @@ export default function MessageWindowWithWorkflow({
 
   useEffect(() => {
     setRefineQuery(null);
-    setSearchResults(null);
-    setChatStatus(null);
+    onChatingStatusChange(isChating, null);
     if (!selectedSessionId) {
       setMessages([]);
+      setWorkflowResults(null);
     }
-    if (!isChating) {
-      setMessages((prev) => prev.filter((item) => item.status != "draft"));
+    if (
+      chatStatus == CHAT_STATUS_ENUM.Interpret &&
+      messages.length > 0 &&
+      messages[messages.length - 1].status == "draft"
+    ) {
+      const draftMessage = messages[messages.length - 1];
+      if (draftMessage.message) {
+        handleCreateNewMessage?.({
+          ...draftMessage,
+          query: messages[messages.length - 2].message || "",
+          content: draftMessage.message || "",
+          session_id: selectedSessionId || "",
+          role: Message_Role_Enum.Assistant,
+          status: Message_Status_Enum.Failed,
+        });
+      } else {
+        setMessages((prev) => prev.filter((item) => item.status != "draft"));
+      }
     }
     query.refetch();
   }, [selectedChatId, selectedSessionId, isChating, query]);
@@ -143,6 +167,7 @@ export default function MessageWindowWithWorkflow({
         force_search: agentData.agent_by_pk?.force_search || false,
         tools: agentData.agent_by_pk?.tools?.map((item) => item.tool),
       });
+
       const templates = agentData.agent_by_pk?.system_prompt?.templates;
       if (templates) {
         setPromptTemplates(
@@ -185,10 +210,12 @@ export default function MessageWindowWithWorkflow({
           })) || [],
         sources: item.sources?.map((item: SourceType) => ({ ...item })),
       }));
+      console.log("old Message:", messages);
+      console.log("new Messages:", newMessages);
       setMessages(newMessages);
       onMessageChange?.(newMessages);
     }
-  }, [data]);
+  }, [data, onMessageChange]);
 
   useEffect(() => {
     if (
@@ -197,6 +224,7 @@ export default function MessageWindowWithWorkflow({
       messages[messages.length - 1].status != "draft"
     ) {
       const newMessageId = v4();
+      setSearchResults(null);
       setMessages((prev) => [
         ...prev,
         {
@@ -209,7 +237,7 @@ export default function MessageWindowWithWorkflow({
           // query: query,
         },
       ]);
-      setChatStatus(CHAT_STATUS_ENUM.New);
+      onChatingStatusChange(isChating, CHAT_STATUS_ENUM.New);
     }
   }, [messages]);
 
@@ -220,8 +248,7 @@ export default function MessageWindowWithWorkflow({
       messages.length > 0 &&
       messages[messages.length - 1].status == "draft"
     ) {
-      setChatStatus(CHAT_STATUS_ENUM.Searching);
-
+      onChatingStatusChange(isChating, CHAT_STATUS_ENUM.Searching);
       const fetchChatWithWorkflow = async () => {
         const body: ChatFlowRequestSchema = {
           agent_id: agent_id || "",
@@ -232,9 +259,9 @@ export default function MessageWindowWithWorkflow({
           })),
           workflow_id: workflow_id,
           sources: selectedSources?.map((item) => ({
-            title: item.title,
+            title: item.title || item.fileName,
             url: item.url,
-            content: item.content || "",
+            content: item.content || item.contents.join("\n") || "",
             ext: item.ext,
             file_id: item.fileId,
             knowledge_base_id: item.knowledgeBaseId,
@@ -250,23 +277,36 @@ export default function MessageWindowWithWorkflow({
         if (!response.ok) {
           console.log("Workflow failed");
           setSearchResults([]);
+          return;
         }
+
         const workflowResults: ChatFlowResponseSchema = await response.json();
+        const workflowOutput = workflowResults.workflow_output;
         console.log("workflowResults", workflowResults);
-        // sources = workflowResults.
-        if (workflowResults.sources) {
-          setSearchResults(
-            workflowResults.sources.map((item) => ({
-              fileName: item.title || "",
-              fileId: item.file_id || "",
-              url: item.url || "",
-              pages: [],
-              contents: item.content ? [item.content] : [],
-              sourceType: SOURCE_TYPE_ENUM.file,
-              knowledgeBaseId: item.knowledge_base_id || "",
-              ext: item.ext || "Unknow",
-            })),
-          );
+
+        if (isTestMode) {
+          setWorkflowResults(workflowResults);
+        }
+
+        if (workflowOutput.sources) {
+          const newSources = workflowOutput.sources.map((item) => ({
+            fileName: item.title || "",
+            fileId: item.file_id || "",
+            url: item.url || "",
+            pages: [],
+            contents: item.content ? [item.content] : [],
+            sourceType: SOURCE_TYPE_ENUM.file,
+            knowledgeBaseId: item.knowledge_base_id || "",
+            ext: item.ext || "Unknow",
+          }));
+          setSearchResults(newSources.slice(0, 10));
+          setMessages((prev) => [
+            ...prev.slice(0, -1),
+            {
+              ...prev[prev.length - 1],
+              sources: newSources.slice(0, 10) || [],
+            },
+          ]);
         } else {
           setSearchResults([]);
         }
@@ -280,7 +320,8 @@ export default function MessageWindowWithWorkflow({
       const controller = new AbortController(); // Create a new AbortController
       const signal = controller.signal; // Get the signal from the controller
 
-      setChatStatus(CHAT_STATUS_ENUM.Generating);
+      onChatingStatusChange(isChating, CHAT_STATUS_ENUM.Generating);
+
       const generateAnswer = async () => {
         const historyMessage = selectedSources
           ? messages.filter((item) => item.status != "draft").slice(-1) // only last message need to generation
@@ -320,6 +361,16 @@ export default function MessageWindowWithWorkflow({
           const readStream = async () => {
             const { done, value } = await reader.read();
             if (done) {
+              setMessages((prev) => {
+                if (prev.length == 1) {
+                  return [{ ...prev[0], message: prev[0].message + chunk }];
+                }
+                const draftMessage = prev[prev.length - 1];
+                return [
+                  ...prev.slice(0, -1),
+                  { ...draftMessage, status: Message_Status_Enum.Success },
+                ];
+              });
               return;
             }
             // Decode the chunk and update the message state
@@ -336,10 +387,8 @@ export default function MessageWindowWithWorkflow({
               ];
             });
 
-            // Continue reading the stream
             await readStream();
           };
-          // Start reading the stream
           await readStream();
         } catch (error) {
           console.error("Error while streaming:", error);
@@ -353,15 +402,12 @@ export default function MessageWindowWithWorkflow({
           session_id: selectedSessionId || "",
           role: Message_Role_Enum.Assistant,
           sources: searchResults,
+          status: Message_Status_Enum.Success,
         });
-        handleChatingStatus?.(false);
+        onChatingStatusChange(false, CHAT_STATUS_ENUM.Finished);
       };
       generateAnswer();
       return () => {
-        // setMessages((prev) => {
-        //   const newMessages = prev.filter((item) => item.status != "draft");
-        //   return newMessages;
-        // });
         controller.abort(); // Abort the fetch when the component unmounts or dependencies change
         return;
       };
@@ -410,7 +456,7 @@ export default function MessageWindowWithWorkflow({
         msg.role === "assistant" ? (
           agentAvatarElement
         ) : (
-          <Avatar src="https://d2u8k2ocievbld.cloudfront.net/memojis/male/6.png" />
+          <Avatar name={session.data?.user?.name || "User"} size="md" />
         ),
       currentAttempt: index === 1 ? 2 : 1,
       message: msg.message || "",
@@ -423,13 +469,14 @@ export default function MessageWindowWithWorkflow({
       onSelectedSource: onSelectedSource,
       tools: agent?.tools,
       agentId: agent?.id,
+      status: msg.status,
     }));
   }, [messages, isChating, chatStatus, agentAvatarElement, onSelectedSource]);
 
   return (
     <ScrollShadow
       ref={scrollRef}
-      className="flex w-full flex-grow flex-col gap-6 pb-8"
+      className="flex w-full flex-grow flex-col gap-2 pb-2"
       hideScrollBar={true}>
       <div className="flex flex-1 flex-grow flex-col gap-1 px-1" ref={ref}>
         {messages.length === 0 && featureContent}
@@ -437,6 +484,11 @@ export default function MessageWindowWithWorkflow({
           <MessageCard key={props.messageId} {...props} />
         ))}
       </div>
+      {isTestMode && workflowResults && isChating != true && (
+        <div className="px-1">
+          <AgentWorkflowResultsPane data={workflowResults} />
+        </div>
+      )}
     </ScrollShadow>
   );
 }

@@ -7,6 +7,7 @@ import FeatureTool from "@/components/Conversation/tool-card";
 import { UploadFileProps } from "@/components/Conversation/upload-file";
 import MarkdownRenderer from "@/components/MarkdownRender";
 import { MessageSkeleton } from "@/components/ui/message-skeleton";
+import { Message_Status_Enum } from "@/graphql/generated/types";
 import {
   CHAT_STATUS_ENUM,
   SchemaType,
@@ -27,7 +28,7 @@ export type MessageCardProps = React.HTMLAttributes<HTMLDivElement> & {
   files?: UploadFileProps[];
   sourceResults?: SourceType[];
   currentAttempt?: number;
-  status?: "success" | "failed";
+  status?: string | null | Message_Status_Enum;
   attempts?: number;
   messageClassName?: string;
   maxWidth?: number;
@@ -83,7 +84,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
     const messageRef = React.useRef<HTMLDivElement>(null);
     const { copied, copy } = useClipboard();
     const failedMessageClassName =
-      status === "failed"
+      status === Message_Status_Enum.Failed
         ? "bg-danger-100/50 border border-danger-100 text-foreground"
         : "";
     const failedMessage = (
@@ -96,13 +97,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       </p>
     );
 
-    const hasFailed = status === "failed";
-
-    // useEffect(() => {
-    //   console.log("maxWidth", maxWidth);
-    //   const currentWidth = maxWidth ? maxWidth - 60 : 600;
-    //   setWidthClassname(`w-[${currentWidth}px] max-w-[${currentWidth}px]`);
-    // }, [maxWidth]);
+    const hasFailed = status === Message_Status_Enum.Failed;
 
     const handleCopy = React.useCallback(() => {
       let stringValue = "";
@@ -200,38 +195,17 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
     };
 
     const avatarBadgeContent = (
-      <div className="relative flex-shrink">
-        <Badge
-          isOneChar
-          color="danger"
-          content={
-            <Icon className="text-background" icon="gravity-ui:circle-exclamation-fill" />
-          }
-          isInvisible={!hasFailed}
-          placement="bottom-right"
-          shape="circle">
-          {avatar}
-        </Badge>
-      </div>
-    );
-
-    const userMessageContent = (
-      <div className="w-8/10 ml-14 flex flex-grow flex-col gap-2">
-        <div
-          className={cn(
-            "relative w-full rounded-medium px-4 py-2 text-default-800",
-            failedMessageClassName,
-            messageClassName,
-          )}>
-          <div ref={messageRef} className={"flex justify-end px-1 text-medium"}>
-            {hasFailed ? failedMessage : message}
-          </div>
-          {/* <div className="flex w-full flex-row flex-wrap">
-            {files &&
-              files.map((item) => <UploadFile className="flex shrink" {...item} />)}
-          </div> */}
-        </div>
-      </div>
+      <Badge
+        isOneChar
+        color="danger"
+        content={
+          <Icon className="text-background" icon="gravity-ui:circle-exclamation-fill" />
+        }
+        placement="bottom-right"
+        isInvisible={!hasFailed}
+        shape="circle">
+        {avatar}
+      </Badge>
     );
 
     const librarySources = sourceResults?.filter(
@@ -258,39 +232,48 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       </div>
     );
 
+    const userMessageContent = (
+      <div className="w-8/10 ml-14 flex flex-grow flex-col gap-2">
+        <div
+          className={cn(
+            "relative w-full rounded-medium px-4 py-2 text-default-800",
+            messageClassName,
+          )}>
+          <div ref={messageRef} className={"flex justify-end px-1 text-medium"}>
+            {message}
+          </div>
+        </div>
+      </div>
+    );
+
     const aiMessageContent = (
       <div className="mr-14 flex max-w-full flex-grow flex-col gap-4">
         <div
           className={cn(
-            "relative w-full flex-grow rounded-medium bg-content2 px-4 py-1 text-default-600",
+            "relative w-full rounded-medium bg-content2 px-4 py-1 text-default-600",
             failedMessageClassName,
             messageClassName,
           )}>
           <div ref={messageRef} className={"min-h-8 px-1 text-medium"}>
-            {hasFailed ? (
-              failedMessage
-            ) : (
-              <div className="mr-10 gap-3">
-                {sourceResults && sourceResults.length > 0 && (
-                  <SourceSection title="library Sources" items={librarySources || []} />
-                )}
-                <Spacer x={2} />
-                {webSources && webSources.length > 0 && (
-                  <SourceSection
-                    title="Web Sources"
-                    items={webSources || []}></SourceSection>
-                )}
-                <Spacer x={2} />
-                <div className="flex flex-row items-center justify-start gap-1 p-1">
-                  <Icon className="text-lg text-default-600" icon="hugeicons:idea-01" />
-                  <span className="text-slate-500">Answer:</span>
-                </div>
-                <div className={clsx("flex max-w-full flex-col overflow-hidden p-1")}>
-                  <MarkdownRenderer
-                    content={message?.toString() || ""}></MarkdownRenderer>
-                </div>
+            <div className="mr-10 gap-3">
+              {sourceResults && sourceResults.length > 0 && (
+                <SourceSection title="library Sources" items={librarySources || []} />
+              )}
+              <Spacer x={2} />
+              {webSources && webSources.length > 0 && (
+                <SourceSection
+                  title="Web Sources"
+                  items={webSources || []}></SourceSection>
+              )}
+              <Spacer x={2} />
+              <div className="flex flex-row items-center justify-start gap-1 p-1">
+                <Icon className="text-lg text-default-600" icon="hugeicons:idea-01" />
+                <span className="text-slate-500">Answer:</span>
               </div>
-            )}
+              <div className={clsx("flex max-w-full flex-col overflow-hidden p-1")}>
+                <MarkdownRenderer content={message?.toString() || ""}></MarkdownRenderer>
+              </div>
+            </div>
           </div>
 
           <div className="flex flex-row items-center justify-between pt-1">
@@ -452,16 +435,16 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
     );
 
     return (
-      <div {...props} ref={ref} className={cn("flex max-w-7xl gap-3", className)}>
+      <div {...props} ref={ref} className={cn("flex w-full max-w-7xl", className)}>
         {isUser ? (
-          <>
-            {userMessageContent}
-            {avatarBadgeContent}
-          </>
+          <div className="flex w-full flex-row">
+            <div className="flex-grow">{userMessageContent}</div>
+            <div className="ml-3 w-10 flex-shrink-0">{avatarBadgeContent}</div>
+          </div>
         ) : (
-          <div className="flex flex-row gap-3">
-            {avatarBadgeContent}
-            <div className="relative flex flex-col gap-2">
+          <div className="flex w-full flex-row">
+            <div className="mr-3 w-10 flex-shrink-0">{avatarBadgeContent}</div>
+            <div className="relative flex flex-grow flex-col gap-2">
               {aiMessageContent}
               {tool?.id && featureToolComponent}
             </div>

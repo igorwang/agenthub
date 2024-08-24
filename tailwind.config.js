@@ -15,5 +15,16 @@ module.exports = {
     },
   },
   darkMode: "class",
-  plugins: [nextui(), require("tailwind-scrollbar")],
+  plugins: [
+    nextui(),
+    require("tailwind-scrollbar"),
+    function ({ addComponents }) {
+      addComponents({
+        ".custom-scrollbar": {
+          "@apply overflow-auto scrollbar-thin scrollbar-none scrollbar-track-transparent scrollbar-thumb-gray-300 hover:scrollbar-default":
+            {},
+        },
+      });
+    },
+  ],
 };

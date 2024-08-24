@@ -28,7 +28,9 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
           {String(children).replace(/\n$/, "")}
         </SyntaxHighlighter>
       ) : (
-        <code className="w-full max-w-full flex-1 overflow-auto" {...props}>
+        <code
+          className="custom-scrollbar w-full max-w-full flex-1 overflow-auto"
+          {...props}>
           {children}
         </code>
       );

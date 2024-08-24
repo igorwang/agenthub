@@ -17,7 +17,7 @@ const LibraryList: React.FC<LibraryListProps> = ({
   return (
     <div
       className={cn(
-        "h-full overflow-auto",
+        "h-full w-full overflow-auto",
         "scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300",
         "scrollbar-none hover:scrollbar-default",
       )}>
@@ -31,7 +31,7 @@ const LibraryList: React.FC<LibraryListProps> = ({
             onClick={() => onItemClick(item.id)}
             className={cn(
               "cursor-pointer p-2",
-              "max-w-[200px] overflow-hidden text-ellipsis",
+              "w-full overflow-hidden text-ellipsis px-2",
               selectedItemId === item.id ? "bg-blue-100" : "",
             )}>
             {/* <Tooltip content={item?.name}> */}

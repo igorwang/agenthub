@@ -51,7 +51,7 @@ export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) =
     <Card
       key={source.fileId}
       className={clsx(
-        "rounded-lg border-1 bg-card shadow-sm transition-all",
+        "ounded-lg border-1 bg-card shadow-sm transition-all",
         isSelected ? "border-primary" : "border-default",
       )}>
       <CardHeader className="justify-center px-1 py-0">
@@ -118,7 +118,7 @@ export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) =
             />
           </Button>
         </Tooltip>
-        <Tooltip content="View the details of the source">
+        {/* <Tooltip content="View the details of the source">
           <Link href={source.url} target="_blank">
             <Button
               isIconOnly
@@ -134,6 +134,30 @@ export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) =
               <Icon className="text-sm text-default-600" icon="gravity-ui:link" />
             </Button>
           </Link>
+        </Tooltip> */}
+        <Tooltip content="View the details of the source">
+          {source.url ? (
+            <Link href={source.url} target="_blank">
+              <Button
+                isIconOnly
+                radius="full"
+                size="sm"
+                variant="light"
+                className="h-[18px] min-w-[18px]">
+                <Icon className="text-sm text-default-600" icon="gravity-ui:link" />
+              </Button>
+            </Link>
+          ) : (
+            <Button
+              isIconOnly
+              radius="full"
+              size="sm"
+              variant="light"
+              className="h-[18px] min-w-[18px]"
+              isDisabled>
+              <Icon className="text-sm text-default-600" icon="gravity-ui:link" />
+            </Button>
+          )}
         </Tooltip>
       </CardFooter>
     </Card>

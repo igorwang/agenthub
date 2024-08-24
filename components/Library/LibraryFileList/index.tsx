@@ -1,12 +1,14 @@
 "use client";
 import FileTable, { FileDTO } from "@/components/Library/LibraryFileList/file-table";
 import DeleteConfirmModal from "@/components/ui/delete-modal";
+import DeleteMultipleModal from "@/components/ui/delete-mutiple-modal";
 import { PlusIcon } from "@/components/ui/icons";
 import UploadZone from "@/components/UploadZone";
 import {
   FilesListQuery,
   Order_By,
   Status_Enum,
+  useBatchDeleteFilesMutation,
   useDeleteFileByIdMutation,
   useFilesListQuery,
 } from "@/graphql/generated/types";
@@ -40,10 +42,14 @@ export default function LibraryFileList({
   const [page, setPage] = useState<number>(1);
   const [searchValue, setSearchValue] = useState("");
   const [deleteModal, setDeleteModal] = useState(false);
+  const [deleteFilesModal, setDeleteFilesModal] = useState(false);
   const [selectedFile, setSelectFile] = useState<File | null>();
   const [deleteFileById] = useDeleteFileByIdMutation();
+  useBatchDeleteFilesMutation();
+  const [batchDeleteFilesMutation] = useBatchDeleteFilesMutation();
   const [reprocessingFiles, setReprocessingFiles] = useState<Set<string>>(new Set());
   const [isUploadOpen, setIsUploadOpen] = useState(false);
+  const [selectedFileList, setSelectedFileList] = useState<string[]>([]);
 
   const router = useRouter();
   const pathname = usePathname();
@@ -133,13 +139,22 @@ export default function LibraryFileList({
     [refetch, reprocessingFiles],
   );
 
-  const handleDeleteFile = useCallback((id: string) => {
-    // 实现删除文件的逻辑
-    deleteFileById({ variables: { id: id } }).then(async (res) => {
-      toast.success(`${res?.data?.delete_files_by_pk?.name} was successfully deleted`);
-      refetch();
-    });
-  }, []);
+  const handleDeleteFile = useCallback(
+    (ids: string[]) => {
+      // 实现删除文件的逻辑
+      batchDeleteFilesMutation({
+        variables: {
+          where: { id: { _in: ids } },
+        },
+      }).then(async (res) => {
+        toast.success(
+          `Successfully deleted ${res.data?.delete_files?.returning.length || 0} files`,
+        );
+        refetch();
+      });
+    },
+    [batchDeleteFilesMutation, refetch, toast],
+  );
 
   const handleAfterUploadFile = useCallback(() => {
     setPage(1);
@@ -173,9 +188,20 @@ export default function LibraryFileList({
             />
           }
         />
-        <Button color="primary" endContent={<PlusIcon />} onClick={openUploadModal}>
-          Add New
-        </Button>
+        <div className="flex flex-row gap-2">
+          {selectedFileList.length > 0 && (
+            <Button
+              color="danger"
+              onClick={() => {
+                setDeleteFilesModal(true);
+              }}>
+              Delete Files
+            </Button>
+          )}
+          <Button color="primary" endContent={<PlusIcon />} onClick={openUploadModal}>
+            Add New
+          </Button>
+        </div>
       </div>
 
       <FileTable
@@ -198,6 +224,7 @@ export default function LibraryFileList({
           setDeleteModal(true);
           setSelectFile(file);
         }}
+        onFileListSelectedChange={setSelectedFileList}
         reprocessingFiles={reprocessingFiles}
       />
       <Modal
@@ -232,8 +259,26 @@ export default function LibraryFileList({
             setSelectFile(null);
           }}
           onAffirm={() => {
-            handleDeleteFile(selectedFile?.id || "");
+            if (selectedFile?.id) {
+              handleDeleteFile([selectedFile?.id]);
+            }
             setSelectFile(null);
+          }}
+        />
+      )}
+      {deleteFilesModal && (
+        <DeleteMultipleModal
+          isOpen={deleteFilesModal}
+          title={"Delete Files"}
+          name={"file"}
+          ids={selectedFileList}
+          onClose={() => {
+            setDeleteFilesModal(false);
+            // setSelectedFileList([]);
+          }}
+          onAffirm={() => {
+            handleDeleteFile(selectedFileList);
+            setSelectedFileList([]);
           }}
         />
       )}

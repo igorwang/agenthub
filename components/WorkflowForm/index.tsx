@@ -25,8 +25,10 @@ import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { Conversation } from "../Conversation";
 
 interface WorkflowFormProps {
+  agentId?: string;
   knowledgeBaseId?: string;
   workflowType: "library" | "agent";
   initialData: {
@@ -52,6 +54,7 @@ export default function WorkflowForm({
   knowledgeBaseId,
   workflowType,
   initialData,
+  agentId,
   action,
   nodeTypeList,
 }: WorkflowFormProps) {
@@ -149,7 +152,13 @@ export default function WorkflowForm({
       toast.warning("Please save your changes before running the workflow");
     } else {
       if (workflowType == "library") {
-        setIsUploadOpen(true);
+        if (!testFile) {
+          setIsUploadOpen(true);
+        } else {
+          setIsWorkflowRunOpen(true);
+        }
+      } else if (workflowType == "agent") {
+        setIsWorkflowRunOpen(true);
       }
     }
   }, [hasUnsavedChanges, workflowType]);
@@ -159,10 +168,6 @@ export default function WorkflowForm({
   }, []);
 
   const closeUploadModal = () => {
-    setIsUploadOpen(false);
-  };
-
-  const handleAfterUploadFile = () => {
     setIsUploadOpen(false);
   };
 
@@ -235,7 +240,7 @@ export default function WorkflowForm({
           </Button>
         </form>
       </div>
-      <div className="flex h-[calc(100vh-200px)] w-full flex-row gap-2">
+      <div className="flex h-[calc(100vh-340px)] w-full flex-row gap-2">
         <div>
           <NodeTypeList nodeTypeList={nodeTypeList} />
         </div>
@@ -250,12 +255,20 @@ export default function WorkflowForm({
         </div>
         {testFile && isWorkflowRunOpen && (
           <div className="flex-1 overflow-hidden border-1">
-            <div className="h-full overflow-auto">
+            <div className="custom-scrollbar h-full overflow-auto">
               <LibraryWorkflowRunningPane
                 fileId={testFile.id}
                 fileName={testFile.filename}
+                onNewFile={() => {
+                  setIsUploadOpen(true);
+                }}
               />
             </div>
+          </div>
+        )}
+        {agentId && isWorkflowRunOpen && (
+          <div className={`custom-scrollbar flex-1 overflow-hidden border-1`}>
+            <Conversation agentId={agentId} hiddenHeader={true} isTestMode={true} />
           </div>
         )}
       </div>
