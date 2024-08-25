@@ -17,6 +17,7 @@ import {
 import { selectChatList, setChatList } from "@/lib/features/chatListSlice";
 import { GroupedChatListDTO } from "@/types/chatTypes";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -95,13 +96,14 @@ const ChatHub = () => {
       router.push(path);
     });
   }
+  const t = useTranslations();
 
   return (
     <div className="flex h-full w-full flex-col border-r-1">
       <div className="flex items-center justify-between px-2 pt-4 text-3xl font-semibold">
-        <div>AgentHub</div>
+        <div>{t("AgentHub")}</div>
         {isCreatorView && (
-          <Tooltip content="Add new agent">
+          <Tooltip content={t("Add new agent")}>
             <Icon
               className="cursor-pointer"
               onClick={createAgent}

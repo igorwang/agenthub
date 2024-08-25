@@ -340,7 +340,6 @@ export default function MessageWindow({
       );
       console.log("selectedSources", selectedSources);
       console.log("isFollowUp", isFollowUp);
-
       if (selectedSources && selectedSources.length > 0) {
         setSearchResults(selectedSources);
         setMessages((prev) => [
