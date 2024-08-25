@@ -161,7 +161,10 @@ export const ChatList: React.FC<ChatListProps> = ({
           key={group.id}
           classNames={{
             base: "max-w-xs",
-            list: "max-h-[300px] overflow-auto custom-scrollbar",
+            list:
+              group.name === "system" || group.name === "default"
+                ? "max-h-[calc(100vh-100px)] overflow-auto custom-scrollbar"
+                : "max-h-[300px] overflow-auto custom-scrollbar",
           }}
           label="Assigned to"
           selectionMode="single"

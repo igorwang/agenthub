@@ -5,7 +5,7 @@ import {
 } from "@/graphql/generated/types";
 import { TaskRunResult } from "@/restful/generated";
 import { Icon } from "@iconify/react";
-import { Button, Tab, Tabs, Tooltip } from "@nextui-org/react";
+import { Button, Spacer, Tab, Tabs, Tooltip } from "@nextui-org/react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -164,8 +164,8 @@ export default function LibraryWorkflowRunningPane({
   return (
     <div className="max-h-full w-full overflow-auto p-4">
       <div className="mb-4 flex flex-row items-center justify-between">
-        <h1 className="max-w-xl overflow-hidden text-ellipsis text-nowrap text-xl font-bold">
-          Workflow input file: {fileName}
+        <h1 className="max-w-md overflow-hidden text-ellipsis text-nowrap text-xl font-bold">
+          Input file: {fileName}
         </h1>
         <Tooltip content="New File">
           <Button
@@ -177,7 +177,7 @@ export default function LibraryWorkflowRunningPane({
             New File
           </Button>
         </Tooltip>
-
+        <Spacer />
         <Tooltip content={isRetrying ? "Retrying..." : "Retry"}>
           <Button
             color="primary"
