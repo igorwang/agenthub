@@ -1,8 +1,5 @@
 {
-  "AgentHub": {
-    "ns": "AgentHub"
-  },
-  "Add new agent": {
-    "ns": "Add new agent"
-  }
+  "Add new agent": "Add new agent",
+  "Agenthub": "Agenthub",
+  "You have not created any knowledge bases yet": "You have not created any knowledge bases yet"
 }

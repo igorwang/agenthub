@@ -26,6 +26,7 @@ const ChatHub = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const params = useParams<{ id: string }>();
+  const t = useTranslations("");
   const session = useSession();
   const userRoles = session.data?.user?.roles;
   const isCreatorView = userRoles?.some((role) =>
@@ -96,12 +97,11 @@ const ChatHub = () => {
       router.push(path);
     });
   }
-  const t = useTranslations();
 
   return (
     <div className="flex h-full w-full flex-col border-r-1">
       <div className="flex items-center justify-between px-2 pt-4 text-3xl font-semibold">
-        <div>{t("AgentHub")}</div>
+        <div>{t("Agenthub")}</div>
         {isCreatorView && (
           <Tooltip content={t("Add new agent")}>
             <Icon

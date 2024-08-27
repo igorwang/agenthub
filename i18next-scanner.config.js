@@ -8,15 +8,15 @@ module.exports = {
   options: {
     debug: true,
     func: {
-      list: ["i18next.t", "i18n.t", "t"],
+      list: ["i18next.t", "i18n.t", "t", "useTranslations()"],
       extensions: [".js", ".jsx", ".ts", ".tsx"],
     },
     lngs: ["en", "zh", "hk"],
-    ns: ["translation"],
+    ns: [""],
     defaultLng: "en",
-    defaultNs: "translation",
+    defaultNs: "",
     defaultValue: function (lng, ns, key) {
-      return { ns: key };
+      return key;
     },
     resource: {
       loadPath: "messages/{{lng}}.json",
@@ -26,5 +26,7 @@ module.exports = {
     },
     nsSeparator: false,
     keySeparator: false,
+    removeUnusedKeys: true,
+    sort: true,
   },
 };

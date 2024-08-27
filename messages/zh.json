@@ -1,8 +1,5 @@
 {
-  "AgentHub": {
-    "ns": "AgentHub"
-  },
-  "Add new agent": {
-    "ns": "Add new agent"
-  }
+  "Add new agent": "新增机器人",
+  "Agenthub": "Agenthub",
+  "You have not created any knowledge bases yet": "You have not created any knowledge bases yet"
 }
