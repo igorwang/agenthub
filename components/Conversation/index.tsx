@@ -212,7 +212,7 @@ export const Conversation: React.FC<ConversationProps> = ({
   };
 
   if (!agent || loading) {
-    return <div>{t("Loading...")}</div>;
+    return <div>{t("Loading")}</div>;
   }
 
   const headerElement = (
@@ -368,7 +368,7 @@ export const Conversation: React.FC<ConversationProps> = ({
                 onSelectedSource={handleSelectedSource}
                 onChatingStatus={handleSetChatStatus}></PromptInputWithFaq>
               <p className="px-2 text-tiny text-default-400">
-                {t("AI can also make mistakes. Please verify important information.")}
+                {t("AI can also make mistakes")}
               </p>
             </div>
           </div>

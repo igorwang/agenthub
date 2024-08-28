@@ -224,7 +224,7 @@ export default function WorkflowForm({
             startContent={<Icon icon="mdi:content-save" width="20" height="20" />}
             isLoading={isSaving}
             disabled={isSaving}>
-            {isSaving ? `${t("Saving...")}` : t("Save Workflow")}
+            {isSaving ? `${t("Saving")}...` : t("Save Workflow")}
           </Button>
           <Spacer x={2} />
           <Button

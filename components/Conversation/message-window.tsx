@@ -33,6 +33,7 @@ import {
 } from "@/types/chatTypes";
 import { Avatar, ScrollShadow } from "@nextui-org/react";
 import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 import { v4 } from "uuid";
 import MessageCard from "./message-card";
 
@@ -89,6 +90,7 @@ export default function MessageWindow({
   const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
   const isFollowUp = useSelector(selectIsFollowUp);
+  const t = useTranslations();
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -483,7 +485,7 @@ export default function MessageWindow({
       <div className="flex w-full flex-col items-center justify-center gap-10">
         {agentAvatarElement}
         <h1 className="text-xl font-medium text-default-700">
-          How can I help you today?
+          {t("How can I help you today")}?
         </h1>
         <FeatureCards />
       </div>

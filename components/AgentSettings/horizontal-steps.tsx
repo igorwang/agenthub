@@ -242,7 +242,7 @@ const HorizontalSteps = React.forwardRef<HTMLButtonElement, HorizontalStepsProps
                   <div className="max-w-[160px] flex-1 px-2 text-center lg:max-w-[200px]">
                     <div
                       className={cn(
-                        "line-clamp-2 text-small font-medium text-default-foreground transition-[color,opacity] duration-300 group-active:opacity-80 lg:text-medium",
+                        "text-nowrap text-small font-medium text-default-foreground transition-[color,opacity] duration-300 group-active:opacity-80 lg:text-medium",
                         {
                           "text-default-500": status === "inactive",
                         },

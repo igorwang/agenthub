@@ -11,6 +11,7 @@ import {
 } from "@/graphql/generated/types";
 import { bindWorkflowToAgent } from "@/lib/actions/workflowActions";
 import { fetchData } from "@/lib/apolloRequest";
+import { getTranslations } from "next-intl/server";
 import { v4 } from "uuid";
 
 async function fetchAgentData(id: string) {
@@ -49,13 +50,14 @@ async function getNodeTypeListData() {
 }
 
 export default async function AgentSettingsPage({ params }: { params: { id: string } }) {
+  const t = await getTranslations();
   const agent = await fetchAgentData(params.id);
   const nodeTypeList = await getNodeTypeListData();
   const workflow = agent?.agent_by_pk?.workflow;
   const initialData = {
     id: workflow?.id || v4(), //workflow id
-    name: workflow?.name || "New Workflow",
-    description: workflow?.description || "New Workflow",
+    name: workflow?.name || t("New Workflow"),
+    description: workflow?.description || t("New Workflow"),
     nodes: workflow?.flow_nodes,
     edges: workflow?.flow_edges,
   };

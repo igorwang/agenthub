@@ -29,6 +29,7 @@ import {
   ToolType,
 } from "@/types/chatTypes";
 import { Avatar, ScrollShadow } from "@nextui-org/react";
+import { useTranslations } from "next-intl";
 import { v4 } from "uuid";
 import AgentWorkflowResultsPane from "./agent-workflow-result-pane";
 import MessageCard from "./message-card";
@@ -87,6 +88,7 @@ export default function MessageWindowWithWorkflow({
   onMessageChange,
 }: MessageWindowProps) {
   const dispatch: AppDispatch = useDispatch();
+  const t = useTranslations();
   const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
 
@@ -437,7 +439,7 @@ export default function MessageWindowWithWorkflow({
       <div className="flex w-full flex-col items-center justify-center gap-10">
         {agentAvatarElement}
         <h1 className="text-xl font-medium text-default-700">
-          How can I help you today?
+          {t("How can I help you today")}?
         </h1>
         <FeatureCards />
       </div>

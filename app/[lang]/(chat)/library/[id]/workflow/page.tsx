@@ -11,6 +11,7 @@ import {
 } from "@/graphql/generated/types";
 import { bindWorkflowToLibrary } from "@/lib/actions/workflowActions";
 import { fetchData } from "@/lib/apolloRequest";
+import { getTranslations } from "next-intl/server";
 import { v4 } from "uuid";
 
 async function fetchLibraryData(id: string) {
@@ -55,13 +56,14 @@ export default async function LibraryWorkflowPage({
 }: {
   params: { id: string };
 }) {
+  const t = await getTranslations();
   const library = await fetchLibraryData(params.id);
   const nodeTypeList = await getNodeTypeListData();
   const workflow = library?.knowledge_base_by_pk?.workflow;
   const initialData = {
     id: workflow?.id || v4(), //workflow id
-    name: workflow?.name || "New Workflow",
-    description: workflow?.description || "New Workflow",
+    name: workflow?.name || t("New Workflow"),
+    description: workflow?.description || t("New Workflow"),
     nodes: workflow?.flow_nodes,
     edges: workflow?.flow_edges,
   };
