@@ -24,6 +24,7 @@ import { Button } from "@nextui-org/button";
 import { Input, Spacer, Tooltip } from "@nextui-org/react";
 import { clsx } from "clsx";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import React, {
   useCallback,
   useEffect,
@@ -103,6 +104,7 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
     },
     ref,
   ) => {
+    const t = useTranslations();
     const [templatesState, setTemplatesState] = useState<PromptTemplateType[]>(templates);
     const [selectedModel, setSelectedModel] = useState<string>("");
     const [isChating, setIsChating] = useState<boolean>(false);
@@ -140,7 +142,6 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
           saveButtonRef.current.click();
         }
       },
-      // 将其余的 HTMLDivElement 属性透传
       ...(saveButtonRef.current?.parentElement as HTMLDivElement),
     }));
 
@@ -252,7 +253,7 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
         setPromptId(null);
         setTemplatesState(defaultTemplates);
         setIsNewPromot(true);
-        setPrompt({ name: "New Prompt" });
+        setPrompt({ name: t("New Prompt") });
       }
     };
 
@@ -409,7 +410,7 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
         const { data, errors } = await createNewPromptMutation({
           variables: {
             object: {
-              name: prompt?.name || "New Prompt",
+              name: prompt?.name || t("New Prompt"),
               creator_id: userId,
               templates: { data: newTemplates },
             },
@@ -452,7 +453,7 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
       setPromptId(null);
       setIsNewPromot(true);
       // setIsEditing(true);
-      setPrompt({ name: "New Prompt" });
+      setPrompt({ name: t("New Prompt") });
     };
 
     const templatesElement = templatesState.map((template) => (
@@ -507,7 +508,7 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
             {/* <PromptSearchBar handleChangePrompt={handleChangePrompt}></PromptSearchBar> */}
           </div>
           <div className="flex flex-row gap-2">
-            <Tooltip content="Add new prompt">
+            <Tooltip content={t("Add new prompt")}>
               <Button
                 isIconOnly
                 variant="bordered"
@@ -521,7 +522,7 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
               className={hiddenSaveButton ? "hidden" : "visible"}
               ref={saveButtonRef}
               onClick={() => handleSavePrompt()}>
-              Save
+              {t("Save")}
             </Button>
           </div>
         </div>
@@ -538,10 +539,10 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
                 onValueChange={(value) =>
                   setPrompt((prevPrompt) => ({ ...prevPrompt, name: value }))
                 }
-                placeholder="Enter prompt name"></Input>
+                placeholder={t("Enter prompt name")}></Input>
             )}
 
-            <span className="text-md font-bold">Template Messages</span>
+            <span className="text-md font-bold">{t("Template Messages")}</span>
             {templatesElement}
             <Button
               className="m-2 gap-1 bg-white p-2"
@@ -550,7 +551,7 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
               isDisabled={!isEditing}
               startContent={<PlusIcon size={14}></PlusIcon>}
               onClick={handleAddMessage}>
-              Message
+              {t("Message")}
             </Button>
           </div>
           <div className={rightColumnClasses}>
@@ -560,7 +561,7 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
               templates={templatesState}
               isDisabled={!isEditing}
               setVariableInputs={handelVariableInputChange}></PromptVariablesInput> */}
-            <div className="text-md font-bold">Output</div>
+            <div className="text-md font-bold">{t("Output")}</div>
             <div className="relative flex h-full flex-col items-baseline gap-2 border-2">
               <div className="flex w-full flex-col">
                 <ModelSelect
@@ -578,7 +579,7 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
                 startContent={<StartOutlineIcon size={28} />}
                 isDisabled={isChating || selectedModel.length === 0}
                 onClick={handleStartChat}>
-                Start
+                {t("Start")}
               </Button>
             </div>
           </div>

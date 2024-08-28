@@ -1,5 +1,6 @@
 "use client";
 import { BreadcrumbItem, Breadcrumbs } from "@nextui-org/react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 
@@ -10,6 +11,7 @@ interface LibraryBreadcrumbsProps {
 export default function LibraryBreadcrumbs({ libraryId }: LibraryBreadcrumbsProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const t = useTranslations();
 
   let currentPage: "files" | "settings" | "workflow" | "file-detail";
   let filename = "";
@@ -48,7 +50,7 @@ export default function LibraryBreadcrumbs({ libraryId }: LibraryBreadcrumbsProp
         key="files"
         isCurrent={currentPage === "files" || currentPage === "file-detail"}>
         <Link href={`/library/${libraryId}`} className="hover:underline">
-          Files
+          {t("Files")}
         </Link>
         {currentPage === "file-detail" && (
           <span className="ml-1 max-w-sm overflow-hidden text-ellipsis">
@@ -57,10 +59,10 @@ export default function LibraryBreadcrumbs({ libraryId }: LibraryBreadcrumbsProp
         )}
       </BreadcrumbItem>
       <BreadcrumbItem key="settings" isCurrent={currentPage === "settings"}>
-        <Link href={`/library/${libraryId}/settings`}>Settings</Link>
+        <Link href={`/library/${libraryId}/settings`}>{t("Settings")}</Link>
       </BreadcrumbItem>
       <BreadcrumbItem key="workflow" isCurrent={currentPage === "workflow"}>
-        <Link href={`/library/${libraryId}/workflow`}>Workflow</Link>
+        <Link href={`/library/${libraryId}/workflow`}>{t("Workflow")}</Link>
       </BreadcrumbItem>
     </Breadcrumbs>
   );

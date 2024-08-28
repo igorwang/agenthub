@@ -43,7 +43,7 @@ export default async function LibraryPage() {
           {t("You have not created any knowledge bases yet")}
         </p>
         <p className="text-md text-gray-500">
-          Please create a new knowledge base to get started
+          {t("Please create a new knowledge base to get started")}
         </p>
       </div>
     );
@@ -52,7 +52,7 @@ export default async function LibraryPage() {
   return (
     <div className="flex h-full items-center justify-center">
       <Spinner size="lg" />
-      <span className="ml-2">Loading...</span>
+      <span className="ml-2">{t("Loading")}...</span>
     </div>
   );
 }

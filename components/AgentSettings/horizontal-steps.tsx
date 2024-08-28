@@ -168,7 +168,7 @@ const HorizontalSteps = React.forwardRef<HTMLButtonElement, HorizontalStepsProps
             return (
               <li
                 key={stepIdx}
-                className="relative flex w-full max-w-[120px] items-center">
+                className="relative flex w-full max-w-[260px] items-center">
                 <button
                   key={stepIdx}
                   ref={ref}
@@ -239,7 +239,7 @@ const HorizontalSteps = React.forwardRef<HTMLButtonElement, HorizontalStepsProps
                       </div>
                     )}
                   </div>
-                  <div className="max-w-[100px] flex-1 px-2 text-center lg:max-w-[120px]">
+                  <div className="max-w-[160px] flex-1 px-2 text-center lg:max-w-[200px]">
                     <div
                       className={cn(
                         "line-clamp-2 text-small font-medium text-default-foreground transition-[color,opacity] duration-300 group-active:opacity-80 lg:text-medium",

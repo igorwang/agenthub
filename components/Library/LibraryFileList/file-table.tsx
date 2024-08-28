@@ -15,6 +15,7 @@ import {
   Tooltip,
 } from "@nextui-org/react";
 import React, { FC, useCallback, useMemo } from "react";
+import { useTranslations } from "use-intl";
 
 export interface FileDTO {
   id: string;
@@ -37,14 +38,6 @@ interface FileTableProps {
   maxWidth?: string;
   reprocessingFiles: Set<string>;
 }
-
-const columns = [
-  { name: "Name", uid: "name", sortable: true },
-  { name: "Size", uid: "size", sortable: true },
-  { name: "Status", uid: "status" },
-  { name: "Update Time", uid: "updateTime", sortable: true },
-  { name: "Action", uid: "actions" },
-];
 
 const statusColorMap: Record<
   Status_Enum,
@@ -85,6 +78,8 @@ const FileTable: FC<FileTableProps> = ({
     });
   }, [files, sortDescriptor]);
 
+  const t = useTranslations();
+
   const handleSelectionChange = useCallback(
     (keys: Selection) => {
       let fileIds: string[];
@@ -101,7 +96,13 @@ const FileTable: FC<FileTableProps> = ({
     },
     [files, onFileListSelectedChange],
   );
-
+  const columns = [
+    { name: t("Name"), uid: "name", sortable: true },
+    { name: t("Size"), uid: "size", sortable: true },
+    { name: t("Status"), uid: "status" },
+    { name: t("Update Time"), uid: "updateTime", sortable: true },
+    { name: t("Action"), uid: "actions" },
+  ];
   const renderCell = useCallback(
     (file: FileDTO, columnKey: React.Key) => {
       switch (columnKey) {
@@ -163,7 +164,9 @@ const FileTable: FC<FileTableProps> = ({
               </Tooltip>
               <Tooltip
                 content={
-                  reprocessingFiles.has(file.id) ? "Reprocessing..." : "Reprocess"
+                  reprocessingFiles.has(file.id)
+                    ? `${t("Reprocessing")}...`
+                    : t("Reprocess")
                 }>
                 <Button
                   isIconOnly
@@ -236,7 +239,7 @@ const FileTable: FC<FileTableProps> = ({
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody items={sortedFiles} emptyContent={"No files found"}>
+      <TableBody items={sortedFiles} emptyContent={t("No files found")}>
         {(file) => (
           <TableRow key={file.id}>
             {(columnKey) => <TableCell>{renderCell(file, columnKey)}</TableCell>}

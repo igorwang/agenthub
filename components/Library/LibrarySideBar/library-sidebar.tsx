@@ -8,6 +8,7 @@ import {
 import { Icon } from "@iconify/react";
 import { Divider, Tooltip } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import { startTransition, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -26,6 +27,7 @@ export default function LibrarySideBar({ items, refreshAction }: LibrarySideBarP
   const { data: sessionData, status } = useSession();
   const userId = sessionData?.user?.id;
   const params: { id: string } = useParams();
+  const t = useTranslations();
 
   async function handleRefresh() {
     startTransition(async () => {
@@ -49,13 +51,13 @@ export default function LibrarySideBar({ items, refreshAction }: LibrarySideBarP
     createOneKnowledgeBaseMutation({
       variables: {
         object: {
-          name: "New library",
+          name: t("New library"),
           base_type: Knowledge_Base_Type_Enum.Professional,
           creator_id: userId,
         },
       },
     }).then((res) => {
-      toast.success("Successfully add new library");
+      toast.success(t("Successfully add new library"));
       setListItems((prev) => [
         res.data?.insert_knowledge_base_one as KnowledgeBaseFragmentFragment,
         ...prev,
@@ -73,8 +75,8 @@ export default function LibrarySideBar({ items, refreshAction }: LibrarySideBarP
   return (
     <div className="flex h-full w-64 min-w-64 flex-col gap-2 border-r-small">
       <div className="sticky top-0 z-10 flex items-center justify-between bg-white px-2 py-2 text-3xl font-semibold leading-7">
-        <div>Library</div>
-        <Tooltip content="Add new library">
+        <div>{t("Library")}</div>
+        <Tooltip content={t("Add new library")}>
           <Icon
             className={"cursor-pointer pt-1"}
             onClick={() => handleCreateOneKnowledgeBase()}

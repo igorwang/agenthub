@@ -9,11 +9,16 @@ import SidebarNav from "./sidebar-nav";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { Role_Enum } from "@/graphql/generated/types";
 import { signOut, useSession } from "next-auth/react";
-import { sectionItems, userSectionItems } from "./sidebar-items";
+import { useTranslations } from "next-intl";
+import { getSidebarItems } from "./sidebar-items";
+// import { sectionItems, userSectionItems } from "./sidebar-items";
 
 export default function SideBar() {
   const session = useSession();
+
+  const t = useTranslations("");
   const userRoles = session.data?.user?.roles;
+
   const isCreatorView =
     userRoles &&
     userRoles.some((role) =>
@@ -22,6 +27,8 @@ export default function SideBar() {
   const handleSignOut = async () => {
     await signOut();
   };
+
+  const sidebarItems = getSidebarItems(userRoles || []);
 
   return (
     <div className="relative hidden h-screen w-14 flex-col items-center border-r-small border-divider px-2 py-4 sm:flex">
@@ -32,7 +39,7 @@ export default function SideBar() {
       <ScrollShadow className="-mr-2 flex h-full max-h-full flex-col justify-between py-2 pr-2">
         <div>
           <div className="flex flex-col items-center gap-4">
-            <Tooltip content="User Center" placement="right">
+            <Tooltip content={t("User Center")} placement="right">
               <Button
                 isIconOnly
                 // className="data-[hover=true]:text-foreground"
@@ -45,11 +52,7 @@ export default function SideBar() {
             </Tooltip>
           </div>
           <Spacer y={2} />
-          <SidebarNav
-            isCompact
-            defaultSelectedKey="chat"
-            items={isCreatorView ? sectionItems : userSectionItems}
-          />
+          <SidebarNav isCompact defaultSelectedKey="chat" items={sidebarItems} />
         </div>
         <div className="mt-auto flex flex-col items-center gap-1">
           <ThemeSwitch className="hidden pb-2" />
@@ -75,7 +78,7 @@ export default function SideBar() {
               />
             </Button>
           </Tooltip>
-          <Tooltip content="Log Out" placement="right">
+          <Tooltip content={t("Log Out")} placement="right">
             <Button
               isIconOnly
               onPress={handleSignOut}

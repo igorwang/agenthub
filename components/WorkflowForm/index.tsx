@@ -21,6 +21,7 @@ import {
 } from "@nextui-org/react";
 import { Edge, Node } from "@xyflow/react";
 import "@xyflow/react/dist/base.css";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -59,6 +60,7 @@ export default function WorkflowForm({
   nodeTypeList,
 }: WorkflowFormProps) {
   const router = useRouter();
+  const t = useTranslations();
   const [isEditing, setIsEditing] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
@@ -222,7 +224,7 @@ export default function WorkflowForm({
             startContent={<Icon icon="mdi:content-save" width="20" height="20" />}
             isLoading={isSaving}
             disabled={isSaving}>
-            {isSaving ? "Saving..." : "Save Workflow"}
+            {isSaving ? `${t("Saving...")}` : t("Save Workflow")}
           </Button>
           <Spacer x={2} />
           <Button
@@ -236,7 +238,7 @@ export default function WorkflowForm({
               />
             }
             disabled={isSaving}>
-            {isWorkflowRunOpen ? "Close Workflow Test" : "Run Workflow Test"}
+            {isWorkflowRunOpen ? t("Close Workflow Test") : t("Run Workflow Test")}
           </Button>
         </form>
       </div>
@@ -275,7 +277,7 @@ export default function WorkflowForm({
 
       {hasUnsavedChanges && (
         <p className="bottom-0 left-0 text-sm text-yellow-600">
-          You have unsaved changes.
+          {t("You have unsaved changes")}.
         </p>
       )}
 
@@ -289,7 +291,7 @@ export default function WorkflowForm({
             {(onClose) => (
               <>
                 <ModalHeader className="flex flex-col gap-1 border-b pb-4 text-2xl font-semibold text-gray-700">
-                  Upload File
+                  {t("Upload File")}
                 </ModalHeader>
                 <ModalBody className="py-6">
                   <UploadZone

@@ -31,6 +31,7 @@ import {
 } from "@nextui-org/react";
 import Ajv from "ajv";
 import { JsonEditor } from "json-edit-react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -41,6 +42,7 @@ interface LibraryFormProps {
 }
 
 export default function LibraryForm({ initLibrary }: LibraryFormProps) {
+  const t = useTranslations();
   const router = useRouter();
   const [updateKnowledgeBaseMutation] = useUpdateKnowledgeBaseMutation();
   const [deleteKnowledgeBaseByIdMutation] = useDeleteKnowledgeBaseByIdMutation();
@@ -89,10 +91,10 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
           _set: data,
         },
       });
-      toast.success("Library information update succeeded!");
+      toast.success(t("Library information update succeeded!"));
       router.refresh();
     } catch (error) {
-      toast.error("Failed to update library information");
+      toast.error(t("Failed to update library information"));
     }
   };
 
@@ -100,7 +102,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
     const response = await deleteKnowledgeBaseByIdMutation({
       variables: { id: initLibrary?.id },
     });
-    toast.success("Delete library success");
+    toast.success(t("Delete library success"));
     setDeleteModal(false);
     router.push("/library");
   };
@@ -108,13 +110,15 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
   const deleteModalContent = (
     <Modal isOpen={deleteModal} hideCloseButton={true}>
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">Delete Library</ModalHeader>
+        <ModalHeader className="flex flex-col gap-1">{t("Delete Library")}</ModalHeader>
         <ModalBody>
-          <p>Are you sure you want to remove this Library : {initLibrary?.name}?</p>
+          <p>
+            {t("Are you sure you want to remove this Library")} : {initLibrary?.name}?
+          </p>
         </ModalBody>
         <ModalFooter>
           <Button color="primary" variant="light" onPress={() => setDeleteModal(false)}>
-            Close
+            {t("Close")}
           </Button>
           <Button
             color="danger"
@@ -122,7 +126,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
               // setIsModalOpen(false);
               handleDeleteLibrary();
             }}>
-            Affirm
+            {t("Affirm")}
           </Button>
         </ModalFooter>
       </ModalContent>
@@ -135,7 +139,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
       <div className="mb-6">
         <div className="mb-2 flex flex-row items-center gap-2">
           <Icon icon={"hugeicons:settings-05"} fontSize={20} />
-          <h3 className="text-lg font-semibold">Basic Information</h3>
+          <h3 className="text-lg font-semibold">{t("Basic Information")}</h3>
         </div>
         <div className="flex flex-col gap-4">
           <Controller
@@ -146,9 +150,9 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
               <Input
                 {...field}
                 value={field.value as string}
-                label="Library Name"
+                label={t("Library Name")}
                 labelPlacement="outside"
-                placeholder="Enter library name"
+                placeholder={t("Enter library name")}
                 isRequired
                 errorMessage={error?.message}
               />
@@ -167,10 +171,10 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
               <Textarea
                 {...field}
                 value={field.value as string}
-                label="Library Description"
+                label={t("Library Description")}
                 labelPlacement="outside"
-                placeholder="Enter library description"
-                description="Maximum 200 characters"
+                placeholder={t("Enter library description")}
+                description={t("Maximum 200 characters")}
               />
             )}
           />
@@ -179,7 +183,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
             control={control}
             render={({ field: { value, onChange } }) => (
               <Switch size={"sm"} isSelected={value as boolean} onValueChange={onChange}>
-                Publish the library
+                {t("Publish the library")}
               </Switch>
             )}
           />
@@ -202,18 +206,18 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
       <div className="mb-4">
         <div className="mb-4 flex flex-row items-center gap-2">
           <Icon icon={"solar:document-add-linear"} fontSize={20} />
-          <h3 className="text-lg font-semibold">Document Structure</h3>
+          <h3 className="text-lg font-semibold">{t("Document Structure")}</h3>
         </div>
         <Controller
           name="mode"
           control={control}
           render={({ field }) => (
             <Select
-              label="Library Document Mode"
+              label={t("Library Document Mode")}
               className="pt-2"
               isRequired
               labelPlacement="outside"
-              placeholder="Select your mode for this library"
+              placeholder={t("Select your mode for this library")}
               selectedKeys={field.value ? [field.value] : [""]}
               disallowEmptySelection={false}
               onSelectionChange={(keys) => {
@@ -221,7 +225,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
               }}>
               {Object.values(Knowledge_Base_Mode_Enum).map((mode) => (
                 <SelectItem key={mode} value={mode}>
-                  {mode}
+                  {t(mode)}
                 </SelectItem>
               ))}
             </Select>
@@ -276,7 +280,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
         <div className="mb-6">
           <div className="mb-2 flex flex-row items-center gap-2">
             <Icon icon={"solar:graph-broken"} fontSize={20} />
-            <h3 className="text-lg font-semibold">Indexing Configuration</h3>
+            <h3 className="text-lg font-semibold">{t("Indexing Configuration")}</h3>
           </div>
           <div className="flex flex-col gap-4">
             <Controller
@@ -284,9 +288,9 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
               control={control}
               render={({ field }) => (
                 <Select
-                  label="Chunking Strategy"
+                  label={t("Chunking Strategy")}
                   labelPlacement="outside"
-                  placeholder="Select your chunking strategy for this library"
+                  placeholder={t("Select your chunking strategy for this library")}
                   selectedKeys={field.value ? [field.value] : ["length"]}
                   disallowEmptySelection={false}
                   onSelectionChange={(keys) => {
@@ -294,7 +298,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
                   }}>
                   {Object.values(Chunking_Strategy_Enum).map((strategy) => (
                     <SelectItem key={strategy} value={strategy}>
-                      {strategy}
+                      {t(strategy)}
                     </SelectItem>
                   ))}
                 </Select>
@@ -306,7 +310,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
               render={({ field }) => (
                 <div>
                   <label className="font-sans text-sm text-gray-900">
-                    Chunking Parameters
+                    {t("Chunking Parameters")}
                   </label>
                   <JsonEditor
                     collapse={true} // This will collapse the editor by default
@@ -321,8 +325,10 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
                               `${error.instancePath}${error.instancePath ? ": " : ""}${error.message}`,
                           )
                           .join("\n");
-                        toast.error(`Not compliant with JSON Schema:${errorMessage}`);
-                        return "JSON Schema error";
+                        toast.error(
+                          `${t("Not compliant with JSON Schema")}:${errorMessage}`,
+                        );
+                        return t("JSON Schema error");
                       }
                       field.onChange(newData);
                     }}
@@ -336,7 +342,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
               control={control}
               render={({ field }) => (
                 <ModelSelect
-                  label="Embedding model"
+                  label={t("Embedding model")}
                   modelType="embedding"
                   labelPlacement="outside"
                   isRequired={false}
@@ -354,10 +360,10 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
       <div className="flex items-end justify-end gap-2 pb-1">
         {/* <span className="text-foreground-500">Library Information</span> */}
         <Button color="danger" onClick={() => setDeleteModal(true)}>
-          Delete
+          {t("Delete")}
         </Button>
         <Button color="primary" type="submit">
-          Save
+          {t("Save")}
         </Button>
       </div>
       {deleteModal && deleteModalContent}
