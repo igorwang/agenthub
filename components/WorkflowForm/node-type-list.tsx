@@ -1,5 +1,6 @@
 import { NodeTypeFragmentFragment } from "@/graphql/generated/types";
 import { Icon } from "@iconify/react";
+import { useTranslations } from "next-intl";
 import React from "react";
 
 export type NodeType = "input" | "default" | "output";
@@ -17,9 +18,11 @@ const NodeTypeList: React.FC<NodeTypeListProps> = ({ nodeTypeList }) => {
     event.dataTransfer.effectAllowed = "move";
   };
 
+  const t = useTranslations();
+
   return (
     <aside className="h-full w-64 border-r border-gray-200 bg-gray-200 p-4 text-xs">
-      <div className="mb-4 text-sm">Drag nodes to the right pane.</div>
+      <div className="mb-4 text-sm">{t("Drag nodes to the right pane")}.</div>
       <div className="grid grid-cols-2 gap-2">
         {nodeTypeList.map((item) => (
           <div
