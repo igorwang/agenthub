@@ -124,12 +124,12 @@ export default function LibraryFileList({
           throw new Error(t("Failed to reprocess file"));
         }
         const result = await response.json();
-        toast.success(t(`File is being reprocessed.`));
+        toast.success(t(`File is being reprocessed`));
 
         refetch();
       } catch (error) {
-        console.error(t("Error reprocessing file:"), error);
-        toast.error(t(`Failed to reprocess file. Please try again.`));
+        console.error(t("Error reprocessing file"), error);
+        toast.error(t(`Failed to reprocess file`));
       } finally {
         setReprocessingFiles((prev) => {
           const newSet = new Set(prev);

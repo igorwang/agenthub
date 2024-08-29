@@ -363,18 +363,21 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
           <div ref={messageRef} className={"min-h-8 px-1 text-medium"}>
             <div className="mr-10 gap-3">
               {sourceResults && sourceResults.length > 0 && (
-                <SourceSection title="library Sources" items={librarySources || []} />
+                <SourceSection
+                  title={t("library Sources")}
+                  items={librarySources || []}
+                />
               )}
               <Spacer x={2} />
               {webSources && webSources.length > 0 && (
                 <SourceSection
-                  title="Web Sources"
+                  title={t("Web Sources")}
                   items={webSources || []}></SourceSection>
               )}
               <Spacer x={2} />
               <div className="flex flex-row items-center justify-start gap-1 p-1">
                 <Icon className="text-lg text-default-600" icon="hugeicons:idea-01" />
-                <span className="text-slate-500">Answer:</span>
+                <span className="text-slate-500">{t("Answer")}:</span>
               </div>
               <div className={clsx("flex max-w-full flex-col overflow-hidden p-1")}>
                 <MarkdownRenderer content={message?.toString() || ""}></MarkdownRenderer>
