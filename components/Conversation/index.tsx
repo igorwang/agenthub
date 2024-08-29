@@ -9,6 +9,7 @@ import {
   Agent_Mode_Enum,
   Message_Role_Enum,
   Message_Status_Enum,
+  Message_Type_Enum,
   Role_Enum,
   useCreateNewMessageMutation,
   useGetAgentByIdQuery,
@@ -25,6 +26,7 @@ import { CHAT_STATUS_ENUM, MessageType, SourceType } from "@/types/chatTypes";
 import { Icon } from "@iconify/react";
 import { Avatar, Button, Chip, ScrollShadow, Spacer, Tooltip } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import React, {
   createContext,
@@ -42,6 +44,19 @@ type ConversationContextType = {
   chatStatus: CHAT_STATUS_ENUM | null;
   selectedSources: SourceType[];
   handleSelectedSource: (source: SourceType, selected: boolean) => void;
+  handleCreateNewMessage: (params: {
+    id: string;
+    query: string;
+    content: string;
+    session_id: string;
+    role: Message_Role_Enum;
+    status?: Message_Status_Enum;
+    attachments?: any;
+    sources?: any;
+    message_type?: Message_Type_Enum;
+    schema?: { [key: string]: any };
+  }) => void;
+  handleSetChatStatus: (isChating: boolean, chatStatus: CHAT_STATUS_ENUM | null) => void;
 };
 
 // Create the context
@@ -86,6 +101,7 @@ export const Conversation: React.FC<ConversationProps> = ({
 }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const t = useTranslations();
 
   const session = useSession();
   const dispatch: AppDispatch = useDispatch();
@@ -155,36 +171,43 @@ export const Conversation: React.FC<ConversationProps> = ({
     }
   }, [agentId, data]);
 
-  const handleCreateNewMessage = (params: {
-    id: string;
-    query: string;
-    content: string;
-    session_id: string;
-    role: Message_Role_Enum;
-    status?: Message_Status_Enum;
-    attachments?: any;
-    sources?: any;
-  }) => {
-    try {
-      createNewMessageMutation({
-        variables: {
-          object: {
-            id: params.id,
-            query: params.query,
-            content: params.content,
-            role: params.role,
+  const handleCreateNewMessage = useCallback(
+    (params: {
+      id: string;
+      query: string;
+      content: string;
+      session_id: string;
+      role: Message_Role_Enum;
+      status?: Message_Status_Enum;
+      attachments?: any;
+      sources?: any;
+      message_type?: Message_Type_Enum;
+      schema?: { [key: string]: any };
+    }) => {
+      try {
+        createNewMessageMutation({
+          variables: {
+            object: {
+              id: params.id,
+              query: params.query,
+              content: params.content,
+              role: params.role,
+              session_id: params.session_id,
+              attachments: params.attachments,
+              sources: params.sources,
+              status: params.status,
+              schema: params.schema,
+              message_type: params.message_type,
+            },
             session_id: params.session_id,
-            attachments: params.attachments,
-            sources: params.sources,
-            status: params.status,
           },
-          session_id: params.session_id,
-        },
-      });
-    } catch (error) {
-      toast.error("Create message error");
-    }
-  };
+        });
+      } catch (error) {
+        toast.error("Create message error");
+      }
+    },
+    [],
+  );
 
   const handleConfigCilck = () => {
     router.push(`${pathname}/settings`);
@@ -201,16 +224,16 @@ export const Conversation: React.FC<ConversationProps> = ({
     }
   };
 
-  const handleSetChatStatus = (
-    isChating: boolean,
-    chatStatus: CHAT_STATUS_ENUM | null,
-  ) => {
-    setIsChating(isChating);
-    setChatStatus(chatStatus);
-  };
+  const handleSetChatStatus = useCallback(
+    (isChating: boolean, chatStatus: CHAT_STATUS_ENUM | null) => {
+      setIsChating(isChating);
+      setChatStatus(chatStatus);
+    },
+    [],
+  );
 
   if (!agent || loading) {
-    return <div>Loading...</div>;
+    return <div>{t("Loading")}</div>;
   }
 
   const headerElement = (
@@ -236,7 +259,7 @@ export const Conversation: React.FC<ConversationProps> = ({
           <div className="flex flex-row items-center">
             <p className="pr-2 text-3xl font-medium">{agent.name}</p>
             {agent.creator_id === session.data?.user?.id && (
-              <Tooltip content="Configure Agent">
+              <Tooltip content={t("Configure Agent")}>
                 <Button
                   isIconOnly={true}
                   startContent={<ConfigIcon size={28} />}
@@ -272,6 +295,8 @@ export const Conversation: React.FC<ConversationProps> = ({
     chatStatus,
     selectedSources,
     handleSelectedSource,
+    handleCreateNewMessage,
+    handleSetChatStatus,
   };
 
   return (
@@ -343,7 +368,7 @@ export const Conversation: React.FC<ConversationProps> = ({
                           agent mode.
                         </div>
                       ) : (
-                        "Long chats may affect the AI performance."
+                        t("Long chats may affect the AI performance")
                       )}
                     </span>
                   </div>
@@ -355,7 +380,7 @@ export const Conversation: React.FC<ConversationProps> = ({
                     onClick={() => {
                       dispatch(selectSession(null));
                     }}>
-                    Start a new chat
+                    {t("Start a new chat")}
                   </Button>
                 </div>
               )}
@@ -366,7 +391,7 @@ export const Conversation: React.FC<ConversationProps> = ({
                 onSelectedSource={handleSelectedSource}
                 onChatingStatus={handleSetChatStatus}></PromptInputWithFaq>
               <p className="px-2 text-tiny text-default-400">
-                AI can also make mistakes. Please verify important information.
+                {t("AI can also make mistakes")}
               </p>
             </div>
           </div>

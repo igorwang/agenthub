@@ -7,6 +7,7 @@ import {
 } from "@/graphql/generated/types";
 import { fetchData } from "@/lib/apolloRequest";
 import { Spinner } from "@nextui-org/react";
+import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
 
 async function fetchLibraryData() {
@@ -27,6 +28,8 @@ async function fetchLibraryData() {
 
 export default async function LibraryPage() {
   const data = await fetchLibraryData();
+  const t = await getTranslations("");
+
   console.log("LibraryPage", data);
 
   if (data?.knowledge_base[0]?.id) {
@@ -37,10 +40,10 @@ export default async function LibraryPage() {
     return (
       <div className="flex h-full w-full flex-col items-center justify-center">
         <p className="mb-4 text-lg text-gray-600">
-          You have not created any knowledge bases yet
+          {t("You have not created any knowledge bases yet")}
         </p>
         <p className="text-md text-gray-500">
-          Please create a new knowledge base to get started
+          {t("Please create a new knowledge base to get started")}
         </p>
       </div>
     );
@@ -49,7 +52,7 @@ export default async function LibraryPage() {
   return (
     <div className="flex h-full items-center justify-center">
       <Spinner size="lg" />
-      <span className="ml-2">Loading...</span>
+      <span className="ml-2">{t("Loading")}...</span>
     </div>
   );
 }

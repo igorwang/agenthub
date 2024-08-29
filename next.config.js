@@ -4,6 +4,8 @@ require("dotenv").config({ path: envFile });
 const fs = require("fs");
 const dotenv = require("dotenv");
 const path = require("path");
+const createNextIntlPlugin = require("next-intl/plugin");
+const withNextIntl = createNextIntlPlugin();
 
 const envConfig = dotenv.parse(fs.readFileSync(envFile));
 
@@ -27,4 +29,4 @@ const nextConfig = {
   // },
 };
 
-module.exports = nextConfig;
+module.exports = withNextIntl(nextConfig);

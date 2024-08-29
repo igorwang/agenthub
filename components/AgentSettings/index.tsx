@@ -15,6 +15,7 @@ import {
   useGetAgentByIdQuery,
 } from "@/graphql/generated/types";
 import { Button } from "@nextui-org/react";
+import { useTranslations } from "next-intl";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -47,6 +48,7 @@ export default function AgentSettings({
   action,
   nodeTypeList,
 }: AgentSettingsProps) {
+  const t = useTranslations();
   const [agent, setAgent] = useState<Agent | null>();
   const [libraryId, setLibraryId] = useState<string | null>();
   const searchParams = useSearchParams();
@@ -161,7 +163,7 @@ export default function AgentSettings({
 
   return (
     <div className="flex h-screen flex-col">
-      <RightHeader title={"Agent Setting"} callBackUri={`/chat/${id}`} />
+      <RightHeader title={t("Agent Setting")} callBackUri={`/chat/${id}`} />
       <div className="flex-grow overflow-auto scrollbar-none">
         <div className="mx-auto mt-10 flex w-full flex-col items-center px-4">
           <HorizontalSteps
@@ -169,16 +171,16 @@ export default function AgentSettings({
             className={"items-start"}
             steps={[
               {
-                title: "Edit Agent",
+                title: t("Edit Agent"),
               },
               {
-                title: "Configure Prompt",
+                title: t("Configure Prompt"),
               },
               {
-                title: "Select Library",
+                title: t("Select Library"),
               },
               {
-                title: "Agent Workflow",
+                title: t("Agent Workflow"),
               },
             ]}
           />
@@ -189,16 +191,16 @@ export default function AgentSettings({
         <div className="flex justify-center space-x-8">
           {step > 0 && (
             <Button color={"primary"} onClick={() => setStep(step - 1)}>
-              Previous
+              {t("Previous")}
             </Button>
           )}
           {step < 3 ? (
             <Button color={"primary"} onClick={() => onClickNext()}>
-              Next
+              {t("Next")}
             </Button>
           ) : (
             <Button color={"primary"} onClick={() => router.push(`/chat/${id}`)}>
-              Save
+              {t("Save")}
             </Button>
           )}
         </div>

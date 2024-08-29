@@ -10,6 +10,7 @@ import {
 import { formatTokenLimit } from "@/lib/utils/formatTokenLimit";
 import { Input } from "@nextui-org/input";
 import { Avatar, Button, Divider, Select, SelectItem, Textarea } from "@nextui-org/react";
+import { useTranslations } from "next-intl";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { toast } from "sonner";
 
@@ -43,6 +44,7 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
   const [agent, setAgent] = useState<Agent | null>();
   const [updateAgentMutation] = useUpdateAgentMutation();
   const query = useGetAgentByIdQuery({ variables: { id: props?.agentId } });
+  const t = useTranslations();
 
   useEffect(() => {
     if (query.data) {
@@ -85,16 +87,16 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
     <div className={"flex w-full flex-col items-center justify-center p-10"}>
       <form className={"w-full gap-16"}>
         <div className={"flex flex-row items-end justify-between pb-1"}>
-          <span className="relative text-foreground-500">Agent Information</span>
+          <span className="relative text-foreground-500">{t("Agent Information")}</span>
           <Button
             color={"primary"}
             className={props?.isHiddenSaveButton ? "hidden" : "visible"}
             onClick={() => handleSubmit()}>
-            Save
+            {t("Save")}
           </Button>
         </div>
         <Divider />
-        <div className={"mt-4"}>Avatar</div>
+        <div className={"mt-4"}>{t("Avatar")}</div>
         <div className={"flex justify-center"}>
           {agent?.avatar ? (
             <Avatar src={agent?.avatar} />
@@ -110,9 +112,9 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
         <div className={"mt-4"}>
           <Input
             isRequired
-            label="Agent Name"
+            label={t("Agent Name")}
             labelPlacement="outside"
-            placeholder="Enter agent name"
+            placeholder={t("Enter agent name")}
             type="text"
             variant={"flat"}
             value={agent?.name}
@@ -121,9 +123,9 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
         </div>
         <div className={"mt-4"}>
           <Textarea
-            label="Agent Description"
+            label={t("Agent Description")}
             labelPlacement="outside"
-            placeholder="Enter agent description"
+            placeholder={t("Enter agent description")}
             type="text"
             variant={"flat"}
             value={agent?.description || ""}
@@ -132,11 +134,11 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
         </div>
         <div className={"mt-8"}>
           <Select
-            label="Agent Work Mode"
+            label={t("Agent Work Mode")}
             className="pt-2"
             isRequired
             labelPlacement="outside"
-            placeholder="Select your mode for this agent"
+            placeholder={t("Select your mode for this agent")}
             selectedKeys={agent?.mode ? [agent?.mode] : []}
             disallowEmptySelection={false}
             onSelectionChange={(keys) => {
@@ -153,7 +155,9 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
         <div className={"mt-10"}>
           <ModelSelect
             label={
-              agent?.token_limit ? `LLM (${formatTokenLimit(agent.token_limit)})` : "LLM"
+              agent?.token_limit
+                ? `${t("LLM")} (${formatTokenLimit(agent.token_limit)})`
+                : `${t("LLM")}`
             }
             labelPlacement="outside"
             defaultModel={agent?.default_model || ""}

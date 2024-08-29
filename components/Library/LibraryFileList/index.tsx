@@ -24,6 +24,7 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "use-intl";
 
 interface FilesListProps {
   initialFiles: FilesListQuery | null;
@@ -50,6 +51,7 @@ export default function LibraryFileList({
   const [reprocessingFiles, setReprocessingFiles] = useState<Set<string>>(new Set());
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [selectedFileList, setSelectedFileList] = useState<string[]>([]);
+  const t = useTranslations("");
 
   const router = useRouter();
   const pathname = usePathname();
@@ -119,15 +121,15 @@ export default function LibraryFileList({
         });
 
         if (!response.ok) {
-          throw new Error("Failed to reprocess file");
+          throw new Error(t("Failed to reprocess file"));
         }
         const result = await response.json();
-        toast.success(`File "${file.name}" is being reprocessed.`);
+        toast.success(t(`File is being reprocessed`));
 
         refetch();
       } catch (error) {
-        console.error("Error reprocessing file:", error);
-        toast.error(`Failed to reprocess file "${file.name}". Please try again.`);
+        console.error(t("Error reprocessing file"), error);
+        toast.error(t(`Failed to reprocess file`));
       } finally {
         setReprocessingFiles((prev) => {
           const newSet = new Set(prev);
@@ -148,7 +150,7 @@ export default function LibraryFileList({
         },
       }).then(async (res) => {
         toast.success(
-          `Successfully deleted ${res.data?.delete_files?.returning.length || 0} files`,
+          `${t("Successfully deleted files")}: ${res.data?.delete_files?.returning.length || 0}`,
         );
         refetch();
       });
@@ -177,7 +179,7 @@ export default function LibraryFileList({
           aria-label="search"
           className="w-full max-w-sm px-1"
           labelPlacement="outside"
-          placeholder="Search..."
+          placeholder={`${t("Search")}...`}
           value={searchValue}
           onValueChange={setSearchValue}
           startContent={
@@ -195,11 +197,11 @@ export default function LibraryFileList({
               onClick={() => {
                 setDeleteFilesModal(true);
               }}>
-              Delete Files
+              {t("Delete Files")}
             </Button>
           )}
           <Button color="primary" endContent={<PlusIcon />} onClick={openUploadModal}>
-            Add New
+            {t("Add New")}
           </Button>
         </div>
       </div>
@@ -236,7 +238,7 @@ export default function LibraryFileList({
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1 border-b pb-4 text-2xl font-semibold text-gray-700">
-                Upload Files
+                {t("Upload Files")}
               </ModalHeader>
               <ModalBody className="py-6">
                 <UploadZone
@@ -251,7 +253,7 @@ export default function LibraryFileList({
       {deleteModal && (
         <DeleteConfirmModal
           isOpen={deleteModal}
-          title={"Delete File"}
+          title={t("Delete File")}
           name={selectedFile?.name || ""}
           id={selectedFile?.id || ""}
           onClose={() => {
@@ -269,7 +271,7 @@ export default function LibraryFileList({
       {deleteFilesModal && (
         <DeleteMultipleModal
           isOpen={deleteFilesModal}
-          title={"Delete Files"}
+          title={t("Delete Files")}
           name={"file"}
           ids={selectedFileList}
           onClose={() => {

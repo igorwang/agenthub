@@ -8,6 +8,8 @@ fragment messageFragment on message {
   updated_at
   attachments
   sources
+  message_type
+  schema
 }
 
 query fetchAllMessageList(

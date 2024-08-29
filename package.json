@@ -11,7 +11,8 @@
     "generate-client": "dotenv -e .env.local -- sh -c 'openapi-ts --input $API_URL/openapi.json --output ./restful/generated --client axios'",
     "generate-client:prod": "dotenv -e .env.production.local -- sh -c 'openapi-ts --input $API_URL/openapi.json --output ./restful/generated --client axios'",
     "generate-graphql": "dotenv -e .env.local -- sh -c 'graphql-codegen'",
-    "generate-graphql:prod": "dotenv -e .env.production.local -- sh -c 'graphql-codegen'"
+    "generate-graphql:prod": "dotenv -e .env.production.local -- sh -c 'graphql-codegen'",
+    "extract": "i18next-scanner --config i18next-scanner.config.js"
   },
   "dependencies": {
     "@apollo/client": "^3.10.4",
@@ -78,6 +79,7 @@
     "negotiator": "^0.6.3",
     "next": "14.2.1",
     "next-auth": "^5.0.0-beta.18",
+    "next-intl": "^3.17.6",
     "next-themes": "^0.2.1",
     "postcss": "8.4.38",
     "react": "18.2.0",
@@ -127,6 +129,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-graphql": "^4.0.0",
     "eslint-plugin-prettier": "^5.1.3",
+    "i18next-scanner": "^4.5.0",
     "prettier": "^3.3.2",
     "prettier-plugin-organize-imports": "^3.2.4",
     "prettier-plugin-tailwindcss": "^0.6.6",

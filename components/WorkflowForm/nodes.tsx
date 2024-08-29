@@ -483,6 +483,39 @@ export const IndexingNodeComponent: React.FC<NodeProps<PreChatOutputNode>> = mem
   },
 );
 
+export type HumanInLoopNode = Node<CustomNodeData, "HumanInLoopNode">;
+export const HumanInLoopNodeComponent: React.FC<NodeProps<HumanInLoopNode>> = memo(
+  ({ data, selected }) => {
+    const borderColor = selected ? "border-blue-500" : "border-gray-200";
+
+    return (
+      <div
+        className={`rounded-md border ${borderColor} bg-white px-2 py-1 shadow-sm transition-colors duration-200`}>
+        <div className="flex flex-col items-center">
+          <div className="mb-0.5 flex h-6 w-6 items-center justify-center">
+            <Icon icon="mdi:account-question" fontSize={16} />
+          </div>
+          <div className="overflow-hidden">
+            <div className="w-24 truncate text-center text-xs font-medium text-gray-700">
+              {data.label || "Ask Question"}
+            </div>
+          </div>
+        </div>
+        <Handle
+          type="target"
+          position={Position.Left}
+          className="-ml-0.5 h-3 w-0.5 !border-1 !border-white !bg-gray-300"
+        />
+        <Handle
+          type="source"
+          position={Position.Right}
+          className="-mr-0.5 h-2 w-0.5 !border-1 !border-white !bg-gray-300"
+        />
+      </div>
+    );
+  },
+);
+
 StartNodeComponent.displayName = "StartNodeComponent";
 InputNodeComponent.displayName = "InputNodeComponent";
 llmNodeComponent.displayName = "llmNodeComponent";
@@ -497,6 +530,7 @@ LoopLLMNodeComponent.displayName = "LoopLLMNodeComponent";
 NewDocumentNodeComponent.displayName = "NewDocumentNodeComponent";
 ChunkingNodeComponent.displayName = "ChunkingNodeComponent";
 IndexingNodeComponent.displayName = "IndexingNodeComponent";
+HumanInLoopNodeComponent.displayName = "HumanInLoopNodeComponent";
 
 export const nodeTypes: NodeTypes = {
   startNode: StartNodeComponent,
@@ -513,4 +547,5 @@ export const nodeTypes: NodeTypes = {
   newDocumentNode: NewDocumentNodeComponent,
   chunkingNode: ChunkingNodeComponent,
   indexingNode: IndexingNodeComponent,
+  humanInLoopNode: HumanInLoopNodeComponent,
 };

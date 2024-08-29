@@ -7,6 +7,8 @@ import { Viewport } from "next";
 import StoreProvider from "@/app/StoreProvider";
 import SideBar from "@/components/Sidebar";
 import { SessionProvider } from "next-auth/react";
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
 import { Toaster } from "sonner";
 
 export const viewport: Viewport = {
@@ -16,9 +18,18 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({
+  params: { lang },
+  children,
+}: {
+  params: { lang: string };
+  children: React.ReactNode;
+}) {
+  // const messages = await getMessages();
+  const messages = await getMessages();
+
   return (
-    <html lang="en" suppressHydrationWarning={true}>
+    <html lang={lang} suppressHydrationWarning={true}>
       <head />
       <body
         className={clsx(
@@ -28,21 +39,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers themeProps={{ attribute: "class", defaultTheme: "white" }}>
           <StoreProvider>
             <SessionProvider>
-              <div className="h-dvh w-dvw">
-                <div className={"flex h-full flex-row"}>
-                  <SideBar />
-                  <div className="h-full w-full">
-                    {children}
-                    <Toaster
-                      toastOptions={{
-                        classNames: {
-                          error: "text-red-400",
-                        },
-                      }}
-                    />
+              <NextIntlClientProvider messages={messages}>
+                <div className="h-dvh w-dvw">
+                  <div className={"flex h-full flex-row"}>
+                    <SideBar />
+                    <div className="h-full w-full">
+                      {children}
+                      <Toaster
+                        toastOptions={{
+                          classNames: {
+                            error: "text-red-400",
+                          },
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
+              </NextIntlClientProvider>
             </SessionProvider>
           </StoreProvider>
         </Providers>

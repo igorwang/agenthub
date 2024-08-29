@@ -1,6 +1,7 @@
 import {
   Knowledge_Base_Type_Enum,
   Message_Status_Enum,
+  Message_Type_Enum,
   Role_Enum,
   Run_Type_Enum,
   Tool_Type_Enum,
@@ -66,6 +67,8 @@ export type MessageType = {
   sources?: SourceType[];
   query?: string;
   sessionId?: string;
+  messageType?: Message_Type_Enum | null;
+  schema?: { [key: string]: any };
 };
 
 export type LibraryCardType = {

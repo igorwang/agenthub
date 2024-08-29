@@ -83,7 +83,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         // console.log("User logged in:", user);
         // console.log("User profile:", profile);
-
         // call role data
         const { data } = await client.query({
           query: GetUserRolesDocument,

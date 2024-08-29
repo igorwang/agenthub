@@ -1,17 +1,16 @@
-// At the same level as pages or app
 import { match as matchLocale } from "@formatjs/intl-localematcher";
 import Negotiator from "negotiator";
+import createIntlMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "./auth";
 
-const PUBLIC_FILE = /\.(.*)$/;
-
-const protectedRoutes = ["/chat", "/search", "/library", "/discover"]; // Add any other protected routes here
-
-const locales = ["en", "tw", "zh"];
+const locales = ["en", "hk", "zh"];
 const defaultLocale = "en";
 
-function getLocale(request: NextRequest) {
+const PUBLIC_FILE = /\.(.*)$/;
+const protectedRoutes = ["/chat", "/search", "/library", "/discover"];
+
+function getLocale(request: NextRequest): string {
   const negotiator = new Negotiator({
     headers: {
       "accept-language": request.headers.get("accept-language") || "",
@@ -21,30 +20,29 @@ function getLocale(request: NextRequest) {
   return matchLocale(languages, locales, defaultLocale);
 }
 
+const intlMiddleware = createIntlMiddleware({
+  locales,
+  defaultLocale,
+  localePrefix: "always",
+});
+
 export default async function middleware(request: NextRequest) {
-  const session = await auth();
-
-  const locale = getLocale(request);
-
   const { pathname, origin } = request.nextUrl;
 
-  const excludePaths = ["/_next", "/static", "/api", "/favicon.ico", "/public"];
-
-  const shouldExclude = excludePaths.some((path) => pathname.startsWith(path));
-
-  if (!shouldExclude) {
-    const pathnameHasLocale = locales.some(
-      (loc) => pathname.startsWith(`/${loc}/`) || pathname === `/${loc}`,
-    );
-
-    if (!pathnameHasLocale) {
-      // Redirect if there is no locale
-      request.nextUrl.pathname = `/${locale}${pathname}`;
-      return NextResponse.redirect(request.nextUrl);
-    }
+  // Handle public files and API routes
+  if (
+    PUBLIC_FILE.test(pathname) ||
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/api") ||
+    pathname.includes("/static") ||
+    pathname.includes("/favicon.ico")
+  ) {
+    return NextResponse.next();
   }
 
-  // Remove locale from pathname before checking protected routes
+  const session = await auth();
+
+  // Handle protected routes
   const pathnameWithoutLocale = locales.reduce((path, loc) => {
     if (path.startsWith(`/${loc}/`)) {
       return path.replace(`/${loc}`, "");
@@ -62,5 +60,23 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.redirect(`${origin}/auth/login?redirectUri=${pathname}`);
   }
 
-  return NextResponse.next();
+  // Apply intl middleware
+  const response = intlMiddleware(request);
+
+  // If the locale is missing, add it based on the negotiated locale
+  const pathnameHasLocale = locales.some(
+    (loc) => pathname.startsWith(`/${loc}/`) || pathname === `/${loc}`,
+  );
+
+  if (!pathnameHasLocale) {
+    const locale = getLocale(request);
+    request.nextUrl.pathname = `/${locale}${pathname}`;
+    return NextResponse.redirect(request.nextUrl);
+  }
+
+  return response;
 }
+
+export const config = {
+  matcher: ["/((?!api|_next|.*\\..*).*)"],
+};

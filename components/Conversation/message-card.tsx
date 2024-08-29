@@ -1,5 +1,5 @@
 "use client";
-import React, { ReactNode, useMemo } from "react";
+import React, { ReactNode, useCallback, useMemo, useState } from "react";
 
 import { cn } from "@/cn";
 import { SourceSection } from "@/components/Conversation/source-section";
@@ -7,7 +7,12 @@ import FeatureTool from "@/components/Conversation/tool-card";
 import { UploadFileProps } from "@/components/Conversation/upload-file";
 import MarkdownRenderer from "@/components/MarkdownRender";
 import { MessageSkeleton } from "@/components/ui/message-skeleton";
-import { Message_Status_Enum } from "@/graphql/generated/types";
+import {
+  Message_Role_Enum,
+  Message_Status_Enum,
+  Message_Type_Enum,
+  useUpdateMessageByIdMutation,
+} from "@/graphql/generated/types";
 import {
   CHAT_STATUS_ENUM,
   SchemaType,
@@ -19,6 +24,11 @@ import { Icon } from "@iconify/react";
 import { Badge, Button, Link, Spacer, Spinner } from "@nextui-org/react";
 import { useClipboard } from "@nextui-org/use-clipboard";
 import clsx from "clsx";
+import { toast } from "sonner";
+import { useTranslations } from "use-intl";
+import { v4 } from "uuid";
+import { useConversationContext } from ".";
+import HumanInLoopForm from "./human-input-form";
 
 export type MessageCardProps = React.HTMLAttributes<HTMLDivElement> & {
   avatar?: ReactNode;
@@ -37,6 +47,9 @@ export type MessageCardProps = React.HTMLAttributes<HTMLDivElement> & {
   tools?: ToolType[] | null;
   agentId?: string;
   messageId: string;
+  messageType?: Message_Type_Enum | null;
+  schema?: { [key: string]: any };
+  sessionId?: string;
   onAttemptChange?: (attempt: number) => void;
   onMessageCopy?: (content: string | string[]) => void;
   onFeedback?: (feedback: "like" | "dislike") => void;
@@ -64,25 +77,33 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       className,
       messageClassName,
       maxWidth,
+      messageType,
+      schema,
+      sessionId,
       onMessageCopy,
       onAttemptChange,
       onFeedback,
       onAttemptFeedback,
       onSelectedSource,
-
       ...props
     },
     ref,
   ) => {
+    const t = useTranslations();
     const [feedback, setFeedback] = React.useState<"like" | "dislike">();
     const [isToolRuning, setIsToolRuning] = React.useState<boolean>(false);
     const [tool, setTool] = React.useState<ToolType | null>();
     const [attemptFeedback, setAttemptFeedback] = React.useState<
       "like" | "dislike" | "same"
     >();
+    const [isCollapsed, setIsCollapsed] = useState(false);
     const [widthClassname, setWidthClassname] = React.useState<string>("max-w-full");
     const messageRef = React.useRef<HTMLDivElement>(null);
     const { copied, copy } = useClipboard();
+
+    const { handleSetChatStatus, handleCreateNewMessage } = useConversationContext();
+    const [updateMessageByIdMutation] = useUpdateMessageByIdMutation();
+
     const failedMessageClassName =
       status === Message_Status_Enum.Failed
         ? "bg-danger-100/50 border border-danger-100 text-foreground"
@@ -159,15 +180,54 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
     const getTipString = (status: CHAT_STATUS_ENUM) => {
       switch (status) {
         case CHAT_STATUS_ENUM.Analyzing:
-          return "Analyzing question...";
+          return `${t("Analyzing question")}...`;
         case CHAT_STATUS_ENUM.Searching:
-          return "Searching relevant information...";
+          return `${t("Searching relevant information")}...`;
         case CHAT_STATUS_ENUM.Generating:
-          return "Organizing the response...";
+          return `${t("Organizing the response")}...`;
         default:
-          return "Think...";
+          return `${t("Think")}...`;
       }
     };
+
+    const handleClose = useCallback(() => {
+      setIsCollapsed(true);
+    }, []);
+
+    const handleSubmit = (formData: any) => {
+      console.log("formData", formData);
+      console.log("messageId", messageId);
+      console.log("schema", schema);
+      console.log("sessionId", sessionId);
+
+      try {
+        updateMessageByIdMutation({
+          variables: {
+            pk_columns: { id: messageId },
+            _set: { status: Message_Status_Enum.Success },
+          },
+        });
+      } catch (error) {
+        console.error("GraphQL errors:", error);
+        toast(t("Submit Error"));
+        return null;
+      }
+      const newId = v4();
+      console.log("newId", newId);
+      handleCreateNewMessage?.({
+        id: newId,
+        query: "",
+        content: JSON.stringify(formData),
+        session_id: sessionId || "",
+        role: Message_Role_Enum.User,
+        status: Message_Status_Enum.Success,
+        message_type: Message_Type_Enum.Json,
+        schema: schema,
+      });
+      handleSetChatStatus(true, CHAT_STATUS_ENUM.New);
+    };
+
+    const toggleCollapse = () => setIsCollapsed(!isCollapsed);
 
     if (chatStatus != null && chatStatus != CHAT_STATUS_ENUM.Generating) {
       return (
@@ -232,6 +292,41 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       </div>
     );
 
+    let jsonContent: { [key: string]: any } = {};
+    if (isUser && message?.toString() && messageType === Message_Type_Enum.Json) {
+      try {
+        jsonContent = JSON.parse(message.toString());
+      } catch (error) {
+        console.error("Error parsing JSON content:", error);
+        jsonContent = {};
+      }
+    }
+
+    const removeDescSchema = (schema: { [key: string]: any }): { [key: string]: any } => {
+      if (typeof schema !== "object" || schema === null) {
+        return schema;
+      }
+
+      if (Array.isArray(schema)) {
+        return schema.map(removeDescSchema);
+      }
+
+      const newSchema: { [key: string]: any } = { ...schema };
+      delete newSchema.description;
+
+      for (const key in newSchema) {
+        if (Object.prototype.hasOwnProperty.call(newSchema, key)) {
+          if (typeof newSchema[key] === "object" && newSchema[key] !== null) {
+            newSchema[key] = removeDescSchema(newSchema[key]);
+          }
+        }
+      }
+
+      return newSchema;
+    };
+
+    const cleanSchema = removeDescSchema(schema || {});
+
     const userMessageContent = (
       <div className="w-8/10 ml-14 flex flex-grow flex-col gap-2">
         <div
@@ -240,7 +335,18 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
             messageClassName,
           )}>
           <div ref={messageRef} className={"flex justify-end px-1 text-medium"}>
-            {message}
+            {isUser &&
+            message?.toString() &&
+            messageType === Message_Type_Enum.Json &&
+            jsonContent ? (
+              <HumanInLoopForm
+                schema={cleanSchema || {}}
+                formData={jsonContent}
+                disabled={true}
+              />
+            ) : (
+              message
+            )}
           </div>
         </div>
       </div>
@@ -257,18 +363,21 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
           <div ref={messageRef} className={"min-h-8 px-1 text-medium"}>
             <div className="mr-10 gap-3">
               {sourceResults && sourceResults.length > 0 && (
-                <SourceSection title="library Sources" items={librarySources || []} />
+                <SourceSection
+                  title={t("library Sources")}
+                  items={librarySources || []}
+                />
               )}
               <Spacer x={2} />
               {webSources && webSources.length > 0 && (
                 <SourceSection
-                  title="Web Sources"
+                  title={t("Web Sources")}
                   items={webSources || []}></SourceSection>
               )}
               <Spacer x={2} />
               <div className="flex flex-row items-center justify-start gap-1 p-1">
                 <Icon className="text-lg text-default-600" icon="hugeicons:idea-01" />
-                <span className="text-slate-500">Answer:</span>
+                <span className="text-slate-500">{t("Answer")}:</span>
               </div>
               <div className={clsx("flex max-w-full flex-col overflow-hidden p-1")}>
                 <MarkdownRenderer content={message?.toString() || ""}></MarkdownRenderer>
@@ -359,6 +468,31 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
             )} */}
           </div>
         </div>
+        {status === Message_Status_Enum.Waiting &&
+          messageType === Message_Type_Enum.Json &&
+          schema && (
+            <div className="relative mx-8 rounded-lg bg-blue-100 p-4 shadow-sm">
+              <Button
+                isIconOnly
+                size="sm"
+                variant="light"
+                className="absolute right-1 top-0 z-10"
+                onClick={toggleCollapse}>
+                <Icon
+                  icon={isCollapsed ? "mdi:chevron-down" : "mdi:chevron-up"}
+                  width="24"
+                  height="24"
+                />
+              </Button>
+              {!isCollapsed && (
+                <HumanInLoopForm
+                  schema={schema}
+                  onClose={handleClose}
+                  onSubmit={handleSubmit}
+                />
+              )}
+            </div>
+          )}
         {/* {showFeedback && attempts > 1 && (
           <div className="flex items-center justify-between rounded-medium border-small border-default-100 px-4 py-3 shadow-small">
             <p className="text-small text-default-600">

@@ -19,6 +19,7 @@ import {
 import { AppDispatch } from "@/lib/store";
 import { CHAT_STATUS_ENUM, SourceType } from "@/types/chatTypes";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
@@ -69,6 +70,7 @@ export default function PromptInputWithFaq({
   onSelectedSource,
   selectedSources,
 }: PromptInputWithFaqProps) {
+  const t = useTranslations();
   const router = useRouter();
   const pathname = usePathname();
   const dispatch: AppDispatch = useDispatch();
@@ -283,7 +285,7 @@ export default function PromptInputWithFaq({
             innerWrapper: "relative",
             input: "pt-1 pl-2 pb-6 !pr-10 text-medium",
           }}
-          placeholder="Send message to AI"
+          placeholder={t("Send message to AI")}
           endContent={
             <div className="flex items-end gap-2">
               {isChating ? stopButton : sendButton}
