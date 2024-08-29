@@ -10,6 +10,7 @@ import { ThemeSwitch } from "@/components/theme-switch";
 import { Role_Enum } from "@/graphql/generated/types";
 import { signOut, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import LanguageSwitcher from "./language-switcher";
 import { useSidebarItems } from "./sidebar-items";
 // import { sectionItems, userSectionItems } from "./sidebar-items";
 
@@ -56,6 +57,7 @@ export default function SideBar() {
         </div>
         <div className="mt-auto flex flex-col items-center gap-1">
           <ThemeSwitch className="hidden pb-2" />
+          <LanguageSwitcher />
           <Tooltip content="GitHub" placement="right">
             <Button
               isIconOnly

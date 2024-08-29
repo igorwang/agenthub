@@ -11,7 +11,7 @@ module.exports = {
       list: ["i18next.t", "i18n.t", "t", "useTranslations()"],
       extensions: [".js", ".jsx", ".ts", ".tsx"],
     },
-    lngs: ["en", "zh", "hk"],
+    lngs: ["en", "hk", "zh"],
     ns: [""],
     defaultLng: "en",
     defaultNs: "",
