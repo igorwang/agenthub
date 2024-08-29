@@ -9,6 +9,7 @@ import {
   Agent_Mode_Enum,
   Message_Role_Enum,
   Message_Status_Enum,
+  Message_Type_Enum,
   Role_Enum,
   useCreateNewMessageMutation,
   useGetAgentByIdQuery,
@@ -43,6 +44,19 @@ type ConversationContextType = {
   chatStatus: CHAT_STATUS_ENUM | null;
   selectedSources: SourceType[];
   handleSelectedSource: (source: SourceType, selected: boolean) => void;
+  handleCreateNewMessage: (params: {
+    id: string;
+    query: string;
+    content: string;
+    session_id: string;
+    role: Message_Role_Enum;
+    status?: Message_Status_Enum;
+    attachments?: any;
+    sources?: any;
+    message_type?: Message_Type_Enum;
+    schema?: { [key: string]: any };
+  }) => void;
+  handleSetChatStatus: (isChating: boolean, chatStatus: CHAT_STATUS_ENUM | null) => void;
 };
 
 // Create the context
@@ -157,36 +171,43 @@ export const Conversation: React.FC<ConversationProps> = ({
     }
   }, [agentId, data]);
 
-  const handleCreateNewMessage = (params: {
-    id: string;
-    query: string;
-    content: string;
-    session_id: string;
-    role: Message_Role_Enum;
-    status?: Message_Status_Enum;
-    attachments?: any;
-    sources?: any;
-  }) => {
-    try {
-      createNewMessageMutation({
-        variables: {
-          object: {
-            id: params.id,
-            query: params.query,
-            content: params.content,
-            role: params.role,
+  const handleCreateNewMessage = useCallback(
+    (params: {
+      id: string;
+      query: string;
+      content: string;
+      session_id: string;
+      role: Message_Role_Enum;
+      status?: Message_Status_Enum;
+      attachments?: any;
+      sources?: any;
+      message_type?: Message_Type_Enum;
+      schema?: { [key: string]: any };
+    }) => {
+      try {
+        createNewMessageMutation({
+          variables: {
+            object: {
+              id: params.id,
+              query: params.query,
+              content: params.content,
+              role: params.role,
+              session_id: params.session_id,
+              attachments: params.attachments,
+              sources: params.sources,
+              status: params.status,
+              schema: params.schema,
+              message_type: params.message_type,
+            },
             session_id: params.session_id,
-            attachments: params.attachments,
-            sources: params.sources,
-            status: params.status,
           },
-          session_id: params.session_id,
-        },
-      });
-    } catch (error) {
-      toast.error("Create message error");
-    }
-  };
+        });
+      } catch (error) {
+        toast.error("Create message error");
+      }
+    },
+    [],
+  );
 
   const handleConfigCilck = () => {
     router.push(`${pathname}/settings`);
@@ -203,13 +224,13 @@ export const Conversation: React.FC<ConversationProps> = ({
     }
   };
 
-  const handleSetChatStatus = (
-    isChating: boolean,
-    chatStatus: CHAT_STATUS_ENUM | null,
-  ) => {
-    setIsChating(isChating);
-    setChatStatus(chatStatus);
-  };
+  const handleSetChatStatus = useCallback(
+    (isChating: boolean, chatStatus: CHAT_STATUS_ENUM | null) => {
+      setIsChating(isChating);
+      setChatStatus(chatStatus);
+    },
+    [],
+  );
 
   if (!agent || loading) {
     return <div>{t("Loading")}</div>;
@@ -274,6 +295,8 @@ export const Conversation: React.FC<ConversationProps> = ({
     chatStatus,
     selectedSources,
     handleSelectedSource,
+    handleCreateNewMessage,
+    handleSetChatStatus,
   };
 
   return (

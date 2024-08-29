@@ -1,14 +1,14 @@
-fragment messageFragment on message {
-  id
-  role
-  feedback
-  created_at
-  content
-  status
-  updated_at
-  attachments
-  sources
-}
+# fragment messageFragment on message {
+#   id
+#   role
+#   feedback
+#   created_at
+#   content
+#   status
+#   updated_at
+#   attachments
+#   sources
+# }
 
 subscription GetMessageList($session_id: uuid, $limit: Int = 100) {
   message(where: { session_id: { _eq: $session_id } }, limit: $limit) {

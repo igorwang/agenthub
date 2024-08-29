@@ -36,3 +36,12 @@ mutation CreateNewMessage($object: message_insert_input = {}, $session_id: uuid 
     updated_at
   }
 }
+
+mutation UpdateMessageById(
+  $pk_columns: message_pk_columns_input = { id: "" }
+  $_set: message_set_input = {}
+) {
+  update_message_by_pk(pk_columns: $pk_columns, _set: $_set) {
+    id
+  }
+}

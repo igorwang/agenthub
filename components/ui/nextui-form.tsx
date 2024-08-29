@@ -15,7 +15,7 @@ import {
   Switch,
   Textarea,
 } from "@nextui-org/react";
-import { ThemeProps, withTheme } from "@rjsf/core";
+import { FormProps, ThemeProps, withTheme } from "@rjsf/core";
 import {
   ArrayFieldTemplateProps,
   FieldProps,
@@ -29,6 +29,7 @@ import validator from "@rjsf/validator-ajv8";
 import { Node } from "@xyflow/react";
 import { JsonEditor } from "json-edit-react";
 import React, { useState } from "react";
+import { useTranslations } from "use-intl";
 
 // Custom Widgets
 const CustomCheckbox: React.FC<WidgetProps> = (props) => {
@@ -92,8 +93,8 @@ const CustomTextareaWidget: React.FC<WidgetProps> = (props) => {
       id={id}
       value={value || ""}
       isRequired={required}
+      disabled={disabled || readonly}
       className="mb-2"
-      isDisabled={disabled || readonly}
       autoFocus={autofocus}
       placeholder={options.placeholder}
       minRows={1}
@@ -106,6 +107,7 @@ const CustomTextareaWidget: React.FC<WidgetProps> = (props) => {
 
 const CustomArrayFieldTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
   const [isExpanded, setIsExpanded] = useState(true);
+  const t = useTranslations();
 
   return (
     <Card className="mb-2">
@@ -135,6 +137,7 @@ const CustomArrayFieldTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
                       className="mr-1">
                       <Icon icon="mdi:arrow-up" width="20" height="20" />
                     </Button>
+
                     <Button
                       isIconOnly
                       variant="light"
@@ -147,7 +150,7 @@ const CustomArrayFieldTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
                     color="danger"
                     variant="flat"
                     onPress={() => element.onDropIndexClick(index)()}>
-                    Remove
+                    {t("Remove")}
                   </Button>
                 </div>
               </CardBody>
@@ -161,7 +164,7 @@ const CustomArrayFieldTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
                 props.onAddClick();
               }}
               className="mt-2">
-              Add Item
+              {t("Add Item")}
             </Button>
           )}
         </CardBody>
@@ -472,32 +475,46 @@ const defaultWidgets: RegistryWidgetsType = {
   SelectWidget: CustomSelectWidget,
 };
 
-// Create the theme object
-const NextUITheme: ThemeProps = {
-  widgets: defaultWidgets,
-  templates: {
-    ArrayFieldTemplate: CustomArrayFieldTemplate,
-    ButtonTemplates: {
-      SubmitButton: (props) => (
-        <div className="flex w-full flex-row justify-end space-x-2">
-          <Button
-            color="danger"
-            variant="bordered"
-            onClick={props.registry.formContext.onClose}
-            className="mt-4">
-            Close
-          </Button>
-          <Button color="primary" type="submit" className="mt-4">
-            Submit
-          </Button>
-        </div>
-      ),
+const useNextUITheme = (): ThemeProps => {
+  const t = useTranslations(); // 假设 'form' 是您的翻译命名空间
+
+  return {
+    widgets: defaultWidgets,
+    templates: {
+      ArrayFieldTemplate: CustomArrayFieldTemplate,
+      ButtonTemplates: {
+        SubmitButton: (props) => (
+          <div className="mb-2 flex w-full flex-row justify-end space-x-2">
+            <Button
+              color="danger"
+              variant="bordered"
+              onClick={props.registry.formContext.onClose}
+              className="mt-4">
+              {t("close")}
+            </Button>
+            <Button color="primary" type="submit" className="mt-4">
+              {t("submit")}
+            </Button>
+          </div>
+        ),
+      },
     },
-  },
+  };
 };
 
 // Create the themed form
-const ThemedForm = withTheme(NextUITheme);
+// const ThemedForm = withTheme(useNextUITheme());
+type ThemedFormProps = Omit<FormProps<any, RJSFSchema, any>, "theme">;
+
+const ThemedForm: React.FC<ThemedFormProps> = (props) => {
+  const theme = useNextUITheme();
+  const Form = withTheme(theme);
+  if (props.disabled) {
+    return <Form {...props} children={<></>} />;
+  } else {
+    return <Form {...props} />;
+  }
+};
 
 // Main component
 interface CustomFormProps {
@@ -507,6 +524,7 @@ interface CustomFormProps {
   customWidgets?: RegistryWidgetsType;
   prevNodes?: Node[];
   workflowTestResult?: { [key: string]: any };
+  disabled?: boolean;
   onSubmit: (formData: any) => void;
   onClose?: () => void;
 }
@@ -518,6 +536,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
   customWidgets,
   workflowTestResult,
   formData = {},
+  disabled = false,
   onSubmit,
   onClose,
 }) => {
@@ -538,6 +557,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
       validator={validator}
       widgets={widgets}
       fields={fields}
+      disabled={disabled}
       formContext={{ onClose, prevNodes, workflowTestResult }}
       onSubmit={({ formData }) => {
         onSubmit(formData);

@@ -12,6 +12,7 @@ import { PromptTemplateType } from "@/components/PromptFrom";
 import {
   Message_Role_Enum,
   Message_Status_Enum,
+  Message_Type_Enum,
   Order_By,
   useFetchAllMessageListQuery,
   useGetAgentByIdQuery,
@@ -72,6 +73,8 @@ type MessageWindowProps = {
     status?: Message_Status_Enum;
     attachments?: any;
     sources?: any;
+    message_type?: Message_Type_Enum;
+    schema?: { [key: string]: any };
   }) => void;
 };
 
@@ -211,6 +214,8 @@ export default function MessageWindowWithWorkflow({
             fileName: attachment.fileName,
           })) || [],
         sources: item.sources?.map((item: SourceType) => ({ ...item })),
+        messageType: item.message_type || Message_Type_Enum.Text,
+        schema: item.schema || {},
       }));
       console.log("old Message:", messages);
       console.log("new Messages:", newMessages);
@@ -251,6 +256,7 @@ export default function MessageWindowWithWorkflow({
       messages[messages.length - 1].status == "draft"
     ) {
       onChatingStatusChange(isChating, CHAT_STATUS_ENUM.Searching);
+
       const fetchChatWithWorkflow = async () => {
         const body: ChatFlowRequestSchema = {
           agent_id: agent_id || "",
@@ -277,7 +283,6 @@ export default function MessageWindowWithWorkflow({
         });
 
         if (!response.ok) {
-          console.log("Workflow failed");
           setSearchResults([]);
           return;
         }
@@ -288,6 +293,30 @@ export default function MessageWindowWithWorkflow({
 
         if (isTestMode) {
           setWorkflowResults(workflowResults);
+        }
+
+        if (workflowOutput.type === "humanInLoopNode") {
+          onChatingStatusChange(false, CHAT_STATUS_ENUM.Finished);
+          setSearchResults(null);
+          setMessages((prev) => [
+            ...prev.slice(0, -1),
+            {
+              ...prev[prev.length - 1],
+              message: workflowOutput.question,
+            },
+          ]);
+          handleCreateNewMessage?.({
+            id: messages[messages.length - 1].id,
+            query: "",
+            content: workflowOutput.question || "",
+            session_id: selectedSessionId || "",
+            role: Message_Role_Enum.Assistant,
+            sources: searchResults,
+            status: Message_Status_Enum.Waiting,
+            message_type: (workflowOutput.response_format || "text") as Message_Type_Enum,
+            schema: workflowOutput.schema || {},
+          });
+          return null;
         }
 
         if (workflowOutput.sources) {
@@ -375,7 +404,6 @@ export default function MessageWindowWithWorkflow({
               });
               return;
             }
-            // Decode the chunk and update the message state
             const chunk = decoder.decode(value, { stream: true });
             answer += chunk;
             setMessages((prev) => {
@@ -472,6 +500,9 @@ export default function MessageWindowWithWorkflow({
       tools: agent?.tools,
       agentId: agent?.id,
       status: msg.status,
+      messageType: msg.messageType,
+      schema: msg.schema,
+      sessionId: selectedSessionId || "",
     }));
   }, [messages, isChating, chatStatus, agentAvatarElement, onSelectedSource]);
 
