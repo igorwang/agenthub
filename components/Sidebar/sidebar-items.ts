@@ -10,7 +10,7 @@ export interface SidebarItem {
   endContent?: string; // Using string for icon name to ensure serializability
 }
 
-export function getSidebarItems(roles: string[]): SidebarItem[] {
+export function useSidebarItems(roles: string[]): SidebarItem[] {
   const t = useTranslations("");
 
   const allItems: SidebarItem[] = [

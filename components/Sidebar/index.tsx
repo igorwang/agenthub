@@ -10,7 +10,7 @@ import { ThemeSwitch } from "@/components/theme-switch";
 import { Role_Enum } from "@/graphql/generated/types";
 import { signOut, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { getSidebarItems } from "./sidebar-items";
+import { useSidebarItems } from "./sidebar-items";
 // import { sectionItems, userSectionItems } from "./sidebar-items";
 
 export default function SideBar() {
@@ -28,7 +28,7 @@ export default function SideBar() {
     await signOut();
   };
 
-  const sidebarItems = getSidebarItems(userRoles || []);
+  const sidebarItems = useSidebarItems(userRoles || []);
 
   return (
     <div className="relative hidden h-screen w-14 flex-col items-center border-r-small border-divider px-2 py-4 sm:flex">

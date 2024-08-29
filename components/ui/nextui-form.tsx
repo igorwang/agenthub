@@ -510,7 +510,11 @@ const ThemedForm: React.FC<ThemedFormProps> = (props) => {
   const theme = useNextUITheme();
   const Form = withTheme(theme);
   if (props.disabled) {
-    return <Form {...props} children={<></>} />;
+    return (
+      <Form {...props}>
+        <></>
+      </Form>
+    );
   } else {
     return <Form {...props} />;
   }
