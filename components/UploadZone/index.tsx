@@ -3,25 +3,45 @@ import { getFileImage } from "@/components/UploadZone/fileImages";
 import { Dropzone, ExtFile, FileMosaic } from "@dropzone-ui/react";
 import { Button } from "@nextui-org/button";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
 import { v4 } from "uuid";
 
+export type UploadFileType = {
+  id?: string | number;
+  uploadUrl?: any;
+  uploadStatus?: string;
+  objectName?: string;
+  file?: File;
+  name?: string;
+  type?: string;
+  size?: number;
+  valid?: boolean;
+  errors?: string[];
+  uploadMessage?: string;
+  videoUrl?: string;
+  [key: string]: any;
+};
+
 export type UploadZoneProps = {
   maxNumberOfFile?: number;
   knowledgeBaseId?: string;
-  onAfterUpload?: () => void;
-  onFileUploadCallback?: (files: { id: string | number; name: string }[]) => void;
+  sessionId?: string;
+  onAfterUpload?: (files: UploadFileType[]) => void;
+  // onFileUploadCallback?: (files: { id: string | number; name: string }[]) => void;
 };
 
 export default function UploadZone({
+  sessionId,
   knowledgeBaseId,
   maxNumberOfFile = 10,
   onAfterUpload,
-  onFileUploadCallback,
+  // onFileUploadCallback,
 }: UploadZoneProps) {
   const [files, setFiles] = useState<ExtFile[]>([]);
   const [isUploading, setIsUploading] = useState<boolean>(false);
+  const t = useTranslations();
 
   const session = useSession();
 
@@ -74,7 +94,14 @@ export default function UploadZone({
     const uploadSingleFile = async (file: ExtFile) => {
       const fileId = v4();
       const ext = file.name?.split(".").pop();
-      const objectName = `knowledge_base/${knowledgeBaseId}/${fileId}.${ext}`;
+      let objectName: string;
+      if (knowledgeBaseId) {
+        objectName = `knowledge_base/${knowledgeBaseId}/${fileId}.${ext}`;
+      } else if (sessionId) {
+        objectName = `session/${sessionId}/${fileId}.${ext}`;
+      } else {
+        objectName = `tmp/${fileId}.${ext}`;
+      }
 
       const body = {
         bucket: "chat",
@@ -148,19 +175,19 @@ export default function UploadZone({
 
     handleUploadFiles(files)
       .then((updatedFiles) => {
-        const callbackFiles = updatedFiles.map((item) => ({
-          id: item.id || "",
-          name: item.file?.name || "",
-        }));
+        // const callbackFiles = updatedFiles.map((item) => ({
+        //   id: item.id || "",
+        //   name: item.file?.name || "",
+        // }));
         toast.success(
           "Files uploaded successfully! AI will take a little time to process.",
         );
-        onFileUploadCallback?.(callbackFiles);
+        onAfterUpload?.(updatedFiles);
+        // onFileUploadCallback?.(callbackFiles);
       })
       .catch((error) => {
         console.error("Error uploading files:", error);
       });
-    onAfterUpload?.();
     setIsUploading(false);
   };
 
@@ -171,7 +198,7 @@ export default function UploadZone({
         onChange={updateFiles}
         value={files}
         accept=".doc,.docx,.pdf,.ppt,.pptx,.xls,.xlsx,.txt,.json"
-        label="Drop or Click to upload your files"
+        label={t("Drop or Click to upload your files")}
         maxFiles={maxNumberOfFile}
         maxFileSize={20 * 1024 * 1024}
         footer={false}
@@ -196,7 +223,7 @@ export default function UploadZone({
           variant="solid"
           color="primary"
           onClick={handleClear}>
-          Clear
+          {t("Clear")}
         </Button>
         <Button
           className="mt-2"
@@ -205,7 +232,7 @@ export default function UploadZone({
           color="primary"
           onClick={handleUploadStart}
           disabled={isUploading || !files.length}>
-          Upload
+          {t("Upload")}
         </Button>
       </div>
     </div>

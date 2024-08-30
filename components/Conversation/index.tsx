@@ -3,6 +3,7 @@
 import MessageWindow from "@/components/Conversation/message-window";
 import MessageWindowWithWorkflow from "@/components/Conversation/message-windown-with-workflow";
 import PromptInputWithFaq from "@/components/Conversation/prompt-input-with-faq";
+import SessionFilesSidebar from "@/components/Conversation/session-files-sidebar";
 import { ConfigIcon } from "@/components/ui/icons";
 import { RoleChip } from "@/components/ui/role-icons";
 import {
@@ -270,7 +271,6 @@ export const Conversation: React.FC<ConversationProps> = ({
           </div>
           <div className="flex flex-row items-center gap-2">
             {agent.role && <RoleChip role={agent.role || "user"} />}
-
             <Tooltip content={agent.description}>
               <p className="max-w-sm overflow-hidden text-ellipsis text-nowrap text-sm font-light">
                 {agent.description}
@@ -304,7 +304,7 @@ export const Conversation: React.FC<ConversationProps> = ({
       <div className="flex h-full w-full max-w-full flex-col overflow-auto">
         {!hiddenHeader && headerElement}
         <div className="flex max-h-full max-w-full flex-grow flex-row overflow-auto">
-          <div className="min-[400px] mx-auto flex max-w-7xl flex-grow flex-col items-center overflow-auto pt-4">
+          <div className="min-[400px] mx-auto flex max-w-7xl flex-grow flex-col items-center overflow-auto px-10 pt-4">
             {agent.mode === Agent_Mode_Enum.Workflow && agent.workflow_id ? (
               <MessageWindowWithWorkflow
                 workflow_id={agent.workflow_id}
@@ -387,14 +387,17 @@ export const Conversation: React.FC<ConversationProps> = ({
               <Spacer />
               <PromptInputWithFaq
                 isChating={isChating}
-                selectedSources={selectedSources}
-                onSelectedSource={handleSelectedSource}
                 onChatingStatus={handleSetChatStatus}></PromptInputWithFaq>
               <p className="px-2 text-tiny text-default-400">
                 {t("AI can also make mistakes")}
               </p>
             </div>
           </div>
+          {selectedSessionId && (
+            <div className="max-w-64">
+              <SessionFilesSidebar sessionId={selectedSessionId} />
+            </div>
+          )}
         </div>
       </div>
     </ConversationContext.Provider>

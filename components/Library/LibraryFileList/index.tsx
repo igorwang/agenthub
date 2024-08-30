@@ -3,7 +3,7 @@ import FileTable, { FileDTO } from "@/components/Library/LibraryFileList/file-ta
 import DeleteConfirmModal from "@/components/ui/delete-modal";
 import DeleteMultipleModal from "@/components/ui/delete-mutiple-modal";
 import { PlusIcon } from "@/components/ui/icons";
-import UploadZone from "@/components/UploadZone";
+import UploadZone, { UploadFileType } from "@/components/UploadZone";
 import {
   FilesListQuery,
   Order_By,
@@ -158,7 +158,7 @@ export default function LibraryFileList({
     [batchDeleteFilesMutation, refetch, toast],
   );
 
-  const handleAfterUploadFile = useCallback(() => {
+  const handleAfterUploadFile = useCallback((files: UploadFileType[]) => {
     setPage(1);
   }, []);
 

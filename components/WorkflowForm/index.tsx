@@ -1,6 +1,6 @@
 "use client";
 
-import UploadZone from "@/components/UploadZone";
+import UploadZone, { UploadFileType } from "@/components/UploadZone";
 import LibraryWorkflowRunningPane from "@/components/WorkflowForm/library-workflow-runing-pane";
 import NodeTypeList from "@/components/WorkflowForm/node-type-list";
 import WorkflowPane from "@/components/WorkflowForm/workflow-pane";
@@ -173,14 +173,11 @@ export default function WorkflowForm({
     setIsUploadOpen(false);
   };
 
-  const handleFileUploadCallback = useCallback(
-    (files: { id: string | number; name: string }[]) => {
-      setTestFile({ id: files[0].id as string, filename: files[0].name || "" });
-      setIsUploadOpen(false);
-      setIsWorkflowRunOpen(true);
-    },
-    [],
-  );
+  const handleFileUploadCallback = useCallback((files: UploadFileType[]) => {
+    setTestFile({ id: files[0].id as string, filename: files[0].name || "" });
+    setIsUploadOpen(false);
+    setIsWorkflowRunOpen(true);
+  }, []);
 
   const handleCloseWorkflowRun = useCallback(() => {
     setIsWorkflowRunOpen(false);
@@ -297,8 +294,9 @@ export default function WorkflowForm({
                   <UploadZone
                     maxNumberOfFile={1}
                     knowledgeBaseId={knowledgeBaseId}
+                    onAfterUpload={handleFileUploadCallback}
                     // onAfterUpload={handleAfterUploadFile}
-                    onFileUploadCallback={handleFileUploadCallback}
+                    // onFileUploadCallback={handleFileUploadCallback}
                   />
                 </ModalBody>
               </>

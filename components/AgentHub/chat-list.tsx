@@ -16,6 +16,7 @@ import {
   ModalHeader,
 } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -53,7 +54,7 @@ export const ChatList: React.FC<ChatListProps> = ({
 }) => {
   const dispatch: AppDispatch = useDispatch();
   const router = useRouter();
-
+  const t = useTranslations();
   const [showIconId, setShowIconId] = useState("");
   const [openStates, setOpenStates] = useState<Record<number, boolean>>({});
   const [deleteAgentUserRelationMutation] = useDeleteAgentUserRelationMutation();
@@ -209,18 +210,16 @@ export const ChatList: React.FC<ChatListProps> = ({
                     </span>
                   </div>
                 </div>
-                <Button
-                  isIconOnly
-                  className={`absolute right-0 bg-transparent transition-opacity duration-300 data-[hover]:bg-transparent ${
-                    item.id === showIconId ? "opacity-100" : "opacity-0"
-                  }`}
-                  onPress={() => handleUnsubscribeClick(item)}>
-                  <Icon
-                    className="cursor-pointer"
-                    icon="material-symbols:delete-outline-rounded"
-                    fontSize={20}
-                  />
-                </Button>
+                <div className="w-10 flex-shrink-0">
+                  <Button
+                    isIconOnly
+                    className={`bg-transparent transition-opacity duration-300 ${
+                      item.id === showIconId ? "opacity-100" : "opacity-0"
+                    }`}
+                    onPress={() => handleUnsubscribeClick(item)}>
+                    <Icon icon="material-symbols:delete-outline-rounded" fontSize={20} />
+                  </Button>
+                </div>
               </div>
             </ListboxItem>
           ))}
@@ -233,16 +232,20 @@ export const ChatList: React.FC<ChatListProps> = ({
     return (
       <Modal isOpen={isModalOpen} hideCloseButton={true}>
         <ModalContent>
-          <ModalHeader className="flex flex-col gap-1">Unsubscribe Agent</ModalHeader>
+          <ModalHeader className="flex flex-col gap-1">
+            {t("Unsubscribe Agent")}
+          </ModalHeader>
           <ModalBody>
-            <p>Are you sure you want to unsubscribe this agent: {deleteAgent?.name}?</p>
+            <p>
+              {t("Are you sure you want to unsubscribe this agent")}: {deleteAgent?.name}?
+            </p>
           </ModalBody>
           <ModalFooter>
             <Button color="primary" variant="light" onPress={() => setIsModalOpen(false)}>
-              Close
+              {t("Close")}
             </Button>
             <Button color="danger" onPress={handleDeleteAgentRelation}>
-              Affirm
+              {t("Affirm")}
             </Button>
           </ModalFooter>
         </ModalContent>
