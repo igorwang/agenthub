@@ -1,9 +1,15 @@
 import FileIcon from "@/components/ui/file-icons";
-import { FilesListQuery, Order_By, useFilesListQuery } from "@/graphql/generated/types";
+import {
+  FilesListQuery,
+  Order_By,
+  useBatchDeleteFilesMutation,
+  useFilesListQuery,
+} from "@/graphql/generated/types";
 import { Icon } from "@iconify/react";
 import { Button, Tooltip } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface SessionFilesSidebarProps {
   sessionId: string;
@@ -13,6 +19,7 @@ export default function SessionFilesSidebar({ sessionId }: SessionFilesSidebarPr
   const t = useTranslations();
   const [isOpen, setIsOpen] = useState(false);
   const [files, setFiles] = useState<FilesListQuery["files"]>([]);
+  const [batchDeleteFilesMutation] = useBatchDeleteFilesMutation();
 
   const { data, loading, error, refetch } = useFilesListQuery({
     variables: {
@@ -30,6 +37,17 @@ export default function SessionFilesSidebar({ sessionId }: SessionFilesSidebarPr
     // Implement delete logic here
     console.log(`Delete file with id: ${fileId}`);
     setFiles(files.filter((file) => file.id !== fileId));
+    // 实现删除文件的逻辑
+    batchDeleteFilesMutation({
+      variables: {
+        where: { id: { _in: [fileId] } },
+      },
+    }).then(async (res) => {
+      toast.success(
+        `${t("Successfully deleted files")}: ${res.data?.delete_files?.returning.length || 0}`,
+      );
+      refetch();
+    });
   };
 
   if (files.length == 0) {

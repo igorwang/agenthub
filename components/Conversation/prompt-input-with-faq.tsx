@@ -239,7 +239,7 @@ export default function PromptInputWithFaq({
         />
         <div className="flex items-center justify-between gap-2 px-4 pb-4">
           <div className="flex gap-1 md:gap-3">
-            {/* <Button
+            <Button
               size="sm"
               startContent={
                 <Icon
@@ -251,7 +251,7 @@ export default function PromptInputWithFaq({
               variant="flat"
               onClick={openUploadModal}>
               {t("File")}
-            </Button> */}
+            </Button>
             {/* <Button
               size="sm"
               startContent={
