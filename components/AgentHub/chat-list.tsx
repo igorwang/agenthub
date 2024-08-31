@@ -174,17 +174,17 @@ export const ChatList: React.FC<ChatListProps> = ({
           {group.agents.map((item) => (
             <ListboxItem
               key={item.id}
-              textValue={item.name} // Added textValue prop for accessibility
+              textValue={item.name}
               className={`relative ${item.id == params?.id ? "bg-blue-200" : ""}`}
               onClick={() => {
                 handleSelectChat(item.id);
                 setChatListOpenStatus?.(false);
               }}>
               <div
-                className="flex w-full justify-between"
+                className="flex w-full items-center"
                 onMouseEnter={() => setShowIconId(item.id)}
                 onMouseLeave={() => setShowIconId("")}>
-                <div className="flex items-center gap-2">
+                <div className="flex min-w-0 flex-1 items-center gap-2 pr-1">
                   {item.avatar ? (
                     <Avatar
                       alt={item.name}
@@ -203,21 +203,22 @@ export const ChatList: React.FC<ChatListProps> = ({
                       classNames={{ name: "text-xl" }}
                     />
                   )}
-                  <div className="flex flex-col">
-                    <span className="text-small">{item.name}</span>
-                    <span className="max-w-[120px] truncate text-nowrap text-tiny text-default-400">
+                  <div className="flex min-w-0 flex-1 flex-col">
+                    <span className="truncate text-small font-medium">{item.name}</span>
+                    <span className="truncate text-tiny text-default-400">
                       {item.description}
                     </span>
                   </div>
                 </div>
-                <div className="w-10 flex-shrink-0">
+                <div className="ml-auto flex-shrink-0">
                   <Button
                     isIconOnly
-                    className={`bg-transparent transition-opacity duration-300 ${
+                    size="sm"
+                    className={`min-w-unit-8 h-unit-8 bg-transparent p-0 transition-opacity duration-300 ${
                       item.id === showIconId ? "opacity-100" : "opacity-0"
                     }`}
                     onPress={() => handleUnsubscribeClick(item)}>
-                    <Icon icon="material-symbols:delete-outline-rounded" fontSize={20} />
+                    <Icon icon="material-symbols:delete-outline-rounded" fontSize={18} />
                   </Button>
                 </div>
               </div>

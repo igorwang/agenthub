@@ -87,9 +87,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
       <DropdownTrigger>
         <Button
           isIconOnly
-          className={`absolute right-2 top-0.5 h-8 min-w-8 transition-opacity duration-300 ${
-            hoveredItemId === itemId ? "opacity-100" : "opacity-0"
-          }`}
+          className="absolute right-2 top-0.5 h-8 min-w-8 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
           variant="light"
           startContent={<OcticonKebabHorizontalIcon className="h-4 w-4" />}
         />
@@ -106,18 +104,15 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   const historyItems = histories?.map((item) => (
     <ListboxItem
       key={item.id}
-      className={`relative flex h-10 items-center px-2 py-1 ${
+      className={`group relative flex h-10 items-center px-2 py-1 ${
         selectedSessionId === item.id ? "bg-primary-100" : "hover:bg-slate-100"
       }`}
       startContent={<DiscussionIcon className="mr-2 h-4 w-4" />}
-      // endContent={}
-      textValue={item.title} // Add this line to fix the warning
+      textValue={item.title}
       onClick={() => handleSelect(item.id)}>
       <div className="w-full truncate pr-8">{item.title}</div>
       <div
         className="absolute right-0 top-0 flex h-full w-10 items-center justify-center"
-        onMouseEnter={() => setHoveredItemId(item.id)}
-        onMouseLeave={() => setHoveredItemId(null)}
         onClick={(e) => e.stopPropagation()}>
         {dropdownContent(item.id)}
       </div>
