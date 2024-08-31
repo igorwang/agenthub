@@ -379,7 +379,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
                 <Icon className="text-lg text-default-600" icon="hugeicons:idea-01" />
                 <span className="text-slate-500">{t("Answer")}:</span>
               </div>
-              <div className={clsx("flex max-w-full flex-col overflow-hidden p-1")}>
+              <div className={clsx("flex flex-col overflow-hidden p-1")}>
                 <MarkdownRenderer content={message?.toString() || ""}></MarkdownRenderer>
               </div>
             </div>

@@ -50,8 +50,8 @@ export default function UploadZone({
   const session = useSession();
 
   const updateFiles = (incommingFiles: ExtFile[]) => {
-    const fileId = `${v4()}`;
     const files = incommingFiles.map((item) => {
+      const fileId = `${v4()}`;
       if (item) {
         const fileType = item.name?.split(".").pop() || "default";
         return { ...item, imageUrl: getFileImage(fileType), id: fileId };
