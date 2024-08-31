@@ -423,6 +423,34 @@ export const NewDocumentNodeComponent: React.FC<NodeProps<newDocumentNode>> = me
   },
 );
 
+export type newMultiModalNode = Node<CustomNodeData, "newMultiModalNode">;
+export const NewMultiModalNodeComponent: React.FC<NodeProps<newMultiModalNode>> = memo(
+  ({ data, selected }) => {
+    const borderColor = selected ? "border-blue-500" : "border-gray-200";
+
+    return (
+      <div
+        className={`rounded-md border ${borderColor} bg-white p-2 shadow-sm transition-colors duration-200`}>
+        <div className="flex flex-col items-center">
+          <div className="mb-1 flex h-8 w-8 items-center justify-center text-gray-500">
+            <Icon icon="fluent-mdl2:media-add" fontSize={20} />
+          </div>
+          <div className="overflow-hidden">
+            <div className="w-16 truncate text-center text-xs font-medium text-gray-700">
+              {data.label}
+            </div>
+          </div>
+        </div>
+        <Handle
+          type="source"
+          position={Position.Right}
+          className="h-2 w-2 !border-1 !border-white !bg-slate-300"
+        />
+      </div>
+    );
+  },
+);
+
 export type ChunkingNode = Node<CustomNodeData, "ChunkingNode">;
 export const ChunkingNodeComponent: React.FC<NodeProps<ChunkingNode>> = memo(
   ({ data, selected }) => {
@@ -531,6 +559,7 @@ NewDocumentNodeComponent.displayName = "NewDocumentNodeComponent";
 ChunkingNodeComponent.displayName = "ChunkingNodeComponent";
 IndexingNodeComponent.displayName = "IndexingNodeComponent";
 HumanInLoopNodeComponent.displayName = "HumanInLoopNodeComponent";
+NewMultiModalNodeComponent.displayName = "NewMultiModalNodeComponent";
 
 export const nodeTypes: NodeTypes = {
   startNode: StartNodeComponent,
@@ -548,4 +577,5 @@ export const nodeTypes: NodeTypes = {
   chunkingNode: ChunkingNodeComponent,
   indexingNode: IndexingNodeComponent,
   humanInLoopNode: HumanInLoopNodeComponent,
+  newMultiModalNode: NewMultiModalNodeComponent,
 };
