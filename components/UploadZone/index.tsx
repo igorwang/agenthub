@@ -26,8 +26,10 @@ export type UploadFileType = {
 
 export type UploadZoneProps = {
   maxNumberOfFile?: number;
+  maxFileSize?: number;
   knowledgeBaseId?: string;
   sessionId?: string;
+  acceptFileTypes?: string;
   onAfterUpload?: (files: UploadFileType[]) => void;
   // onFileUploadCallback?: (files: { id: string | number; name: string }[]) => void;
 };
@@ -36,6 +38,8 @@ export default function UploadZone({
   sessionId,
   knowledgeBaseId,
   maxNumberOfFile = 10,
+  maxFileSize = 100 * 1024 * 1024,
+  acceptFileTypes = ".doc,.docx,.pdf,.ppt,.pptx,.xls,.xlsx,.txt,.json",
   onAfterUpload,
   // onFileUploadCallback,
 }: UploadZoneProps) {
@@ -197,10 +201,10 @@ export default function UploadZone({
         className="h-full max-h-full min-h-0 flex-1"
         onChange={updateFiles}
         value={files}
-        accept=".doc,.docx,.pdf,.ppt,.pptx,.xls,.xlsx,.txt,.json"
+        accept={acceptFileTypes}
         label={t("Drop or Click to upload your files")}
         maxFiles={maxNumberOfFile}
-        maxFileSize={20 * 1024 * 1024}
+        maxFileSize={maxFileSize}
         footer={false}
         header={false}>
         {files.map((file, index) => (

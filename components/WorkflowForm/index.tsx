@@ -154,7 +154,7 @@ export default function WorkflowForm({
       toast.warning("Please save your changes before running the workflow");
     } else {
       if (workflowType == "library") {
-        if (!testFile) {
+        if (testFile === null) {
           setIsUploadOpen(true);
         } else {
           setIsWorkflowRunOpen(true);
@@ -295,8 +295,7 @@ export default function WorkflowForm({
                     maxNumberOfFile={1}
                     knowledgeBaseId={knowledgeBaseId}
                     onAfterUpload={handleFileUploadCallback}
-                    // onAfterUpload={handleAfterUploadFile}
-                    // onFileUploadCallback={handleFileUploadCallback}
+                    acceptFileTypes=".doc,.docx,.pdf,.ppt,.pptx,.xls,.xlsx,.txt,.json,.mp3,.mp4"
                   />
                 </ModalBody>
               </>
