@@ -3,31 +3,55 @@ import { getFileImage } from "@/components/UploadZone/fileImages";
 import { Dropzone, ExtFile, FileMosaic } from "@dropzone-ui/react";
 import { Button } from "@nextui-org/button";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
 import { v4 } from "uuid";
 
+export type UploadFileType = {
+  id?: string | number;
+  uploadUrl?: any;
+  uploadStatus?: string;
+  objectName?: string;
+  file?: File;
+  name?: string;
+  type?: string;
+  size?: number;
+  valid?: boolean;
+  errors?: string[];
+  uploadMessage?: string;
+  videoUrl?: string;
+  [key: string]: any;
+};
+
 export type UploadZoneProps = {
   maxNumberOfFile?: number;
+  maxFileSize?: number;
   knowledgeBaseId?: string;
-  onAfterUpload?: () => void;
-  onFileUploadCallback?: (files: { id: string | number; name: string }[]) => void;
+  sessionId?: string;
+  acceptFileTypes?: string;
+  onAfterUpload?: (files: UploadFileType[]) => void;
+  // onFileUploadCallback?: (files: { id: string | number; name: string }[]) => void;
 };
 
 export default function UploadZone({
+  sessionId,
   knowledgeBaseId,
   maxNumberOfFile = 10,
+  maxFileSize = 100 * 1024 * 1024,
+  acceptFileTypes = ".doc,.docx,.pdf,.ppt,.pptx,.xls,.xlsx,.txt,.json",
   onAfterUpload,
-  onFileUploadCallback,
+  // onFileUploadCallback,
 }: UploadZoneProps) {
   const [files, setFiles] = useState<ExtFile[]>([]);
   const [isUploading, setIsUploading] = useState<boolean>(false);
+  const t = useTranslations();
 
   const session = useSession();
 
   const updateFiles = (incommingFiles: ExtFile[]) => {
-    const fileId = `${v4()}`;
     const files = incommingFiles.map((item) => {
+      const fileId = `${v4()}`;
       if (item) {
         const fileType = item.name?.split(".").pop() || "default";
         return { ...item, imageUrl: getFileImage(fileType), id: fileId };
@@ -74,7 +98,14 @@ export default function UploadZone({
     const uploadSingleFile = async (file: ExtFile) => {
       const fileId = v4();
       const ext = file.name?.split(".").pop();
-      const objectName = `knowledge_base/${knowledgeBaseId}/${fileId}.${ext}`;
+      let objectName: string;
+      if (knowledgeBaseId) {
+        objectName = `knowledge_base/${knowledgeBaseId}/${fileId}.${ext}`;
+      } else if (sessionId) {
+        objectName = `session/${sessionId}/${fileId}.${ext}`;
+      } else {
+        objectName = `tmp/${fileId}.${ext}`;
+      }
 
       const body = {
         bucket: "chat",
@@ -148,19 +179,19 @@ export default function UploadZone({
 
     handleUploadFiles(files)
       .then((updatedFiles) => {
-        const callbackFiles = updatedFiles.map((item) => ({
-          id: item.id || "",
-          name: item.file?.name || "",
-        }));
+        // const callbackFiles = updatedFiles.map((item) => ({
+        //   id: item.id || "",
+        //   name: item.file?.name || "",
+        // }));
         toast.success(
           "Files uploaded successfully! AI will take a little time to process.",
         );
-        onFileUploadCallback?.(callbackFiles);
+        onAfterUpload?.(updatedFiles);
+        // onFileUploadCallback?.(callbackFiles);
       })
       .catch((error) => {
         console.error("Error uploading files:", error);
       });
-    onAfterUpload?.();
     setIsUploading(false);
   };
 
@@ -170,10 +201,10 @@ export default function UploadZone({
         className="h-full max-h-full min-h-0 flex-1"
         onChange={updateFiles}
         value={files}
-        accept=".doc,.docx,.pdf,.ppt,.pptx,.xls,.xlsx,.txt,.json"
-        label="Drop or Click to upload your files"
+        accept={acceptFileTypes}
+        label={t("Drop or Click to upload your files")}
         maxFiles={maxNumberOfFile}
-        maxFileSize={20 * 1024 * 1024}
+        maxFileSize={maxFileSize}
         footer={false}
         header={false}>
         {files.map((file, index) => (
@@ -196,7 +227,7 @@ export default function UploadZone({
           variant="solid"
           color="primary"
           onClick={handleClear}>
-          Clear
+          {t("Clear")}
         </Button>
         <Button
           className="mt-2"
@@ -205,7 +236,7 @@ export default function UploadZone({
           color="primary"
           onClick={handleUploadStart}
           disabled={isUploading || !files.length}>
-          Upload
+          {t("Upload")}
         </Button>
       </div>
     </div>

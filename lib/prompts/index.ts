@@ -46,8 +46,9 @@ export async function createPrompt(
     template.template,
   ]);
 
-  const context = await createContext(sources);
-  const contextMessages = ["user", `Context: ${context}`];
+  const sourceContext = await createContext(sources);
+  const contextMessages = ["user", `Context: ${sourceContext}`];
+
   const historyMessages = messages.slice(0, -1).map((msg) => [msg.role, msg.message]);
 
   const contextString = [contextMessages, ...historyMessages]
@@ -86,5 +87,6 @@ export async function createPrompt(
 
   const promptFromQuery = `${latestMessages[0]}:${latestMessages[1]}`;
   const prompt = `${promptFromTemplate}\n${promptFromContext}\n${promptFromQuery}`;
+  console.log("prompt", prompt);
   return prompt;
 }

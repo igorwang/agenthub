@@ -12,6 +12,7 @@ import {
   Checkbox,
   Select,
   SelectItem,
+  Slider,
   Switch,
   Textarea,
 } from "@nextui-org/react";
@@ -72,6 +73,21 @@ const CustomSwitch: React.FC<WidgetProps> = (props) => {
     </Switch>
   );
 };
+
+import { UIOptionsType } from "@rjsf/utils";
+
+// 扩展 WidgetProps 接口以包含我们期望的特定属性
+interface CustomNumberWidgetProps extends WidgetProps {
+  options: UIOptionsType & {
+    step?: number;
+    placeholder?: string;
+  };
+  schema: RJSFSchema & {
+    minimum?: number;
+    maximum?: number;
+    multipleOf?: number;
+  };
+}
 
 const CustomTextareaWidget: React.FC<WidgetProps> = (props) => {
   const {
@@ -467,6 +483,34 @@ const CustomLibrarySearchField: React.FC<FieldProps> = (props) => {
   return <registry.fields.ObjectField {...props} />;
 };
 
+const CustomSliderField: React.FC<FieldProps> = (props) => {
+  const { name, schema, uiSchema, required, formData, onChange, registry } = props;
+
+  if (schema.format === "slider" || (uiSchema as UiSchema)?.["ui:field"] === "slider") {
+    return (
+      <div className="mb-2">
+        {/* <label>
+          {schema.title || "Silder"} {required ? "*" : ""}
+        </label> */}
+        <Slider
+          // aria-label={schema.title || "Silder"}
+          classNames={{ label: "text-md" }}
+          label={schema.title || name || "Silder"}
+          step={schema.step || 0.01}
+          maxValue={(schema.maximum as number) || 1}
+          minValue={(schema.minimum as number) || 0}
+          defaultValue={(schema.default as number) || 0}
+          value={formData as number}
+          onChange={onChange}
+          className="max-w-md" // Move className here
+        />
+      </div>
+    );
+  }
+
+  return <registry.fields.SchemaField {...props} />;
+};
+
 // Define default widgets
 const defaultWidgets: RegistryWidgetsType = {
   CheckboxWidget: CustomCheckbox,
@@ -551,6 +595,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
     model: CustomModelField,
     librarySearch: CustomLibrarySearchField,
     chunkingStrategy: CustomChunkingSelectField,
+    slider: CustomSliderField,
   };
 
   return (

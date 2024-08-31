@@ -86,7 +86,7 @@ export default function ChatPage() {
     <div className="custom-scrollbar relative flex flex-1 flex-row overflow-auto">
       <div
         className={`transition-all duration-300 ease-in-out ${
-          isChatHubOpen ? "w-64 min-w-64" : "w-0"
+          isChatHubOpen ? "w-48 min-w-48" : "w-0"
         } custom-scrollbar relative overflow-auto`}
         onMouseLeave={hideButton}>
         <ChatHub />
@@ -111,7 +111,7 @@ export default function ChatPage() {
           isTransitioning ? "opacity-0" : isButtonVisible ? "opacity-100" : "opacity-0"
         }`}
         style={{
-          left: isChatHubOpen ? "248px" : "0px",
+          left: isChatHubOpen ? "192px" : "0px",
           top: "50%",
           transform: "translateY(-50%)",
         }}>

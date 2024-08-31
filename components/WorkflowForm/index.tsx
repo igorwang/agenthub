@@ -1,6 +1,6 @@
 "use client";
 
-import UploadZone from "@/components/UploadZone";
+import UploadZone, { UploadFileType } from "@/components/UploadZone";
 import LibraryWorkflowRunningPane from "@/components/WorkflowForm/library-workflow-runing-pane";
 import NodeTypeList from "@/components/WorkflowForm/node-type-list";
 import WorkflowPane from "@/components/WorkflowForm/workflow-pane";
@@ -154,7 +154,7 @@ export default function WorkflowForm({
       toast.warning("Please save your changes before running the workflow");
     } else {
       if (workflowType == "library") {
-        if (!testFile) {
+        if (testFile === null) {
           setIsUploadOpen(true);
         } else {
           setIsWorkflowRunOpen(true);
@@ -173,14 +173,11 @@ export default function WorkflowForm({
     setIsUploadOpen(false);
   };
 
-  const handleFileUploadCallback = useCallback(
-    (files: { id: string | number; name: string }[]) => {
-      setTestFile({ id: files[0].id as string, filename: files[0].name || "" });
-      setIsUploadOpen(false);
-      setIsWorkflowRunOpen(true);
-    },
-    [],
-  );
+  const handleFileUploadCallback = useCallback((files: UploadFileType[]) => {
+    setTestFile({ id: files[0].id as string, filename: files[0].name || "" });
+    setIsUploadOpen(false);
+    setIsWorkflowRunOpen(true);
+  }, []);
 
   const handleCloseWorkflowRun = useCallback(() => {
     setIsWorkflowRunOpen(false);
@@ -297,8 +294,8 @@ export default function WorkflowForm({
                   <UploadZone
                     maxNumberOfFile={1}
                     knowledgeBaseId={knowledgeBaseId}
-                    // onAfterUpload={handleAfterUploadFile}
-                    onFileUploadCallback={handleFileUploadCallback}
+                    onAfterUpload={handleFileUploadCallback}
+                    acceptFileTypes=".doc,.docx,.pdf,.ppt,.pptx,.xls,.xlsx,.txt,.json,.mp3,.mp4"
                   />
                 </ModalBody>
               </>

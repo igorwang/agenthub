@@ -16,6 +16,7 @@ import {
   ModalHeader,
 } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -53,7 +54,7 @@ export const ChatList: React.FC<ChatListProps> = ({
 }) => {
   const dispatch: AppDispatch = useDispatch();
   const router = useRouter();
-
+  const t = useTranslations();
   const [showIconId, setShowIconId] = useState("");
   const [openStates, setOpenStates] = useState<Record<number, boolean>>({});
   const [deleteAgentUserRelationMutation] = useDeleteAgentUserRelationMutation();
@@ -173,17 +174,17 @@ export const ChatList: React.FC<ChatListProps> = ({
           {group.agents.map((item) => (
             <ListboxItem
               key={item.id}
-              textValue={item.name} // Added textValue prop for accessibility
+              textValue={item.name}
               className={`relative ${item.id == params?.id ? "bg-blue-200" : ""}`}
               onClick={() => {
                 handleSelectChat(item.id);
                 setChatListOpenStatus?.(false);
               }}>
               <div
-                className="flex w-full justify-between"
+                className="flex w-full items-center"
                 onMouseEnter={() => setShowIconId(item.id)}
                 onMouseLeave={() => setShowIconId("")}>
-                <div className="flex items-center gap-2">
+                <div className="flex min-w-0 flex-1 items-center gap-2 pr-1">
                   {item.avatar ? (
                     <Avatar
                       alt={item.name}
@@ -202,25 +203,24 @@ export const ChatList: React.FC<ChatListProps> = ({
                       classNames={{ name: "text-xl" }}
                     />
                   )}
-                  <div className="flex flex-col">
-                    <span className="text-small">{item.name}</span>
-                    <span className="max-w-[120px] truncate text-nowrap text-tiny text-default-400">
+                  <div className="flex min-w-0 flex-1 flex-col">
+                    <span className="truncate text-small font-medium">{item.name}</span>
+                    <span className="truncate text-tiny text-default-400">
                       {item.description}
                     </span>
                   </div>
                 </div>
-                <Button
-                  isIconOnly
-                  className={`absolute right-0 bg-transparent transition-opacity duration-300 data-[hover]:bg-transparent ${
-                    item.id === showIconId ? "opacity-100" : "opacity-0"
-                  }`}
-                  onPress={() => handleUnsubscribeClick(item)}>
-                  <Icon
-                    className="cursor-pointer"
-                    icon="material-symbols:delete-outline-rounded"
-                    fontSize={20}
-                  />
-                </Button>
+                <div className="ml-auto flex-shrink-0">
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    className={`min-w-unit-8 h-unit-8 bg-transparent p-0 transition-opacity duration-300 ${
+                      item.id === showIconId ? "opacity-100" : "opacity-0"
+                    }`}
+                    onPress={() => handleUnsubscribeClick(item)}>
+                    <Icon icon="material-symbols:delete-outline-rounded" fontSize={18} />
+                  </Button>
+                </div>
               </div>
             </ListboxItem>
           ))}
@@ -233,16 +233,20 @@ export const ChatList: React.FC<ChatListProps> = ({
     return (
       <Modal isOpen={isModalOpen} hideCloseButton={true}>
         <ModalContent>
-          <ModalHeader className="flex flex-col gap-1">Unsubscribe Agent</ModalHeader>
+          <ModalHeader className="flex flex-col gap-1">
+            {t("Unsubscribe Agent")}
+          </ModalHeader>
           <ModalBody>
-            <p>Are you sure you want to unsubscribe this agent: {deleteAgent?.name}?</p>
+            <p>
+              {t("Are you sure you want to unsubscribe this agent")}: {deleteAgent?.name}?
+            </p>
           </ModalBody>
           <ModalFooter>
             <Button color="primary" variant="light" onPress={() => setIsModalOpen(false)}>
-              Close
+              {t("Close")}
             </Button>
             <Button color="danger" onPress={handleDeleteAgentRelation}>
-              Affirm
+              {t("Affirm")}
             </Button>
           </ModalFooter>
         </ModalContent>

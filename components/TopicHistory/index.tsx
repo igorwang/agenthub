@@ -23,8 +23,9 @@ import {
   ScrollShadow,
 } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 interface TopicHistoryProps {
@@ -37,11 +38,13 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   const selectedSessionId = useSelector(selectSelectedSessionId);
   const { data: sessionData, status } = useSession();
   const userId = sessionData?.user?.id;
+  const t = useTranslations();
 
   const router = useRouter();
   const pathname = usePathname();
   const params: { id: string } = useParams();
   const [addNewTopicMutation] = useAddNewTopicMutationMutation();
+  const [hoveredItemId, setHoveredItemId] = useState<string | null>(null);
 
   const getTopicListQuery = useGetTopicHistoriesQuery({
     variables: {
@@ -62,7 +65,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   }
 
   if (loading) {
-    return <div className="p-4 text-center">Loading...</div>;
+    return <div className="p-4 text-center">t{t("Loading")}...</div>;
   }
 
   const histories = data?.topic_history.map((item) => ({
@@ -79,20 +82,20 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
     router.push(`${pathname}?session_id=${sId}`);
   };
 
-  const dropdownContent = (
+  const dropdownContent = (itemId: string) => (
     <Dropdown>
       <DropdownTrigger>
         <Button
           isIconOnly
-          className="absolute right-1 top-0.5 h-8 min-w-8"
+          className="absolute right-2 top-0.5 h-8 min-w-8 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
           variant="light"
           startContent={<OcticonKebabHorizontalIcon className="h-4 w-4" />}
         />
       </DropdownTrigger>
       <DropdownMenu aria-label="Topic Actions">
-        <DropdownItem key="edit">Rename</DropdownItem>
+        <DropdownItem key="edit">{t("Rename")}</DropdownItem>
         <DropdownItem key="delete" className="text-danger" color="danger">
-          Delete
+          {t("Delete")}
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>
@@ -101,21 +104,25 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   const historyItems = histories?.map((item) => (
     <ListboxItem
       key={item.id}
-      className={`relative flex h-10 items-center px-2 py-1 ${
+      className={`group relative flex h-10 items-center px-2 py-1 ${
         selectedSessionId === item.id ? "bg-primary-100" : "hover:bg-slate-100"
       }`}
       startContent={<DiscussionIcon className="mr-2 h-4 w-4" />}
-      endContent={dropdownContent}
-      textValue={item.title} // Add this line to fix the warning
+      textValue={item.title}
       onClick={() => handleSelect(item.id)}>
       <div className="w-full truncate pr-8">{item.title}</div>
+      <div
+        className="absolute right-0 top-0 flex h-full w-10 items-center justify-center"
+        onClick={(e) => e.stopPropagation()}>
+        {dropdownContent(item.id)}
+      </div>
     </ListboxItem>
   ));
 
   return (
     <div className="flex h-full flex-col">
       <h2 className="px-4 py-2 text-center text-xs font-normal uppercase tracking-wide text-gray-500">
-        Chat History
+        {t("Chat History")}
       </h2>
 
       <ScrollShadow className="h-full">

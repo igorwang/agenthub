@@ -452,11 +452,7 @@ export default function MessageWindow({
       };
       generateAnswer();
       return () => {
-        // setMessages((prev) => {
-        //   const newMessages = prev.filter((item) => item.status != "draft");
-        //   return newMessages;
-        // });
-        controller.abort(); // Abort the fetch when the component unmounts or dependencies change
+        controller.abort();
         return;
       };
     }

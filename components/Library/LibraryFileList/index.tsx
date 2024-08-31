@@ -3,7 +3,7 @@ import FileTable, { FileDTO } from "@/components/Library/LibraryFileList/file-ta
 import DeleteConfirmModal from "@/components/ui/delete-modal";
 import DeleteMultipleModal from "@/components/ui/delete-mutiple-modal";
 import { PlusIcon } from "@/components/ui/icons";
-import UploadZone from "@/components/UploadZone";
+import UploadZone, { UploadFileType } from "@/components/UploadZone";
 import {
   FilesListQuery,
   Order_By,
@@ -158,7 +158,7 @@ export default function LibraryFileList({
     [batchDeleteFilesMutation, refetch, toast],
   );
 
-  const handleAfterUploadFile = useCallback(() => {
+  const handleAfterUploadFile = useCallback((files: UploadFileType[]) => {
     setPage(1);
   }, []);
 
@@ -243,6 +243,8 @@ export default function LibraryFileList({
               <ModalBody className="py-6">
                 <UploadZone
                   knowledgeBaseId={knowledgeBaseId}
+                  maxNumberOfFile={50}
+                  acceptFileTypes=".doc,.docx,.pdf,.ppt,.pptx,.xls,.xlsx,.txt,.json,.mp3,.mp4"
                   onAfterUpload={handleAfterUploadFile}
                 />
               </ModalBody>

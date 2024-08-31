@@ -1,6 +1,7 @@
 import { match as matchLocale } from "@formatjs/intl-localematcher";
 import Negotiator from "negotiator";
 import createIntlMiddleware from "next-intl/middleware";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "./auth";
 
@@ -28,8 +29,8 @@ const intlMiddleware = createIntlMiddleware({
 
 export default async function middleware(request: NextRequest) {
   const { pathname, origin } = request.nextUrl;
+  const userLanguage = cookies().get("userLanguage")?.value;
 
-  // Handle public files and API routes
   if (
     PUBLIC_FILE.test(pathname) ||
     pathname.startsWith("/_next") ||
@@ -70,7 +71,7 @@ export default async function middleware(request: NextRequest) {
 
   if (!pathnameHasLocale) {
     const locale = getLocale(request);
-    request.nextUrl.pathname = `/${locale}${pathname}`;
+    request.nextUrl.pathname = `/${userLanguage || locale}${pathname}`;
     return NextResponse.redirect(request.nextUrl);
   }
 

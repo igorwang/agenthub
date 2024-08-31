@@ -14,6 +14,7 @@ import {
   ScrollShadow,
   useDisclosure,
 } from "@nextui-org/react";
+import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -23,6 +24,7 @@ interface LibraryFileChunkProps {
 }
 
 const LibraryFileChunk: React.FC<LibraryFileChunkProps> = ({ filename, chunks }) => {
+  const t = useTranslations();
   const router = useRouter();
   const pathname = usePathname();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -42,6 +44,28 @@ const LibraryFileChunk: React.FC<LibraryFileChunkProps> = ({ filename, chunks })
   const handleChunkClick = (chunk: Chunk) => {
     setSelectedChunk(chunk);
     onOpen();
+  };
+
+  const parseContent = (content: string | undefined) => {
+    if (!content) return { isJson: false, parsedContent: t("No content available") };
+    try {
+      const parsedJson = JSON.parse(content);
+      return { isJson: true, parsedContent: parsedJson };
+    } catch (e) {
+      return { isJson: false, parsedContent: content };
+    }
+  };
+
+  const renderContent = (content: string | undefined) => {
+    const { isJson, parsedContent } = parseContent(content);
+    if (isJson) {
+      return (
+        <pre className="whitespace-pre-wrap text-sm text-gray-700">
+          {JSON.stringify(parsedContent, null, 2)}
+        </pre>
+      );
+    }
+    return <p className="text-sm text-gray-700">{parsedContent}</p>;
   };
 
   return (
@@ -97,18 +121,23 @@ const LibraryFileChunk: React.FC<LibraryFileChunkProps> = ({ filename, chunks })
                 icon="mdi:file-document-outline"
                 className="mx-auto mb-4 text-6xl text-gray-400"
               />
-              <h5 className="mb-2 text-xl font-semibold text-gray-700">
-                No Chunks Available
-              </h5>
+              <h5 className="mb-2 text-xl font-semibold text-gray-700"></h5>
               <p className="text-sm text-gray-600">
-                There are no chunks available for this file.
+                {t("There are no chunks available for this file")} .
               </p>
             </Card>
           </div>
         )}
       </div>
 
-      <Modal isOpen={isOpen} onClose={onClose} size="3xl">
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        size="3xl"
+        classNames={{
+          body: "p-0",
+          base: "max-h-[80vh]",
+        }}>
         <ModalContent>
           {(onClose) => (
             <>
@@ -116,24 +145,30 @@ const LibraryFileChunk: React.FC<LibraryFileChunkProps> = ({ filename, chunks })
                 Chunk #{selectedChunk?.sequence.toString().padStart(3, "0")}
               </ModalHeader>
               <ModalBody>
-                <div className="mb-4">
-                  <h5 className="mb-2 text-lg font-semibold">Content:</h5>
-                  <p className="text-sm text-gray-700">{selectedChunk?.content}</p>
-                </div>
-                <div>
-                  <h5 className="mb-2 text-lg font-semibold">Metadata:</h5>
-                  {selectedChunk?.metadata ? (
-                    <pre className="whitespace-pre-wrap text-xs text-gray-600">
-                      {JSON.stringify(selectedChunk.metadata, null, 2)}
-                    </pre>
-                  ) : (
-                    <p className="text-sm text-gray-600">No metadata available</p>
-                  )}
-                </div>
+                <ScrollShadow className="h-[calc(80vh-130px)]">
+                  <div className="p-4">
+                    <div className="mb-4">
+                      <h5 className="mb-2 text-lg font-semibold">{t("Content")}:</h5>
+                      {renderContent(selectedChunk?.content)}
+                    </div>
+                    <div>
+                      <h5 className="mb-2 text-lg font-semibold">{t("Metadata")}:</h5>
+                      {selectedChunk?.metadata ? (
+                        <pre className="whitespace-pre-wrap text-xs text-gray-600">
+                          {JSON.stringify(selectedChunk.metadata, null, 2)}
+                        </pre>
+                      ) : (
+                        <p className="text-sm text-gray-600">
+                          {t("No metadata available")}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </ScrollShadow>
               </ModalBody>
               <ModalFooter>
                 <Button color="primary" onPress={onClose}>
-                  Close
+                  {t("Close")}
                 </Button>
               </ModalFooter>
             </>

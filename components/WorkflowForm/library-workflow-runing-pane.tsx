@@ -6,6 +6,7 @@ import {
 import { TaskRunResult } from "@/restful/generated";
 import { Icon } from "@iconify/react";
 import { Button, Spacer, Tab, Tabs, Tooltip } from "@nextui-org/react";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -20,6 +21,7 @@ export default function LibraryWorkflowRunningPane({
   fileName,
   onNewFile,
 }: LibraryWorkflowRunningPaneProps) {
+  const t = useTranslations();
   const [executeId, setExecuteId] = useState<string | null>(null);
   const [results, setResults] = useState<{ [key: string]: any } | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -104,7 +106,7 @@ export default function LibraryWorkflowRunningPane({
 
     return (
       <div className="rounded-lg bg-gray-100 p-4">
-        <h2 className="mb-4 text-lg font-bold">Execution Flow</h2>
+        <h2 className="mb-4 text-lg font-bold">{t("Execution Flow")}</h2>
         <div className="space-y-4">
           {topological_order.map((step: string[], stepIndex: number) => (
             <div key={stepIndex} className="rounded bg-white p-4 shadow">
@@ -145,7 +147,7 @@ export default function LibraryWorkflowRunningPane({
                             </pre>
                           ) : (
                             <p className="text-gray-500">
-                              No data available for this node
+                              {t("No data available for this node")}
                             </p>
                           )}
                         </div>
@@ -165,35 +167,37 @@ export default function LibraryWorkflowRunningPane({
     <div className="max-h-full w-full overflow-auto p-4">
       <div className="mb-4 flex flex-row items-center justify-between">
         <h1 className="max-w-md overflow-hidden text-ellipsis text-nowrap text-xl font-bold">
-          Input file: {fileName}
+          {t("Input file")}: {fileName}
         </h1>
-        <Tooltip content="New File">
-          <Button
-            color="primary"
-            variant="bordered"
-            size="sm"
-            onClick={handleNewFile}
-            startContent={<Icon icon="mdi:file-plus" className="h-4 w-4" />}>
-            New File
-          </Button>
-        </Tooltip>
-        <Spacer />
-        <Tooltip content={isRetrying ? "Retrying..." : "Retry"}>
-          <Button
-            color="primary"
-            variant="bordered"
-            size="sm"
-            onClick={handleRedoFile}
-            disabled={isRetrying}
-            startContent={
-              <Icon
-                icon={isRetrying ? "eos-icons:loading" : "uil:redo"}
-                className={`h-4 w-4 ${isRetrying ? "animate-spin" : ""}`}
-              />
-            }>
-            Retry
-          </Button>
-        </Tooltip>
+        <div className="flex flex-row">
+          <Tooltip content={t("New File")}>
+            <Button
+              color="primary"
+              variant="bordered"
+              size="sm"
+              onClick={handleNewFile}
+              startContent={<Icon icon="mdi:file-plus" className="h-4 w-4" />}>
+              {t("New File")}
+            </Button>
+          </Tooltip>
+          <Spacer />
+          <Tooltip content={isRetrying ? `${t("Retry")}...` : t("Retry")}>
+            <Button
+              color="primary"
+              variant="bordered"
+              size="sm"
+              onClick={handleRedoFile}
+              disabled={isRetrying}
+              startContent={
+                <Icon
+                  icon={isRetrying ? "eos-icons:loading" : "uil:redo"}
+                  className={`h-4 w-4 ${isRetrying ? "animate-spin" : ""}`}
+                />
+              }>
+              {t("Retry")}
+            </Button>
+          </Tooltip>
+        </div>
       </div>
 
       {errorMessage && (
@@ -208,7 +212,7 @@ export default function LibraryWorkflowRunningPane({
       {status == Status_Enum.Running ? (
         <div className="flex items-center justify-center p-8">
           <Icon icon="eos-icons:loading" className="mr-2 h-6 w-6 animate-spin" />
-          <span className="text-lg font-medium">Running...</span>
+          <span className="text-lg font-medium">{t("Running")}...</span>
         </div>
       ) : null}
     </div>

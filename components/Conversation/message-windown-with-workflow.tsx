@@ -101,6 +101,8 @@ export default function MessageWindowWithWorkflow({
   const [agent, setAgent] = useState<AgentProps>();
   const [refineQuery, setRefineQuery] = useState<QueryAnalyzeResultSchema | null>(null);
   const [searchResults, setSearchResults] = useState<SourceType[] | null>(null);
+  const [chatContext, setChatContext] = useState<string | null>(null);
+
   const [promptTemplates, setPromptTemplates] = useState<PromptTemplateType[]>();
   // const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
   const [libraries, setLibraries] = useState<LibraryCardType[]>();
@@ -232,6 +234,7 @@ export default function MessageWindowWithWorkflow({
     ) {
       const newMessageId = v4();
       setSearchResults(null);
+      setChatContext(null);
       setMessages((prev) => [
         ...prev,
         {
@@ -284,6 +287,7 @@ export default function MessageWindowWithWorkflow({
 
         if (!response.ok) {
           setSearchResults([]);
+          setChatContext("");
           return;
         }
 
@@ -298,6 +302,7 @@ export default function MessageWindowWithWorkflow({
         if (workflowOutput.type === "humanInLoopNode") {
           onChatingStatusChange(false, CHAT_STATUS_ENUM.Finished);
           setSearchResults(null);
+          setChatContext(null);
           setMessages((prev) => [
             ...prev.slice(0, -1),
             {
@@ -341,13 +346,25 @@ export default function MessageWindowWithWorkflow({
         } else {
           setSearchResults([]);
         }
+
+        if (workflowOutput.context) {
+          console.log("workflowOutput.context", workflowOutput.context);
+          setChatContext(workflowOutput.context);
+        } else {
+          setChatContext("");
+        }
       };
       fetchChatWithWorkflow();
     }
   }, [chatStatus, messages]);
 
   useEffect(() => {
-    if (isChating && searchResults != null && chatStatus == CHAT_STATUS_ENUM.Searching) {
+    if (
+      isChating &&
+      searchResults != null &&
+      chatContext != null &&
+      chatStatus == CHAT_STATUS_ENUM.Searching
+    ) {
       const controller = new AbortController(); // Create a new AbortController
       const signal = controller.signal; // Get the signal from the controller
 
@@ -362,7 +379,7 @@ export default function MessageWindowWithWorkflow({
           promptTemplates || DEFAULT_TEMPLATES,
           historyMessage,
           searchResults || [],
-          `${refineQuery?.refineQuery};${refineQuery?.keywords}` || "",
+          chatContext || "",
           {},
           agent?.token_limit,
         );

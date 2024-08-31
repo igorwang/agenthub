@@ -2,10 +2,16 @@
 
 import { cn } from "@/cn";
 import { Icon } from "@iconify/react";
-import { Button, Tooltip } from "@nextui-org/react";
-import React, { useRef, useState } from "react";
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  Tooltip,
+} from "@nextui-org/react";
+import { useCallback, useState } from "react";
 
-import { UploadFile, UploadFileProps } from "@/components/Conversation/upload-file";
 import {
   Message_Role_Enum,
   useCreateMessageAndUpdateTopicHistoryMutation,
@@ -17,58 +23,24 @@ import {
   selectSession,
 } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
-import { CHAT_STATUS_ENUM, SourceType } from "@/types/chatTypes";
+import { CHAT_STATUS_ENUM } from "@/types/chatTypes";
+import { ExtFile } from "@dropzone-ui/react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
+import UploadZone, { UploadFileType } from "../UploadZone";
 import PromptInput from "./prompt-input";
-
-// TODO 默认推荐 与用户的聊天内容相关的推荐
-const ideas = [
-  {
-    title: "Create a blog post about NextUI ",
-    description: "explain it in simple terms",
-  },
-  {
-    title: "Give me 10 ideas for my next blog post",
-    description: "include only the best ideas",
-  },
-  {
-    title: "Compare NextUI with other UI libraries",
-    description: "be as objective as possible",
-  },
-  {
-    title: "Write a text message to my friend",
-    description: "be polite and friendly",
-  },
-  {
-    title: "Write a text message to my friend",
-    description: "be polite and friendly",
-  },
-  {
-    title: "Write a text message to my friend",
-    description: "be polite and friendly",
-  },
-  {
-    title: "Write a text message to my friend",
-    description: "be polite and friendly",
-  },
-];
 
 type PromptInputWithFaqProps = {
   isChating?: boolean;
   onChatingStatus?: (isChating: boolean, stauts: CHAT_STATUS_ENUM | null) => void;
-  onSelectedSource?: (source: SourceType, selected: boolean) => void;
-  selectedSources?: SourceType[];
 };
 
 export default function PromptInputWithFaq({
   isChating: isChating,
   onChatingStatus,
-  onSelectedSource,
-  selectedSources,
 }: PromptInputWithFaqProps) {
   const t = useTranslations();
   const router = useRouter();
@@ -76,8 +48,11 @@ export default function PromptInputWithFaq({
   const dispatch: AppDispatch = useDispatch();
   const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
 
-  const [files, setFiles] = useState<UploadFileProps[]>([]);
+  // const [files, setFiles] = useState<UploadFileProps[]>([]);
+
+  const [files, setFiles] = useState<ExtFile[]>([]);
   const [prompt, setPrompt] = useState<string>("");
 
   const [createMessageAndUpdateTopicHistoryMutation, { data, loading, error }] =
@@ -88,71 +63,42 @@ export default function PromptInputWithFaq({
   const user_id = session.data?.user?.id;
   const agent_id = selectedChatId;
 
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  // useEffect(() => {
-  //   console.log("isFollowUp", isFollowUp);
-  //   if (isFollowUp) {
-  //     setPrompt((prev) => `/FollowUp ${prev}`);
-  //   } else {
-  //     setPrompt((prev) => prev.replace("/FollowUp", ""));
-  //   }
-  // }, [isFollowUp]);
-
-  const handleFileButtonClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-
-    if (file) {
+  const openUploadModal = useCallback(async () => {
+    if (!selectedSessionId) {
       try {
-        const res = await fetch(
-          `/api/file/presigned_url?fileName=${file.name}&fileType=${file.type}&location=chat`,
-        );
-        const { url, bucket, fileKey, previewUrl } = await res.json();
-
-        const newFileKey = files.length + 1;
-        const newFile: UploadFileProps = {
-          key: newFileKey,
-          file: file,
-          fileName: file.name,
-          isLoading: true,
-          url: previewUrl,
-          bucket: bucket,
-          fileKey: fileKey,
-        };
-        setFiles((prevFiles) => [...prevFiles, newFile]);
-
-        const uploadResponse = await fetch(url, {
-          method: "PUT",
-          body: file,
-          headers: {
-            "Content-Type": file.type,
+        const response = await createNewTopicWithMessageMutation({
+          variables: {
+            object: {
+              title: prompt.slice(0, 15) || t("New Chat"),
+              user_id: user_id,
+              agent_id: agent_id,
+            },
           },
         });
-
-        if (!uploadResponse.ok) {
-          throw new Error("Failed to upload file");
+        const data = response.data;
+        if (data?.insert_topic_history_one) {
+          const newSessionId = data?.insert_topic_history_one?.id;
+          dispatch(selectSession(newSessionId));
+          router.push(`${pathname}?session_id=${newSessionId}&isNew=true`);
+          setIsUploadOpen(true);
         }
-
-        setFiles((prevFiles) =>
-          prevFiles.map((file) =>
-            file.key === newFileKey ? { ...file, isLoading: false } : file,
-          ),
-        );
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error adding topic:", error);
+        toast.error(t("System error, please try later"), {
+          position: "bottom-left",
+        });
       }
+    } else {
+      setIsUploadOpen(true);
     }
-    event.target.value = "";
+  }, [selectedSessionId]);
+
+  const closeUploadModal = () => {
+    setIsUploadOpen(false);
   };
 
-  const removeFileHanlder = (index: number) => {
-    setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+  const handleFileChange = (files: UploadFileType[]) => {
+    console.log("handleFileChange", files);
   };
 
   const stopSendMessageHanlder = () => {
@@ -161,12 +107,6 @@ export default function PromptInputWithFaq({
 
   const sendMessageHanlder = async () => {
     onChatingStatus?.(true, null);
-    const attachments = files.map((item) => ({
-      // key: item.key,
-      fileName: item.fileName,
-      bucket: item.bucket,
-      fileKey: item.fileKey,
-    }));
     if (!selectedSessionId) {
       try {
         const response = await createNewTopicWithMessageMutation({
@@ -180,7 +120,7 @@ export default function PromptInputWithFaq({
                   {
                     content: prompt,
                     role: Message_Role_Enum.User,
-                    attachments: attachments,
+                    attachments: [],
                   },
                 ],
               },
@@ -207,7 +147,7 @@ export default function PromptInputWithFaq({
           content: prompt,
           session_id: selectedSessionId,
           role: Message_Role_Enum.User,
-          attachments: attachments,
+          attachments: [],
         },
       });
     }
@@ -215,17 +155,17 @@ export default function PromptInputWithFaq({
     setFiles([]);
   };
 
-  const uploadFileListElement = files.map((item, index) => (
-    <UploadFile
-      key={index}
-      file={item.file}
-      fileName={item.fileName}
-      isLoading={item.isLoading}
-      className={item.className}
-      url={item.url}
-      removeFileHandler={removeFileHanlder}
-    />
-  ));
+  // const uploadFileListElement = files.map((item, index) => (
+  //   <UploadFile
+  //     key={index}
+  //     file={item.file}
+  //     fileName={item.fileName}
+  //     isLoading={item.isLoading}
+  //     className={item.className}
+  //     url={item.url}
+  //     removeFileHandler={removeFileHanlder}
+  //   />
+  // ));
 
   const sendButton = (
     <Tooltip showArrow content="Send message">
@@ -299,19 +239,6 @@ export default function PromptInputWithFaq({
         />
         <div className="flex items-center justify-between gap-2 px-4 pb-4">
           <div className="flex gap-1 md:gap-3">
-            <input
-              type="file"
-              className="hidden"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-            />
-            {/* <Switch
-              isSelected={isFollowUp}
-              onValueChange={(value) => {
-                dispatch(setIsFollowUp(value));
-              }}>
-              Follow-up
-            </Switch> */}
             {/* <Button
               size="sm"
               startContent={
@@ -322,8 +249,8 @@ export default function PromptInputWithFaq({
                 />
               }
               variant="flat"
-              onClick={handleFileButtonClick}>
-              File
+              onClick={openUploadModal}>
+              {t("File")}
             </Button> */}
             {/* <Button
               size="sm"
@@ -342,6 +269,32 @@ export default function PromptInputWithFaq({
           {/* <p className="py-1 text-tiny text-default-400">{prompt.length}/4000</p> */}
         </div>
       </form>
+      {isUploadOpen && selectedSessionId && (
+        <Modal
+          isOpen={isUploadOpen}
+          onClose={closeUploadModal}
+          className="rounded-lg bg-white shadow-lg"
+          size="2xl">
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1 border-b pb-4 text-2xl font-semibold text-gray-700">
+                  {t("Upload Files")}
+                </ModalHeader>
+                <ModalBody className="py-6">
+                  <UploadZone
+                    // knowledgeBaseId={knowledgeBaseId}
+                    // onAfterUpload={handleAfterUploadFile}
+                    sessionId={selectedSessionId}
+                    onAfterUpload={handleFileChange}
+                    maxNumberOfFile={5}
+                  />
+                </ModalBody>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      )}
     </div>
   );
 }

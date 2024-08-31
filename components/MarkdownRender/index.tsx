@@ -1,13 +1,9 @@
-"use client";
-
 import "katex/dist/katex.min.css";
 import React from "react";
 import ReactMarkdown from "react-markdown";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { materialDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import rehypeKatex from "rehype-katex";
 import rehypeRaw from "rehype-raw";
-import { default as gfm, default as remarkGfm } from "remark-gfm";
+import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 
 interface MarkdownRendererProps {
@@ -16,35 +12,62 @@ interface MarkdownRendererProps {
 
 const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
   const components = {
-    // 为 code 标签提供自定义渲染器
-    code({ node, inline, className, children, ...props }: any) {
-      const match = /language-(\w+)/.exec(className || "");
-      return !inline && match ? (
-        <SyntaxHighlighter
-          style={materialDark}
-          language={match[1]}
-          PreTag="div"
-          {...props}>
-          {String(children).replace(/\n$/, "")}
-        </SyntaxHighlighter>
-      ) : (
-        <code
-          className="custom-scrollbar w-full max-w-full flex-1 overflow-auto"
-          {...props}>
+    p: ({ children }: any) => <p className="mb-4 break-words">{children}</p>,
+    h1: ({ children }: any) => <h1 className="mb-4 text-2xl font-bold">{children}</h1>,
+    h2: ({ children }: any) => <h2 className="mb-3 text-xl font-bold">{children}</h2>,
+    h3: ({ children }: any) => <h3 className="mb-2 text-lg font-bold">{children}</h3>,
+    ul: ({ children }: any) => <ul className="mb-4 list-disc pl-8">{children}</ul>,
+    ol: ({ children }: any) => <ol className="mb-4 list-decimal pl-8">{children}</ol>,
+    li: ({ children, ordered, index }: any) => (
+      <li className="relative mb-2">
+        {ordered && (
+          <span className="absolute -left-7 w-6 pr-2 text-right">{index + 1}.</span>
+        )}
+        <span>{children}</span>
+      </li>
+    ),
+    a: ({ href, children }: any) => (
+      <a
+        href={href}
+        className="text-blue-600 hover:underline"
+        target="_blank"
+        rel="noopener noreferrer">
+        {children}
+      </a>
+    ),
+    img: ({ src, alt }: any) => (
+      <img src={src} alt={alt} className="my-4 h-auto max-w-full" />
+    ),
+    blockquote: ({ children }: any) => (
+      <blockquote className="my-4 break-words border-l-4 border-gray-300 pl-4 italic">
+        {children}
+      </blockquote>
+    ),
+    table: ({ children }: any) => (
+      <div className="my-4 w-full overflow-x-auto">
+        <table className="min-w-full border-collapse border border-gray-300">
           {children}
-        </code>
-      );
-    },
+        </table>
+      </div>
+    ),
+    th: ({ children }: any) => (
+      <th className="border border-gray-300 bg-gray-100 px-4 py-2">{children}</th>
+    ),
+    td: ({ children }: any) => (
+      <td className="border border-gray-300 px-4 py-2">{children}</td>
+    ),
   };
 
   return (
-    <ReactMarkdown
-      remarkPlugins={[remarkMath, remarkGfm, gfm]}
-      rehypePlugins={[rehypeKatex, rehypeRaw]}
-      components={components} // 使用自定义渲染器
-    >
-      {content}
-    </ReactMarkdown>
+    <div className="markdown-content w-full max-w-full overflow-hidden">
+      <ReactMarkdown
+        remarkPlugins={[remarkMath, remarkGfm]}
+        rehypePlugins={[rehypeKatex, rehypeRaw]}
+        components={components}
+        className="w-full max-w-full overflow-hidden">
+        {content}
+      </ReactMarkdown>
+    </div>
   );
 };
 
