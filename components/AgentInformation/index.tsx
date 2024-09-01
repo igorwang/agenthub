@@ -25,6 +25,7 @@ interface Agent {
   avatar?: string | null | undefined;
   system_prompt?: SystemPrompt | null | undefined;
   default_model?: string | null;
+  embedding_model?: string | null;
   token_limit?: number | null;
   enable_search?: boolean | null;
   force_search?: boolean | null;
@@ -62,6 +63,7 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
       enable_search: agent?.enable_search,
       force_search: agent?.force_search,
       mode: agent?.mode,
+      embedding_model: agent?.embedding_model,
     };
     delete input.id;
     updateAgentMutation({
@@ -166,6 +168,21 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
                 ...prev,
                 default_model: modelName,
                 token_limit: limit,
+              }));
+            }}
+          />
+        </div>
+
+        <div className={"mt-10"}>
+          <ModelSelect
+            label={t("Embedding model")}
+            labelPlacement="outside"
+            modelType="embedding"
+            defaultModel={agent?.embedding_model || ""}
+            onSelectionChange={(modelName, limit) => {
+              setAgent((prev) => ({
+                ...prev,
+                embedding_model: modelName,
               }));
             }}
           />
