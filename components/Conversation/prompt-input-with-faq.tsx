@@ -13,6 +13,7 @@ import {
 import { useCallback, useState } from "react";
 
 import {
+  Agent_Mode_Enum,
   Message_Role_Enum,
   useCreateMessageAndUpdateTopicHistoryMutation,
   useCreateNewTopicWithMessageMutation,
@@ -34,11 +35,13 @@ import UploadZone, { UploadFileType } from "../UploadZone";
 import PromptInput from "./prompt-input";
 
 type PromptInputWithFaqProps = {
+  agentMode?: Agent_Mode_Enum;
   isChating?: boolean;
   onChatingStatus?: (isChating: boolean, stauts: CHAT_STATUS_ENUM | null) => void;
 };
 
 export default function PromptInputWithFaq({
+  agentMode,
   isChating: isChating,
   onChatingStatus,
 }: PromptInputWithFaqProps) {
@@ -237,22 +240,23 @@ export default function PromptInputWithFaq({
           variant="flat"
           onValueChange={setPrompt}
         />
-        <div className="flex items-center justify-between gap-2 px-4 pb-4">
-          <div className="flex gap-1 md:gap-3">
-            <Button
-              size="sm"
-              startContent={
-                <Icon
-                  className="text-default-500"
-                  icon="solar:paperclip-linear"
-                  width={18}
-                />
-              }
-              variant="flat"
-              onClick={openUploadModal}>
-              {t("File")}
-            </Button>
-            {/* <Button
+        {agentMode === Agent_Mode_Enum.Workflow && (
+          <div className="flex items-center justify-between gap-2 px-4 pb-4">
+            <div className="flex gap-1 md:gap-3">
+              <Button
+                size="sm"
+                startContent={
+                  <Icon
+                    className="text-default-500"
+                    icon="solar:paperclip-linear"
+                    width={18}
+                  />
+                }
+                variant="flat"
+                onClick={openUploadModal}>
+                {t("File")}
+              </Button>
+              {/* <Button
               size="sm"
               startContent={
                 <Icon
@@ -265,9 +269,10 @@ export default function PromptInputWithFaq({
             >
               Voice
             </Button> */}
+            </div>
+            {/* <p className="py-1 text-tiny text-default-400">{prompt.length}/4000</p> */}
           </div>
-          {/* <p className="py-1 text-tiny text-default-400">{prompt.length}/4000</p> */}
-        </div>
+        )}
       </form>
       {isUploadOpen && selectedSessionId && (
         <Modal

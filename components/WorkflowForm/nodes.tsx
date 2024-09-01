@@ -335,6 +335,38 @@ export const SearchLibraryNodeComponent: React.FC<NodeProps<SearchLibraryNode>> 
   },
 );
 
+export type searchMemoryNode = Node<CustomNodeData, "searchMemoryNode">;
+
+export const SearchMemoryNodeComponent: React.FC<NodeProps<searchMemoryNode>> = memo(
+  ({ data, selected }) => {
+    const borderColor = selected ? "border-blue-500" : "border-gray-200";
+
+    return (
+      <div
+        className={`rounded-md border ${borderColor} bg-green-50 px-2 py-1 shadow-sm transition-colors duration-200`}>
+        <div className="flex flex-col items-center">
+          <div className="mb-0.5 flex h-6 w-6 items-center justify-center text-green-300">
+            <Icon icon="game-icons:brain-freeze" fontSize={16} />
+          </div>
+          <div className="text-center text-[10px] font-medium text-green-500">
+            {data.label}
+          </div>
+        </div>
+        <Handle
+          type="target"
+          position={Position.Left}
+          className="-ml-0.5 h-3 w-0.5 !border-1 !border-purple-100 !bg-green-300"
+        />
+        <Handle
+          type="source"
+          position={Position.Right}
+          className="-mr-0.5 h-2 w-1 !border-1 !border-purple-100 !bg-green-300"
+        />
+      </div>
+    );
+  },
+);
+
 export type PreChatOutputNode = Node<CustomNodeData, "preChatOutputNode">;
 
 export const PreChatOutputNodeComponent: React.FC<NodeProps<PreChatOutputNode>> = memo(
@@ -560,6 +592,7 @@ ChunkingNodeComponent.displayName = "ChunkingNodeComponent";
 IndexingNodeComponent.displayName = "IndexingNodeComponent";
 HumanInLoopNodeComponent.displayName = "HumanInLoopNodeComponent";
 NewMultiModalNodeComponent.displayName = "NewMultiModalNodeComponent";
+SearchMemoryNodeComponent.displayName = "SearchMemoryNodeComponent";
 
 export const nodeTypes: NodeTypes = {
   startNode: StartNodeComponent,
@@ -578,4 +611,5 @@ export const nodeTypes: NodeTypes = {
   indexingNode: IndexingNodeComponent,
   humanInLoopNode: HumanInLoopNodeComponent,
   newMultiModalNode: NewMultiModalNodeComponent,
+  searchMemoryNode: SearchMemoryNodeComponent,
 };

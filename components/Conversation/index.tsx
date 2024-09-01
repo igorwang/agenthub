@@ -271,7 +271,7 @@ export const Conversation: React.FC<ConversationProps> = ({
           </div>
           <div className="flex flex-row items-center gap-2">
             {agent.role && <RoleChip role={agent.role || "user"} />}
-            <Tooltip content={agent.description}>
+            <Tooltip content={agent.description} className="max-w-md">
               <p className="max-w-sm overflow-hidden text-ellipsis text-nowrap text-sm font-light">
                 {agent.description}
               </p>
@@ -386,6 +386,7 @@ export const Conversation: React.FC<ConversationProps> = ({
               )}
               <Spacer />
               <PromptInputWithFaq
+                agentMode={agent.mode || Agent_Mode_Enum.Simple}
                 isChating={isChating}
                 onChatingStatus={handleSetChatStatus}></PromptInputWithFaq>
               <p className="px-2 text-tiny text-default-400">
