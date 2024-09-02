@@ -18,11 +18,7 @@ import {
   useCreateMessageAndUpdateTopicHistoryMutation,
   useCreateNewTopicWithMessageMutation,
 } from "@/graphql/generated/types";
-import {
-  selectSelectedChatId,
-  selectSelectedSessionId,
-  selectSession,
-} from "@/lib/features/chatListSlice";
+import { selectSelectedSessionId, selectSession } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
 import { CHAT_STATUS_ENUM } from "@/types/chatTypes";
 import { ExtFile } from "@dropzone-ui/react";
@@ -35,12 +31,14 @@ import UploadZone, { UploadFileType } from "../UploadZone";
 import PromptInput from "./prompt-input";
 
 type PromptInputWithFaqProps = {
+  agentId?: string;
   agentMode?: Agent_Mode_Enum;
   isChating?: boolean;
   onChatingStatus?: (isChating: boolean, stauts: CHAT_STATUS_ENUM | null) => void;
 };
 
 export default function PromptInputWithFaq({
+  agentId,
   agentMode,
   isChating: isChating,
   onChatingStatus,
@@ -49,7 +47,6 @@ export default function PromptInputWithFaq({
   const router = useRouter();
   const pathname = usePathname();
   const dispatch: AppDispatch = useDispatch();
-  const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
 
@@ -64,7 +61,7 @@ export default function PromptInputWithFaq({
   const [createNewTopicWithMessageMutation] = useCreateNewTopicWithMessageMutation();
   const session = useSession();
   const user_id = session.data?.user?.id;
-  const agent_id = selectedChatId;
+  // const agent_id = selectedChatId;
 
   const openUploadModal = useCallback(async () => {
     if (!selectedSessionId) {
@@ -74,7 +71,7 @@ export default function PromptInputWithFaq({
             object: {
               title: prompt.slice(0, 15) || t("New Chat"),
               user_id: user_id,
-              agent_id: agent_id,
+              agent_id: agentId,
             },
           },
         });
@@ -102,6 +99,7 @@ export default function PromptInputWithFaq({
 
   const handleFileChange = (files: UploadFileType[]) => {
     console.log("handleFileChange", files);
+    setIsUploadOpen(false);
   };
 
   const stopSendMessageHanlder = () => {
@@ -117,7 +115,7 @@ export default function PromptInputWithFaq({
             object: {
               title: prompt.slice(0, 15),
               user_id: user_id,
-              agent_id: agent_id,
+              agent_id: agentId,
               messages: {
                 data: [
                   {

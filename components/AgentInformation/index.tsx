@@ -175,7 +175,11 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
 
         <div className={"mt-10"}>
           <ModelSelect
-            label={t("Embedding model")}
+            label={
+              agent?.embedding_model
+                ? `${t("Embedding model")} (8k)`
+                : `${t("Embedding model")}`
+            }
             labelPlacement="outside"
             modelType="embedding"
             defaultModel={agent?.embedding_model || ""}

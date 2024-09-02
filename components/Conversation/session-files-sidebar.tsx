@@ -2,13 +2,14 @@ import FileIcon from "@/components/ui/file-icons";
 import {
   FilesListQuery,
   Order_By,
+  Status_Enum,
   useBatchDeleteFilesMutation,
-  useFilesListQuery,
+  useSubscriptionFilesListSubscription,
 } from "@/graphql/generated/types";
 import { Icon } from "@iconify/react";
 import { Button, Tooltip } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 interface SessionFilesSidebarProps {
@@ -16,12 +17,14 @@ interface SessionFilesSidebarProps {
 }
 
 export default function SessionFilesSidebar({ sessionId }: SessionFilesSidebarProps) {
+  const isFirstRender = useRef(true);
+
   const t = useTranslations();
   const [isOpen, setIsOpen] = useState(false);
   const [files, setFiles] = useState<FilesListQuery["files"]>([]);
   const [batchDeleteFilesMutation] = useBatchDeleteFilesMutation();
 
-  const { data, loading, error, refetch } = useFilesListQuery({
+  const { data, loading, error } = useSubscriptionFilesListSubscription({
     variables: {
       limit: 5,
       order_by: { created_at: Order_By.Desc },
@@ -30,8 +33,14 @@ export default function SessionFilesSidebar({ sessionId }: SessionFilesSidebarPr
   });
 
   useEffect(() => {
-    setFiles(data?.files || []);
+    if (data?.files) {
+      setFiles(data?.files);
+    }
   }, [data, isOpen]);
+
+  useEffect(() => {
+    setIsOpen(true);
+  }, [files]);
 
   const handleDelete = (fileId: string) => {
     // Implement delete logic here
@@ -46,7 +55,6 @@ export default function SessionFilesSidebar({ sessionId }: SessionFilesSidebarPr
       toast.success(
         `${t("Successfully deleted files")}: ${res.data?.delete_files?.returning.length || 0}`,
       );
-      refetch();
     });
   };
 
@@ -79,39 +87,41 @@ export default function SessionFilesSidebar({ sessionId }: SessionFilesSidebarPr
           </Button>
         </Tooltip>
 
-        {isOpen && (
-          <div className="flex-grow overflow-y-auto">
-            <h2 className="p-4 text-lg font-semibold">{t("Session Files")}</h2>
-            {loading && <p className="p-4">{t("Loading")}..</p>}
-            <ul className="space-y-2 p-4">
-              {files.map((file) => (
-                <li
-                  key={file.id}
-                  className="flex items-center justify-between rounded bg-white p-2 shadow">
-                  <div className="flex min-w-0 flex-grow items-center space-x-2">
-                    <div>
+        <div className="flex-grow overflow-y-auto">
+          <h2 className="p-4 text-lg font-semibold">{t("Session Files")}</h2>
+          {loading && <p className="p-4">{t("Loading")}..</p>}
+          <ul className="space-y-2 p-4">
+            {files.map((file) => (
+              <li
+                key={file.id}
+                className="flex items-center justify-between rounded bg-white p-2 shadow">
+                <div className="flex min-w-0 flex-grow items-center space-x-2">
+                  <div>
+                    {file.status != Status_Enum.Indexed ? (
+                      <Icon icon={"eos-icons:loading"} />
+                    ) : (
                       <FileIcon fileExtension={file.ext || "default"} size={20} />
-                    </div>
-                    <Tooltip content={file.name}>
-                      <span className="truncate">{file.name}</span>
-                    </Tooltip>
+                    )}
                   </div>
-                  <Tooltip content={t("Delete file")}>
-                    <Button
-                      isIconOnly
-                      size="sm"
-                      color="danger"
-                      variant="light"
-                      onClick={() => handleDelete(file.id)}
-                      aria-label={`Delete ${file.name}`}>
-                      <Icon icon="material-symbols:delete" width="18" height="18" />
-                    </Button>
+                  <Tooltip content={file.name}>
+                    <span className="truncate">{file.name}</span>
                   </Tooltip>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+                </div>
+                <Tooltip content={t("Delete file")}>
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    color="danger"
+                    variant="light"
+                    onClick={() => handleDelete(file.id)}
+                    aria-label={`Delete ${file.name}`}>
+                    <Icon icon="material-symbols:delete" width="18" height="18" />
+                  </Button>
+                </Tooltip>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );

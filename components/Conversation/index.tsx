@@ -386,6 +386,7 @@ export const Conversation: React.FC<ConversationProps> = ({
               )}
               <Spacer />
               <PromptInputWithFaq
+                agentId={agentId}
                 agentMode={agent.mode || Agent_Mode_Enum.Simple}
                 isChating={isChating}
                 onChatingStatus={handleSetChatStatus}></PromptInputWithFaq>
