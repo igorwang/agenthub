@@ -29,9 +29,10 @@ export async function createPrompt(
   templates: PromptTemplateType[],
   messages: MessageType[],
   sources: SourceType[],
+  tokenLimit: number = 4096,
   refineQuery?: string,
   variables?: { [key: string]: string },
-  tokenLimit: number = 4096,
+  sessionFilesContext?: string,
 ) {
   const validTemplates = templates.filter((template) => {
     try {
@@ -47,7 +48,14 @@ export async function createPrompt(
   ]);
 
   const sourceContext = await createContext(sources);
-  const contextMessages = ["user", `Context: ${sourceContext}`];
+  let contextMessages = ["user", `Context: ${sourceContext}`];
+  if (sessionFilesContext) {
+    contextMessages = [
+      "user",
+      `I have uploaed the following files in this session: ${sessionFilesContext}`,
+      ...contextMessages,
+    ];
+  }
 
   const historyMessages = messages.slice(0, -1).map((msg) => [msg.role, msg.message]);
 
@@ -59,11 +67,12 @@ export async function createPrompt(
   const latestMessageContent = refineQuery
     ? `Query Context:${refineQuery}\nQuestion:${latestQuery}`
     : `Question:${latestQuery}`;
+
   const latestMessages: [string, string] = ["user", latestMessageContent];
 
   const fixTokenCount = await messageTokenCounter([...templateMessages, latestMessages]);
 
-  const leftTokenCount = tokenLimit - fixTokenCount - 300;
+  const leftTokenCount = tokenLimit - fixTokenCount - 500;
 
   let promptFromContext = "";
 

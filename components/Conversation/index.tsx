@@ -8,13 +8,16 @@ import { ConfigIcon } from "@/components/ui/icons";
 import { RoleChip } from "@/components/ui/role-icons";
 import {
   Agent_Mode_Enum,
+  FilesListQuery,
   Message_Role_Enum,
   Message_Status_Enum,
   Message_Type_Enum,
+  Order_By,
   Role_Enum,
   useCreateNewMessageMutation,
   useGetAgentByIdQuery,
   useGetAgentUserRelationQuery,
+  useSubscriptionFilesListSubscription,
 } from "@/graphql/generated/types";
 import {
   selectIsChangeSession,
@@ -114,6 +117,19 @@ export const Conversation: React.FC<ConversationProps> = ({
   const [selectedSources, setSelectedSources] = useState<SourceType[]>([]);
   const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
 
+  const [sessionFiles, setSessionFiles] = useState<FilesListQuery["files"]>([]);
+
+  const [sessionFilesContext, setSessionFilesContext] = useState("");
+
+  const { data: sessionFilesData } = useSubscriptionFilesListSubscription({
+    variables: {
+      limit: 5,
+      order_by: { created_at: Order_By.Desc },
+      where: { session_id: { _eq: selectedSessionId } },
+    },
+    skip: !selectedSessionId,
+  });
+
   const [agent, setAgent] = useState<Agent>();
   const { data, loading, error } = useGetAgentByIdQuery({
     variables: {
@@ -134,10 +150,24 @@ export const Conversation: React.FC<ConversationProps> = ({
     useCreateNewMessageMutation();
 
   useEffect(() => {
+    if (sessionFilesData?.files) {
+      setSessionFiles(sessionFilesData?.files);
+
+      setSessionFilesContext(
+        sessionFilesData.files
+          .map((item, index) => `File-${index + 1}:${item.name}`)
+          .join("\n"),
+      );
+    }
+  }, [sessionFilesData]);
+
+  useEffect(() => {
     setSelectedSources([]);
     if (isChangeSession) {
       setIsChating(false);
       dispatch(setIsChangeSession(false));
+      setSessionFiles([]);
+      setMessageCount(0);
     }
   }, [pathname, router, selectedSessionId, isChangeSession, dispatch]);
 
@@ -233,10 +263,13 @@ export const Conversation: React.FC<ConversationProps> = ({
     [],
   );
 
+  const handleSessionFileChange = (files: FilesListQuery["files"]) => {
+    setSessionFiles(files);
+  };
+
   if (!agent || loading) {
     return <div>{t("Loading")}</div>;
   }
-
   const headerElement = (
     <div className="relative flex flex-wrap items-center justify-center gap-2 border-b-small border-divider px-2 py-1 sm:justify-between">
       <div className="flex flex-row items-center">
@@ -316,6 +349,7 @@ export const Conversation: React.FC<ConversationProps> = ({
                 handleCreateNewMessage={handleCreateNewMessage}
                 onSelectedSource={handleSelectedSource}
                 onMessageChange={handleMessageChange}
+                sessionFilesContext={sessionFilesContext}
               />
             ) : (
               <MessageWindow
@@ -397,7 +431,11 @@ export const Conversation: React.FC<ConversationProps> = ({
           </div>
           {selectedSessionId && (
             <div className="max-w-64">
-              <SessionFilesSidebar sessionId={selectedSessionId} />
+              <SessionFilesSidebar
+                sessionId={selectedSessionId}
+                files={sessionFiles}
+                onFilesChange={handleSessionFileChange}
+              />
             </div>
           )}
         </div>

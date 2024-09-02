@@ -21,7 +21,6 @@ import { DEFAULT_LLM_MODEL, DEFAULT_TEMPLATES } from "@/lib/models";
 import { createPrompt } from "@/lib/prompts";
 import { ChatFlowRequestSchema, ChatFlowResponseSchema } from "@/restful/generated";
 import {
-  CHAT_MODE,
   CHAT_STATUS_ENUM,
   LibraryCardType,
   MessageType,
@@ -59,9 +58,9 @@ type MessageWindowProps = {
   chatStatus: CHAT_STATUS_ENUM | null;
   isChating: boolean;
   isTestMode?: boolean;
-  chatMode?: CHAT_MODE;
-  onChatingStatusChange: (isChating: boolean, status: CHAT_STATUS_ENUM | null) => void;
   selectedSources?: SourceType[];
+  sessionFilesContext?: string;
+  onChatingStatusChange: (isChating: boolean, status: CHAT_STATUS_ENUM | null) => void;
   onSelectedSource?: (source: SourceType, selected: boolean) => void;
   onMessageChange?: (messages: MessageType[]) => void;
   handleCreateNewMessage?: (params: {
@@ -82,9 +81,9 @@ export default function MessageWindowWithWorkflow({
   workflow_id,
   isChating,
   chatStatus,
-  chatMode,
   isTestMode = false,
   selectedSources,
+  sessionFilesContext = "",
   onChatingStatusChange,
   handleCreateNewMessage,
   onSelectedSource,
@@ -379,9 +378,10 @@ export default function MessageWindowWithWorkflow({
           promptTemplates || DEFAULT_TEMPLATES,
           historyMessage,
           searchResults || [],
+          agent?.token_limit,
           chatContext || "",
           {},
-          agent?.token_limit,
+          sessionFilesContext,
         );
         let answer = "";
         // call llm

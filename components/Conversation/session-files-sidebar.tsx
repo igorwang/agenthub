@@ -1,42 +1,30 @@
 import FileIcon from "@/components/ui/file-icons";
 import {
   FilesListQuery,
-  Order_By,
   Status_Enum,
   useBatchDeleteFilesMutation,
-  useSubscriptionFilesListSubscription,
 } from "@/graphql/generated/types";
 import { Icon } from "@iconify/react";
 import { Button, Tooltip } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface SessionFilesSidebarProps {
   sessionId: string;
+  files: FilesListQuery["files"];
+  onFilesChange: (files: FilesListQuery["files"]) => void;
 }
 
-export default function SessionFilesSidebar({ sessionId }: SessionFilesSidebarProps) {
-  const isFirstRender = useRef(true);
-
+export default function SessionFilesSidebar({
+  sessionId,
+  files,
+  onFilesChange,
+}: SessionFilesSidebarProps) {
   const t = useTranslations();
   const [isOpen, setIsOpen] = useState(false);
-  const [files, setFiles] = useState<FilesListQuery["files"]>([]);
+  const [loading, setLoadings] = useState(false);
   const [batchDeleteFilesMutation] = useBatchDeleteFilesMutation();
-
-  const { data, loading, error } = useSubscriptionFilesListSubscription({
-    variables: {
-      limit: 5,
-      order_by: { created_at: Order_By.Desc },
-      where: { session_id: { _eq: sessionId } },
-    },
-  });
-
-  useEffect(() => {
-    if (data?.files) {
-      setFiles(data?.files);
-    }
-  }, [data, isOpen]);
 
   useEffect(() => {
     setIsOpen(true);
@@ -45,7 +33,7 @@ export default function SessionFilesSidebar({ sessionId }: SessionFilesSidebarPr
   const handleDelete = (fileId: string) => {
     // Implement delete logic here
     console.log(`Delete file with id: ${fileId}`);
-    setFiles(files.filter((file) => file.id !== fileId));
+    onFilesChange(files.filter((file) => file.id !== fileId));
     // 实现删除文件的逻辑
     batchDeleteFilesMutation({
       variables: {
