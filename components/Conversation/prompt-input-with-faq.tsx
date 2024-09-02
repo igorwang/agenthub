@@ -59,6 +59,7 @@ export default function PromptInputWithFaq({
     useCreateMessageAndUpdateTopicHistoryMutation();
 
   const [createNewTopicWithMessageMutation] = useCreateNewTopicWithMessageMutation();
+
   const session = useSession();
   const user_id = session.data?.user?.id;
   // const agent_id = selectedChatId;

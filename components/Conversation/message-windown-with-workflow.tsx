@@ -1,6 +1,8 @@
 import {
+  selectRefreshSession,
   selectSelectedChatId,
   selectSelectedSessionId,
+  setRefreshSession,
 } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
 import { useSession } from "next-auth/react";
@@ -16,6 +18,7 @@ import {
   Order_By,
   useFetchAllMessageListQuery,
   useGetAgentByIdQuery,
+  useUpdateTopicHistoryByIdMutation,
 } from "@/graphql/generated/types";
 import { DEFAULT_LLM_MODEL, DEFAULT_TEMPLATES } from "@/lib/models";
 import { createPrompt } from "@/lib/prompts";
@@ -93,6 +96,7 @@ export default function MessageWindowWithWorkflow({
   const t = useTranslations();
   const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
+  const refreshSession = useSelector(selectRefreshSession);
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -108,6 +112,7 @@ export default function MessageWindowWithWorkflow({
   const [workflowResults, setWorkflowResults] = useState<ChatFlowResponseSchema | null>(
     null,
   );
+  const [updateTopicHistoryByIdMutation] = useUpdateTopicHistoryByIdMutation();
 
   const session = useSession();
   const user_id = session.data?.user?.id;
@@ -218,8 +223,18 @@ export default function MessageWindowWithWorkflow({
         messageType: item.message_type || Message_Type_Enum.Text,
         schema: item.schema || {},
       }));
-      console.log("old Message:", messages);
-      console.log("new Messages:", newMessages);
+
+      if (data.message.length == 1 && selectedSessionId) {
+        const newMessageContent = data.message[0].content || t("New Chat");
+        const response = updateTopicHistoryByIdMutation({
+          variables: {
+            id: selectedSessionId,
+            _set: { title: newMessageContent.slice(0, 15) },
+          },
+        });
+        dispatch(setRefreshSession(true));
+      }
+
       setMessages(newMessages);
       onMessageChange?.(newMessages);
     }

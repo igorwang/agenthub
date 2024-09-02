@@ -162,12 +162,12 @@ export const Conversation: React.FC<ConversationProps> = ({
   }, [sessionFilesData]);
 
   useEffect(() => {
+    setMessageCount(0);
     setSelectedSources([]);
     if (isChangeSession) {
       setIsChating(false);
       dispatch(setIsChangeSession(false));
       setSessionFiles([]);
-      setMessageCount(0);
     }
   }, [pathname, router, selectedSessionId, isChangeSession, dispatch]);
 

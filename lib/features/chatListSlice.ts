@@ -8,6 +8,7 @@ interface ChatListState {
   selectedSessionId: string | null;
   isFollowUp: boolean;
   isChangeSession: boolean;
+  refreshSession: boolean;
 }
 
 const initialState: ChatListState = {
@@ -22,6 +23,7 @@ const initialState: ChatListState = {
   selectedSessionId: null,
   isFollowUp: false,
   isChangeSession: false,
+  refreshSession: false,
 };
 
 const chatListSlice = createSlice({
@@ -43,6 +45,9 @@ const chatListSlice = createSlice({
     setIsChangeSession: (state, action: PayloadAction<boolean>) => {
       state.isChangeSession = action.payload;
     },
+    setRefreshSession: (state, action: PayloadAction<boolean>) => {
+      state.refreshSession = action.payload;
+    },
   },
 });
 
@@ -52,6 +57,7 @@ export const {
   selectSession,
   setIsFollowUp,
   setIsChangeSession,
+  setRefreshSession,
 } = chatListSlice.actions;
 
 export const selectChatList = (state: RootState): GroupedChatListDTO[] =>
@@ -63,5 +69,7 @@ export const selectSelectedSessionId = (state: RootState): string | null =>
 export const selectIsFollowUp = (state: RootState): boolean => state.chatList.isFollowUp;
 export const selectIsChangeSession = (state: RootState): boolean =>
   state.chatList.isChangeSession;
+export const selectRefreshSession = (state: RootState): boolean =>
+  state.chatList.refreshSession;
 
 export default chatListSlice.reducer;
