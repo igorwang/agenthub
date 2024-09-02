@@ -44,6 +44,7 @@
   "Edit Agent": "Edit Agent",
   "Edit HumanInLoop Node": "Edit HumanInLoop Node",
   "Edit Multi Modal Input Node": "Edit Multi Modal Input Node",
+  "Edit SearchMemory Node": "Edit SearchMemory Node",
   "Embedding model": "Embedding model",
   "Enter agent description": "Enter agent description",
   "Enter agent name": "Enter agent name",

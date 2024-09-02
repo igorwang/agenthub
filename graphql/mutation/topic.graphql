@@ -23,3 +23,9 @@ fragment topic_historyFragment on topic_history {
   updated_at
   created_at
 }
+
+mutation updateTopicHistoryById($id: uuid = "", $_set: topic_history_set_input = {}) {
+  update_topic_history_by_pk(pk_columns: { id: $id }, _set: $_set) {
+    id
+  }
+}

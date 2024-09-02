@@ -13,15 +13,12 @@ import {
 import { useCallback, useState } from "react";
 
 import {
+  Agent_Mode_Enum,
   Message_Role_Enum,
   useCreateMessageAndUpdateTopicHistoryMutation,
   useCreateNewTopicWithMessageMutation,
 } from "@/graphql/generated/types";
-import {
-  selectSelectedChatId,
-  selectSelectedSessionId,
-  selectSession,
-} from "@/lib/features/chatListSlice";
+import { selectSelectedSessionId, selectSession } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
 import { CHAT_STATUS_ENUM } from "@/types/chatTypes";
 import { ExtFile } from "@dropzone-ui/react";
@@ -34,11 +31,15 @@ import UploadZone, { UploadFileType } from "../UploadZone";
 import PromptInput from "./prompt-input";
 
 type PromptInputWithFaqProps = {
+  agentId?: string;
+  agentMode?: Agent_Mode_Enum;
   isChating?: boolean;
   onChatingStatus?: (isChating: boolean, stauts: CHAT_STATUS_ENUM | null) => void;
 };
 
 export default function PromptInputWithFaq({
+  agentId,
+  agentMode,
   isChating: isChating,
   onChatingStatus,
 }: PromptInputWithFaqProps) {
@@ -46,7 +47,6 @@ export default function PromptInputWithFaq({
   const router = useRouter();
   const pathname = usePathname();
   const dispatch: AppDispatch = useDispatch();
-  const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
 
@@ -59,9 +59,10 @@ export default function PromptInputWithFaq({
     useCreateMessageAndUpdateTopicHistoryMutation();
 
   const [createNewTopicWithMessageMutation] = useCreateNewTopicWithMessageMutation();
+
   const session = useSession();
   const user_id = session.data?.user?.id;
-  const agent_id = selectedChatId;
+  // const agent_id = selectedChatId;
 
   const openUploadModal = useCallback(async () => {
     if (!selectedSessionId) {
@@ -71,7 +72,7 @@ export default function PromptInputWithFaq({
             object: {
               title: prompt.slice(0, 15) || t("New Chat"),
               user_id: user_id,
-              agent_id: agent_id,
+              agent_id: agentId,
             },
           },
         });
@@ -99,6 +100,7 @@ export default function PromptInputWithFaq({
 
   const handleFileChange = (files: UploadFileType[]) => {
     console.log("handleFileChange", files);
+    setIsUploadOpen(false);
   };
 
   const stopSendMessageHanlder = () => {
@@ -114,7 +116,7 @@ export default function PromptInputWithFaq({
             object: {
               title: prompt.slice(0, 15),
               user_id: user_id,
-              agent_id: agent_id,
+              agent_id: agentId,
               messages: {
                 data: [
                   {
@@ -237,22 +239,23 @@ export default function PromptInputWithFaq({
           variant="flat"
           onValueChange={setPrompt}
         />
-        <div className="flex items-center justify-between gap-2 px-4 pb-4">
-          <div className="flex gap-1 md:gap-3">
-            {/* <Button
-              size="sm"
-              startContent={
-                <Icon
-                  className="text-default-500"
-                  icon="solar:paperclip-linear"
-                  width={18}
-                />
-              }
-              variant="flat"
-              onClick={openUploadModal}>
-              {t("File")}
-            </Button> */}
-            {/* <Button
+        {agentMode === Agent_Mode_Enum.Workflow && (
+          <div className="flex items-center justify-between gap-2 px-4 pb-4">
+            <div className="flex gap-1 md:gap-3">
+              <Button
+                size="sm"
+                startContent={
+                  <Icon
+                    className="text-default-500"
+                    icon="solar:paperclip-linear"
+                    width={18}
+                  />
+                }
+                variant="flat"
+                onClick={openUploadModal}>
+                {t("File")}
+              </Button>
+              {/* <Button
               size="sm"
               startContent={
                 <Icon
@@ -265,9 +268,10 @@ export default function PromptInputWithFaq({
             >
               Voice
             </Button> */}
+            </div>
+            {/* <p className="py-1 text-tiny text-default-400">{prompt.length}/4000</p> */}
           </div>
-          {/* <p className="py-1 text-tiny text-default-400">{prompt.length}/4000</p> */}
-        </div>
+        )}
       </form>
       {isUploadOpen && selectedSessionId && (
         <Modal

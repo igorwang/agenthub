@@ -6,10 +6,12 @@ import {
   useGetTopicHistoriesQuery,
 } from "@/graphql/generated/types";
 import {
+  selectRefreshSession,
   selectSelectedChatId,
   selectSelectedSessionId,
   selectSession,
   setIsChangeSession,
+  setRefreshSession,
 } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
 import {
@@ -36,6 +38,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   const dispatch: AppDispatch = useDispatch();
   const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
+  const refreshSession = useSelector(selectRefreshSession);
   const { data: sessionData, status } = useSession();
   const userId = sessionData?.user?.id;
   const t = useTranslations();
@@ -57,8 +60,12 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   const { data, loading, error } = getTopicListQuery;
 
   useEffect(() => {
+    console.log("refreshSession", refreshSession);
     getTopicListQuery.refetch();
-  }, [getTopicListQuery, selectedSessionId]);
+    if (refreshSession) {
+      dispatch(setRefreshSession(false));
+    }
+  }, [getTopicListQuery, selectedSessionId, refreshSession, dispatch]);
 
   if (!status) {
     return null;

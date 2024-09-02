@@ -96,6 +96,7 @@ const FileTable: FC<FileTableProps> = ({
     },
     [files, onFileListSelectedChange],
   );
+
   const columns = [
     { name: t("Name"), uid: "name", sortable: true },
     { name: t("Size"), uid: "size", sortable: true },
@@ -113,9 +114,13 @@ const FileTable: FC<FileTableProps> = ({
             </div>
           );
         case "size":
-          return (
-            <div className="text-center">{`${(file.size / 1024 / 1024).toFixed(2)} MB`}</div>
-          );
+          const sizeInKB = file.size / 1024;
+          if (sizeInKB < 1024) {
+            return <div className="text-center">{`${sizeInKB.toFixed(2)} KB`}</div>;
+          } else {
+            const sizeInMB = sizeInKB / 1024;
+            return <div className="text-center">{`${sizeInMB.toFixed(2)} MB`}</div>;
+          }
         case "status":
           return (
             <div className="flex justify-center">

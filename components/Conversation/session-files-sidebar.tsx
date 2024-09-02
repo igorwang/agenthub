@@ -1,37 +1,74 @@
 import FileIcon from "@/components/ui/file-icons";
-import { FilesListQuery, Order_By, useFilesListQuery } from "@/graphql/generated/types";
+import {
+  FilesListQuery,
+  Status_Enum,
+  useBatchDeleteFilesMutation,
+} from "@/graphql/generated/types";
 import { Icon } from "@iconify/react";
 import { Button, Tooltip } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface SessionFilesSidebarProps {
   sessionId: string;
+  files: FilesListQuery["files"];
+  onFilesChange: (files: FilesListQuery["files"]) => void;
 }
 
-export default function SessionFilesSidebar({ sessionId }: SessionFilesSidebarProps) {
+export default function SessionFilesSidebar({
+  sessionId,
+  files,
+  onFilesChange,
+}: SessionFilesSidebarProps) {
   const t = useTranslations();
   const [isOpen, setIsOpen] = useState(false);
-  const [files, setFiles] = useState<FilesListQuery["files"]>([]);
-
-  const { data, loading, error, refetch } = useFilesListQuery({
-    variables: {
-      limit: 5,
-      order_by: { created_at: Order_By.Desc },
-      where: { session_id: { _eq: sessionId } },
-    },
-  });
+  const [loading, setLoadings] = useState(false);
+  const [batchDeleteFilesMutation] = useBatchDeleteFilesMutation();
 
   useEffect(() => {
-    setFiles(data?.files || []);
-  }, [data, isOpen]);
+    setIsOpen(true);
+  }, [files]);
 
   const handleDelete = (fileId: string) => {
     // Implement delete logic here
     console.log(`Delete file with id: ${fileId}`);
-    setFiles(files.filter((file) => file.id !== fileId));
+    onFilesChange(files.filter((file) => file.id !== fileId));
+    // 实现删除文件的逻辑
+    batchDeleteFilesMutation({
+      variables: {
+        where: { id: { _in: [fileId] } },
+      },
+    }).then(async (res) => {
+      toast.success(
+        `${t("Successfully deleted files")}: ${res.data?.delete_files?.returning.length || 0}`,
+      );
+    });
   };
 
+  const handleRedoFile = useCallback(async (fileId: string) => {
+    try {
+      const response = await fetch("/api/file/reprocess", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          file_id: fileId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(t("Failed to reprocess file"));
+      }
+      const result = await response.json();
+      toast.success(t(`File is being reprocessed`));
+    } catch (error) {
+      console.error(t("Error reprocessing file"), error);
+      toast.error(t(`Failed to reprocess file`));
+    } finally {
+    }
+  }, []);
   if (files.length == 0) {
     return null;
   }
@@ -40,7 +77,7 @@ export default function SessionFilesSidebar({ sessionId }: SessionFilesSidebarPr
     <div
       className={`relative h-full border-l border-gray-200 transition-all duration-300 ${
         isOpen ? "w-64" : "w-0"
-      }`}>
+      } $`}>
       <div className="flex h-full flex-col">
         <Tooltip content={isOpen ? t("Close") : t("Session Files")}>
           <Button
@@ -61,23 +98,44 @@ export default function SessionFilesSidebar({ sessionId }: SessionFilesSidebarPr
           </Button>
         </Tooltip>
 
-        {isOpen && (
-          <div className="flex-grow overflow-y-auto">
-            <h2 className="p-4 text-lg font-semibold">{t("Session Files")}</h2>
-            {loading && <p className="p-4">{t("Loading")}..</p>}
-            <ul className="space-y-2 p-4">
-              {files.map((file) => (
-                <li
-                  key={file.id}
-                  className="flex items-center justify-between rounded bg-white p-2 shadow">
-                  <div className="flex min-w-0 flex-grow items-center space-x-2">
-                    <div>
+        <div className="flex-grow overflow-y-auto">
+          <h2 className="p-4 text-lg font-semibold">{t("Session Files")}</h2>
+          {loading && <p className="p-4">{t("Loading")}..</p>}
+          <ul className="space-y-2 p-4">
+            {files.map((file) => (
+              <li
+                key={file.id}
+                className={`flex items-center justify-between rounded bg-white p-2 shadow ${file.status === Status_Enum.Failed ? "border-1 border-red-300" : ""}`}>
+                <div className="flex min-w-0 flex-grow items-center space-x-2">
+                  <div>
+                    {file.status == Status_Enum.Indexed ||
+                    file.status == Status_Enum.Success ||
+                    file.status == Status_Enum.Failed ? (
                       <FileIcon fileExtension={file.ext || "default"} size={20} />
-                    </div>
-                    <Tooltip content={file.name}>
-                      <span className="truncate">{file.name}</span>
-                    </Tooltip>
+                    ) : (
+                      <Icon icon={"eos-icons:loading"} />
+                    )}
                   </div>
+                  <Tooltip content={file.name}>
+                    <span className="truncate">{file.name}</span>
+                  </Tooltip>
+                </div>
+                <div className="flex flex-row">
+                  {file.status === Status_Enum.Failed && (
+                    <Tooltip content={t("Reprocess")}>
+                      <Button
+                        isIconOnly
+                        size="sm"
+                        variant="light"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleRedoFile(file.id);
+                        }}>
+                        <Icon icon={"fad:redo"} width={18} height={18} />
+                      </Button>
+                    </Tooltip>
+                  )}
                   <Tooltip content={t("Delete file")}>
                     <Button
                       isIconOnly
@@ -89,11 +147,11 @@ export default function SessionFilesSidebar({ sessionId }: SessionFilesSidebarPr
                       <Icon icon="material-symbols:delete" width="18" height="18" />
                     </Button>
                   </Tooltip>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );

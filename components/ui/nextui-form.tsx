@@ -293,6 +293,32 @@ const CustomJsonField: React.FC<FieldProps> = (props) => {
       />
     );
 
+  function processSchema(schema: { [key: string]: any }) {
+    if (typeof schema !== "object" || schema === null) {
+      return schema;
+    }
+
+    if (schema.type === "object") {
+      // Set additionalProperties to false
+      schema.additionalProperties = false;
+
+      // If properties exist, add all of them to required
+      if (schema.properties) {
+        schema.required = Object.keys(schema.properties);
+
+        // Recursively process each property
+        for (const key in schema.properties) {
+          schema.properties[key] = processSchema(schema.properties[key]);
+        }
+      }
+    } else if (schema.type === "array" && schema.items) {
+      // If it's an array, process its items
+      schema.items = processSchema(schema.items);
+    }
+
+    return schema;
+  }
+
   if (schema.format === "json" || uiSchema?.["ui:field"] === "json") {
     return (
       <div className="flex max-w-full flex-col">
@@ -305,8 +331,10 @@ const CustomJsonField: React.FC<FieldProps> = (props) => {
           collapse={true}
           // maxWidth={400}
           data={formData || {}}
+          restrictAdd={true}
           onUpdate={({ newData }) => {
-            onChange(newData);
+            // console.log(newData);
+            onChange(processSchema(newData));
           }}
           rootName={""}
         />

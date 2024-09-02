@@ -75,17 +75,15 @@ function Flow({
     }
 
     JSONSchemaFaker.option({
-      alwaysFakeOptionals: true, // Always generate optional fields
-      optionalsProbability: 1, // 100% chance of generating optional fields
-      useDefaultValue: false, // Generate new values instead of using defaults
+      useDefaultValue: true,
       minItems: 1,
-      maxItems: 5,
-      ignoreMissingRefs: true, // Prevent errors with missing references
-      failOnInvalidFormat: false, // Prevent failures due to unrecognized formats
-      maxLength: 4096,
+      maxItems: 3,
+      ignoreMissingRefs: true,
+      failOnInvalidFormat: false,
+      maxLength: 512,
       minLength: 1,
-      useExamplesValue: false, // Don't use example values from the schema
-      random: () => 0.5,
+      useExamplesValue: true,
+      random: Math.random, // 添加这一行
     });
 
     const newWorkflowTestResult = await nodes.reduce(

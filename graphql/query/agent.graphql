@@ -25,6 +25,7 @@ query GetAgentByID($id: uuid!) {
     enable_search
     force_search
     mode
+    embedding_model
     system_prompt {
       id
       name

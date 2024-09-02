@@ -172,7 +172,7 @@ const JsonTreeRenderer: React.FC<JsonTreeRendererProps> = ({
                 />
               </button>
             )}
-            <div className="flex-grow overflow-hidden">
+            <div className="custom-scrollbar flex-grow overflow-auto">
               <span className="font-semibold text-blue-600 dark:text-blue-400">
                 {node.title}
               </span>
@@ -198,7 +198,9 @@ const JsonTreeRenderer: React.FC<JsonTreeRendererProps> = ({
   return (
     <Card>
       <CardBody>
-        <div className="max-h-[400px] overflow-auto">{renderTree(treeData)}</div>
+        <div className="custom-scrollbar max-h-[400px] overflow-auto">
+          {renderTree(treeData)}
+        </div>
       </CardBody>
     </Card>
   );

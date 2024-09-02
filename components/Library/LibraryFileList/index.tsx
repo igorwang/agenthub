@@ -243,7 +243,7 @@ export default function LibraryFileList({
               <ModalBody className="py-6">
                 <UploadZone
                   knowledgeBaseId={knowledgeBaseId}
-                  maxNumberOfFile={50}
+                  maxNumberOfFile={100}
                   acceptFileTypes=".doc,.docx,.pdf,.ppt,.pptx,.xls,.xlsx,.txt,.json,.mp3,.mp4"
                   onAfterUpload={handleAfterUploadFile}
                 />
