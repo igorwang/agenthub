@@ -9,7 +9,7 @@ import {
 import { Icon } from "@iconify/react";
 import { Button, Tooltip } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 interface SessionFilesSidebarProps {
@@ -58,6 +58,29 @@ export default function SessionFilesSidebar({ sessionId }: SessionFilesSidebarPr
     });
   };
 
+  const handleRedoFile = useCallback(async (fileId: string) => {
+    try {
+      const response = await fetch("/api/file/reprocess", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          file_id: fileId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(t("Failed to reprocess file"));
+      }
+      const result = await response.json();
+      toast.success(t(`File is being reprocessed`));
+    } catch (error) {
+      console.error(t("Error reprocessing file"), error);
+      toast.error(t(`Failed to reprocess file`));
+    } finally {
+    }
+  }, []);
   if (files.length == 0) {
     return null;
   }
@@ -66,7 +89,7 @@ export default function SessionFilesSidebar({ sessionId }: SessionFilesSidebarPr
     <div
       className={`relative h-full border-l border-gray-200 transition-all duration-300 ${
         isOpen ? "w-64" : "w-0"
-      }`}>
+      } $`}>
       <div className="flex h-full flex-col">
         <Tooltip content={isOpen ? t("Close") : t("Session Files")}>
           <Button
@@ -94,30 +117,49 @@ export default function SessionFilesSidebar({ sessionId }: SessionFilesSidebarPr
             {files.map((file) => (
               <li
                 key={file.id}
-                className="flex items-center justify-between rounded bg-white p-2 shadow">
+                className={`flex items-center justify-between rounded bg-white p-2 shadow ${file.status === Status_Enum.Failed ? "border-1 border-red-300" : ""}`}>
                 <div className="flex min-w-0 flex-grow items-center space-x-2">
                   <div>
-                    {file.status != Status_Enum.Indexed ? (
-                      <Icon icon={"eos-icons:loading"} />
-                    ) : (
+                    {file.status == Status_Enum.Indexed ||
+                    file.status == Status_Enum.Success ||
+                    file.status == Status_Enum.Failed ? (
                       <FileIcon fileExtension={file.ext || "default"} size={20} />
+                    ) : (
+                      <Icon icon={"eos-icons:loading"} />
                     )}
                   </div>
                   <Tooltip content={file.name}>
                     <span className="truncate">{file.name}</span>
                   </Tooltip>
                 </div>
-                <Tooltip content={t("Delete file")}>
-                  <Button
-                    isIconOnly
-                    size="sm"
-                    color="danger"
-                    variant="light"
-                    onClick={() => handleDelete(file.id)}
-                    aria-label={`Delete ${file.name}`}>
-                    <Icon icon="material-symbols:delete" width="18" height="18" />
-                  </Button>
-                </Tooltip>
+                <div className="flex flex-row">
+                  {file.status === Status_Enum.Failed && (
+                    <Tooltip content={t("Reprocess")}>
+                      <Button
+                        isIconOnly
+                        size="sm"
+                        variant="light"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleRedoFile(file.id);
+                        }}>
+                        <Icon icon={"fad:redo"} width={18} height={18} />
+                      </Button>
+                    </Tooltip>
+                  )}
+                  <Tooltip content={t("Delete file")}>
+                    <Button
+                      isIconOnly
+                      size="sm"
+                      color="danger"
+                      variant="light"
+                      onClick={() => handleDelete(file.id)}
+                      aria-label={`Delete ${file.name}`}>
+                      <Icon icon="material-symbols:delete" width="18" height="18" />
+                    </Button>
+                  </Tooltip>
+                </div>
               </li>
             ))}
           </ul>

@@ -96,6 +96,7 @@ const FileTable: FC<FileTableProps> = ({
     },
     [files, onFileListSelectedChange],
   );
+
   const columns = [
     { name: t("Name"), uid: "name", sortable: true },
     { name: t("Size"), uid: "size", sortable: true },
