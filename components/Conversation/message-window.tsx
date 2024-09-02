@@ -383,9 +383,9 @@ export default function MessageWindow({
           promptTemplates || DEFAULT_TEMPLATES,
           historyMessage,
           searchResults || [],
+          agent?.token_limit,
           `${refineQuery?.refineQuery};${refineQuery?.keywords}` || "",
           {},
-          agent?.token_limit,
         );
         let answer = "";
         // call llm
