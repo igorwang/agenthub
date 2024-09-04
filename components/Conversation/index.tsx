@@ -4,7 +4,6 @@ import MessageWindow from "@/components/Conversation/message-window";
 import MessageWindowWithWorkflow from "@/components/Conversation/message-windown-with-workflow";
 import PromptInputWithFaq from "@/components/Conversation/prompt-input-with-faq";
 import SessionFilesSidebar from "@/components/Conversation/session-files-sidebar";
-import { ConfigIcon } from "@/components/ui/icons";
 import { RoleChip } from "@/components/ui/role-icons";
 import {
   Agent_Mode_Enum,
@@ -92,6 +91,7 @@ export type ConversationProps = {
   className?: string;
   scrollShadowClassname?: string;
   hiddenHeader?: boolean;
+  hiddenInput?: boolean;
   isTestMode?: boolean;
 };
 
@@ -101,6 +101,7 @@ export const Conversation: React.FC<ConversationProps> = ({
   className,
   hiddenHeader = false,
   isTestMode = false,
+  hiddenInput = false,
   scrollShadowClassname,
 }) => {
   const router = useRouter();
@@ -244,6 +245,10 @@ export const Conversation: React.FC<ConversationProps> = ({
     router.push(`${pathname}/settings`);
   };
 
+  const handleToDashboard = () => {
+    router.push(`${pathname}/dashboard`);
+  };
+
   const handleSelectedSource = (source: SourceType, selected: boolean) => {
     if (selected) {
       const hasThisSource = selectedSources.some((item) => item.fileId == source.fileId);
@@ -270,6 +275,7 @@ export const Conversation: React.FC<ConversationProps> = ({
   if (!agent || loading) {
     return <div>{t("Loading")}</div>;
   }
+
   const headerElement = (
     <div className="relative flex flex-wrap items-center justify-center gap-2 border-b-small border-divider px-2 py-1 sm:justify-between">
       <div className="flex flex-row items-center">
@@ -292,15 +298,15 @@ export const Conversation: React.FC<ConversationProps> = ({
         <div className="pl-2">
           <div className="flex flex-row items-center">
             <p className="pr-2 text-3xl font-medium">{agent.name}</p>
-            {agent.creator_id === session.data?.user?.id && (
-              <Tooltip content={t("Configure Agent")}>
-                <Button
-                  isIconOnly={true}
-                  startContent={<ConfigIcon size={28} />}
-                  variant="light"
-                  onClick={handleConfigCilck}></Button>
-              </Tooltip>
-            )}
+            {agent.mode === Agent_Mode_Enum.Workflow &&
+              agent.workflow_id &&
+              agent.creator_id == userId && (
+                <div className="inline-block rounded-md px-2 py-1">
+                  <Chip color="primary" variant="flat">
+                    workflow
+                  </Chip>
+                </div>
+              )}
           </div>
           <div className="flex flex-row items-center gap-2">
             {agent.role && <RoleChip role={agent.role || "user"} />}
@@ -312,15 +318,24 @@ export const Conversation: React.FC<ConversationProps> = ({
           </div>
         </div>
       </div>
-      {agent.mode === Agent_Mode_Enum.Workflow &&
-        agent.workflow_id &&
-        agent.creator_id == userId && (
-          <div className="inline-block rounded-md px-2 py-1">
-            <Chip color="primary" variant="flat">
-              workflow
-            </Chip>
-          </div>
-        )}
+      {agent.creator_id === session.data?.user?.id && (
+        <div>
+          <Tooltip content={t("Configure Agent")}>
+            <Button
+              isIconOnly={true}
+              startContent={<Icon icon={"lucide:settings"} fontSize={24} />}
+              variant="light"
+              onClick={handleConfigCilck}></Button>
+          </Tooltip>
+          <Tooltip content={t("Agent Dashboard")}>
+            <Button
+              isIconOnly={true}
+              startContent={<Icon icon={"lucide:layout-dashboard"} fontSize={24} />}
+              variant="light"
+              onClick={handleToDashboard}></Button>
+          </Tooltip>
+        </div>
+      )}
     </div>
   );
 
@@ -419,11 +434,13 @@ export const Conversation: React.FC<ConversationProps> = ({
                 </div>
               )}
               <Spacer />
-              <PromptInputWithFaq
-                agentId={agentId}
-                agentMode={agent.mode || Agent_Mode_Enum.Simple}
-                isChating={isChating}
-                onChatingStatus={handleSetChatStatus}></PromptInputWithFaq>
+              {!hiddenInput && (
+                <PromptInputWithFaq
+                  agentId={agentId}
+                  agentMode={agent.mode || Agent_Mode_Enum.Simple}
+                  isChating={isChating}
+                  onChatingStatus={handleSetChatStatus}></PromptInputWithFaq>
+              )}
               <p className="px-2 text-tiny text-default-400">
                 {t("AI can also make mistakes")}
               </p>
