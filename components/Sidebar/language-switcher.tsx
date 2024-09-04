@@ -1,4 +1,3 @@
-import { Icon } from "@iconify/react";
 import {
   Button,
   Dropdown,
@@ -18,9 +17,9 @@ interface Language {
 }
 
 const languages: Language[] = [
-  { key: "zh", name: "中文", icon: "emojione:flag-for-china" },
+  { key: "zh", name: "简体中文", icon: "emojione:flag-for-china" },
   { key: "en", name: "English", icon: "emojione:flag-for-united-states" },
-  { key: "hk", name: "香港繁體", icon: "emojione:flag-for-hong-kong-sar-china" },
+  { key: "hk", name: "繁體中文", icon: "emojione:flag-for-hong-kong-sar-china" },
 ];
 
 export function useLanguageStorage(initialLanguage: Language) {
@@ -68,7 +67,9 @@ export default function LanguageSwitcher() {
             placement="right"
             delay={0}
             closeDelay={0}>
-            <Icon icon={selectedLanguage.icon} width="24" height="24" />
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-200 text-xs font-semibold">
+              {selectedLanguage.key.toUpperCase()}
+            </div>
           </Tooltip>
         </Button>
       </DropdownTrigger>
@@ -84,7 +85,11 @@ export default function LanguageSwitcher() {
         {languages.map((lang) => (
           <DropdownItem
             key={lang.key}
-            startContent={<Icon icon={lang.icon} width="18" height="18" />}>
+            startContent={
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-200 text-xs font-semibold">
+                {lang.key.toUpperCase()}
+              </div>
+            }>
             {lang.name}
           </DropdownItem>
         ))}
