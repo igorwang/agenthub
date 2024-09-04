@@ -38,29 +38,28 @@ export default function NodeDrawer({
       open={isOpen}
       onClose={onToggleDrawer}
       direction="right"
-      size={1024} // 设置抽屉宽度为 1024px
-      className="!w-[1024px]" // 使用 !important 来覆盖默认样式
+      size={1200} // 设置抽屉宽度为 1024px
+      className="flex h-full w-full flex-row"
+      // className="!w-[1024px]" // 使用 !important 来覆盖默认样式
     >
-      <div className="flex h-full w-full">
-        <div className="custom-scrollbar my-10 w-1/3 overflow-auto px-2">
-          <InputSelectionPane
-            nodes={prevNodes || []}
-            workflowTestResult={workflowTestResult}
-          />
-        </div>
-        <div className="custom-scrollbar w-1/3 overflow-auto">
-          <FormComponent
-            key={node.id}
-            node={node}
-            onNodeChange={onNodeChange}
-            onToggleDrawer={onToggleDrawer}
-            prevNodes={prevNodes}
-            workflowTestResult={workflowTestResult}
-          />
-        </div>
-        <div className="custom-scrollbar my-10 w-1/3 overflow-auto px-2">
-          <OutputPane node={node} />
-        </div>
+      <div className="custom-scrollbar my-10 w-[384px] flex-shrink-0 overflow-auto px-2">
+        <InputSelectionPane
+          nodes={prevNodes || []}
+          workflowTestResult={workflowTestResult}
+        />
+      </div>
+      <div className="custom-scrollbar flex-1 overflow-auto">
+        <FormComponent
+          key={node.id}
+          node={node}
+          onNodeChange={onNodeChange}
+          onToggleDrawer={onToggleDrawer}
+          prevNodes={prevNodes}
+          workflowTestResult={workflowTestResult}
+        />
+      </div>
+      <div className="custom-scrollbar my-10 w-[384px] overflow-auto px-2">
+        <OutputPane node={node} />
       </div>
     </Drawer>
   );

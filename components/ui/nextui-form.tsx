@@ -319,6 +319,8 @@ const CustomJsonField: React.FC<FieldProps> = (props) => {
     return schema;
   }
 
+  const strictFromData = processSchema(formData);
+
   if (schema.format === "json" || uiSchema?.["ui:field"] === "json") {
     return (
       <div className="flex max-w-full flex-col">
@@ -330,7 +332,7 @@ const CustomJsonField: React.FC<FieldProps> = (props) => {
           id={idSchema.$id}
           collapse={true}
           // maxWidth={400}
-          data={formData || {}}
+          data={strictFromData || {}}
           restrictAdd={true}
           onUpdate={({ newData }) => {
             // console.log(newData);

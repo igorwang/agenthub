@@ -289,15 +289,16 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
   }
 
   return (
-    <div className="flex w-full flex-col space-y-2 rounded-lg">
+    <div className="flex max-w-full flex-col space-y-2 rounded-lg">
       <div onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
         <div
+          className="custom-scrollbar max-h-[400px] max-w-sm overflow-auto"
           onBlur={(e) => onBlur && onBlur(id || "", e)}
           onFocus={(e) => onFocus && onFocus(id || "", e)}>
           <EditorContent editor={editor as ReactEditor} />
         </div>
       </div>
-      <div className="relative max-w-[400px]">
+      <div className="relative max-w-sm">
         {parsedExpression && (
           <div className="custom-scrollbar max-h-[300px] max-w-full overflow-auto">
             <div className="overflow-wrap-anywhere whitespace-pre-wrap break-words px-2 py-1 text-sm text-gray-500">
