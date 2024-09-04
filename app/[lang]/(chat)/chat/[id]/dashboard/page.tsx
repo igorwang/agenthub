@@ -1,4 +1,5 @@
 import SessionTable from "@/components/SessionTable";
+import BackButton from "@/components/ui/back-button";
 import {
   BlueStatisticCard,
   GreenStatisticCard,
@@ -62,23 +63,33 @@ export default async function ChatDashboard({ params }: { params: { id: string }
   const t = await getTranslations();
 
   return (
-    <div className="custom-scrollbar mx-auto flex h-full w-full justify-center overflow-auto p-10">
-      <div className="max-w-7xl flex-1 flex-col p-2">
-        <div className="mb-2">
-          <h1 className="text-2xl font-extrabold tracking-wide">{t("Statistics")}</h1>
-          <div className="flex flex-row flex-wrap gap-2">
-            <BlueStatisticCard {...cardData} icon="lucide:users-round" />
-            <WhiteStatisticCard {...sessionData} icon="lucide:message-square-text" />
-            <GreenStatisticCard {...fileData} icon="tdesign:system-storage" />
-            <PurpleStatisticCard {...TokenConsumeData} icon="icon-park-outline:consume" />
+    <div className="custom-scrollbar h-full w-full overflow-auto">
+      <div className="flex items-center bg-white p-4 shadow-sm">
+        {/* <ArrowBackIcon size={24}></ArrowBackIcon> */}
+        <BackButton />
+        <h2 className="text-xl font-semibold">{"Dashboard"}</h2>
+      </div>
+      <div className="mx-auto flex w-full justify-center p-10">
+        <div className="max-w-7xl flex-1 flex-col p-2">
+          <div className="mb-2">
+            <h1 className="text-2xl font-extrabold tracking-wide">{t("Statistics")}</h1>
+            <div className="flex flex-row flex-wrap gap-2">
+              <BlueStatisticCard {...cardData} icon="lucide:users-round" />
+              <WhiteStatisticCard {...sessionData} icon="lucide:message-square-text" />
+              <GreenStatisticCard {...fileData} icon="tdesign:system-storage" />
+              <PurpleStatisticCard
+                {...TokenConsumeData}
+                icon="icon-park-outline:consume"
+              />
+            </div>
+          </div>
+          <div className="flex-1">
+            <h1 className="text-2xl font-extrabold tracking-wide">{t("Sessions")}</h1>
+            <SessionTable agentId={params.id} />
           </div>
         </div>
-        <div className="flex-1">
-          <h1 className="text-2xl font-extrabold tracking-wide">{t("Sessions")}</h1>
-          <SessionTable agentId={params.id} />
-        </div>
+        {/* <div className="min-w-96 bg-slate-400 p-2">right</div> */}
       </div>
-      {/* <div className="min-w-96 bg-slate-400 p-2">right</div> */}
     </div>
   );
 }

@@ -72,7 +72,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   }
 
   if (loading) {
-    return <div className="p-4 text-center">t{t("Loading")}...</div>;
+    return <div className="p-4 text-center">{t("Loading")}...</div>;
   }
 
   const histories = data?.topic_history.map((item) => ({

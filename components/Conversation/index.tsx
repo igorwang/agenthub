@@ -241,14 +241,17 @@ export const Conversation: React.FC<ConversationProps> = ({
     [],
   );
 
-  const handleConfigCilck = () => {
+  const handleConfigClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
     router.push(`${pathname}/settings`);
   };
 
-  const handleToDashboard = () => {
-    router.push(`${pathname}/dashboard`);
+  const handleToDashboard = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    router.push(`${pathname}/dashboard?agentName=${agent?.name || ""}`);
   };
-
   const handleSelectedSource = (source: SourceType, selected: boolean) => {
     if (selected) {
       const hasThisSource = selectedSources.some((item) => item.fileId == source.fileId);
@@ -325,7 +328,7 @@ export const Conversation: React.FC<ConversationProps> = ({
               isIconOnly={true}
               startContent={<Icon icon={"lucide:settings"} fontSize={24} />}
               variant="light"
-              onClick={handleConfigCilck}></Button>
+              onClick={handleConfigClick}></Button>
           </Tooltip>
           <Tooltip content={t("Agent Dashboard")}>
             <Button
