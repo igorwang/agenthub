@@ -1,5 +1,6 @@
 "use client";
 
+import AgentConfigButtons from "@/components/Conversation/agent-config-buttons";
 import MessageWindow from "@/components/Conversation/message-window";
 import MessageWindowWithWorkflow from "@/components/Conversation/message-windown-with-workflow";
 import PromptInputWithFaq from "@/components/Conversation/prompt-input-with-faq";
@@ -115,6 +116,9 @@ export const Conversation: React.FC<ConversationProps> = ({
   const userId = session.data?.user?.id;
   const [messageCount, setMessageCount] = useState<number>(0);
   const [isChating, setIsChating] = useState<boolean>(false);
+  const [isConfigLoading, setIsConfigLoading] = useState(false);
+  const [isDashboardLoading, setIsDashboardLoding] = useState(false);
+
   const [selectedSources, setSelectedSources] = useState<SourceType[]>([]);
   const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
 
@@ -241,17 +245,26 @@ export const Conversation: React.FC<ConversationProps> = ({
     [],
   );
 
-  const handleConfigClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    router.push(`${pathname}/settings`);
-  };
+  const handleConfigClick = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      router.push(`${pathname}/settings`);
+      setIsConfigLoading(true);
+    },
+    [router, pathname],
+  );
 
-  const handleToDashboard = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    router.push(`${pathname}/dashboard?agentName=${agent?.name || ""}`);
-  };
+  const handleToDashboard = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      router.push(`${pathname}/dashboard?agentName=${agent?.name || ""}`);
+      setIsDashboardLoding(true);
+    },
+    [router, pathname, agent?.name],
+  );
+
   const handleSelectedSource = (source: SourceType, selected: boolean) => {
     if (selected) {
       const hasThisSource = selectedSources.some((item) => item.fileId == source.fileId);
@@ -322,22 +335,12 @@ export const Conversation: React.FC<ConversationProps> = ({
         </div>
       </div>
       {agent.creator_id === session.data?.user?.id && (
-        <div>
-          <Tooltip content={t("Configure Agent")}>
-            <Button
-              isIconOnly={true}
-              startContent={<Icon icon={"lucide:settings"} fontSize={24} />}
-              variant="light"
-              onClick={handleConfigClick}></Button>
-          </Tooltip>
-          <Tooltip content={t("Agent Dashboard")}>
-            <Button
-              isIconOnly={true}
-              startContent={<Icon icon={"lucide:layout-dashboard"} fontSize={24} />}
-              variant="light"
-              onClick={handleToDashboard}></Button>
-          </Tooltip>
-        </div>
+        <AgentConfigButtons
+          onConfigClick={handleConfigClick}
+          onDashboardClick={handleToDashboard}
+          isConfigLoading={isConfigLoading}
+          isDashboardLoading={isDashboardLoading}
+        />
       )}
     </div>
   );
