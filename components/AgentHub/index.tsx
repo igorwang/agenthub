@@ -100,7 +100,7 @@ const ChatHub = () => {
 
   return (
     <div className="flex h-full w-full flex-col border-r-1">
-      <div className="flex items-center justify-between px-2 pt-4 text-3xl font-semibold">
+      <div className="z-10 flex items-center justify-between px-2 pt-4 text-3xl font-semibold">
         <div>{t("Agenthub")}</div>
         {isCreatorView && (
           <Tooltip content={t("Add new agent")}>

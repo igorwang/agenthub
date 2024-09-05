@@ -90,8 +90,6 @@ export default function ChatPage() {
         } custom-scrollbar relative overflow-auto`}
         onMouseLeave={hideButton}>
         <ChatHub />
-        <div className="absolute left-0 top-0 h-full w-8" onMouseEnter={showButton} />
-        <div className="absolute right-0 top-0 h-full w-8" onMouseEnter={showButton} />
       </div>
       <div
         className="absolute left-0 top-0 h-full w-8"
