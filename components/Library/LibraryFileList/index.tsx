@@ -330,11 +330,12 @@ export default function LibraryFileList({
         <GenericModal
           isOpen={rebuildLibraryModal}
           onClose={() => setRebuildLibraryModal(false)}
-          title="Confirm Rebuild"
-          primaryButtonText="Rebuild"
+          title={t("Confirm Rebuild")}
+          primaryButtonText={t("Rebuild")}
           primaryButtonColor="danger"
+          secondaryButtonText={t("Close")}
           onPrimaryAction={handleRebuildLibrary}>
-          <p>Are you sure you want to rebuild this library?</p>
+          <p>{t("Are you sure you want to rebuild this library")}?</p>
         </GenericModal>
       )}
     </div>

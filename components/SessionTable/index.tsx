@@ -166,7 +166,7 @@ export default function SessionTable({ agentId }: SessionTableProps) {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody items={sessionList} emptyContent={t("No sessions to display.")}>
+        <TableBody items={sessionList} emptyContent={t("No sessions to display")}>
           {(item) => (
             <TableRow key={item.id}>
               {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
