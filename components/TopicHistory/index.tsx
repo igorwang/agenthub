@@ -132,7 +132,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
         {t("Chat History")}
       </h2>
 
-      <ScrollShadow className="h-full">
+      <ScrollShadow className="custom-scrollbar h-full">
         {historyItems && (
           <Listbox
             aria-label="TopicHistory"
