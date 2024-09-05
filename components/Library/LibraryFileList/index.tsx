@@ -2,6 +2,7 @@
 import FileTable, { FileDTO } from "@/components/Library/LibraryFileList/file-table";
 import DeleteConfirmModal from "@/components/ui/delete-modal";
 import DeleteMultipleModal from "@/components/ui/delete-mutiple-modal";
+import GenericModal from "@/components/ui/generic-modal";
 import { PlusIcon } from "@/components/ui/icons";
 import UploadZone, { UploadFileType } from "@/components/UploadZone";
 import {
@@ -9,7 +10,6 @@ import {
   Order_By,
   Status_Enum,
   useBatchDeleteFilesMutation,
-  useDeleteFileByIdMutation,
   useFilesListQuery,
 } from "@/graphql/generated/types";
 import { Icon } from "@iconify/react";
@@ -44,8 +44,10 @@ export default function LibraryFileList({
   const [searchValue, setSearchValue] = useState("");
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteFilesModal, setDeleteFilesModal] = useState(false);
+  const [rebuildLibraryModal, setRebuildLibraryModal] = useState(false);
+  const [isRebuiding, setIsRebuilding] = useState(false);
+
   const [selectedFile, setSelectFile] = useState<File | null>();
-  const [deleteFileById] = useDeleteFileByIdMutation();
   useBatchDeleteFilesMutation();
   const [batchDeleteFilesMutation] = useBatchDeleteFilesMutation();
   const [reprocessingFiles, setReprocessingFiles] = useState<Set<string>>(new Set());
@@ -141,6 +143,34 @@ export default function LibraryFileList({
     [refetch, reprocessingFiles],
   );
 
+  const handleRebuildLibrary = useCallback(async () => {
+    setIsRebuilding(true);
+    try {
+      const response = await fetch("/api/collection/rebuild", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          knowledge_base_id: knowledgeBaseId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(t("Failed to rebuild library"));
+      }
+      const result = await response.json();
+      toast.success(t(`File is rebuilding`));
+
+      refetch();
+    } catch (error) {
+      console.error(t("Error to rebuild library"), error);
+      toast.error(t(`Failed to rebuild library`));
+    } finally {
+    }
+    setIsRebuilding(false);
+  }, [refetch]);
+
   const handleDeleteFile = useCallback(
     (ids: string[]) => {
       // 实现删除文件的逻辑
@@ -194,12 +224,22 @@ export default function LibraryFileList({
           {selectedFileList.length > 0 && (
             <Button
               color="danger"
+              variant="bordered"
               onClick={() => {
                 setDeleteFilesModal(true);
               }}>
               {t("Delete Files")}
             </Button>
           )}
+          <Button
+            color="danger"
+            isDisabled={isRebuiding}
+            isLoading={isRebuiding}
+            onClick={() => {
+              setRebuildLibraryModal(true);
+            }}>
+            {t("Rebuild Library")}
+          </Button>
           <Button color="primary" endContent={<PlusIcon />} onClick={openUploadModal}>
             {t("Add New")}
           </Button>
@@ -285,6 +325,17 @@ export default function LibraryFileList({
             setSelectedFileList([]);
           }}
         />
+      )}
+      {rebuildLibraryModal && (
+        <GenericModal
+          isOpen={rebuildLibraryModal}
+          onClose={() => setRebuildLibraryModal(false)}
+          title="Confirm Rebuild"
+          primaryButtonText="Rebuild"
+          primaryButtonColor="danger"
+          onPrimaryAction={handleRebuildLibrary}>
+          <p>Are you sure you want to rebuild this library?</p>
+        </GenericModal>
       )}
     </div>
   );
