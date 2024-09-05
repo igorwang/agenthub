@@ -385,6 +385,8 @@ export default function MessageWindow({
           searchResults || [],
           agent?.token_limit,
           `${refineQuery?.refineQuery};${refineQuery?.keywords}` || "",
+          "",
+          "",
           {},
         );
         let answer = "";

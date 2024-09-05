@@ -31,8 +31,9 @@ export async function createPrompt(
   sources: SourceType[],
   tokenLimit: number = 4096,
   refineQuery?: string,
-  variables?: { [key: string]: string },
+  chatContext?: string,
   sessionFilesContext?: string,
+  variables?: { [key: string]: string },
 ) {
   const validTemplates = templates.filter((template) => {
     try {
@@ -48,7 +49,7 @@ export async function createPrompt(
   ]);
 
   const sourceContext = await createContext(sources);
-  let contextMessages = ["user", `Context: ${sourceContext}`];
+  let contextMessages = ["user", `Context: ${sourceContext}\n${chatContext}`];
   if (sessionFilesContext) {
     contextMessages = [
       "user",

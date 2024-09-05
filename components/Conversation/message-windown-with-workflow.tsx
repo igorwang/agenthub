@@ -394,9 +394,10 @@ export default function MessageWindowWithWorkflow({
           historyMessage,
           searchResults || [],
           agent?.token_limit,
+          refineQuery?.refineQuery || "",
           chatContext || "",
-          {},
           sessionFilesContext,
+          {},
         );
         let answer = "";
         // call llm
