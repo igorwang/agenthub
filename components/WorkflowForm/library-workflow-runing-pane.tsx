@@ -38,11 +38,11 @@ export default function LibraryWorkflowRunningPane({
     skip: !executeId,
   });
 
-  useEffect(() => {
-    if (fileId && !isRetrying) {
-      handleRedoFile();
-    }
-  }, [fileId]);
+  // useEffect(() => {
+  //   if (fileId && !isRetrying) {
+  //     handleRedoFile();
+  //   }
+  // }, [fileId]);
 
   useEffect(() => {
     if (data && data.execute_results && data.execute_results.length > 0) {
@@ -121,10 +121,12 @@ export default function LibraryWorkflowRunningPane({
                   width="24"
                   height="24"
                 />
-                <h3 className="text-lg font-medium">Step {stepIndex + 1}</h3>
+                <h3 className="text-lg font-medium">
+                  {t("Step")} {stepIndex + 1}
+                </h3>
               </div>
               {expandedSteps[stepIndex] && (
-                <div className="overflow-x-auto">
+                <div className="custom-scrollbar overflow-x-auto">
                   <Tabs aria-label={`Step ${stepIndex + 1} nodes`}>
                     {step.map((node: string, nodeIndex: number) => (
                       <Tab
@@ -140,7 +142,7 @@ export default function LibraryWorkflowRunningPane({
                             <span>{node}</span>
                           </div>
                         }>
-                        <div className="max-h-96 overflow-auto">
+                        <div className="custom-scrollbar max-h-96 overflow-auto">
                           {otherResults[node] ? (
                             <pre className="whitespace-pre-wrap break-all bg-gray-50 p-2 text-sm">
                               {JSON.stringify(otherResults[node], null, 2)}
@@ -181,22 +183,35 @@ export default function LibraryWorkflowRunningPane({
             </Button>
           </Tooltip>
           <Spacer />
-          <Tooltip content={isRetrying ? `${t("Retry")}...` : t("Retry")}>
-            <Button
-              color="primary"
-              variant="bordered"
-              size="sm"
-              onClick={handleRedoFile}
-              disabled={isRetrying}
-              startContent={
-                <Icon
-                  icon={isRetrying ? "eos-icons:loading" : "uil:redo"}
-                  className={`h-4 w-4 ${isRetrying ? "animate-spin" : ""}`}
-                />
-              }>
-              {t("Retry")}
-            </Button>
-          </Tooltip>
+          {results != null ? (
+            <Tooltip content={isRetrying ? `${t("Retry")}...` : t("Retry")}>
+              <Button
+                color="primary"
+                variant="bordered"
+                size="sm"
+                onClick={handleRedoFile}
+                disabled={isRetrying}
+                startContent={
+                  <Icon
+                    icon={isRetrying ? "eos-icons:loading" : "uil:redo"}
+                    className={`h-4 w-4 ${isRetrying ? "animate-spin" : ""}`}
+                  />
+                }>
+                {t("Retry")}
+              </Button>
+            </Tooltip>
+          ) : (
+            <Tooltip content={t("Start")}>
+              <Button
+                color="primary"
+                variant="bordered"
+                size="sm"
+                onClick={handleRedoFile}
+                startContent={<Icon icon="mdi:play" className="h-4 w-4" />}>
+                {t("Start")}
+              </Button>
+            </Tooltip>
+          )}
         </div>
       </div>
 
