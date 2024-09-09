@@ -86,3 +86,19 @@ mutation deleteWorkflowById($id: uuid = "") {
     id
   }
 }
+
+query getWorkflowList(
+  $where: workflow_bool_exp = {}
+  $order_by: [workflow_order_by!] = {}
+  $offset: Int = 10
+  $limit: Int = 10
+) {
+  workflow(where: $where, order_by: $order_by, offset: $offset, limit: $limit) {
+    id
+    name
+    updated_at
+    workflow_type
+    created_at
+    description
+  }
+}
