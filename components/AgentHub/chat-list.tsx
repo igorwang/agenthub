@@ -27,26 +27,6 @@ interface ChatListProps {
   groupedChatList: GroupedChatListDTO[];
 }
 
-interface ReturnButtonProps {
-  onClick: () => void;
-  isVisible: boolean;
-}
-
-const ReturnButton: React.FC<ReturnButtonProps> = ({ onClick, isVisible }) => {
-  if (!isVisible) return null;
-  return (
-    <Button
-      color="primary"
-      variant="light"
-      size="sm"
-      startContent={<Icon icon="mdi:arrow-left" />}
-      className="h-auto min-h-0 justify-start font-normal data-[hover]:bg-transparent hover:bg-transparent active:bg-transparent"
-      onClick={onClick}>
-      Return to Agent List
-    </Button>
-  );
-};
-
 export const ChatList: React.FC<ChatListProps> = ({
   chatListOpenStatus = false,
   groupedChatList,
@@ -210,7 +190,7 @@ export const ChatList: React.FC<ChatListProps> = ({
                     </span>
                   </div>
                 </div>
-                <div className="ml-auto flex-shrink-0">
+                {/* <div className="ml-auto flex-shrink-0">
                   <Button
                     isIconOnly
                     size="sm"
@@ -220,7 +200,7 @@ export const ChatList: React.FC<ChatListProps> = ({
                     onPress={() => handleUnsubscribeClick(item)}>
                     <Icon icon="material-symbols:delete-outline-rounded" fontSize={18} />
                   </Button>
-                </div>
+                </div> */}
               </div>
             </ListboxItem>
           ))}
@@ -228,6 +208,18 @@ export const ChatList: React.FC<ChatListProps> = ({
       )}
     </div>
   ));
+
+  const returnButton = (
+    <Button
+      color="primary"
+      variant="light"
+      size="sm"
+      startContent={<Icon icon="mdi:arrow-left" />}
+      className="h-auto min-h-0 justify-start font-normal data-[hover]:bg-transparent hover:bg-transparent active:bg-transparent"
+      onClick={handleReturn}>
+      {t("Return to Agent List")}
+    </Button>
+  );
 
   function _renderModal() {
     return (
@@ -259,10 +251,10 @@ export const ChatList: React.FC<ChatListProps> = ({
       {/* <ScrollShadow
         className="flex-grow"
         size={0}> */}
-      <div>{chatListContent}</div>
+      {chatListOpenStatus && <div>{chatListContent}</div>}
       {_renderModal()}
       {/* </ScrollShadow> */}
-      <ReturnButton onClick={handleReturn} isVisible={!chatListOpenStatus} />
+      {!chatListOpenStatus && returnButton}
     </div>
   );
 };
