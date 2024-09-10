@@ -12,6 +12,7 @@ import {
   UpdateAgentMutationVariables,
   UpdateKnowledgeBaseDocument,
   UpdateKnowledgeBaseMutationVariables,
+  Workflow_Type_Enum,
 } from "@/graphql/generated/types";
 import { performMutation } from "@/lib/apolloRequest";
 import { Edge, Node } from "@xyflow/react";
@@ -92,10 +93,13 @@ export async function createNewWorkflow(formData: FormData) {
 }
 
 export async function updateWorkflow(formData: FormData) {
+  console.log("updateWorkflow", formData);
   const session = await auth();
   const id = formData.get("id") as string;
   const name = formData.get("name") as string;
   const description = formData.get("description") as string;
+  const workflow_type = formData.get("workflow_type") as Workflow_Type_Enum;
+  console.log("workflowType", workflow_type);
   let nodes: Node[] = [];
   let edges: Edge[] = [];
 
@@ -125,6 +129,7 @@ export async function updateWorkflow(formData: FormData) {
       name: name,
       description: description,
       creator_id: session?.user?.id,
+      workflow_type: workflow_type,
       flow_nodes: {
         data: nodes.map((item) => ({
           id: item.id,

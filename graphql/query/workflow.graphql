@@ -72,18 +72,13 @@ query getWorkflowById($id: uuid = "") {
     updated_at
     created_at
     description
+    workflow_type
     flow_nodes {
       ...flowNodeFragment
     }
     flow_edges {
       ...flowEdgeFragment
     }
-  }
-}
-
-mutation deleteWorkflowById($id: uuid = "") {
-  delete_workflow_by_pk(id: $id) {
-    id
   }
 }
 
@@ -94,11 +89,15 @@ query getWorkflowList(
   $limit: Int = 10
 ) {
   workflow(where: $where, order_by: $order_by, offset: $offset, limit: $limit) {
-    id
-    name
-    updated_at
-    workflow_type
-    created_at
-    description
+    ...workflowFragment
   }
+}
+
+fragment workflowFragment on workflow {
+  id
+  name
+  updated_at
+  workflow_type
+  created_at
+  description
 }

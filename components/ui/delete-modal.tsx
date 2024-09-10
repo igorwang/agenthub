@@ -6,6 +6,7 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@nextui-org/react";
+import { useTranslations } from "next-intl";
 import React from "react";
 
 interface DeleteConfirmModalProps {
@@ -25,16 +26,20 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
   onClose,
   onAffirm,
 }) => {
+  const t = useTranslations();
+
   return (
     <Modal isOpen={isOpen} hideCloseButton={true}>
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1">{title}</ModalHeader>
         <ModalBody>
-          <p>Are you sure you want to remove this {name}?</p>
+          <p>
+            {t("Are you sure you want to delete")} {name}
+          </p>
         </ModalBody>
         <ModalFooter>
           <Button color="primary" variant="light" onPress={onClose}>
-            Close
+            {t("Close")}
           </Button>
           <Button
             color="danger"
@@ -42,7 +47,7 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
               onAffirm(id);
               onClose();
             }}>
-            Affirm
+            {t("Affirm")}
           </Button>
         </ModalFooter>
       </ModalContent>

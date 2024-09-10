@@ -1,6 +1,6 @@
 mutation CreateNewWorkflow($object: workflow_insert_input = {}) {
   insert_workflow_one(object: $object) {
-    id
+    ...workflowFragment
   }
 }
 
@@ -13,5 +13,17 @@ mutation DeleteNodesAndEdges(
   }
   delete_flow_edge(where: $where1) {
     affected_rows
+  }
+}
+
+mutation deleteWorkflowById($id: uuid = "") {
+  delete_workflow_by_pk(id: $id) {
+    ...workflowFragment
+  }
+}
+
+mutation updateWorkflowById($id: uuid = "", $_set: workflow_set_input = {}) {
+  update_workflow_by_pk(pk_columns: { id: $id }, _set: $_set) {
+    ...workflowFragment
   }
 }

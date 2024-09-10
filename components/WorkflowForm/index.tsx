@@ -8,6 +8,7 @@ import {
   FlowEdgeFragmentFragment,
   FlowNodeFragmentFragment,
   NodeTypeFragmentFragment,
+  Workflow_Type_Enum,
 } from "@/graphql/generated/types";
 import { Icon } from "@iconify/react";
 import {
@@ -31,11 +32,12 @@ import { Conversation } from "../Conversation";
 interface WorkflowFormProps {
   agentId?: string;
   knowledgeBaseId?: string;
-  workflowType: "library" | "agent";
+  workflowType: "library" | "agent" | Workflow_Type_Enum;
   initialData: {
     id: string;
     name: string;
     description: string;
+    workflow_type: Workflow_Type_Enum | null;
     nodes?: FlowNodeFragmentFragment[];
     edges?: FlowEdgeFragmentFragment[];
   };
@@ -47,6 +49,7 @@ type FormValues = {
   id: string;
   name: string;
   description: string;
+  workflow_type: Workflow_Type_Enum | null | undefined;
   nodes: Node[];
   edges: Edge[];
 };
@@ -97,6 +100,7 @@ export default function WorkflowForm({
       id: flowId,
       name: initialData?.name || "",
       description: initialData?.description || "",
+      workflow_type: initialData?.workflow_type || null,
       nodes: initialNodes,
       edges: initialEdges,
     },
@@ -113,6 +117,8 @@ export default function WorkflowForm({
         formData.append("id", data.id);
         formData.append("name", data.name);
         formData.append("description", data.description);
+        formData.append("workflow_type", workflowType);
+
         formData.append("nodes", JSON.stringify(data.nodes));
         formData.append("edges", JSON.stringify(data.edges));
 

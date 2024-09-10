@@ -4,8 +4,11 @@ import {
   GetWorkflowListDocument,
   GetWorkflowListQuery,
   GetWorkflowListQueryVariables,
+  Order_By,
+  Workflow_Type_Enum,
 } from "@/graphql/generated/types";
 import { fetchData } from "@/lib/apolloRequest";
+import { Spinner } from "@nextui-org/react";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 
@@ -20,9 +23,15 @@ async function getWorkflowListData(page: number) {
       creator_id: {
         _eq: session.user.id,
       },
+      workflow_type: {
+        _eq: Workflow_Type_Enum.Tool,
+      },
     },
     limit: ITEMS_PER_PAGE,
     offset: (page - 1) * ITEMS_PER_PAGE,
+    order_by: {
+      updated_at: Order_By.Desc,
+    },
   };
 
   return await fetchData<GetWorkflowListQuery, GetWorkflowListQueryVariables>(
@@ -45,15 +54,8 @@ export default async function WorkflowPage({
   return (
     <Suspense
       fallback={
-        <div className="flex h-screen flex-col items-center justify-center">
-          <div className="mb-4 h-16 w-3/4 animate-pulse rounded-md bg-gray-200"></div>
-          <div className="grid w-full max-w-7xl grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-            {[...Array(6)].map((_, index) => (
-              <div
-                key={index}
-                className="h-48 animate-pulse rounded-md bg-gray-200"></div>
-            ))}
-          </div>
+        <div className="flex h-full items-center justify-center">
+          <Spinner>{t("Loading")}...</Spinner>
         </div>
       }>
       <div className="flex h-screen flex-col">
@@ -61,7 +63,7 @@ export default async function WorkflowPage({
           <h1 className="text-2xl font-bold">{t("Workflow List")}</h1>
         </div>
         <div className="flex-grow overflow-hidden">
-          <div className="h-full overflow-y-auto px-4">
+          <div className="custom-scrollbar h-full overflow-y-auto px-4">
             <WorkflowListPage
               initialWorkflowList={workflowListData?.workflow || []}
               currentPage={page}
