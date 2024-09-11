@@ -70,7 +70,6 @@ function Flow({
     }
 
     JSONSchemaFaker.option({
-      useDefaultValue: true,
       minItems: 1,
       maxItems: 3,
       ignoreMissingRefs: true,
@@ -94,7 +93,7 @@ function Flow({
           return acc;
         }
 
-        const { label, outputSchema } = node.data;
+        const { label, outputSchema, inputSchema } = node.data;
 
         if (!label || typeof label !== "string") {
           console.warn("Node is missing a valid label");
@@ -102,23 +101,29 @@ function Flow({
         }
 
         const schema = outputSchema || {};
-
+        let fakeData = {};
         if (schema && Object.keys(schema).length > 0) {
           try {
-            acc[label] = await JSONSchemaFaker.resolve(schema);
+            fakeData = await JSONSchemaFaker.resolve(schema);
           } catch (error) {
             console.error(`Error generating fake data for ${label}:`, error);
-            acc[label] = {};
           }
-        } else {
-          acc[label] = {};
         }
 
+        if (inputSchema && Object.keys(inputSchema).length > 0) {
+          try {
+            let inputData = await JSONSchemaFaker.resolve(inputSchema);
+            fakeData = { ...fakeData, input: inputData };
+          } catch (error) {
+            console.error(`Error generating fake data for ${label}:`, error);
+          }
+        }
+        acc[label] = fakeData;
         return acc;
       },
       Promise.resolve({} as { [key: string]: any }),
     );
-
+    console.log("newWorkflowTestResult", newWorkflowTestResult);
     return newWorkflowTestResult;
   };
 

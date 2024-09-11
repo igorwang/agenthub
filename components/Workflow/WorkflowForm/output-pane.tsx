@@ -40,33 +40,38 @@ export const OutputPane: React.FC<OutputPaneProps> = ({ node }) => {
       return null;
     }
 
-    const { outputSchema } = node.data;
+    const { outputSchema, inputSchema, label } = node.data;
+
     const schema = outputSchema || {};
 
     JSONSchemaFaker.option({
-      alwaysFakeOptionals: true,
-      optionalsProbability: 1.0,
-      useDefaultValue: false,
       minItems: 1,
-      maxItems: 5,
+      maxItems: 3,
       ignoreMissingRefs: true,
       failOnInvalidFormat: false,
-      maxLength: 4096,
+      maxLength: 20,
       minLength: 1,
-      useExamplesValue: false,
-      random: () => 0.5,
+      useExamplesValue: true,
     });
 
+    let fakeData = {};
     if (schema && Object.keys(schema).length > 0) {
       try {
-        return await JSONSchemaFaker.resolve(schema);
+        fakeData = await JSONSchemaFaker.resolve(schema);
       } catch (error) {
-        console.error(`Error generating fake data:`, error);
-        return null;
+        console.error(`Error generating fake data for ${label}:`, error);
       }
-    } else {
-      return null;
     }
+
+    if (inputSchema && Object.keys(inputSchema).length > 0) {
+      try {
+        let inputData = await JSONSchemaFaker.resolve(inputSchema);
+        fakeData = { ...fakeData, input: inputData };
+      } catch (error) {
+        console.error(`Error generating fake data for ${label}:`, error);
+      }
+    }
+    return fakeData;
   };
 
   return (
