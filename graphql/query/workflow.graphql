@@ -105,6 +105,7 @@ fragment workflowFragment on workflow {
   workflow_type
   created_at
   description
+  icon
   r_agent_workflows {
     id
     agent_id
