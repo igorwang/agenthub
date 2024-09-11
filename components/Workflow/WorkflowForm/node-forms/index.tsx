@@ -12,6 +12,7 @@ import NewMultiModalNodeForm from "@/components/Workflow/WorkflowForm/node-forms
 import PreChatOutputNodeForm from "@/components/Workflow/WorkflowForm/node-forms/pre-chat-output-node-form";
 import SearchLibraryNodeForm from "@/components/Workflow/WorkflowForm/node-forms/search-library-form";
 import SearchMemoryNodeForm from "@/components/Workflow/WorkflowForm/node-forms/search-memory-form";
+import WorkflowInputNodeForm from "@/components/Workflow/WorkflowForm/node-forms/workflow-input-node-form";
 import OutputParserNodeForm from "@/components/Workflow/WorkflowForm/output-parser-form";
 
 export const nodeFormComponents: Map<string, any | null> = new Map([
@@ -31,6 +32,7 @@ export const nodeFormComponents: Map<string, any | null> = new Map([
   ["humanInLoopNode", HumanInLoopNodeForm],
   ["newMultiModalNode", NewMultiModalNodeForm],
   ["searchMemoryNode", SearchMemoryNodeForm],
+  ["workflowInputNode", WorkflowInputNodeForm],
 
   // 如果某种节点类型没有对应的表单，可以设置为 null
   // ['someOtherNode', null],
