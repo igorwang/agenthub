@@ -11,7 +11,7 @@ import {
   Node_Use_Type_Enum,
   Workflow_Type_Enum,
 } from "@/graphql/generated/types";
-import { updateWorkflow } from "@/lib/actions/workflowActions";
+import { updateWorkflowById } from "@/lib/actions/workflowActions";
 import { fetchData } from "@/lib/apolloRequest";
 import { Spinner } from "@nextui-org/react";
 import { getTranslations } from "next-intl/server";
@@ -79,13 +79,14 @@ async function WorkflowContent({ id }: { id: string }) {
     workflow_type: workflow.workflow_by_pk?.workflow_type || null,
     nodes: workflow.workflow_by_pk?.flow_nodes,
     edges: workflow.workflow_by_pk?.flow_edges,
+    r_agent_workflows: workflow.workflow_by_pk?.r_agent_workflows,
   };
   return (
     <div className="container mx-auto p-6 px-4 py-8">
       <WorkflowForm
         workflowType={Workflow_Type_Enum.Tool}
         initialData={initialData}
-        action={updateWorkflow}
+        action={updateWorkflowById}
         nodeTypeList={nodeTypeList?.node_type || []}
       />
     </div>

@@ -43,6 +43,11 @@ interface WorkflowFormProps {
     workflow_type: Workflow_Type_Enum | null;
     nodes?: FlowNodeFragmentFragment[];
     edges?: FlowEdgeFragmentFragment[];
+    r_agent_workflows?: Array<{
+      __typename?: "r_agent_workflow";
+      id: number;
+      agent_id: any;
+    }>;
   };
   nodeTypeList: NodeTypeFragmentFragment[];
   action: (formData: FormData) => Promise<{ success: boolean }>;
@@ -55,6 +60,11 @@ type FormValues = {
   workflow_type: Workflow_Type_Enum | null | undefined;
   nodes: Node[];
   edges: Edge[];
+  r_agent_workflows?: Array<{
+    __typename?: "r_agent_workflow";
+    id: number;
+    agent_id: any;
+  }>;
 };
 
 export default function WorkflowForm({
@@ -111,6 +121,7 @@ export default function WorkflowForm({
       workflow_type: initialData?.workflow_type || null,
       nodes: initialNodes,
       edges: initialEdges,
+      r_agent_workflows: initialData?.r_agent_workflows || [],
     },
   });
   const currentNodes = watch("nodes");
@@ -120,15 +131,19 @@ export default function WorkflowForm({
     async (data) => {
       if (isSaving) return; // Prevent multiple submissions
       setIsSaving(true);
+      console.log("initialData", initialData);
       try {
         const formData = new FormData();
         formData.append("id", data.id);
         formData.append("name", data.name);
         formData.append("description", data.description);
         formData.append("workflow_type", workflowType);
-
         formData.append("nodes", JSON.stringify(data.nodes));
         formData.append("edges", JSON.stringify(data.edges));
+        formData.append(
+          "r_agent_workflows",
+          JSON.stringify(initialData.r_agent_workflows),
+        );
 
         const result = await action(formData);
         if (result.success) {

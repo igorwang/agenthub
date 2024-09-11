@@ -122,8 +122,7 @@ export const Conversation: React.FC<ConversationProps> = ({
   const [workflowTools, setWorkflowTools] = useState<WorkflowFragmentFragment[]>([]);
   const [selectedSources, setSelectedSources] = useState<SourceType[]>([]);
   const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
-  const [recentUsedTools, setRecentUsedTools] =
-    useState<WorkflowFragmentFragment[]>(workflowTools);
+  const [recentUsedTools, setRecentUsedTools] = useState<WorkflowFragmentFragment[]>([]);
   const [sessionFiles, setSessionFiles] = useState<FilesListQuery["files"]>([]);
 
   const [sessionFilesContext, setSessionFilesContext] = useState("");
@@ -207,10 +206,12 @@ export const Conversation: React.FC<ConversationProps> = ({
         mode: data?.agent_by_pk?.mode || null,
       });
       setWorkflowTools(
-        data?.agent_by_pk?.r_agent_workflows.map((item) => item.workflow) || [],
-      );
-      setRecentUsedTools(
-        data?.agent_by_pk?.r_agent_workflows.map((item) => item.workflow) || [],
+        data?.agent_by_pk?.r_agent_workflows
+          .map((item) => item.workflow)
+          .filter(
+            (workflow): workflow is WorkflowFragmentFragment =>
+              workflow !== null && workflow !== undefined,
+          ) || [],
       );
     }
   }, [agentId, data]);

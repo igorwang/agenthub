@@ -44,3 +44,15 @@ mutation removeWorkflowFromAgent($id: Int = 10) {
     }
   }
 }
+
+mutation deleteFlowEdge($where: flow_edge_bool_exp = {}) {
+  delete_flow_edge(where: $where) {
+    affected_rows
+  }
+}
+
+mutation deleteFlowNode($where: flow_node_bool_exp = {}) {
+  delete_flow_node(where: $where) {
+    affected_rows
+  }
+}

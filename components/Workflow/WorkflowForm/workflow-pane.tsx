@@ -113,7 +113,7 @@ function Flow({
         if (inputSchema && Object.keys(inputSchema).length > 0) {
           try {
             let inputData = await JSONSchemaFaker.resolve(inputSchema);
-            fakeData = { ...fakeData, input: inputData };
+            fakeData = { ...fakeData, ...inputData };
           } catch (error) {
             console.error(`Error generating fake data for ${label}:`, error);
           }

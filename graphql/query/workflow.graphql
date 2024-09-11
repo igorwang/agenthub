@@ -79,6 +79,10 @@ query getWorkflowById($id: uuid = "") {
     flow_edges {
       ...flowEdgeFragment
     }
+    r_agent_workflows {
+      id
+      agent_id
+    }
   }
 }
 
@@ -109,5 +113,17 @@ fragment workflowFragment on workflow {
   r_agent_workflows {
     id
     agent_id
+  }
+}
+
+mutation insertFlowNode($objects: [flow_node_insert_input!] = {}) {
+  insert_flow_node(objects: $objects) {
+    affected_rows
+  }
+}
+
+mutation insertFlowEdge($objects: [flow_edge_insert_input!] = {}) {
+  insert_flow_edge(objects: $objects) {
+    affected_rows
   }
 }
