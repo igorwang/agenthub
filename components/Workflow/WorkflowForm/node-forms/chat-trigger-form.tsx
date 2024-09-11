@@ -1,6 +1,7 @@
 import CustomForm from "@/components/ui/nextui-form";
 import { Divider } from "@nextui-org/react";
 import { Node } from "@xyflow/react";
+import { useTranslations } from "next-intl";
 
 interface NodeData {
   [key: string]: any;
@@ -21,6 +22,7 @@ export default function ChatTriggerNodeForm({
   onNodeChange,
   onToggleDrawer,
 }: ChatTriggerNodeFormProps) {
+  const t = useTranslations("");
   const nodeData = node.data || {};
 
   const onSubmit = (data: any) => {
@@ -31,6 +33,10 @@ export default function ChatTriggerNodeForm({
     <div className="flex flex-col gap-4 p-4">
       <div className="text-2xl font-bold">Edit Chat Trigger Node</div>
       <Divider />
+      <div className="text-default-500">
+        {t("This node will trigger a chat message to be sent to the AI")}.
+        {t("No input data operation is required for this node")}.
+      </div>
       <CustomForm
         schema={nodeData.schema}
         uiSchema={nodeData.uiSchema}

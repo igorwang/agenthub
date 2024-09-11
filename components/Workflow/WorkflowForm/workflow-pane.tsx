@@ -69,22 +69,21 @@ function Flow({
       return {};
     }
 
-    if (!nodes || !Array.isArray(nodes) || nodes.length === 0) {
-      console.warn("No valid nodes provided for generating fake data");
-      return {};
-    }
-
     JSONSchemaFaker.option({
       useDefaultValue: true,
       minItems: 1,
       maxItems: 3,
       ignoreMissingRefs: true,
       failOnInvalidFormat: false,
-      maxLength: 512,
+      maxLength: 20,
       minLength: 1,
       useExamplesValue: true,
-      random: Math.random, // 添加这一行
     });
+
+    if (!nodes || !Array.isArray(nodes) || nodes.length === 0) {
+      console.warn("No valid nodes provided for generating fake data");
+      return {};
+    }
 
     const newWorkflowTestResult = await nodes.reduce(
       async (accPromise, node) => {

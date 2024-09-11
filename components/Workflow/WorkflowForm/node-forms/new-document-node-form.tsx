@@ -1,6 +1,7 @@
 import CustomForm from "@/components/ui/nextui-form";
 import { Divider } from "@nextui-org/react";
 import { Node } from "@xyflow/react";
+import { useTranslations } from "next-intl";
 
 interface NodeData {
   [key: string]: any;
@@ -22,6 +23,7 @@ export default function NewDocumentNodeForm({
   onToggleDrawer,
 }: NewDocumentNodeFormProps) {
   const nodeData = node.data || {};
+  const t = useTranslations("");
 
   const onSubmit = (data: any) => {
     onNodeChange?.(data);
@@ -31,6 +33,10 @@ export default function NewDocumentNodeForm({
     <div className="flex flex-col gap-4 p-4">
       <div className="text-2xl font-bold">Edit New Document Node</div>
       <Divider />
+      <div className="text-default-500">
+        {t("This node will trigger a new document to be created")}.
+        {t("No input data operation is required for this node")}.
+      </div>
       <CustomForm
         schema={nodeData.schema}
         uiSchema={nodeData.uiSchema}

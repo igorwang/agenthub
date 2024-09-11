@@ -34,6 +34,9 @@ export default function NewMultiModalNodeForm({
     <div className="flex flex-col gap-4 p-4">
       <div className="text-2xl font-bold">{t("Edit Multi Modal Input Node")}</div>
       <Divider />
+      <div className="text-default-500">
+        {t("This node will trigger a multi modal file upload")}.
+      </div>
       <CustomForm
         schema={nodeData.schema}
         uiSchema={nodeData.uiSchema}
