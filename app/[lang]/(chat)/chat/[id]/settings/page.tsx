@@ -8,6 +8,7 @@ import {
   GetNodeTypeListQuery,
   GetNodeTypeListQueryVariables,
   Node_Use_Type_Enum,
+  Workflow_Type_Enum,
 } from "@/graphql/generated/types";
 import { bindWorkflowToAgent } from "@/lib/actions/workflowActions";
 import { fetchData } from "@/lib/apolloRequest";
@@ -58,6 +59,7 @@ export default async function AgentSettingsPage({ params }: { params: { id: stri
     id: workflow?.id || v4(), //workflow id
     name: workflow?.name || t("New Workflow"),
     description: workflow?.description || t("New Workflow"),
+    workflow_type: Workflow_Type_Enum.Agent,
     nodes: workflow?.flow_nodes,
     edges: workflow?.flow_edges,
   };

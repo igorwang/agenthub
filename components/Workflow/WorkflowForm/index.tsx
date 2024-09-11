@@ -1,9 +1,10 @@
 "use client";
 
 import UploadZone, { UploadFileType } from "@/components/UploadZone";
-import LibraryWorkflowRunningPane from "@/components/WorkflowForm/library-workflow-runing-pane";
-import NodeTypeList from "@/components/WorkflowForm/node-type-list";
-import WorkflowPane from "@/components/WorkflowForm/workflow-pane";
+import WorkflowBindPane from "@/components/Workflow/WorkflowBindPane";
+import LibraryWorkflowRunningPane from "@/components/Workflow/WorkflowForm/library-workflow-runing-pane";
+import NodeTypeList from "@/components/Workflow/WorkflowForm/node-type-list";
+import WorkflowPane from "@/components/Workflow/WorkflowForm/workflow-pane";
 import {
   FlowEdgeFragmentFragment,
   FlowNodeFragmentFragment,
@@ -17,8 +18,10 @@ import {
   Modal,
   ModalBody,
   ModalContent,
+  ModalFooter,
   ModalHeader,
   Spacer,
+  useDisclosure,
 } from "@nextui-org/react";
 import { Edge, Node } from "@xyflow/react";
 import "@xyflow/react/dist/base.css";
@@ -27,7 +30,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Conversation } from "../Conversation";
+import { Conversation } from "../../Conversation";
 
 interface WorkflowFormProps {
   agentId?: string;
@@ -70,6 +73,11 @@ export default function WorkflowForm({
   const [isWorkflowRunOpen, setIsWorkflowRunOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [testFile, setTestFile] = useState<{ id: string; filename: string } | null>(null);
+  const {
+    isOpen: isToolBindOpen,
+    onOpen: openToolBind,
+    onClose: closeToolBind,
+  } = useDisclosure();
 
   const flowId = initialData.id;
 
@@ -221,6 +229,17 @@ export default function WorkflowForm({
           )}
         />
         <form className="flex justify-end" onSubmit={handleSubmit(onSubmit)}>
+          {workflowType == "agent" && (
+            <Button
+              color="default"
+              startContent={<Icon icon="mdi:toolbox" width="20" height="20" />}
+              // isLoading={isSaving}
+              // disabled={isSaving}
+              onClick={openToolBind}>
+              {t("Bind Tools")}
+            </Button>
+          )}
+          <Spacer x={2} />
           <Button
             type="submit"
             color="primary"
@@ -304,6 +323,34 @@ export default function WorkflowForm({
                     acceptFileTypes=".doc,.docx,.pdf,.ppt,.pptx,.xls,.xlsx,.txt,.json,.mp3,.mp4"
                   />
                 </ModalBody>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      )}
+      {agentId && (
+        <Modal
+          isOpen={isToolBindOpen}
+          onOpenChange={openToolBind}
+          onClose={closeToolBind}
+          size="4xl">
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
+                  {t("Bind Worflow Tools to Agent")}
+                </ModalHeader>
+                <ModalBody>
+                  <WorkflowBindPane agentId={agentId} />
+                </ModalBody>
+                <ModalFooter>
+                  {/* <Button color="danger" variant="light" onPress={onClose}>
+                关闭
+              </Button>
+              <Button as={Link} href={`/chat/${params.id}/workflow`} color="primary">
+                查看完整工作流页面
+              </Button> */}
+                </ModalFooter>
               </>
             )}
           </ModalContent>

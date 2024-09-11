@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import WorkflowListPage from "@/components/WorkflowListPage";
+import WorkflowList from "@/components/Workflow/WorkflowList";
 import {
   GetWorkflowListDocument,
   GetWorkflowListQuery,
@@ -64,7 +64,7 @@ export default async function WorkflowPage({
         </div>
         <div className="flex-grow overflow-hidden">
           <div className="custom-scrollbar h-full overflow-y-auto px-4">
-            <WorkflowListPage
+            <WorkflowList
               initialWorkflowList={workflowListData?.workflow || []}
               currentPage={page}
               // hasMore={hasMore}

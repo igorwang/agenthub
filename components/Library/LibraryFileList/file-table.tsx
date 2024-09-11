@@ -41,7 +41,7 @@ interface FileTableProps {
 
 const statusColorMap: Record<
   Status_Enum,
-  "default" | "primary" | "secondary" | "success" | "danger"
+  "default" | "primary" | "secondary" | "success" | "danger" | "warning"
 > = {
   [Status_Enum.Uploaded]: "default",
   [Status_Enum.Chunked]: "primary",
@@ -50,6 +50,7 @@ const statusColorMap: Record<
   [Status_Enum.Failed]: "danger",
   [Status_Enum.Running]: "secondary",
   [Status_Enum.Success]: "success",
+  [Status_Enum.Processing]: "warning",
 };
 
 const FileTable: FC<FileTableProps> = ({

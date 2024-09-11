@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
-import WorkflowForm from "@/components/WorkflowForm";
-import ReturnToWorkflow from "@/components/WorkflowListPage/return-to-workflow";
+import WorkflowForm from "@/components/Workflow/WorkflowForm";
+import ReturnToWorkflow from "@/components/Workflow/WorkflowList/return-to-workflow";
 import {
   GetNodeTypeListDocument,
   GetNodeTypeListQuery,

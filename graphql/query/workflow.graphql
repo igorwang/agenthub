@@ -91,6 +91,11 @@ query getWorkflowList(
   workflow(where: $where, order_by: $order_by, offset: $offset, limit: $limit) {
     ...workflowFragment
   }
+  workflow_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
 }
 
 fragment workflowFragment on workflow {
@@ -100,4 +105,8 @@ fragment workflowFragment on workflow {
   workflow_type
   created_at
   description
+  r_agent_workflows {
+    id
+    agent_id
+  }
 }

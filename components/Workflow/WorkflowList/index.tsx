@@ -33,7 +33,7 @@ interface WorkflowListPageProps {
   currentPage: number;
 }
 
-function WorkflowListPage({ initialWorkflowList, currentPage }: WorkflowListPageProps) {
+function WorkflowList({ initialWorkflowList, currentPage }: WorkflowListPageProps) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -310,4 +310,4 @@ function WorkflowListPage({ initialWorkflowList, currentPage }: WorkflowListPage
   );
 }
 
-export default WorkflowListPage;
+export default WorkflowList;

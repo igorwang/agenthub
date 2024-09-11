@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import WorkflowForm from "@/components/WorkflowForm";
+import WorkflowForm from "@/components/Workflow/WorkflowForm";
 import {
   GetNodeTypeListDocument,
   GetNodeTypeListQuery,

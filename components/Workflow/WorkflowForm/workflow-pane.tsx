@@ -18,9 +18,9 @@ import {
 } from "@xyflow/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import NodeDrawer from "@/components/WorkflowForm/node-drawer";
-import { nodeFormComponents } from "@/components/WorkflowForm/node-forms";
-import { nodeTypes } from "@/components/WorkflowForm/nodes";
+import NodeDrawer from "@/components/Workflow/WorkflowForm/node-drawer";
+import { nodeFormComponents } from "@/components/Workflow/WorkflowForm/node-forms";
+import { nodeTypes } from "@/components/Workflow/WorkflowForm/nodes";
 import { NodeTypeFragmentFragment } from "@/graphql/generated/types";
 import { alg, Graph } from "@dagrejs/graphlib";
 import "@xyflow/react/dist/base.css";

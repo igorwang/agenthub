@@ -27,3 +27,20 @@ mutation updateWorkflowById($id: uuid = "", $_set: workflow_set_input = {}) {
     ...workflowFragment
   }
 }
+
+mutation addWorflowToAgent($object: r_agent_workflow_insert_input = {}) {
+  insert_r_agent_workflow_one(object: $object) {
+    workflow {
+      ...workflowFragment
+    }
+  }
+}
+
+mutation removeWorkflowFromAgent($id: Int = 10) {
+  delete_r_agent_workflow_by_pk(id: $id) {
+    id
+    workflow {
+      ...workflowFragment
+    }
+  }
+}

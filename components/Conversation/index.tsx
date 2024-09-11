@@ -249,7 +249,7 @@ export const Conversation: React.FC<ConversationProps> = ({
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      router.push(`${pathname}/settings`);
+      router.push(`${pathname}/settings?step=1`);
       setIsConfigLoading(true);
     },
     [router, pathname],
