@@ -8,6 +8,7 @@ import {
   GetWorkflowByIdDocument,
   GetWorkflowByIdQuery,
   GetWorkflowByIdQueryVariables,
+  Node_Use_Type_Enum,
   Workflow_Type_Enum,
 } from "@/graphql/generated/types";
 import { updateWorkflow } from "@/lib/actions/workflowActions";
@@ -31,14 +32,24 @@ async function getNodeTypeListData() {
   const session = await auth();
   if (!session?.user) return null;
 
-  const variables: GetNodeTypeListQueryVariables = {};
+  const variables: GetNodeTypeListQueryVariables = {
+    where: {
+      _and: [
+        {
+          visible: { _eq: true },
+          node_use_type: {
+            _in: [Node_Use_Type_Enum.Default, Node_Use_Type_Enum.Tool],
+          },
+        },
+      ],
+    },
+  };
 
   return await fetchData<GetNodeTypeListQuery, GetNodeTypeListQueryVariables>(
     GetNodeTypeListDocument,
     variables,
   );
 }
-
 export default async function WorkflowDetailPage({ params }: { params: { id: string } }) {
   const t = await getTranslations();
   return (

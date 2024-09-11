@@ -265,7 +265,7 @@ export default function WorkflowForm({
         </form>
       </div>
       <div className="flex h-[calc(100vh-340px)] w-full flex-row gap-2">
-        <div>
+        <div className="min-h-[600px]">
           <NodeTypeList nodeTypeList={nodeTypeList} />
         </div>
         <div className="z-20 min-h-[600px] flex-1 flex-grow border bg-white">

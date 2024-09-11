@@ -8,6 +8,7 @@ import {
   KnowledgeBaseDetailQuery,
   KnowledgeBaseDetailQueryVariables,
   Node_Use_Type_Enum,
+  Workflow_Type_Enum,
 } from "@/graphql/generated/types";
 import { bindWorkflowToLibrary } from "@/lib/actions/workflowActions";
 import { fetchData } from "@/lib/apolloRequest";
@@ -64,6 +65,7 @@ export default async function LibraryWorkflowPage({
     id: workflow?.id || v4(), //workflow id
     name: workflow?.name || t("New Workflow"),
     description: workflow?.description || t("New Workflow"),
+    workflow_type: Workflow_Type_Enum.Library,
     nodes: workflow?.flow_nodes,
     edges: workflow?.flow_edges,
   };
