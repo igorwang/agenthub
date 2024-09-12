@@ -26,7 +26,7 @@ export default function SideBar() {
       [Role_Enum.Admin, Role_Enum.Creator].includes(role as Role_Enum),
     );
   const handleSignOut = async () => {
-    await signOut();
+    await signOut({ callbackUrl: "/auth/login" });
   };
 
   const sidebarItems = useSidebarItems(userRoles || []);
