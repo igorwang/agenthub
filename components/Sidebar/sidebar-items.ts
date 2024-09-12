@@ -32,6 +32,13 @@ export function useSidebarItems(roles: string[]): SidebarItem[] {
           title: t("Library"),
           endContent: "solar:add-circle-line-duotone",
         },
+        {
+          key: "workflow",
+          href: "/workflow",
+          icon: "hugeicons:workflow-square-01",
+          title: t("Workflow"),
+          endContent: "solar:add-circle-line-duotone",
+        },
         // You can add more items here
       ],
     },
@@ -43,6 +50,7 @@ export function useSidebarItems(roles: string[]): SidebarItem[] {
     if (roles.includes("admin")) return true; // Admin can see everything
     if (item.key === "chat") return true; // All roles can see chat
     if (item.key === "library") return roles.includes("creator");
+    if (item.key === "workflow") return roles.includes("creator");
     // Add more conditions here for other items
     return false;
   };

@@ -576,6 +576,34 @@ export const HumanInLoopNodeComponent: React.FC<NodeProps<HumanInLoopNode>> = me
   },
 );
 
+export type workflowInputNode = Node<CustomNodeData, "workflowInputNode">;
+export const workflowInputNodeComponent: React.FC<NodeProps<workflowInputNode>> = memo(
+  ({ data, selected }) => {
+    const borderColor = selected ? "border-blue-500" : "border-gray-200";
+
+    return (
+      <div
+        className={`rounded-md border ${borderColor} bg-white p-1 shadow-sm transition-colors duration-200`}>
+        <div className="flex items-center">
+          <div className="mr-1 flex h-6 w-6 items-center justify-center text-gray-500">
+            <Icon icon="material-symbols-light:not-started-outline" fontSize={16} />
+          </div>
+          <div className="overflow-hidden">
+            <div className="w-24 truncate text-xs font-medium text-gray-700">
+              {data.label}
+            </div>
+          </div>
+        </div>
+        <Handle
+          type="source"
+          position={Position.Right}
+          className="h-4 w-1 !border-1 !border-white !bg-slate-300"
+        />
+      </div>
+    );
+  },
+);
+
 StartNodeComponent.displayName = "StartNodeComponent";
 InputNodeComponent.displayName = "InputNodeComponent";
 llmNodeComponent.displayName = "llmNodeComponent";
@@ -593,6 +621,7 @@ IndexingNodeComponent.displayName = "IndexingNodeComponent";
 HumanInLoopNodeComponent.displayName = "HumanInLoopNodeComponent";
 NewMultiModalNodeComponent.displayName = "NewMultiModalNodeComponent";
 SearchMemoryNodeComponent.displayName = "SearchMemoryNodeComponent";
+workflowInputNodeComponent.displayName = "WorkflowInputNodeComponent";
 
 export const nodeTypes: NodeTypes = {
   startNode: StartNodeComponent,
@@ -612,4 +641,5 @@ export const nodeTypes: NodeTypes = {
   humanInLoopNode: HumanInLoopNodeComponent,
   newMultiModalNode: NewMultiModalNodeComponent,
   searchMemoryNode: SearchMemoryNodeComponent,
+  workflowInputNode: workflowInputNodeComponent,
 };

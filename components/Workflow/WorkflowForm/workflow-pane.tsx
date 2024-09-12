@@ -18,9 +18,9 @@ import {
 } from "@xyflow/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import NodeDrawer from "@/components/WorkflowForm/node-drawer";
-import { nodeFormComponents } from "@/components/WorkflowForm/node-forms";
-import { nodeTypes } from "@/components/WorkflowForm/nodes";
+import NodeDrawer from "@/components/Workflow/WorkflowForm/node-drawer";
+import { nodeFormComponents } from "@/components/Workflow/WorkflowForm/node-forms";
+import { nodeTypes } from "@/components/Workflow/WorkflowForm/nodes";
 import { NodeTypeFragmentFragment } from "@/graphql/generated/types";
 import { alg, Graph } from "@dagrejs/graphlib";
 import "@xyflow/react/dist/base.css";
@@ -69,22 +69,20 @@ function Flow({
       return {};
     }
 
-    if (!nodes || !Array.isArray(nodes) || nodes.length === 0) {
-      console.warn("No valid nodes provided for generating fake data");
-      return {};
-    }
-
     JSONSchemaFaker.option({
-      useDefaultValue: true,
       minItems: 1,
       maxItems: 3,
       ignoreMissingRefs: true,
       failOnInvalidFormat: false,
-      maxLength: 512,
+      maxLength: 20,
       minLength: 1,
       useExamplesValue: true,
-      random: Math.random, // 添加这一行
     });
+
+    if (!nodes || !Array.isArray(nodes) || nodes.length === 0) {
+      console.warn("No valid nodes provided for generating fake data");
+      return {};
+    }
 
     const newWorkflowTestResult = await nodes.reduce(
       async (accPromise, node) => {
@@ -95,7 +93,7 @@ function Flow({
           return acc;
         }
 
-        const { label, outputSchema } = node.data;
+        const { label, outputSchema, inputSchema } = node.data;
 
         if (!label || typeof label !== "string") {
           console.warn("Node is missing a valid label");
@@ -103,23 +101,29 @@ function Flow({
         }
 
         const schema = outputSchema || {};
-
+        let fakeData = {};
         if (schema && Object.keys(schema).length > 0) {
           try {
-            acc[label] = await JSONSchemaFaker.resolve(schema);
+            fakeData = await JSONSchemaFaker.resolve(schema);
           } catch (error) {
             console.error(`Error generating fake data for ${label}:`, error);
-            acc[label] = {};
           }
-        } else {
-          acc[label] = {};
         }
 
+        if (inputSchema && Object.keys(inputSchema).length > 0) {
+          try {
+            let inputData = await JSONSchemaFaker.resolve(inputSchema);
+            fakeData = { ...fakeData, ...inputData };
+          } catch (error) {
+            console.error(`Error generating fake data for ${label}:`, error);
+          }
+        }
+        acc[label] = fakeData;
         return acc;
       },
       Promise.resolve({} as { [key: string]: any }),
     );
-
+    console.log("newWorkflowTestResult", newWorkflowTestResult);
     return newWorkflowTestResult;
   };
 

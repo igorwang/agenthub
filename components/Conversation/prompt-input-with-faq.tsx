@@ -8,15 +8,20 @@ import {
   ModalBody,
   ModalContent,
   ModalHeader,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   Tooltip,
 } from "@nextui-org/react";
 import { useCallback, useState } from "react";
 
+import WorkflowToolRunSelect from "@/components/Conversation/workflow-tool-run-select";
 import {
   Agent_Mode_Enum,
   Message_Role_Enum,
   useCreateMessageAndUpdateTopicHistoryMutation,
   useCreateNewTopicWithMessageMutation,
+  WorkflowFragmentFragment,
 } from "@/graphql/generated/types";
 import { selectSelectedSessionId, selectSession } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
@@ -34,6 +39,8 @@ type PromptInputWithFaqProps = {
   agentId?: string;
   agentMode?: Agent_Mode_Enum;
   isChating?: boolean;
+  workflowTools?: WorkflowFragmentFragment[];
+  onRunWorkflowTool?: (tool: WorkflowFragmentFragment) => void;
   onChatingStatus?: (isChating: boolean, stauts: CHAT_STATUS_ENUM | null) => void;
 };
 
@@ -41,7 +48,9 @@ export default function PromptInputWithFaq({
   agentId,
   agentMode,
   isChating: isChating,
+  workflowTools = [],
   onChatingStatus,
+  onRunWorkflowTool,
 }: PromptInputWithFaqProps) {
   const t = useTranslations();
   const router = useRouter();
@@ -54,6 +63,7 @@ export default function PromptInputWithFaq({
 
   const [files, setFiles] = useState<ExtFile[]>([]);
   const [prompt, setPrompt] = useState<string>("");
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const [createMessageAndUpdateTopicHistoryMutation, { data, loading, error }] =
     useCreateMessageAndUpdateTopicHistoryMutation();
@@ -92,7 +102,17 @@ export default function PromptInputWithFaq({
     } else {
       setIsUploadOpen(true);
     }
-  }, [selectedSessionId]);
+  }, [
+    agentId,
+    createNewTopicWithMessageMutation,
+    dispatch,
+    pathname,
+    prompt,
+    router,
+    selectedSessionId,
+    t,
+    user_id,
+  ]);
 
   const closeUploadModal = () => {
     setIsUploadOpen(false);
@@ -157,18 +177,6 @@ export default function PromptInputWithFaq({
     setFiles([]);
   };
 
-  // const uploadFileListElement = files.map((item, index) => (
-  //   <UploadFile
-  //     key={index}
-  //     file={item.file}
-  //     fileName={item.fileName}
-  //     isLoading={item.isLoading}
-  //     className={item.className}
-  //     url={item.url}
-  //     removeFileHandler={removeFileHanlder}
-  //   />
-  // ));
-
   const sendButton = (
     <Tooltip showArrow content="Send message">
       <Button
@@ -213,14 +221,14 @@ export default function PromptInputWithFaq({
     </Tooltip>
   );
 
+  const runWorkflowTool = (tool: WorkflowFragmentFragment) => {
+    onRunWorkflowTool?.(tool);
+    setIsPopoverOpen(false);
+  };
+
   return (
     <div className="flex w-full max-w-full flex-col items-center px-2">
       <form className="flex w-full flex-col items-start rounded-medium bg-default-100 transition-colors hover:bg-default-200/70">
-        {/* <ScrollShadow
-          className="flex w-full flex-row flex-nowrap gap-2"
-          orientation="horizontal">
-          {uploadFileListElement}
-        </ScrollShadow> */}
         <PromptInput
           classNames={{
             inputWrapper: "!bg-transparent shadow-none",
@@ -255,24 +263,39 @@ export default function PromptInputWithFaq({
                 onClick={openUploadModal}>
                 {t("File")}
               </Button>
-              {/* <Button
-              size="sm"
-              startContent={
-                <Icon
-                  className="text-default-500"
-                  icon="solar:soundwave-linear"
-                  width={18}
-                />
-              }
-              variant="flat"
-            >
-              Voice
-            </Button> */}
+              {workflowTools.length > 0 && (
+                <Popover
+                  placement="top"
+                  isOpen={isPopoverOpen}
+                  onOpenChange={setIsPopoverOpen}>
+                  <PopoverTrigger>
+                    <Button
+                      size="sm"
+                      startContent={
+                        <Icon
+                          className="text-default-500"
+                          icon="carbon:application"
+                          width={18}
+                        />
+                      }
+                      variant="flat">
+                      {t("Tools")}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent>
+                    <WorkflowToolRunSelect
+                      workflowTools={workflowTools}
+                      onRunWorkflowTool={runWorkflowTool}
+                    />
+                  </PopoverContent>
+                </Popover>
+              )}
             </div>
             {/* <p className="py-1 text-tiny text-default-400">{prompt.length}/4000</p> */}
           </div>
         )}
       </form>
+
       {isUploadOpen && selectedSessionId && (
         <Modal
           isOpen={isUploadOpen}

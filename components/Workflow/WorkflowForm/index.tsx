@@ -1,13 +1,15 @@
 "use client";
 
 import UploadZone, { UploadFileType } from "@/components/UploadZone";
-import LibraryWorkflowRunningPane from "@/components/WorkflowForm/library-workflow-runing-pane";
-import NodeTypeList from "@/components/WorkflowForm/node-type-list";
-import WorkflowPane from "@/components/WorkflowForm/workflow-pane";
+import WorkflowBindPane from "@/components/Workflow/WorkflowBindPane";
+import LibraryWorkflowRunningPane from "@/components/Workflow/WorkflowForm/library-workflow-runing-pane";
+import NodeTypeList from "@/components/Workflow/WorkflowForm/node-type-list";
+import WorkflowPane from "@/components/Workflow/WorkflowForm/workflow-pane";
 import {
   FlowEdgeFragmentFragment,
   FlowNodeFragmentFragment,
   NodeTypeFragmentFragment,
+  Workflow_Type_Enum,
 } from "@/graphql/generated/types";
 import { Icon } from "@iconify/react";
 import {
@@ -16,8 +18,10 @@ import {
   Modal,
   ModalBody,
   ModalContent,
+  ModalFooter,
   ModalHeader,
   Spacer,
+  useDisclosure,
 } from "@nextui-org/react";
 import { Edge, Node } from "@xyflow/react";
 import "@xyflow/react/dist/base.css";
@@ -26,18 +30,24 @@ import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Conversation } from "../Conversation";
+import { Conversation } from "../../Conversation";
 
 interface WorkflowFormProps {
   agentId?: string;
   knowledgeBaseId?: string;
-  workflowType: "library" | "agent";
+  workflowType: "library" | "agent" | Workflow_Type_Enum;
   initialData: {
     id: string;
     name: string;
     description: string;
+    workflow_type: Workflow_Type_Enum | null;
     nodes?: FlowNodeFragmentFragment[];
     edges?: FlowEdgeFragmentFragment[];
+    r_agent_workflows?: Array<{
+      __typename?: "r_agent_workflow";
+      id: number;
+      agent_id: any;
+    }>;
   };
   nodeTypeList: NodeTypeFragmentFragment[];
   action: (formData: FormData) => Promise<{ success: boolean }>;
@@ -47,8 +57,14 @@ type FormValues = {
   id: string;
   name: string;
   description: string;
+  workflow_type: Workflow_Type_Enum | null | undefined;
   nodes: Node[];
   edges: Edge[];
+  r_agent_workflows?: Array<{
+    __typename?: "r_agent_workflow";
+    id: number;
+    agent_id: any;
+  }>;
 };
 
 export default function WorkflowForm({
@@ -67,6 +83,11 @@ export default function WorkflowForm({
   const [isWorkflowRunOpen, setIsWorkflowRunOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [testFile, setTestFile] = useState<{ id: string; filename: string } | null>(null);
+  const {
+    isOpen: isToolBindOpen,
+    onOpen: openToolBind,
+    onClose: closeToolBind,
+  } = useDisclosure();
 
   const flowId = initialData.id;
 
@@ -97,8 +118,10 @@ export default function WorkflowForm({
       id: flowId,
       name: initialData?.name || "",
       description: initialData?.description || "",
+      workflow_type: initialData?.workflow_type || null,
       nodes: initialNodes,
       edges: initialEdges,
+      r_agent_workflows: initialData?.r_agent_workflows || [],
     },
   });
   const currentNodes = watch("nodes");
@@ -108,13 +131,19 @@ export default function WorkflowForm({
     async (data) => {
       if (isSaving) return; // Prevent multiple submissions
       setIsSaving(true);
+      console.log("initialData", initialData);
       try {
         const formData = new FormData();
         formData.append("id", data.id);
         formData.append("name", data.name);
         formData.append("description", data.description);
+        formData.append("workflow_type", workflowType);
         formData.append("nodes", JSON.stringify(data.nodes));
         formData.append("edges", JSON.stringify(data.edges));
+        formData.append(
+          "r_agent_workflows",
+          JSON.stringify(initialData.r_agent_workflows),
+        );
 
         const result = await action(formData);
         if (result.success) {
@@ -215,6 +244,17 @@ export default function WorkflowForm({
           )}
         />
         <form className="flex justify-end" onSubmit={handleSubmit(onSubmit)}>
+          {workflowType == "agent" && (
+            <Button
+              color="default"
+              startContent={<Icon icon="mdi:toolbox" width="20" height="20" />}
+              // isLoading={isSaving}
+              // disabled={isSaving}
+              onClick={openToolBind}>
+              {t("Bind Tools")}
+            </Button>
+          )}
+          <Spacer x={2} />
           <Button
             type="submit"
             color="primary"
@@ -240,7 +280,7 @@ export default function WorkflowForm({
         </form>
       </div>
       <div className="flex h-[calc(100vh-340px)] w-full flex-row gap-2">
-        <div>
+        <div className="min-h-[600px]">
           <NodeTypeList nodeTypeList={nodeTypeList} />
         </div>
         <div className="z-20 min-h-[600px] flex-1 flex-grow border bg-white">
@@ -298,6 +338,34 @@ export default function WorkflowForm({
                     acceptFileTypes=".doc,.docx,.pdf,.ppt,.pptx,.xls,.xlsx,.txt,.json,.mp3,.mp4"
                   />
                 </ModalBody>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      )}
+      {agentId && (
+        <Modal
+          isOpen={isToolBindOpen}
+          onOpenChange={openToolBind}
+          onClose={closeToolBind}
+          size="4xl">
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
+                  {t("Bind Worflow Tools to Agent")}
+                </ModalHeader>
+                <ModalBody>
+                  <WorkflowBindPane agentId={agentId} />
+                </ModalBody>
+                <ModalFooter>
+                  {/* <Button color="danger" variant="light" onPress={onClose}>
+                关闭
+              </Button>
+              <Button as={Link} href={`/chat/${params.id}/workflow`} color="primary">
+                查看完整工作流页面
+              </Button> */}
+                </ModalFooter>
               </>
             )}
           </ModalContent>

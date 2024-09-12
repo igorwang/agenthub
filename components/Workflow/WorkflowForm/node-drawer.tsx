@@ -1,7 +1,7 @@
 "use client";
-import { InputSelectionPane } from "@/components/WorkflowForm/input-select-pane";
-import { nodeFormComponents } from "@/components/WorkflowForm/node-forms";
-import { OutputPane } from "@/components/WorkflowForm/output-pane";
+import { InputSelectionPane } from "@/components/Workflow/WorkflowForm/input-select-pane";
+import { nodeFormComponents } from "@/components/Workflow/WorkflowForm/node-forms";
+import { OutputPane } from "@/components/Workflow/WorkflowForm/output-pane";
 import { Node } from "@xyflow/react";
 import Drawer from "react-modern-drawer";
 

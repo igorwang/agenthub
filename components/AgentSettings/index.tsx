@@ -6,13 +6,14 @@ import { LibraryCart } from "@/components/Library/LibraryCart";
 import { LibraryFileHandle } from "@/components/Library/LibraryFile";
 import PromptFrom, { PromptFormHandle } from "@/components/PromptFrom";
 import RightHeader from "@/components/RightHeader";
-import WorkflowForm from "@/components/WorkflowForm";
+import WorkflowForm from "@/components/Workflow/WorkflowForm";
 import {
   FlowEdgeFragmentFragment,
   FlowNodeFragmentFragment,
   Knowledge_Base_Type_Enum,
   NodeTypeFragmentFragment,
   useGetAgentByIdQuery,
+  Workflow_Type_Enum,
 } from "@/graphql/generated/types";
 import { Button } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
@@ -36,6 +37,7 @@ interface AgentSettingsProps {
     id: string;
     name: string;
     description: string;
+    workflow_type: Workflow_Type_Enum;
     nodes?: FlowNodeFragmentFragment[];
     edges?: FlowEdgeFragmentFragment[];
   };
@@ -52,7 +54,7 @@ export default function AgentSettings({
   const [agent, setAgent] = useState<Agent | null>();
   const [libraryId, setLibraryId] = useState<string | null>();
   const searchParams = useSearchParams();
-  const [step, setStep] = useState<number>(parseInt(searchParams.get("step") || "1") - 1);
+  const [step, setStep] = useState<number>(parseInt(searchParams.get("step") || "1"));
 
   const params = useParams<{ id: string }>();
   const pathname = usePathname();
@@ -73,7 +75,7 @@ export default function AgentSettings({
     const stepParam = searchParams.get("step");
     if (stepParam) {
       const newStep = parseInt(stepParam);
-      if (newStep >= 0 && newStep <= 3) {
+      if (newStep >= 1 && newStep <= 4) {
         setStep(newStep);
       }
     } else {
@@ -105,9 +107,9 @@ export default function AgentSettings({
 
   const _renderContent = (currentStep: number) => {
     switch (currentStep) {
-      case 0:
-        return <AgentInformation agentId={id} isHiddenSaveButton={true} ref={agentRef} />;
       case 1:
+        return <AgentInformation agentId={id} isHiddenSaveButton={true} ref={agentRef} />;
+      case 2:
         return (
           <PromptFrom
             agentId={id}
@@ -119,9 +121,9 @@ export default function AgentSettings({
             onUpdateAgent={handleUpdateAgent}
           />
         );
-      case 2:
-        return <LibraryCart agentId={id} />;
       case 3:
+        return <LibraryCart agentId={id} />;
+      case 4:
         return (
           <div className="h-[80vh] w-full min-w-[600px] px-20">
             <WorkflowForm
@@ -133,24 +135,24 @@ export default function AgentSettings({
           </div>
         );
       default:
-        return <h1>Not Found</h1>;
+        return <AgentInformation agentId={id} isHiddenSaveButton={true} ref={agentRef} />;
     }
   };
 
   function onClickNext() {
     const currentStep = step;
     switch (currentStep) {
-      case 0:
+      case 1:
         if (agentRef?.current) {
           agentRef?.current?.handleSubmit();
         }
         break;
-      case 1:
+      case 2:
         if (promptFormRef.current) {
           promptFormRef.current.clickButton();
         }
         break;
-      case 2:
+      case 3:
         if (libraryRef.current) {
           libraryRef?.current?.saveLibraryInfo();
         }
@@ -194,7 +196,7 @@ export default function AgentSettings({
               {t("Previous")}
             </Button>
           )}
-          {step < 3 ? (
+          {step < 4 ? (
             <Button color={"primary"} onClick={() => onClickNext()}>
               {t("Next")}
             </Button>

@@ -64,6 +64,11 @@ query GetAgentByID($id: uuid!) {
         ...flowNodeFragment
       }
     }
+    r_agent_workflows {
+      workflow {
+        ...workflowFragment
+      }
+    }
   }
 }
 

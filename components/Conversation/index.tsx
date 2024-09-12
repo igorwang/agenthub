@@ -18,6 +18,7 @@ import {
   useGetAgentByIdQuery,
   useGetAgentUserRelationQuery,
   useSubscriptionFilesListSubscription,
+  WorkflowFragmentFragment,
 } from "@/graphql/generated/types";
 import {
   selectIsChangeSession,
@@ -118,10 +119,10 @@ export const Conversation: React.FC<ConversationProps> = ({
   const [isChating, setIsChating] = useState<boolean>(false);
   const [isConfigLoading, setIsConfigLoading] = useState(false);
   const [isDashboardLoading, setIsDashboardLoding] = useState(false);
-
+  const [workflowTools, setWorkflowTools] = useState<WorkflowFragmentFragment[]>([]);
   const [selectedSources, setSelectedSources] = useState<SourceType[]>([]);
   const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
-
+  const [recentUsedTools, setRecentUsedTools] = useState<WorkflowFragmentFragment[]>([]);
   const [sessionFiles, setSessionFiles] = useState<FilesListQuery["files"]>([]);
 
   const [sessionFilesContext, setSessionFilesContext] = useState("");
@@ -204,6 +205,14 @@ export const Conversation: React.FC<ConversationProps> = ({
         workflow_id: data?.agent_by_pk?.workflow?.id || null,
         mode: data?.agent_by_pk?.mode || null,
       });
+      setWorkflowTools(
+        data?.agent_by_pk?.r_agent_workflows
+          .map((item) => item.workflow)
+          .filter(
+            (workflow): workflow is WorkflowFragmentFragment =>
+              workflow !== null && workflow !== undefined,
+          ) || [],
+      );
     }
   }, [agentId, data]);
 
@@ -249,7 +258,7 @@ export const Conversation: React.FC<ConversationProps> = ({
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      router.push(`${pathname}/settings`);
+      router.push(`${pathname}/settings?step=1`);
       setIsConfigLoading(true);
     },
     [router, pathname],
@@ -286,6 +295,13 @@ export const Conversation: React.FC<ConversationProps> = ({
 
   const handleSessionFileChange = (files: FilesListQuery["files"]) => {
     setSessionFiles(files);
+  };
+
+  const handleRunWorkflowTool = (tool: WorkflowFragmentFragment) => {
+    console.log(tool);
+    setRecentUsedTools((prev) =>
+      [tool, ...prev.filter((t) => t.id !== tool.id)].slice(0, 3),
+    );
   };
 
   if (!agent || loading) {
@@ -386,7 +402,7 @@ export const Conversation: React.FC<ConversationProps> = ({
             <div className="max-w-[calc(100%-40px)]">
               <ScrollShadow
                 hideScrollBar
-                className="flex max-w-full flex-nowrap gap-2 overflow-auto"
+                className="custom-scrollbar flex max-w-full flex-nowrap gap-2 overflow-auto"
                 orientation="horizontal">
                 <div className="flex gap-2 pb-2">
                   {selectedSources?.map((item, index) => (
@@ -407,6 +423,34 @@ export const Conversation: React.FC<ConversationProps> = ({
                   ))}
                 </div>
               </ScrollShadow>
+            </div>
+            <div className="flex max-w-[calc(100%-40px)] gap-2">
+              {recentUsedTools.map((item, index) => (
+                <Button
+                  key={index}
+                  size="sm"
+                  onClick={() => handleRunWorkflowTool(item)}
+                  startContent={
+                    <Icon
+                      icon={item.icon || "fluent:toolbox-24-regular"}
+                      className="text-default-500"
+                      width={18}
+                    />
+                  }
+                  variant="flat">
+                  {item.name}
+                </Button>
+              ))}
+              {recentUsedTools.length > 0 && (
+                <Button
+                  isIconOnly
+                  size="sm"
+                  variant="flat"
+                  startContent={
+                    <Icon icon="ic:round-close" className="text-default-500" width={18} />
+                  }
+                  onClick={() => setRecentUsedTools([])}></Button>
+              )}
             </div>
             <div className="flex w-full max-w-full flex-col">
               {(messageCount >= 20 || isTestMode) && (
@@ -445,7 +489,9 @@ export const Conversation: React.FC<ConversationProps> = ({
                   agentId={agentId}
                   agentMode={agent.mode || Agent_Mode_Enum.Simple}
                   isChating={isChating}
-                  onChatingStatus={handleSetChatStatus}></PromptInputWithFaq>
+                  onChatingStatus={handleSetChatStatus}
+                  workflowTools={workflowTools}
+                  onRunWorkflowTool={handleRunWorkflowTool}></PromptInputWithFaq>
               )}
               <p className="px-2 text-tiny text-default-400">
                 {t("AI can also make mistakes")}
