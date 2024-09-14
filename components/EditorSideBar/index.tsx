@@ -23,7 +23,7 @@ export const EditorSideBar = memo(
       "absolute top-0 right-0 bg-white lg:bg-white/30 lg:backdrop-blur-xl h-full lg:h-auto lg:relative z-[999] w-0 duration-300 transition-all",
       "dark:bg-black lg:dark:bg-black/30",
       !isOpen && "border-l-transparent",
-      isOpen && "w-64 border-l border-l-neutral-200 dark:border-l-neutral-800",
+      isOpen && "w-64 border-r  border-r-neutral-200 dark:border-r-neutral-800",
     );
 
     return (
