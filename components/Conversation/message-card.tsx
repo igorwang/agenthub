@@ -379,6 +379,14 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
                 <Icon className="text-lg text-default-600" icon="hugeicons:idea-01" />
                 <span className="text-slate-500">{t("Answer")}:</span>
               </div>
+              {isChating && message?.toString().length === 0 && (
+                <div className="flex items-center space-x-2 text-slate-500">
+                  <span>{t("Thinking")}</span>
+                  <span className="animate-pulse">.</span>
+                  <span className="animation-delay-200 animate-pulse">.</span>
+                  <span className="animation-delay-400 animate-pulse">.</span>
+                </div>
+              )}
               <div className={clsx("flex flex-col overflow-hidden p-1")}>
                 <MarkdownRenderer content={message?.toString() || ""}></MarkdownRenderer>
               </div>

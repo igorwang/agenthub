@@ -22,11 +22,6 @@ function SmartEditor({ editable = true }: SmartEditorProps) {
   return (
     <div className="flex h-full flex-row">
       <div className="custom-scrollbar relative flex h-full flex-1 flex-col overflow-auto rounded border border-gray-300">
-        {/* <DragHandle editor={editor}>
-          <div className="cursor-move p-1">
-            <Icon icon="mdi:drag-vertical" fontSize={20} />
-          </div>
-        </DragHandle> */}
         <ContentItemMenu editor={editor} />
         <EditorContent editor={editor} />
       </div>
