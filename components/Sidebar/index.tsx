@@ -7,7 +7,6 @@ import { Avatar, Button, Link, ScrollShadow, Spacer, Tooltip } from "@nextui-org
 import SidebarNav from "./sidebar-nav";
 
 import { ThemeSwitch } from "@/components/theme-switch";
-import { Role_Enum } from "@/graphql/generated/types";
 import { signOut, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import LanguageSwitcher from "./language-switcher";
@@ -20,16 +19,13 @@ export default function SideBar() {
   const t = useTranslations("");
   const userRoles = session.data?.user?.roles;
 
-  const isCreatorView =
-    userRoles &&
-    userRoles.some((role) =>
-      [Role_Enum.Admin, Role_Enum.Creator].includes(role as Role_Enum),
-    );
   const handleSignOut = async () => {
     await signOut({ callbackUrl: "/auth/login" });
   };
 
   const sidebarItems = useSidebarItems(userRoles || []);
+
+  const isAdmin = userRoles?.includes("admin");
 
   return (
     <div className="relative hidden h-screen w-14 flex-col items-center border-r-small border-divider px-2 py-4 sm:flex">
@@ -56,6 +52,13 @@ export default function SideBar() {
           <SidebarNav isCompact defaultSelectedKey="chat" items={sidebarItems} />
         </div>
         <div className="mt-auto flex flex-col items-center gap-1">
+          {isAdmin && (
+            <Tooltip content="User Management" placement="right">
+              <Button isIconOnly href="/user-management" as={Link} variant="light">
+                <Icon className="text-default-500" icon="mdi:account-group" width={24} />
+              </Button>
+            </Tooltip>
+          )}
           <ThemeSwitch className="hidden pb-2" />
           <LanguageSwitcher />
           <Tooltip content="GitHub" placement="right">
