@@ -160,6 +160,7 @@
   "Sessions": "Sessions",
   "Settings": "Settings",
   "Share": "Share",
+  "Share Link": "Share Link",
   "Size": "Size",
   "Sorry, you do not have permission to access this page": "Sorry, you do not have permission to access this page",
   "Start": "Start",
@@ -202,10 +203,14 @@
   "Workflow List": "Workflow List",
   "Workflow deleted successfully": "Workflow deleted successfully",
   "Workflow updated successfully": "Workflow updated successfully",
+  "Wrong share link": "Wrong share link",
   "You can customize additional input parameters through the input schema": "You can customize additional input parameters through the input schema",
   "You have not created any knowledge bases yet": "You have not created any knowledge bases yet",
   "You have unsaved changes": "You have unsaved changes",
   "close": "close",
+  "copied": "copied",
+  "copy_link": "copy_link",
   "library Sources": "library Sources",
+  "open_link": "open_link",
   "submit": "submit"
 }

@@ -110,6 +110,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           process.env.HASURA_API_SECRET as string,
           {
             algorithm: "HS256",
+            expiresIn: 60 * 60 * 24 * 7,
           },
         );
         if (profile?.sub) {
