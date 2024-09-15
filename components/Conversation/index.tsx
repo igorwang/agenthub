@@ -119,6 +119,7 @@ export const Conversation: React.FC<ConversationProps> = ({
   const [isChating, setIsChating] = useState<boolean>(false);
   const [isConfigLoading, setIsConfigLoading] = useState(false);
   const [isDashboardLoading, setIsDashboardLoding] = useState(false);
+  const [isShareLoading, setIsShareLoading] = useState(false);
   const [workflowTools, setWorkflowTools] = useState<WorkflowFragmentFragment[]>([]);
   const [selectedSources, setSelectedSources] = useState<SourceType[]>([]);
   const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
@@ -274,6 +275,12 @@ export const Conversation: React.FC<ConversationProps> = ({
     [router, pathname, agent?.name],
   );
 
+  const handleShareClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsShareLoading(true);
+  }, []);
+
   const handleSelectedSource = (source: SourceType, selected: boolean) => {
     if (selected) {
       const hasThisSource = selectedSources.some((item) => item.fileId == source.fileId);
@@ -354,8 +361,10 @@ export const Conversation: React.FC<ConversationProps> = ({
         <AgentConfigButtons
           onConfigClick={handleConfigClick}
           onDashboardClick={handleToDashboard}
+          onShareClick={handleShareClick}
           isConfigLoading={isConfigLoading}
           isDashboardLoading={isDashboardLoading}
+          isShareLoading={isShareLoading}
         />
       )}
     </div>

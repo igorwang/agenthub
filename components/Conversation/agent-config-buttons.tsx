@@ -6,15 +6,19 @@ import React, { useEffect, useState } from "react";
 interface AgentConfigButtonsProps {
   onConfigClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   onDashboardClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onShareClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   isConfigLoading: boolean;
   isDashboardLoading: boolean;
+  isShareLoading: boolean;
 }
 
 const AgentConfigButtons: React.FC<AgentConfigButtonsProps> = ({
   onConfigClick,
   onDashboardClick,
+  onShareClick,
   isConfigLoading,
   isDashboardLoading,
+  isShareLoading,
 }) => {
   const t = useTranslations();
   const [isRendered, setIsRendered] = useState<boolean>(false);
@@ -29,6 +33,16 @@ const AgentConfigButtons: React.FC<AgentConfigButtonsProps> = ({
 
   return (
     <div className="flex gap-1">
+      <Tooltip content={t("Share")}>
+        <Button
+          isIconOnly
+          variant="light"
+          onClick={onShareClick}
+          isLoading={isShareLoading}
+          disabled={isShareLoading}>
+          {!isShareLoading && <Icon icon="lucide:share" fontSize={24} />}
+        </Button>
+      </Tooltip>
       <Tooltip content={t("Configure Agent")}>
         <Button
           isIconOnly
