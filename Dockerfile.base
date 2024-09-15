@@ -1,11 +1,17 @@
 # Use an official Node.js runtime as a parent image
-FROM node:20.11-alpine3.19 AS base
+FROM node:20.11-alpine3.19 
 
 # Set the working directory
 WORKDIR /app
 
-# Copy package.json and yarn.lock
-COPY package.json yarn.lock ./
+# Install dependencies based on the preferred package manager
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* .npmrc ./
+RUN \
+    if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+    elif [ -f package-lock.json ]; then npm ci; \
+    elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i; \
+    else echo "Lockfile not found." && exit 1; \
+    fi
 
 # Install dependencies using Yarn
 RUN yarn install

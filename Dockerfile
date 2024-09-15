@@ -1,5 +1,5 @@
 # Use an official Node.js runtime as a parent image
-FROM node:20.11-alpine3.19 AS base
+FROM igorwang/chatapp:v2.0-base AS base
 
 # 1. Install dependencies only when needed
 FROM base AS deps
