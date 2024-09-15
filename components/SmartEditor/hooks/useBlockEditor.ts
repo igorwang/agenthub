@@ -160,7 +160,7 @@ export const useBlockEditor = ({ editable = true }: { editable?: boolean }) => {
     editorProps: {
       attributes: {
         class:
-          "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl min-h-[200px] p-4 border border-gray-300 rounded focus:outline-none",
+          "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl min-h-[200px] p-1 focus:outline-none",
       },
     },
     extensions: [
