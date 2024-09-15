@@ -1,11 +1,11 @@
 "use client";
 
-import AgentConfigButtons from "@/components/Conversation/agent-config-buttons";
 import MessageWindow from "@/components/Conversation/message-window";
 import MessageWindowWithWorkflow from "@/components/Conversation/message-windown-with-workflow";
 import PromptInputWithFaq from "@/components/Conversation/prompt-input-with-faq";
 import SessionFilesSidebar from "@/components/Conversation/session-files-sidebar";
 import { RoleChip } from "@/components/ui/role-icons";
+import ShareLinkCard from "@/components/ui/share-link-card";
 import {
   Agent_Mode_Enum,
   FilesListQuery,
@@ -29,7 +29,16 @@ import {
 import { AppDispatch } from "@/lib/store";
 import { CHAT_STATUS_ENUM, MessageType, SourceType } from "@/types/chatTypes";
 import { Icon } from "@iconify/react";
-import { Avatar, Button, Chip, ScrollShadow, Spacer, Tooltip } from "@nextui-org/react";
+import {
+  Avatar,
+  Button,
+  Chip,
+  Popover,
+  PopoverContent,
+  ScrollShadow,
+  Spacer,
+  Tooltip,
+} from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
@@ -38,6 +47,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -119,11 +129,14 @@ export const Conversation: React.FC<ConversationProps> = ({
   const [isChating, setIsChating] = useState<boolean>(false);
   const [isConfigLoading, setIsConfigLoading] = useState(false);
   const [isDashboardLoading, setIsDashboardLoding] = useState(false);
+  const [isShareLoading, setIsShareLoading] = useState(false);
   const [workflowTools, setWorkflowTools] = useState<WorkflowFragmentFragment[]>([]);
   const [selectedSources, setSelectedSources] = useState<SourceType[]>([]);
   const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
   const [recentUsedTools, setRecentUsedTools] = useState<WorkflowFragmentFragment[]>([]);
   const [sessionFiles, setSessionFiles] = useState<FilesListQuery["files"]>([]);
+  const [shareLink, setShareLink] = useState<string | null>(null);
+  const [isSharePopoverOpen, setIsSharePopoverOpen] = useState<boolean>(false);
 
   const [sessionFilesContext, setSessionFilesContext] = useState("");
 
@@ -154,6 +167,8 @@ export const Conversation: React.FC<ConversationProps> = ({
 
   const [createNewMessageMutation, { error: createError }] =
     useCreateNewMessageMutation();
+
+  const shareButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (sessionFilesData?.files) {
@@ -274,6 +289,32 @@ export const Conversation: React.FC<ConversationProps> = ({
     [router, pathname, agent?.name],
   );
 
+  const handleShareClick = useCallback(
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsShareLoading(true);
+      try {
+        const response = await fetch("/api/chat/agent/share", {
+          method: "POST",
+          body: JSON.stringify({
+            agent_id: agentId,
+            expires_at: 60 * 60 * 24,
+          }),
+        });
+        const data = await response.json();
+        setIsShareLoading(false);
+        setShareLink(`${window.location.origin}/discover/share/${data.key}`);
+        setIsSharePopoverOpen(true);
+        toast.success("Share link created");
+      } catch (error) {
+        toast.error("Create share link error");
+      }
+      setIsShareLoading(false);
+    },
+    [agentId],
+  );
+
   const handleSelectedSource = (source: SourceType, selected: boolean) => {
     if (selected) {
       const hasThisSource = selectedSources.some((item) => item.fileId == source.fileId);
@@ -350,14 +391,49 @@ export const Conversation: React.FC<ConversationProps> = ({
           </div>
         </div>
       </div>
-      {agent.creator_id === session.data?.user?.id && (
-        <AgentConfigButtons
-          onConfigClick={handleConfigClick}
-          onDashboardClick={handleToDashboard}
-          isConfigLoading={isConfigLoading}
-          isDashboardLoading={isDashboardLoading}
-        />
-      )}
+      <div className="flex gap-1">
+        {agent.creator_id === session.data?.user?.id && (
+          <Popover
+            isOpen={isSharePopoverOpen}
+            onOpenChange={(open) => setIsSharePopoverOpen(open)}
+            triggerRef={shareButtonRef}>
+            <Tooltip content={t("Share")}>
+              <Button
+                ref={shareButtonRef}
+                isIconOnly
+                variant="light"
+                onClick={handleShareClick}
+                isLoading={isShareLoading}
+                disabled={isShareLoading}>
+                {!isShareLoading && <Icon icon="lucide:share" fontSize={24} />}
+              </Button>
+            </Tooltip>
+            <PopoverContent>
+              {shareLink && <ShareLinkCard shareLink={shareLink} />}
+            </PopoverContent>
+          </Popover>
+        )}
+        <Tooltip content={t("Configure Agent")}>
+          <Button
+            isIconOnly
+            variant="light"
+            onClick={handleConfigClick}
+            isLoading={isConfigLoading}
+            disabled={isConfigLoading || isDashboardLoading}>
+            {!isConfigLoading && <Icon icon="lucide:settings" fontSize={24} />}
+          </Button>
+        </Tooltip>
+        <Tooltip content={t("Agent Dashboard")}>
+          <Button
+            isIconOnly
+            variant="light"
+            onClick={handleToDashboard}
+            isLoading={isDashboardLoading}
+            disabled={isConfigLoading || isDashboardLoading}>
+            {!isDashboardLoading && <Icon icon="lucide:layout-dashboard" fontSize={24} />}
+          </Button>
+        </Tooltip>
+      </div>
     </div>
   );
 
@@ -372,7 +448,7 @@ export const Conversation: React.FC<ConversationProps> = ({
   return (
     <ConversationContext.Provider value={contextValue}>
       <div className="flex h-full w-full max-w-full flex-col overflow-auto">
-        {!hiddenHeader && headerElement}
+        <div className="relative flex flex-col">{!hiddenHeader && headerElement}</div>
         <div className="flex max-h-full max-w-full flex-grow flex-row overflow-auto">
           <div className="min-[400px] mx-auto flex max-w-7xl flex-grow flex-col items-center overflow-auto px-10 pt-4">
             {agent.mode === Agent_Mode_Enum.Workflow && agent.workflow_id ? (

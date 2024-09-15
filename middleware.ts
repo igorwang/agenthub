@@ -9,7 +9,7 @@ const locales = ["en", "hk", "zh"];
 const defaultLocale = "en";
 
 const PUBLIC_FILE = /\.(.*)$/;
-const protectedRoutes = ["/chat", "/search", "/library", "/discover"];
+const protectedRoutes = ["/chat", "/search", "/library", "/discover", "/user-management"];
 
 function getLocale(request: NextRequest): string {
   const negotiator = new Negotiator({

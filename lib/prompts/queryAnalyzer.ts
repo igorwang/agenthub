@@ -52,6 +52,7 @@ export async function queryAnalyzer(
   5. isFollowUp: Is the user's latest question related to the previous question, and does it require a new database search?
   Please output strictly in JSON format, for example:
   {{"isRelated":boolean,"isFollowUp":boolean ,"refineQuery":String | [String], "keywords":[String], "knowledge_base_ids":[String]}}
+  6. If the user's input language is not English, generate bilingual refineQuery in both the original language and English.
   `;
 
   const tools = [

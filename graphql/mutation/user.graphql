@@ -1,0 +1,16 @@
+mutation deleteUserRoles($where: r_user_role_bool_exp = { id: {} }) {
+  delete_r_user_role(where: $where) {
+    affected_rows
+  }
+}
+
+mutation insertUserRoles($objects: [r_user_role_insert_input!] = {}) {
+  insert_r_user_role(objects: $objects) {
+    returning {
+      id
+      role
+      user_id
+    }
+    affected_rows
+  }
+}

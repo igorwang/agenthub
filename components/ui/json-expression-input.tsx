@@ -6,7 +6,7 @@ import { Extension } from "@tiptap/core";
 import { Plugin, PluginKey } from "@tiptap/pm/state";
 import { Decoration, DecorationSet } from "@tiptap/pm/view";
 import { EditorContent, Editor as ReactEditor, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
+import { StarterKit } from "@tiptap/starter-kit";
 import { JSONPath } from "jsonpath-plus";
 import React, { useCallback, useEffect, useState } from "react";
 
@@ -102,7 +102,7 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
 
   const editor = useEditor({
     immediatelyRender: false,
-    extensions: [StarterKit, JsonExpression],
+    extensions: [StarterKit as any, JsonExpression],
     content: value || defaultValue,
     editable: !isDisabled && !isReadOnly,
     autofocus: autoFocus,

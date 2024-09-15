@@ -4,6 +4,8 @@ import { siteConfig } from "@/config/site";
 import "@/styles/globals.css";
 import clsx from "clsx";
 import { Metadata, Viewport } from "next";
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
 
 export const metadata: Metadata = {
   title: {
@@ -23,7 +25,9 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function AuthLayout({ children }: { children: React.ReactNode }) {
+export default async function AuthLayout({ children }: { children: React.ReactNode }) {
+  const messages = await getMessages();
+
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <head />
@@ -33,12 +37,13 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           fontSans.variable,
         )}>
         <Providers themeProps={{ attribute: "class", defaultTheme: "white" }}>
-          <div className="relative flex h-screen flex-col">
-            {/* <Navbar /> */}
-            <main className="container mx-auto max-w-7xl flex-grow px-6 pt-16">
-              {children}
-            </main>
-            {/* <footer className="flex w-full items-center justify-center py-3">
+          <NextIntlClientProvider messages={messages}>
+            <div className="relative flex h-screen flex-col">
+              {/* <Navbar /> */}
+              <main className="container mx-auto max-w-7xl flex-grow px-6 pt-16">
+                {children}
+              </main>
+              {/* <footer className="flex w-full items-center justify-center py-3">
               <Link
                 isExternal
                 className="flex items-center gap-1 text-current"
@@ -48,7 +53,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                 <p className="text-primary">Techower</p>
               </Link>
             </footer> */}
-          </div>
+            </div>
+          </NextIntlClientProvider>
         </Providers>
       </body>
     </html>

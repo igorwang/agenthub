@@ -251,7 +251,7 @@ export const ChatList: React.FC<ChatListProps> = ({
       {/* <ScrollShadow
         className="flex-grow"
         size={0}> */}
-      {chatListOpenStatus && <div>{chatListContent}</div>}
+      {<div>{chatListContent}</div>}
       {_renderModal()}
       {/* </ScrollShadow> */}
       {!chatListOpenStatus && returnButton}
