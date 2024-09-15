@@ -1,5 +1,12 @@
+import ShareLinkCard from "@/components/ui/share-link-card";
 import { Icon } from "@iconify/react";
-import { Button, Tooltip } from "@nextui-org/react";
+import {
+  Button,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Tooltip,
+} from "@nextui-org/react";
 import { useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
 
@@ -10,6 +17,7 @@ interface AgentConfigButtonsProps {
   isConfigLoading: boolean;
   isDashboardLoading: boolean;
   isShareLoading: boolean;
+  shareLink: string;
 }
 
 const AgentConfigButtons: React.FC<AgentConfigButtonsProps> = ({
@@ -19,10 +27,11 @@ const AgentConfigButtons: React.FC<AgentConfigButtonsProps> = ({
   isConfigLoading,
   isDashboardLoading,
   isShareLoading,
+  shareLink,
 }) => {
   const t = useTranslations();
   const [isRendered, setIsRendered] = useState<boolean>(false);
-
+  const [isSharePopoverOpen, setIsSharePopoverOpen] = useState<boolean>(false);
   useEffect(() => {
     setIsRendered(true);
   }, []);
@@ -33,16 +42,25 @@ const AgentConfigButtons: React.FC<AgentConfigButtonsProps> = ({
 
   return (
     <div className="flex gap-1">
-      <Tooltip content={t("Share")}>
-        <Button
-          isIconOnly
-          variant="light"
-          onClick={onShareClick}
-          isLoading={isShareLoading}
-          disabled={isShareLoading}>
-          {!isShareLoading && <Icon icon="lucide:share" fontSize={24} />}
-        </Button>
-      </Tooltip>
+      <Popover
+        isOpen={isSharePopoverOpen}
+        onOpenChange={(open) => setIsSharePopoverOpen(open)}>
+        <PopoverTrigger>
+          <Tooltip content={t("Share")}>
+            <Button
+              isIconOnly
+              variant="light"
+              onClick={onShareClick}
+              isLoading={isShareLoading}
+              disabled={isShareLoading}>
+              {!isShareLoading && <Icon icon="lucide:share" fontSize={24} />}
+            </Button>
+          </Tooltip>
+        </PopoverTrigger>
+        <PopoverContent>
+          {shareLink && <ShareLinkCard shareLink={shareLink} />}
+        </PopoverContent>
+      </Popover>
       <Tooltip content={t("Configure Agent")}>
         <Button
           isIconOnly
