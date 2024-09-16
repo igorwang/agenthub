@@ -1,8 +1,8 @@
 # Use an official Node.js runtime as a parent image
-FROM igorwang/chatapp:v2.0-base AS base
+FROM node:20.11-alpine3.19 AS base
 
 # 1. Install dependencies only when needed
-FROM base AS deps
+FROM igorwang/chatapp:v2.0-base AS deps
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
 
@@ -19,7 +19,7 @@ RUN \
     elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i; \
     else echo "Lockfile not found." && exit 1; \
     fi
-
+    
 
 # 2. Rebuild the source code only when needed
 FROM base AS builder
