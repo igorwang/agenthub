@@ -314,7 +314,7 @@ export default function LibraryFileList({
               <Button
                 color="primary"
                 variant="bordered"
-                startContent={<Icon icon="icon-park-outline:more" width={18} />}>
+                endContent={<Icon icon="icon-park-outline:more" width={18} />}>
                 {t("More")}
               </Button>
             </DropdownTrigger>
