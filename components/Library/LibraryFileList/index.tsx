@@ -17,6 +17,10 @@ import {
 import { Icon } from "@iconify/react";
 import {
   Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
   Input,
   Modal,
   ModalBody,
@@ -302,45 +306,70 @@ export default function LibraryFileList({
               {t("Delete Files")}
             </Button>
           )}
-          {knowledgeBaseDetail?.knowledge_base_by_pk?.export_key && (
-            <Tooltip content={t("Download latest exported library")}>
-              <Button
-                color="primary"
-                variant="bordered"
-                isDisabled={isDownloading}
-                isLoading={isDownloading}
-                onClick={() => {
-                  handleDownloadLibrary(
-                    knowledgeBaseDetail?.knowledge_base_by_pk?.export_key || "",
-                  );
-                }}
-                startContent={<Icon icon="solar:download-linear" width={18} />}>
-                {t("Download")}
-              </Button>
-            </Tooltip>
-          )}
-          <Button
-            color="secondary"
-            isDisabled={isExporting}
-            isLoading={isExporting}
-            onClick={() => {
-              handleExportLibrary();
-            }}
-            startContent={<Icon icon="solar:download-linear" width={18} />}>
-            {t("Export Library")}
-          </Button>
-          <Button
-            color="danger"
-            isDisabled={isRebuiding}
-            isLoading={isRebuiding}
-            onClick={() => {
-              setRebuildLibraryModal(true);
-            }}>
-            {t("Rebuild Library")}
-          </Button>
           <Button color="primary" endContent={<PlusIcon />} onClick={openUploadModal}>
             {t("Add New")}
           </Button>
+          <Dropdown>
+            <DropdownTrigger>
+              <Button
+                color="primary"
+                variant="bordered"
+                startContent={<Icon icon="icon-park-outline:more" width={18} />}>
+                {t("More")}
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu className="w-48">
+              <DropdownItem className="data-[hover]:bg-transparent">
+                {knowledgeBaseDetail?.knowledge_base_by_pk?.export_key && (
+                  <Tooltip content={t("Download latest exported library")}>
+                    <Button
+                      color="primary"
+                      variant="light"
+                      className="w-full"
+                      isDisabled={isDownloading}
+                      isLoading={isDownloading}
+                      onClick={() => {
+                        handleDownloadLibrary(
+                          knowledgeBaseDetail?.knowledge_base_by_pk?.export_key || "",
+                        );
+                      }}
+                      startContent={<Icon icon="solar:download-linear" width={18} />}>
+                      {t("Download Library")}
+                    </Button>
+                  </Tooltip>
+                )}
+              </DropdownItem>
+              <DropdownItem className="data-[hover]:bg-transparent">
+                <Button
+                  color="secondary"
+                  variant="light"
+                  className="w-full"
+                  isDisabled={isExporting}
+                  isLoading={isExporting}
+                  onClick={() => {
+                    handleExportLibrary();
+                  }}
+                  startContent={<Icon icon="solar:download-linear" width={18} />}>
+                  {t("Export Library")}
+                </Button>
+              </DropdownItem>
+
+              <DropdownItem className="data-[hover]:bg-transparent">
+                <Button
+                  color="danger"
+                  variant="light"
+                  className="w-full"
+                  isDisabled={isRebuiding}
+                  isLoading={isRebuiding}
+                  startContent={<Icon icon="icon-park-outline:redo" width={18} />}
+                  onClick={() => {
+                    setRebuildLibraryModal(true);
+                  }}>
+                  {t("Rebuild Library")}
+                </Button>
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
         </div>
       </div>
 
