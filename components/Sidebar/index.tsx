@@ -53,7 +53,7 @@ export default function SideBar() {
         </div>
         <div className="mt-auto flex flex-col items-center gap-1">
           {isAdmin && (
-            <Tooltip content="User Management" placement="right">
+            <Tooltip content={t("User Management")} placement="right">
               <Button isIconOnly href="/user-management" as={Link} variant="light">
                 <Icon className="text-default-500" icon="mdi:account-group" width={24} />
               </Button>
@@ -70,7 +70,7 @@ export default function SideBar() {
               <Icon className="text-default-500" icon="grommet-icons:github" width={24} />
             </Button>
           </Tooltip>
-          <Tooltip content="Help & Feedback" placement="right">
+          <Tooltip content={t("Help & Feedback")} placement="right">
             <Button
               isIconOnly
               className="hidden"
