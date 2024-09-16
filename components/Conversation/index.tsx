@@ -273,7 +273,7 @@ export const Conversation: React.FC<ConversationProps> = ({
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      router.push(`${pathname}/settings?step=1`);
+      router.push(`${pathname}/settings?step=0`);
       setIsConfigLoading(true);
     },
     [router, pathname],
@@ -391,8 +391,8 @@ export const Conversation: React.FC<ConversationProps> = ({
           </div>
         </div>
       </div>
-      <div className="flex gap-1">
-        {agent.creator_id === session.data?.user?.id && (
+      {agent.creator_id === session.data?.user?.id && (
+        <div className="flex gap-1">
           <Popover
             isOpen={isSharePopoverOpen}
             onOpenChange={(open) => setIsSharePopoverOpen(open)}
@@ -412,28 +412,30 @@ export const Conversation: React.FC<ConversationProps> = ({
               {shareLink && <ShareLinkCard shareLink={shareLink} />}
             </PopoverContent>
           </Popover>
-        )}
-        <Tooltip content={t("Configure Agent")}>
-          <Button
-            isIconOnly
-            variant="light"
-            onClick={handleConfigClick}
-            isLoading={isConfigLoading}
-            disabled={isConfigLoading || isDashboardLoading}>
-            {!isConfigLoading && <Icon icon="lucide:settings" fontSize={24} />}
-          </Button>
-        </Tooltip>
-        <Tooltip content={t("Agent Dashboard")}>
-          <Button
-            isIconOnly
-            variant="light"
-            onClick={handleToDashboard}
-            isLoading={isDashboardLoading}
-            disabled={isConfigLoading || isDashboardLoading}>
-            {!isDashboardLoading && <Icon icon="lucide:layout-dashboard" fontSize={24} />}
-          </Button>
-        </Tooltip>
-      </div>
+          <Tooltip content={t("Configure Agent")}>
+            <Button
+              isIconOnly
+              variant="light"
+              onClick={handleConfigClick}
+              isLoading={isConfigLoading}
+              disabled={isConfigLoading || isDashboardLoading}>
+              {!isConfigLoading && <Icon icon="lucide:settings" fontSize={24} />}
+            </Button>
+          </Tooltip>
+          <Tooltip content={t("Agent Dashboard")}>
+            <Button
+              isIconOnly
+              variant="light"
+              onClick={handleToDashboard}
+              isLoading={isDashboardLoading}
+              disabled={isConfigLoading || isDashboardLoading}>
+              {!isDashboardLoading && (
+                <Icon icon="lucide:layout-dashboard" fontSize={24} />
+              )}
+            </Button>
+          </Tooltip>
+        </div>
+      )}
     </div>
   );
 

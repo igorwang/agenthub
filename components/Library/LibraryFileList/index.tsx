@@ -7,19 +7,26 @@ import { PlusIcon } from "@/components/ui/icons";
 import UploadZone, { UploadFileType } from "@/components/UploadZone";
 import {
   FilesListQuery,
+  KnowledgeBaseDetailQuery,
   Order_By,
   Status_Enum,
   useBatchDeleteFilesMutation,
   useFilesListQuery,
+  useKnowledgeBaseDetailQuery,
 } from "@/graphql/generated/types";
 import { Icon } from "@iconify/react";
 import {
   Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
   Input,
   Modal,
   ModalBody,
   ModalContent,
   ModalHeader,
+  Tooltip,
 } from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -53,6 +60,14 @@ export default function LibraryFileList({
   const [reprocessingFiles, setReprocessingFiles] = useState<Set<string>>(new Set());
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [selectedFileList, setSelectedFileList] = useState<string[]>([]);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [knowledgeBaseDetail, setKnowledgeBaseDetail] =
+    useState<KnowledgeBaseDetailQuery | null>(null);
+  const { data: knowledgeBaseDetailData } = useKnowledgeBaseDetailQuery({
+    variables: { id: knowledgeBaseId },
+  });
+
   const t = useTranslations("");
 
   const router = useRouter();
@@ -94,6 +109,12 @@ export default function LibraryFileList({
       setFiles(data.files);
     }
   }, [data]);
+
+  useEffect(() => {
+    if (knowledgeBaseDetailData) {
+      setKnowledgeBaseDetail(knowledgeBaseDetailData);
+    }
+  }, [knowledgeBaseDetailData]);
 
   const handleSetPage = (page: number) => {
     setPage(page);
@@ -188,6 +209,60 @@ export default function LibraryFileList({
     [batchDeleteFilesMutation, refetch, toast],
   );
 
+  const handleExportLibrary = useCallback(async () => {
+    setIsExporting(true);
+    try {
+      const response = await fetch("/api/collection/export", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          knowledge_base_id: knowledgeBaseId,
+        }),
+      });
+      const result = await response.json();
+      toast.success(
+        t(`Library exported successfully`, {
+          en: "Library exported successfully; Please wait for the process.",
+        }),
+      );
+    } catch (error) {
+      console.error(t("Error to export library"), error);
+      toast.error(t(`Failed to export library`));
+    } finally {
+      setIsExporting(false);
+    }
+  }, [knowledgeBaseId, refetch]);
+
+  const handleDownloadLibrary = useCallback(
+    async (key: string) => {
+      setIsDownloading(true);
+      try {
+        const response = await fetch("/api/file/get_signed_url", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            bucket: "chat",
+            key: key,
+            expires: 60 * 60,
+          }),
+        });
+        const result = await response.json();
+        window.open(result.url, "_blank");
+        toast.success(t(`Library downloaded successfully`));
+      } catch (error) {
+        console.error(t("Error to export library"), error);
+        toast.error(t(`Failed to export library`));
+      } finally {
+        setIsDownloading(false);
+      }
+    },
+    [knowledgeBaseId, refetch],
+  );
+
   const handleAfterUploadFile = useCallback((files: UploadFileType[]) => {
     setPage(1);
   }, []);
@@ -231,18 +306,70 @@ export default function LibraryFileList({
               {t("Delete Files")}
             </Button>
           )}
-          <Button
-            color="danger"
-            isDisabled={isRebuiding}
-            isLoading={isRebuiding}
-            onClick={() => {
-              setRebuildLibraryModal(true);
-            }}>
-            {t("Rebuild Library")}
-          </Button>
           <Button color="primary" endContent={<PlusIcon />} onClick={openUploadModal}>
             {t("Add New")}
           </Button>
+          <Dropdown>
+            <DropdownTrigger>
+              <Button
+                color="primary"
+                variant="bordered"
+                startContent={<Icon icon="icon-park-outline:more" width={18} />}>
+                {t("More")}
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu className="w-48">
+              <DropdownItem className="data-[hover]:bg-transparent">
+                {knowledgeBaseDetail?.knowledge_base_by_pk?.export_key && (
+                  <Tooltip content={t("Download latest exported library")}>
+                    <Button
+                      color="primary"
+                      variant="light"
+                      className="w-full"
+                      isDisabled={isDownloading}
+                      isLoading={isDownloading}
+                      onClick={() => {
+                        handleDownloadLibrary(
+                          knowledgeBaseDetail?.knowledge_base_by_pk?.export_key || "",
+                        );
+                      }}
+                      startContent={<Icon icon="solar:download-linear" width={18} />}>
+                      {t("Download Library")}
+                    </Button>
+                  </Tooltip>
+                )}
+              </DropdownItem>
+              <DropdownItem className="data-[hover]:bg-transparent">
+                <Button
+                  color="secondary"
+                  variant="light"
+                  className="w-full"
+                  isDisabled={isExporting}
+                  isLoading={isExporting}
+                  onClick={() => {
+                    handleExportLibrary();
+                  }}
+                  startContent={<Icon icon="solar:download-linear" width={18} />}>
+                  {t("Export Library")}
+                </Button>
+              </DropdownItem>
+
+              <DropdownItem className="data-[hover]:bg-transparent">
+                <Button
+                  color="danger"
+                  variant="light"
+                  className="w-full"
+                  isDisabled={isRebuiding}
+                  isLoading={isRebuiding}
+                  startContent={<Icon icon="icon-park-outline:redo" width={18} />}
+                  onClick={() => {
+                    setRebuildLibraryModal(true);
+                  }}>
+                  {t("Rebuild Library")}
+                </Button>
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
         </div>
       </div>
 

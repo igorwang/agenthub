@@ -1,8 +1,8 @@
 import { DEFAULT_LLM_MODEL } from "@/lib/models";
 import { MessageType } from "@/types/chatTypes";
 import { AIMessage } from "@langchain/core/dist/messages";
+import { StructuredOutputParser } from "@langchain/core/output_parsers";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
-import { StructuredOutputParser } from "langchain/output_parsers";
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 

@@ -19,6 +19,7 @@ import { Button } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 interface SystemPrompt {
   id: number;
@@ -68,6 +69,7 @@ export default function AgentSettings({
 
   const handleUpdateAgent = () => {
     query.refetch();
+    toast.success(t("Update agent prompt successfully"));
   };
 
   // useEffect for initializing step from URL and updating URL when step changes
@@ -75,13 +77,13 @@ export default function AgentSettings({
     const stepParam = searchParams.get("step");
     if (stepParam) {
       const newStep = parseInt(stepParam);
-      if (newStep >= 1 && newStep <= 4) {
+      if (newStep >= 0 && newStep <= 3) {
         setStep(newStep);
       }
     } else {
       // If no step parameter, set to first step (0) and update URL
       const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.set("step", "0");
+      newSearchParams.set("step", "1");
       router.push(`${pathname}?${newSearchParams.toString()}`, { scroll: false });
     }
   }, [searchParams, pathname, router]);
@@ -107,9 +109,9 @@ export default function AgentSettings({
 
   const _renderContent = (currentStep: number) => {
     switch (currentStep) {
-      case 1:
+      case 0:
         return <AgentInformation agentId={id} isHiddenSaveButton={true} ref={agentRef} />;
-      case 2:
+      case 1:
         return (
           <PromptFrom
             agentId={id}
@@ -121,9 +123,9 @@ export default function AgentSettings({
             onUpdateAgent={handleUpdateAgent}
           />
         );
-      case 3:
+      case 2:
         return <LibraryCart agentId={id} />;
-      case 4:
+      case 3:
         return (
           <div className="h-[80vh] w-full min-w-[600px] px-20">
             <WorkflowForm
@@ -142,17 +144,17 @@ export default function AgentSettings({
   function onClickNext() {
     const currentStep = step;
     switch (currentStep) {
-      case 1:
+      case 0:
         if (agentRef?.current) {
           agentRef?.current?.handleSubmit();
         }
         break;
-      case 2:
+      case 1:
         if (promptFormRef.current) {
           promptFormRef.current.clickButton();
         }
         break;
-      case 3:
+      case 2:
         if (libraryRef.current) {
           libraryRef?.current?.saveLibraryInfo();
         }
@@ -196,7 +198,7 @@ export default function AgentSettings({
               {t("Previous")}
             </Button>
           )}
-          {step < 4 ? (
+          {step < 3 ? (
             <Button color={"primary"} onClick={() => onClickNext()}>
               {t("Next")}
             </Button>

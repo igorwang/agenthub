@@ -26,6 +26,7 @@ fragment knowledgeBaseFragment on knowledge_base {
   embedding_model
   doc_schema
   mode
+  export_key
   workflow {
     id
     name
