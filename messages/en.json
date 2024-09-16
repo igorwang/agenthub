@@ -1,5 +1,5 @@
 {
-  " Now you can start using it": " Now you can start using it",
+  "Now you can start using it": "Now you can start using it",
   "ACTIONS": "ACTIONS",
   "AI can also make mistakes": "AI can also make mistakes. Please verify important information",
   "Action": "Action",
@@ -196,6 +196,7 @@
   "Untitled": "Untitled",
   "Update At": "Update At",
   "Update Time": "Update Time",
+  "Update agent prompt successfully": "Update agent prompt successfully",
   "Upload": "Upload",
   "Upload File": "Upload File",
   "Upload Files": "Upload Files",

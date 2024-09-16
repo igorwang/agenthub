@@ -27,7 +27,7 @@ const SubAgentSuccess = ({ agent_id }: SubAgentSuccessProps) => {
         <h2 className="mb-2 mt-4 text-2xl font-bold text-gray-800">
           {t("Subscription successful")}
         </h2>
-        <p className="mb-6 text-gray-600">{t(" Now you can start using it")}</p>
+        <p className="mb-6 text-gray-600">{t("Now you can start using it")}</p>
         <Button color="primary" onPress={handleRedirect} className="font-semibold">
           {t("Start using")}
         </Button>
