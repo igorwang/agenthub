@@ -86,7 +86,7 @@ export default function LanguageSwitcher() {
           <DropdownItem
             key={lang.key}
             startContent={
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-200 text-xs font-semibold">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-xs font-semibold">
                 {lang.shortName}
               </div>
             }>

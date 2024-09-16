@@ -2,25 +2,27 @@
 
 import { AcmeLogo } from "../ui/icons";
 
+import { ThemeSwitch } from "@/components/theme-switch";
 import { Icon } from "@iconify/react";
 import { Avatar, Button, Link, ScrollShadow, Spacer, Tooltip } from "@nextui-org/react";
-import SidebarNav from "./sidebar-nav";
-
-import { ThemeSwitch } from "@/components/theme-switch";
 import { signOut, useSession } from "next-auth/react";
+
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import LanguageSwitcher from "./language-switcher";
 import { useSidebarItems } from "./sidebar-items";
+import SidebarNav from "./sidebar-nav";
 // import { sectionItems, userSectionItems } from "./sidebar-items";
 
 export default function SideBar() {
   const session = useSession();
-
+  const router = useRouter();
   const t = useTranslations("");
   const userRoles = session.data?.user?.roles;
-
   const handleSignOut = async () => {
-    await signOut({ callbackUrl: "/auth/login" });
+    // router.push(process.env.LOGOUT_URL);
+    // console.log("signout", process.env.AUTH_AUTHENTIK_LOGOUT_URL);
+    await signOut({ callbackUrl: "/auth/login?logout=true" });
   };
 
   const sidebarItems = useSidebarItems(userRoles || []);

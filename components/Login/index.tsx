@@ -18,6 +18,7 @@ export default function Login() {
   const t = useTranslations();
 
   const redirectUri = searchParams.get("redirectUri");
+  const logout = searchParams.get("logout");
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -38,6 +39,9 @@ export default function Login() {
   };
 
   useEffect(() => {
+    if (logout) {
+      router.push(process.env.AUTH_AUTHENTIK_LOGOUT_URL || "/auth/login");
+    }
     if (
       session &&
       session.status === "authenticated" &&
