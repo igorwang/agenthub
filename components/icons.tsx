@@ -1,4 +1,5 @@
 import { IconSvgProps } from "@/types";
+import { Icon } from "@iconify/react";
 import * as React from "react";
 
 export const Logo: React.FC<IconSvgProps> = ({ size = 36, width, height, ...props }) => (
@@ -170,4 +171,8 @@ export const NextUILogo: React.FC<IconSvgProps> = (props) => {
       />
     </svg>
   );
+};
+
+export const UserIcon = ({ size = 24 }) => {
+  return <Icon icon="system-uicons:user-group" fontSize={size} />;
 };

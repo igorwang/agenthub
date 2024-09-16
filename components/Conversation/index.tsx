@@ -1,11 +1,11 @@
 "use client";
 
-import AgentConfigButtons from "@/components/Conversation/agent-config-buttons";
 import MessageWindow from "@/components/Conversation/message-window";
 import MessageWindowWithWorkflow from "@/components/Conversation/message-windown-with-workflow";
 import PromptInputWithFaq from "@/components/Conversation/prompt-input-with-faq";
 import SessionFilesSidebar from "@/components/Conversation/session-files-sidebar";
 import { RoleChip } from "@/components/ui/role-icons";
+import ShareLinkCard from "@/components/ui/share-link-card";
 import {
   Agent_Mode_Enum,
   FilesListQuery,
@@ -18,6 +18,7 @@ import {
   useGetAgentByIdQuery,
   useGetAgentUserRelationQuery,
   useSubscriptionFilesListSubscription,
+  WorkflowFragmentFragment,
 } from "@/graphql/generated/types";
 import {
   selectIsChangeSession,
@@ -28,7 +29,16 @@ import {
 import { AppDispatch } from "@/lib/store";
 import { CHAT_STATUS_ENUM, MessageType, SourceType } from "@/types/chatTypes";
 import { Icon } from "@iconify/react";
-import { Avatar, Button, Chip, ScrollShadow, Spacer, Tooltip } from "@nextui-org/react";
+import {
+  Avatar,
+  Button,
+  Chip,
+  Popover,
+  PopoverContent,
+  ScrollShadow,
+  Spacer,
+  Tooltip,
+} from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
@@ -37,6 +47,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -118,11 +129,14 @@ export const Conversation: React.FC<ConversationProps> = ({
   const [isChating, setIsChating] = useState<boolean>(false);
   const [isConfigLoading, setIsConfigLoading] = useState(false);
   const [isDashboardLoading, setIsDashboardLoding] = useState(false);
-
+  const [isShareLoading, setIsShareLoading] = useState(false);
+  const [workflowTools, setWorkflowTools] = useState<WorkflowFragmentFragment[]>([]);
   const [selectedSources, setSelectedSources] = useState<SourceType[]>([]);
   const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
-
+  const [recentUsedTools, setRecentUsedTools] = useState<WorkflowFragmentFragment[]>([]);
   const [sessionFiles, setSessionFiles] = useState<FilesListQuery["files"]>([]);
+  const [shareLink, setShareLink] = useState<string | null>(null);
+  const [isSharePopoverOpen, setIsSharePopoverOpen] = useState<boolean>(false);
 
   const [sessionFilesContext, setSessionFilesContext] = useState("");
 
@@ -153,6 +167,8 @@ export const Conversation: React.FC<ConversationProps> = ({
 
   const [createNewMessageMutation, { error: createError }] =
     useCreateNewMessageMutation();
+
+  const shareButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (sessionFilesData?.files) {
@@ -204,6 +220,14 @@ export const Conversation: React.FC<ConversationProps> = ({
         workflow_id: data?.agent_by_pk?.workflow?.id || null,
         mode: data?.agent_by_pk?.mode || null,
       });
+      setWorkflowTools(
+        data?.agent_by_pk?.r_agent_workflows
+          .map((item) => item.workflow)
+          .filter(
+            (workflow): workflow is WorkflowFragmentFragment =>
+              workflow !== null && workflow !== undefined,
+          ) || [],
+      );
     }
   }, [agentId, data]);
 
@@ -249,7 +273,7 @@ export const Conversation: React.FC<ConversationProps> = ({
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      router.push(`${pathname}/settings`);
+      router.push(`${pathname}/settings?step=0`);
       setIsConfigLoading(true);
     },
     [router, pathname],
@@ -263,6 +287,32 @@ export const Conversation: React.FC<ConversationProps> = ({
       setIsDashboardLoding(true);
     },
     [router, pathname, agent?.name],
+  );
+
+  const handleShareClick = useCallback(
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsShareLoading(true);
+      try {
+        const response = await fetch("/api/chat/agent/share", {
+          method: "POST",
+          body: JSON.stringify({
+            agent_id: agentId,
+            expires_at: 60 * 60 * 24,
+          }),
+        });
+        const data = await response.json();
+        setIsShareLoading(false);
+        setShareLink(`${window.location.origin}/discover/share/${data.key}`);
+        setIsSharePopoverOpen(true);
+        toast.success("Share link created");
+      } catch (error) {
+        toast.error("Create share link error");
+      }
+      setIsShareLoading(false);
+    },
+    [agentId],
   );
 
   const handleSelectedSource = (source: SourceType, selected: boolean) => {
@@ -286,6 +336,13 @@ export const Conversation: React.FC<ConversationProps> = ({
 
   const handleSessionFileChange = (files: FilesListQuery["files"]) => {
     setSessionFiles(files);
+  };
+
+  const handleRunWorkflowTool = (tool: WorkflowFragmentFragment) => {
+    console.log(tool);
+    setRecentUsedTools((prev) =>
+      [tool, ...prev.filter((t) => t.id !== tool.id)].slice(0, 3),
+    );
   };
 
   if (!agent || loading) {
@@ -335,12 +392,49 @@ export const Conversation: React.FC<ConversationProps> = ({
         </div>
       </div>
       {agent.creator_id === session.data?.user?.id && (
-        <AgentConfigButtons
-          onConfigClick={handleConfigClick}
-          onDashboardClick={handleToDashboard}
-          isConfigLoading={isConfigLoading}
-          isDashboardLoading={isDashboardLoading}
-        />
+        <div className="flex gap-1">
+          <Popover
+            isOpen={isSharePopoverOpen}
+            onOpenChange={(open) => setIsSharePopoverOpen(open)}
+            triggerRef={shareButtonRef}>
+            <Tooltip content={t("Share")}>
+              <Button
+                ref={shareButtonRef}
+                isIconOnly
+                variant="light"
+                onClick={handleShareClick}
+                isLoading={isShareLoading}
+                disabled={isShareLoading}>
+                {!isShareLoading && <Icon icon="lucide:share" fontSize={24} />}
+              </Button>
+            </Tooltip>
+            <PopoverContent>
+              {shareLink && <ShareLinkCard shareLink={shareLink} />}
+            </PopoverContent>
+          </Popover>
+          <Tooltip content={t("Configure Agent")}>
+            <Button
+              isIconOnly
+              variant="light"
+              onClick={handleConfigClick}
+              isLoading={isConfigLoading}
+              disabled={isConfigLoading || isDashboardLoading}>
+              {!isConfigLoading && <Icon icon="lucide:settings" fontSize={24} />}
+            </Button>
+          </Tooltip>
+          <Tooltip content={t("Agent Dashboard")}>
+            <Button
+              isIconOnly
+              variant="light"
+              onClick={handleToDashboard}
+              isLoading={isDashboardLoading}
+              disabled={isConfigLoading || isDashboardLoading}>
+              {!isDashboardLoading && (
+                <Icon icon="lucide:layout-dashboard" fontSize={24} />
+              )}
+            </Button>
+          </Tooltip>
+        </div>
       )}
     </div>
   );
@@ -356,7 +450,7 @@ export const Conversation: React.FC<ConversationProps> = ({
   return (
     <ConversationContext.Provider value={contextValue}>
       <div className="flex h-full w-full max-w-full flex-col overflow-auto">
-        {!hiddenHeader && headerElement}
+        <div className="relative flex flex-col">{!hiddenHeader && headerElement}</div>
         <div className="flex max-h-full max-w-full flex-grow flex-row overflow-auto">
           <div className="min-[400px] mx-auto flex max-w-7xl flex-grow flex-col items-center overflow-auto px-10 pt-4">
             {agent.mode === Agent_Mode_Enum.Workflow && agent.workflow_id ? (
@@ -386,7 +480,7 @@ export const Conversation: React.FC<ConversationProps> = ({
             <div className="max-w-[calc(100%-40px)]">
               <ScrollShadow
                 hideScrollBar
-                className="flex max-w-full flex-nowrap gap-2 overflow-auto"
+                className="custom-scrollbar flex max-w-full flex-nowrap gap-2 overflow-auto"
                 orientation="horizontal">
                 <div className="flex gap-2 pb-2">
                   {selectedSources?.map((item, index) => (
@@ -407,6 +501,34 @@ export const Conversation: React.FC<ConversationProps> = ({
                   ))}
                 </div>
               </ScrollShadow>
+            </div>
+            <div className="flex max-w-[calc(100%-40px)] gap-2">
+              {recentUsedTools.map((item, index) => (
+                <Button
+                  key={index}
+                  size="sm"
+                  onClick={() => handleRunWorkflowTool(item)}
+                  startContent={
+                    <Icon
+                      icon={item.icon || "fluent:toolbox-24-regular"}
+                      className="text-default-500"
+                      width={18}
+                    />
+                  }
+                  variant="flat">
+                  {item.name}
+                </Button>
+              ))}
+              {recentUsedTools.length > 0 && (
+                <Button
+                  isIconOnly
+                  size="sm"
+                  variant="flat"
+                  startContent={
+                    <Icon icon="ic:round-close" className="text-default-500" width={18} />
+                  }
+                  onClick={() => setRecentUsedTools([])}></Button>
+              )}
             </div>
             <div className="flex w-full max-w-full flex-col">
               {(messageCount >= 20 || isTestMode) && (
@@ -445,7 +567,9 @@ export const Conversation: React.FC<ConversationProps> = ({
                   agentId={agentId}
                   agentMode={agent.mode || Agent_Mode_Enum.Simple}
                   isChating={isChating}
-                  onChatingStatus={handleSetChatStatus}></PromptInputWithFaq>
+                  onChatingStatus={handleSetChatStatus}
+                  workflowTools={workflowTools}
+                  onRunWorkflowTool={handleRunWorkflowTool}></PromptInputWithFaq>
               )}
               <p className="px-2 text-tiny text-default-400">
                 {t("AI can also make mistakes")}

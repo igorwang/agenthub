@@ -72,17 +72,58 @@ query getWorkflowById($id: uuid = "") {
     updated_at
     created_at
     description
+    workflow_type
     flow_nodes {
       ...flowNodeFragment
     }
     flow_edges {
       ...flowEdgeFragment
     }
+    r_agent_workflows {
+      id
+      agent_id
+    }
   }
 }
 
-mutation deleteWorkflowById($id: uuid = "") {
-  delete_workflow_by_pk(id: $id) {
+query getWorkflowList(
+  $where: workflow_bool_exp = {}
+  $order_by: [workflow_order_by!] = {}
+  $offset: Int = 10
+  $limit: Int = 10
+) {
+  workflow(where: $where, order_by: $order_by, offset: $offset, limit: $limit) {
+    ...workflowFragment
+  }
+  workflow_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+}
+
+fragment workflowFragment on workflow {
+  id
+  name
+  updated_at
+  workflow_type
+  created_at
+  description
+  icon
+  r_agent_workflows {
     id
+    agent_id
+  }
+}
+
+mutation insertFlowNode($objects: [flow_node_insert_input!] = {}) {
+  insert_flow_node(objects: $objects) {
+    affected_rows
+  }
+}
+
+mutation insertFlowEdge($objects: [flow_edge_insert_input!] = {}) {
+  insert_flow_edge(objects: $objects) {
+    affected_rows
   }
 }

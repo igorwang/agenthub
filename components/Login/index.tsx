@@ -1,8 +1,9 @@
 "use client";
 
 import { Icon } from "@iconify/react";
-import { Button } from "@nextui-org/react";
+import { Button, Spinner } from "@nextui-org/react";
 import { signIn, useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 
@@ -13,6 +14,8 @@ export default function Login() {
   const toggleVisibility = () => setIsVisible(!isVisible);
   const searchParams = useSearchParams();
   const router = useRouter();
+  const [autoLogining, setAutoLogining] = React.useState(true);
+  const t = useTranslations();
 
   const redirectUri = searchParams.get("redirectUri");
 
@@ -35,20 +38,24 @@ export default function Login() {
   };
 
   useEffect(() => {
-    if (session && redirectUri) {
+    if (
+      session &&
+      session.status === "authenticated" &&
+      redirectUri &&
+      !redirectUri.includes("login")
+    ) {
       router.push(`${redirectUri}`);
+    }
+    if (redirectUri && !redirectUri.includes("login")) {
+      signIn("authentik", { callbackUrl: redirectUri || "/chat" });
+    } else {
+      setAutoLogining(false);
     }
   }, [session, redirectUri]);
 
-  // useEffect(() => {
-  //   // 页面加载时自动点击按钮
-  //   // 自动选择Authentik
-  //   if (!session) {
-  //     if (buttonRef.current) {
-  //       buttonRef.current.click();
-  //     }
-  //   }
-  // }, []);
+  if (autoLogining) {
+    return <Spinner>{t("Authenticating")}...</Spinner>;
+  }
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">

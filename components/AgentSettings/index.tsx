@@ -6,18 +6,20 @@ import { LibraryCart } from "@/components/Library/LibraryCart";
 import { LibraryFileHandle } from "@/components/Library/LibraryFile";
 import PromptFrom, { PromptFormHandle } from "@/components/PromptFrom";
 import RightHeader from "@/components/RightHeader";
-import WorkflowForm from "@/components/WorkflowForm";
+import WorkflowForm from "@/components/Workflow/WorkflowForm";
 import {
   FlowEdgeFragmentFragment,
   FlowNodeFragmentFragment,
   Knowledge_Base_Type_Enum,
   NodeTypeFragmentFragment,
   useGetAgentByIdQuery,
+  Workflow_Type_Enum,
 } from "@/graphql/generated/types";
 import { Button } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 interface SystemPrompt {
   id: number;
@@ -36,6 +38,7 @@ interface AgentSettingsProps {
     id: string;
     name: string;
     description: string;
+    workflow_type: Workflow_Type_Enum;
     nodes?: FlowNodeFragmentFragment[];
     edges?: FlowEdgeFragmentFragment[];
   };
@@ -52,7 +55,7 @@ export default function AgentSettings({
   const [agent, setAgent] = useState<Agent | null>();
   const [libraryId, setLibraryId] = useState<string | null>();
   const searchParams = useSearchParams();
-  const [step, setStep] = useState<number>(parseInt(searchParams.get("step") || "1") - 1);
+  const [step, setStep] = useState<number>(parseInt(searchParams.get("step") || "1"));
 
   const params = useParams<{ id: string }>();
   const pathname = usePathname();
@@ -66,6 +69,7 @@ export default function AgentSettings({
 
   const handleUpdateAgent = () => {
     query.refetch();
+    toast.success(t("Update agent prompt successfully"));
   };
 
   // useEffect for initializing step from URL and updating URL when step changes
@@ -79,7 +83,7 @@ export default function AgentSettings({
     } else {
       // If no step parameter, set to first step (0) and update URL
       const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.set("step", "0");
+      newSearchParams.set("step", "1");
       router.push(`${pathname}?${newSearchParams.toString()}`, { scroll: false });
     }
   }, [searchParams, pathname, router]);
@@ -133,7 +137,7 @@ export default function AgentSettings({
           </div>
         );
       default:
-        return <h1>Not Found</h1>;
+        return <AgentInformation agentId={id} isHiddenSaveButton={true} ref={agentRef} />;
     }
   };
 

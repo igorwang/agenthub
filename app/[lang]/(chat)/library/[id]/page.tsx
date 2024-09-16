@@ -46,10 +46,10 @@ export default async function LibraryMainPage({ params }: { params: { id: string
   const files = await fetchFileListData(params.id);
 
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col">
-      <Suspense fallback={<div className="text-center">Loading...</div>}>
+    <Suspense fallback={<div className="text-center">Loading...</div>}>
+      <div className="mx-auto flex w-full max-w-7xl flex-col">
         <LibraryFileList initialFiles={files} knowledgeBaseId={params.id} />
-      </Suspense>
-    </div>
+      </div>
+    </Suspense>
   );
 }

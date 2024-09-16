@@ -13,13 +13,13 @@ import { useEffect, useState } from "react";
 interface Language {
   key: string;
   name: string;
-  icon: string;
+  shortName: string; // 新增 shortName 属性
 }
 
 const languages: Language[] = [
-  { key: "zh", name: "简体中文", icon: "emojione:flag-for-china" },
-  { key: "en", name: "English", icon: "emojione:flag-for-united-states" },
-  { key: "hk", name: "繁體中文", icon: "emojione:flag-for-hong-kong-sar-china" },
+  { key: "en", name: "English", shortName: "EN" },
+  { key: "zh", name: "简体中文", shortName: "简" },
+  { key: "hk", name: "繁體中文", shortName: "繁" },
 ];
 
 export function useLanguageStorage(initialLanguage: Language) {
@@ -68,7 +68,7 @@ export default function LanguageSwitcher() {
             delay={0}
             closeDelay={0}>
             <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-200 text-xs font-semibold">
-              {selectedLanguage.key.toUpperCase()}
+              {selectedLanguage.shortName}
             </div>
           </Tooltip>
         </Button>
@@ -87,7 +87,7 @@ export default function LanguageSwitcher() {
             key={lang.key}
             startContent={
               <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-200 text-xs font-semibold">
-                {lang.key.toUpperCase()}
+                {lang.shortName}
               </div>
             }>
             {lang.name}
