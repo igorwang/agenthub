@@ -1,6 +1,7 @@
 import { Extension, useEditor } from "@tiptap/react";
 
 import { CodeBlock } from "@/components/SmartEditor/extensions/CodeBlock";
+import FontSize from "@/components/SmartEditor/extensions/FontSize";
 import { TableOfContentsNode } from "@/components/SmartEditor/extensions/TableOfContentsNode";
 import "@/styles/index.css";
 import TableOfContents from "@tiptap-pro/extension-table-of-contents";
@@ -186,8 +187,11 @@ export const useBlockEditor = ({ editable = true }: { editable?: boolean }) => {
       Italic,
       Underline,
       Code,
-      Highlight,
+      Highlight.configure({
+        multicolor: true,
+      }),
       Link,
+      FontSize,
       TextAlign.configure({
         types: ["heading", "paragraph"],
       }),

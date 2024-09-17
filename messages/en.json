@@ -106,6 +106,7 @@
   "Library information update succeeded!": "Library information update succeeded!",
   "Limitations": "Limitations",
   "Limited knowledge of realtime world and events": "Limited knowledge of realtime world and events",
+  "Link": "Link",
   "Load More": "Load More",
   "Loading": "Loading",
   "Log Out": "Log Out",
@@ -223,10 +224,18 @@
   "You can customize additional input parameters through the input schema": "You can customize additional input parameters through the input schema",
   "You have not created any knowledge bases yet": "You have not created any knowledge bases yet",
   "You have unsaved changes": "You have unsaved changes",
+  "bold": "bold",
   "close": "close",
+  "code": "code",
+  "codeBlock": "codeBlock",
   "copied": "copied",
   "copy_link": "copy_link",
+  "highlight": "highlight",
+  "italic": "italic",
   "library Sources": "library Sources",
   "open_link": "open_link",
-  "submit": "submit"
+  "strike": "strike",
+  "submit": "submit",
+  "underline": "underline",
+  "unsetHighlight": "unsetHighlight"
 }
