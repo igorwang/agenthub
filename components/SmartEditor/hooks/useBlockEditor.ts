@@ -4,6 +4,17 @@ import { CodeBlock } from "@/components/SmartEditor/extensions/CodeBlock";
 import { TableOfContentsNode } from "@/components/SmartEditor/extensions/TableOfContentsNode";
 import "@/styles/index.css";
 import TableOfContents from "@tiptap-pro/extension-table-of-contents";
+import Bold from "@tiptap/extension-bold";
+import Code from "@tiptap/extension-code";
+import Color from "@tiptap/extension-color";
+import Highlight from "@tiptap/extension-highlight";
+import Italic from "@tiptap/extension-italic";
+import Link from "@tiptap/extension-link";
+import Strike from "@tiptap/extension-strike";
+import TextAlign from "@tiptap/extension-text-align";
+import TextStyle from "@tiptap/extension-text-style";
+import Underline from "@tiptap/extension-underline";
+import UniqueID from "@tiptap/extension-unique-id";
 import StarterKit from "@tiptap/starter-kit";
 export { TableOfContents } from "@tiptap-pro/extension-table-of-contents";
 TableOfContentsNode;
@@ -170,6 +181,23 @@ export const useBlockEditor = ({ editable = true }: { editable?: boolean }) => {
       TableOfContents,
       TableOfContentsNode,
       CodeBlock,
+      Bold,
+      Strike,
+      Italic,
+      Underline,
+      Code,
+      Highlight,
+      Link,
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+      }),
+      Color.configure({
+        types: ["textStyle"],
+      }),
+      UniqueID.configure({
+        types: ["heading", "paragraph"],
+      }),
+      TextStyle,
     ],
     editable: editable,
     autofocus: true,
