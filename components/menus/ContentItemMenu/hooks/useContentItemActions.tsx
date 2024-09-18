@@ -65,7 +65,7 @@ const useContentItemActions = (
         .command(({ dispatch, tr, state }) => {
           if (dispatch) {
             if (currentNodeIsEmptyParagraph) {
-              tr.insertText("/", currentNodePos, currentNodePos + 1);
+              tr.insertText("/", currentNodePos, currentNodePos + 1); //
             } else {
               tr.insert(
                 insertPos,
