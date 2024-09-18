@@ -60,7 +60,7 @@ const LibraryListItem = React.forwardRef<HTMLDivElement, LibraryListItemProps>(
         {...props}>
         {library?.isNew ? (
           <span className="absolute left-7 top-7 z-20 text-tiny font-semibold text-default-400">
-            NEW{" "}
+            NEW
           </span>
         ) : null}
         {/* <Button
