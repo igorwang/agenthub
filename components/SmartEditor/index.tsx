@@ -36,8 +36,7 @@ function SmartEditor({ editable = true }: SmartEditorProps) {
             isIconOnly
             onClick={toggleSidebar}
             variant="light"
-            className="ml-2 transition-colors duration-200 hover:bg-gray-100"
-            aria-label={rightSidebar.isOpen ? "Close sidebar" : "Open sidebar"}>
+            className="ml-2 transition-colors duration-200 hover:bg-gray-100">
             <Icon
               icon={rightSidebar.isOpen ? "lucide:chevron-right" : "lucide:chevron-left"}
               className="h-5 w-5 text-gray-600"

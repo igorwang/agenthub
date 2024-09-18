@@ -174,12 +174,12 @@ const HorizontalSteps = React.forwardRef<HTMLButtonElement, HorizontalStepsProps
                   ref={ref}
                   aria-current={status === "active" ? "step" : undefined}
                   className={cn(
-                    "group flex w-full cursor-pointer flex-col items-center justify-center gap-y-2 rounded-large py-2.5",
+                    "group flex w-full cursor-pointer flex-col items-center justify-center gap-y-2 rounded-large px-4 py-2.5", // Added px-4 for horizontal padding
                     stepClassName,
                   )}
                   onClick={() => setCurrentStep(stepIdx)}
                   {...props}>
-                  <div className="h-ful relative flex items-center">
+                  <div className="relative flex h-full items-center">
                     <LazyMotion features={domAnimation}>
                       <m.div animate={status} className="relative">
                         <m.div
