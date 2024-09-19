@@ -35,17 +35,17 @@ const TableRowMenu: React.FC<MenuProps> = ({ editor, appendTo }) => {
           {
             action: "addRowBefore",
             icon: "lucide:arrow-up",
-            label: t("add Row Before"),
+            label: t("Add Row Before"),
           },
           {
             action: "addRowAfter",
             icon: "lucide:arrow-down",
-            label: t("addRowAfter"),
+            label: t("Add Row After"),
           },
           {
             action: "deleteRow",
             icon: "mdi:trash",
-            label: t("delete Row"),
+            label: t("Delete Row"),
             isDanger: true,
           },
         ].map(({ action, icon, label, isDanger }) => (

@@ -46,19 +46,19 @@ export const TableColumnMenu = React.memo(
             onClick={onAddColumnBefore}
             className="flex w-full items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">
             <Icon icon="lucide:arrow-left" className="mr-2 text-gray-600" />
-            {t("add Column Before")}
+            {t("Add Column Before")}
           </button>
           <button
             onClick={onAddColumnAfter}
             className="flex w-full items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">
             <Icon icon="lucide:arrow-right" className="mr-2 text-gray-600" />
-            {t("add Column After")}
+            {t("Add Column After")}
           </button>
           <button
             onClick={onDeleteColumn}
             className="flex w-full items-center px-3 py-2 text-sm text-red-600 hover:bg-gray-100">
             <Icon icon="mdi:trash" className="mr-2 text-red-600" />
-            {t("delete Column")}
+            {t("Delete Column")}
           </button>
         </div>
       </BaseBubbleMenu>

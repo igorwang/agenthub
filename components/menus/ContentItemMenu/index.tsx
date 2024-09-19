@@ -4,6 +4,7 @@ import { Icon } from "@iconify/react";
 import { Button } from "@nextui-org/react";
 import DragHandle from "@tiptap-pro/extension-drag-handle-react";
 import { Editor } from "@tiptap/react";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import useContentItemActions from "./hooks/useContentItemActions";
 import { useData } from "./hooks/useData";
@@ -13,6 +14,7 @@ export type ContentItemMenuProps = {
 };
 
 export const ContentItemMenu = ({ editor }: ContentItemMenuProps) => {
+  const t = useTranslations("");
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const data = useData();
@@ -62,28 +64,28 @@ export const ContentItemMenu = ({ editor }: ContentItemMenuProps) => {
               onClick={actions.resetTextFormatting}
               className="mb-1 w-full justify-start">
               <Icon icon="mdi:format-clear" className="mr-2" />
-              Clear formatting
+              {t("Clear formatting")}
             </Button>
             <Button
               variant="light"
               onClick={actions.copyNodeToClipboard}
               className="mb-1 w-full justify-start">
               <Icon icon="mdi:clipboard" className="mr-2" />
-              Copy to clipboard
+              {t("Copy to clipboard")}
             </Button>
             <Button
               variant="light"
               onClick={actions.duplicateNode}
               className="mb-1 w-full justify-start">
               <Icon icon="mdi:content-copy" className="mr-2" />
-              Duplicate
+              {t("Duplicate")}
             </Button>
             <Button
               variant="light"
               onClick={actions.deleteNode}
               className="w-full justify-start text-danger">
               <Icon icon="mdi:trash-can-outline" className="mr-2" />
-              Delete
+              {t("Delete")}
             </Button>
           </div>
         )}
