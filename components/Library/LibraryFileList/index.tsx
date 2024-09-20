@@ -224,7 +224,7 @@ export default function LibraryFileList({
       const result = await response.json();
       toast.success(
         t(`Library exported successfully`, {
-          en: "Library exported successfully; Please wait for the process.",
+          defaultValue: "Library exported successfully; Please wait for the process.",
         }),
       );
     } catch (error) {
