@@ -30,8 +30,6 @@ export default async function LibraryPage() {
   const data = await fetchLibraryData();
   const t = await getTranslations("");
 
-  console.log("LibraryPage", data);
-
   if (data?.knowledge_base[0]?.id) {
     redirect(`/library/${data.knowledge_base[0].id}`);
   }

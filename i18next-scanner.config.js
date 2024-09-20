@@ -26,7 +26,7 @@ module.exports = {
     },
     nsSeparator: false,
     keySeparator: false,
-    removeUnusedKeys: false,
+    removeUnusedKeys: true,
     sort: true,
   },
 };

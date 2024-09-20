@@ -1,9 +1,33 @@
 import { Extension, useEditor } from "@tiptap/react";
 
 import { CodeBlock } from "@/components/SmartEditor/extensions/CodeBlock";
+import FontSize from "@/components/SmartEditor/extensions/FontSize";
+import Heading from "@/components/SmartEditor/extensions/Heading";
+import SlashCommand from "@/components/SmartEditor/extensions/SlashCommand";
+import {
+  Table,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from "@/components/SmartEditor/extensions/Table";
 import { TableOfContentsNode } from "@/components/SmartEditor/extensions/TableOfContentsNode";
 import "@/styles/index.css";
 import TableOfContents from "@tiptap-pro/extension-table-of-contents";
+import Bold from "@tiptap/extension-bold";
+import BulletList from "@tiptap/extension-bullet-list";
+import Code from "@tiptap/extension-code";
+import Color from "@tiptap/extension-color";
+import Highlight from "@tiptap/extension-highlight";
+import Italic from "@tiptap/extension-italic";
+import Link from "@tiptap/extension-link";
+import OrderedList from "@tiptap/extension-ordered-list";
+import Strike from "@tiptap/extension-strike";
+import TaskItem from "@tiptap/extension-task-item";
+import TaskList from "@tiptap/extension-task-list";
+import TextAlign from "@tiptap/extension-text-align";
+import TextStyle from "@tiptap/extension-text-style";
+import Underline from "@tiptap/extension-underline";
+import UniqueID from "@tiptap/extension-unique-id";
 import StarterKit from "@tiptap/starter-kit";
 export { TableOfContents } from "@tiptap-pro/extension-table-of-contents";
 TableOfContentsNode;
@@ -166,10 +190,41 @@ export const useBlockEditor = ({ editable = true }: { editable?: boolean }) => {
     extensions: [
       StarterKit.configure({
         codeBlock: false,
+        heading: false,
       }) as Extension,
       TableOfContents,
       TableOfContentsNode,
       CodeBlock,
+      Bold,
+      Strike,
+      Italic,
+      Underline,
+      Code,
+      Heading,
+      BulletList,
+      OrderedList,
+      TaskList,
+      TaskItem,
+      Table,
+      TableCell,
+      TableHeader,
+      TableRow,
+      SlashCommand,
+      Highlight.configure({
+        multicolor: true,
+      }),
+      Link,
+      FontSize,
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+      }),
+      Color.configure({
+        types: ["textStyle"],
+      }),
+      UniqueID.configure({
+        types: ["heading", "paragraph"],
+      }),
+      TextStyle,
     ],
     editable: editable,
     autofocus: true,

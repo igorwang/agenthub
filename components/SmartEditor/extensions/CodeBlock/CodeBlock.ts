@@ -5,6 +5,9 @@ const lowlight = createLowlight(all);
 
 export const CodeBlock = CodeBlockLowlight.configure({
   lowlight,
-  defaultLanguage: "plaintext",
+  defaultLanguage: "javascript",
   languageClassPrefix: "language-",
+  HTMLAttributes: {
+    class: "whitespace-pre-wrap",
+  },
 });

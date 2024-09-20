@@ -175,3 +175,4 @@ restful/generated*
 schema.graphql
 .env.prod.hk
 .npmrc
+.cursorrules
