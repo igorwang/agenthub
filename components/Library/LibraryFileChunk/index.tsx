@@ -78,7 +78,7 @@ const LibraryFileChunk: React.FC<LibraryFileChunkProps> = ({ filename, chunks })
           aria-label="Go back"
         />
         <FileIcon fileExtension="pdf" />
-        <h3 className="text-xl font-bold text-gray-800">{filename}</h3>
+        <h3 className="max-w-3xl truncate text-xl font-bold text-gray-800">{filename}</h3>
       </div>
       <Divider className="mb-4" />
       <div className="flex flex-grow flex-col overflow-auto">
