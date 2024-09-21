@@ -51,120 +51,85 @@ export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) =
     <Card
       key={source.fileId}
       className={clsx(
-        "ounded-lg border-1 bg-card shadow-sm transition-all",
+        "rounded-lg border-1 bg-card shadow-sm transition-all",
         isSelected ? "border-primary" : "border-default",
       )}>
-      <CardHeader className="justify-center px-1 py-0">
-        <div className="flex flex-row items-center gap-1">
+      <CardHeader className="justify-between px-3 py-2">
+        <div className="flex items-center gap-2">
           <FileIcon fileExtension={source.ext || "Unknown"} size={20} />
-          <p className="text-nowrap text-small font-semibold text-default-400">
+          <p className="text-small font-semibold text-default-600">
             Source - {source.index || index}
           </p>
         </div>
       </CardHeader>
       <Divider />
-      <CardBody className="flex flex-col justify-between p-0 text-small text-default-400">
-        {/* <Tooltip content={source.fileName} className="w-[200px] text-wrap"> */}
-        <div className="line-clamp-2 max-w-sm overflow-hidden text-ellipsis text-sm font-light">
-          {source.fileName}
-        </div>
-        {/* </Tooltip> */}
-        {/* <Tooltip
-          size="sm"
-          content={<div className="text-wrap">{source.fileName}</div>}
-          className="max-w-sm"
-          showArrow={true}>
-          <div className="line-clamp-2 text-ellipsis text-wrap text-sm">
-            {source.fileName}
-          </div>
-        </Tooltip> */}
-      </CardBody>
+      <Tooltip content={source.fileName} placement="bottom">
+        <CardBody className="px-3 py-2">
+          <p className="line-clamp-2 text-small text-default-500">{source.fileName}</p>
+        </CardBody>
+      </Tooltip>
       <Divider />
-      <CardFooter className="flex-nowrap justify-center gap-1 py-0">
-        <Tooltip
-          content={
-            canSelectSource
-              ? "Select the source for next chat"
-              : "This source can't be selected"
-          }>
-          <Button
-            isIconOnly
-            radius="full"
-            size="sm"
-            variant="light"
-            disabled={!canSelectSource}
-            onPress={handleSelectSource}
-            className={clsx("h-[18px] min-w-[18px]", {
-              visible: canSelectSource,
-              hidden: !canSelectSource,
-            })}>
-            <Icon
-              className={clsx(
-                "text-sm",
-                isSelected ? "text-primary" : "text-default-600",
-              )}
-              icon={isSelected ? "mdi:checkbox-marked" : "mdi:checkbox-blank-outline"}
-            />
-          </Button>
-        </Tooltip>
-        <Tooltip
-          content={feedback === "like" ? "Remove feedback" : "This is a good source"}>
-          <Button
-            isIconOnly
-            radius="full"
-            size="sm"
-            variant="light"
-            onPress={() => handleFeedback("like")}
-            className="h-[18px] min-w-[18px]">
-            <Icon
-              className={clsx(
-                "text-sm",
-                feedback === "like" ? "text-primary" : "text-default-600",
-              )}
-              icon={
-                feedback === "like" ? "gravity-ui:thumbs-up-fill" : "gravity-ui:thumbs-up"
-              }
-            />
-          </Button>
-        </Tooltip>
-        {/* <Tooltip content="View the details of the source">
-          <Link href={source.url} target="_blank">
+      <CardFooter className="justify-between px-1.5 py-0.5">
+        <div className="flex gap-0.5">
+          <Tooltip content={canSelectSource ? "Select source" : "Can't select"}>
             <Button
               isIconOnly
-              radius="full"
               size="sm"
               variant="light"
-              className={clsx("h-[18px] min-w-[18px]", {
-                visible: hasSource,
-                hidden: !hasSource,
-              })}
-              isDisabled={source.url == ""}
-              onClick={() => {}}>
-              <Icon className="text-sm text-default-600" icon="gravity-ui:link" />
+              disabled={!canSelectSource}
+              onPress={handleSelectSource}
+              className={clsx("min-w-unit-5 h-unit-5", {
+                "opacity-50": !canSelectSource,
+              })}>
+              <Icon
+                className={clsx(
+                  "text-base",
+                  isSelected ? "text-primary" : "text-default-400",
+                )}
+                icon={isSelected ? "mdi:checkbox-marked" : "mdi:checkbox-blank-outline"}
+              />
             </Button>
-          </Link>
-        </Tooltip> */}
-        <Tooltip content="View the details of the source">
+          </Tooltip>
+          <Tooltip content={feedback === "like" ? "Remove feedback" : "Good source"}>
+            <Button
+              isIconOnly
+              size="sm"
+              variant="light"
+              onPress={() => handleFeedback("like")}
+              className="min-w-unit-5 h-unit-5">
+              <Icon
+                className={clsx(
+                  "text-base",
+                  feedback === "like" ? "text-primary" : "text-default-400",
+                )}
+                icon={
+                  feedback === "like"
+                    ? "gravity-ui:thumbs-up-fill"
+                    : "gravity-ui:thumbs-up"
+                }
+              />
+            </Button>
+          </Tooltip>
+        </div>
+        <Tooltip content="View source">
           {source.url ? (
             <Link href={source.url} target="_blank">
               <Button
                 isIconOnly
-                radius="full"
                 size="sm"
                 variant="light"
-                className="h-[18px] min-w-[18px]">
-                <Icon className="text-sm text-default-600" icon="gravity-ui:link" />
+                className="min-w-unit-5 h-unit-5">
+                <Icon className="text-base text-default-400" icon="gravity-ui:link" />
               </Button>
             </Link>
           ) : (
             <Button
               isIconOnly
-              radius="full"
               size="sm"
               variant="light"
-              className="h-[18px] min-w-[18px]"
+              className="min-w-unit-5 h-unit-5"
               isDisabled>
-              <Icon className="text-sm text-default-600" icon="gravity-ui:link" />
+              <Icon className="text-base text-default-400" icon="gravity-ui:link" />
             </Button>
           )}
         </Tooltip>
