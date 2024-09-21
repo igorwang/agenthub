@@ -44,7 +44,7 @@ export default async function LibraryLayout({
           <LibraryHeader library={library?.knowledge_base_by_pk} />
         </div>
       </div>
-      <div className="flex h-full w-full flex-col gap-2 overflow-auto bg-gray-50 px-2">
+      <div className="custom-scrollbar flex h-full w-full flex-col gap-2 overflow-auto bg-gray-50 px-2">
         <div className="sticky top-0 z-10 flex justify-center bg-gray-50 px-2 py-2">
           <LibraryBreadcrumbs libraryId={params.id} />
         </div>
