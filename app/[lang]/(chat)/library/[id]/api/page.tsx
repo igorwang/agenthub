@@ -2,7 +2,7 @@ import ApiDoc from "@/components/ApiDoc";
 import convertApiEndpointsToTiptapContent from "@/lib/utils/parseToApiDoc";
 import convertApiEndpointsToTestDoc from "@/lib/utils/parseToApiTestDoc";
 
-export const apiEndpoint = {
+const apiEndpoint = {
   title: "Upload Files To Library",
   method: "POST",
   parameters: [
