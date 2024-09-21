@@ -64,11 +64,20 @@ export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) =
       </CardHeader>
       <Divider />
       <CardBody className="flex flex-col justify-between p-0 text-small text-default-400">
-        <h4 className="line-clamp-2 text-sm">
-          <Tooltip classNames={{ base: "max-w-[300px]" }} content={source.fileName}>
+        {/* <Tooltip content={source.fileName} className="w-[200px] text-wrap"> */}
+        <div className="line-clamp-2 max-w-sm overflow-hidden text-ellipsis text-sm font-light">
+          {source.fileName}
+        </div>
+        {/* </Tooltip> */}
+        {/* <Tooltip
+          size="sm"
+          content={<div className="text-wrap">{source.fileName}</div>}
+          className="max-w-sm"
+          showArrow={true}>
+          <div className="line-clamp-2 text-ellipsis text-wrap text-sm">
             {source.fileName}
-          </Tooltip>
-        </h4>
+          </div>
+        </Tooltip> */}
       </CardBody>
       <Divider />
       <CardFooter className="flex-nowrap justify-center gap-1 py-0">
