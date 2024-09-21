@@ -93,7 +93,7 @@ const ChatHub = () => {
       },
     }).then((res) => {
       const newAgentId = res?.data?.insert_agent_one?.id;
-      const path = `/chat/${newAgentId}/settings`;
+      const path = `/chat/${newAgentId}/settings?step=0`;
       router.push(path);
     });
   }
