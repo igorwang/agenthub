@@ -1,0 +1,18 @@
+query getApiKeys(
+  $where: api_key_bool_exp = {}
+  $order_by: [api_key_order_by!] = {}
+  $offset: Int = 0
+  $limit: Int = 10
+) {
+  api_key(where: $where, order_by: $order_by, offset: $offset, limit: $limit) {
+    ...apiKeyFragment
+  }
+}
+
+fragment apiKeyFragment on api_key {
+  id
+  key
+  name
+  created_at
+  creator_id
+}

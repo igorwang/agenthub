@@ -13,7 +13,7 @@ export default function LibraryBreadcrumbs({ libraryId }: LibraryBreadcrumbsProp
   const searchParams = useSearchParams();
   const t = useTranslations();
 
-  let currentPage: "files" | "settings" | "workflow" | "file-detail";
+  let currentPage: "files" | "settings" | "workflow" | "file-detail" | "api";
   let filename = "";
 
   switch (true) {
@@ -22,6 +22,9 @@ export default function LibraryBreadcrumbs({ libraryId }: LibraryBreadcrumbsProp
       break;
     case pathname.endsWith("/workflow"):
       currentPage = "workflow";
+      break;
+    case pathname.endsWith("/api"):
+      currentPage = "api";
       break;
     case pathname.includes("/chunk"):
       currentPage = "file-detail";
@@ -63,6 +66,9 @@ export default function LibraryBreadcrumbs({ libraryId }: LibraryBreadcrumbsProp
       </BreadcrumbItem>
       <BreadcrumbItem key="workflow" isCurrent={currentPage === "workflow"}>
         <Link href={`/library/${libraryId}/workflow`}>{t("Workflow")}</Link>
+      </BreadcrumbItem>
+      <BreadcrumbItem key="api" isCurrent={currentPage === "api"}>
+        <Link href={`/library/${libraryId}/api`}>{t("API")}</Link>
       </BreadcrumbItem>
     </Breadcrumbs>
   );

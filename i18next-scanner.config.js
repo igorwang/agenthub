@@ -15,7 +15,11 @@ module.exports = {
     ns: [""],
     defaultLng: "en",
     defaultNs: "",
-    defaultValue: function (lng, ns, key) {
+    defaultValue: function (lng, ns, key, options) {
+      console.log("options", options);
+      if (options && options.defaultValue) {
+        return options.defaultValue;
+      }
       return key;
     },
     resource: {

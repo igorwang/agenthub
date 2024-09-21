@@ -31,7 +31,8 @@ import UniqueID from "@tiptap/extension-unique-id";
 import StarterKit from "@tiptap/starter-kit";
 export { TableOfContents } from "@tiptap-pro/extension-table-of-contents";
 TableOfContentsNode;
-const content = {
+
+const defaultContent = {
   type: "doc",
   content: [
     {
@@ -178,8 +179,15 @@ const content = {
   ],
 };
 
-export const useBlockEditor = ({ editable = true }: { editable?: boolean }) => {
+export const useBlockEditor = ({
+  editable = true,
+  content,
+}: {
+  editable?: boolean;
+  content?: any;
+}) => {
   const editor = useEditor({
+    content: content,
     immediatelyRender: false,
     editorProps: {
       attributes: {
@@ -229,9 +237,9 @@ export const useBlockEditor = ({ editable = true }: { editable?: boolean }) => {
     editable: editable,
     autofocus: true,
     onCreate: (ctx) => {
-      console.log(ctx);
+      console.log("ctx", ctx, ctx.editor);
       if (ctx.editor.isEmpty) {
-        ctx.editor.commands.setContent(content);
+        ctx.editor.commands.setContent(defaultContent);
         ctx.editor.commands.focus("start", { scrollIntoView: true });
       }
     },

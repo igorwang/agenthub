@@ -39,6 +39,13 @@ export function useSidebarItems(roles: string[]): SidebarItem[] {
           title: t("Workflow"),
           endContent: "solar:add-circle-line-duotone",
         },
+        {
+          key: "apiKey",
+          href: "/key-management",
+          icon: "solar:key-minimalistic-square-3-broken",
+          title: t("API Key"),
+          endContent: "solar:key-minimalistic-square-3-broken",
+        },
         // You can add more items here
       ],
     },
@@ -51,6 +58,7 @@ export function useSidebarItems(roles: string[]): SidebarItem[] {
     if (item.key === "chat") return true; // All roles can see chat
     if (item.key === "library") return roles.includes("creator");
     if (item.key === "workflow") return roles.includes("creator");
+    if (item.key === "apiKey") return roles.includes("creator");
     // Add more conditions here for other items
     return false;
   };
