@@ -411,7 +411,7 @@ export default function LibraryFileList({
                 <UploadZone
                   knowledgeBaseId={knowledgeBaseId}
                   maxNumberOfFile={100}
-                  acceptFileTypes=".doc,.docx,.pdf,.ppt,.pptx,.xls,.xlsx,.txt,.json,.mp3,.mp4"
+                  acceptFileTypes=".doc,.docx,.pdf,.ppt,.pptx,.xls,.xlsx,.txt,.md,.json,.mp3,.mp4"
                   onAfterUpload={handleAfterUploadFile}
                 />
               </ModalBody>

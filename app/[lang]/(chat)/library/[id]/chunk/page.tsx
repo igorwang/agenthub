@@ -1,26 +1,53 @@
 import { auth } from "@/auth";
 import LibraryFileChunk from "@/components/Library/LibraryFileChunk";
 import "@/lib/apiClient";
-import { Chunk, CollectionService, FileChunkRequest } from "@/restful/generated";
+import { CollectionService, FileChunkRequest } from "@/restful/generated";
 import { Spinner } from "@nextui-org/react";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-async function getChunksData(fileId: string) {
-  const session = await auth();
-  if (!session?.user) {
-    throw new Error("Unauthorized");
+interface FileChunkPageProps {
+  searchParams: {
+    fileId?: string;
+    filename?: string;
+    [key: string]: string | string[] | undefined;
+  };
+}
+
+export default async function FileChunkPage({ searchParams }: FileChunkPageProps) {
+  const { fileId, filename } = searchParams;
+
+  if (!fileId || !filename) {
+    notFound();
   }
 
+  return (
+    <div className="h-full w-full">
+      <Suspense fallback={<LoadingSpinner />}>
+        {await renderContent(fileId, filename)}
+      </Suspense>
+    </div>
+  );
+}
+
+async function renderContent(fileId: string, filename: string) {
   try {
+    const session = await auth();
+    if (!session?.user) {
+      return <ErrorDisplay message="You must be logged in to view this page." />;
+    }
+
     const body: FileChunkRequest = { file_id: fileId };
-    const response = await CollectionService.getChunksOfFileV1CollectionChunksPost({
+    const chunksData = await CollectionService.getChunksOfFileV1CollectionChunksPost({
       requestBody: body,
     });
-    return response;
+
+    return (
+      <LibraryFileChunk fileId={fileId} filename={filename} initialChunks={chunksData} />
+    );
   } catch (error) {
     console.error("Error fetching chunks:", error);
-    throw error;
+    return <ErrorDisplay message="Error loading chunks data. Please try again later." />;
   }
 }
 
@@ -36,39 +63,6 @@ function ErrorDisplay({ message }: { message: string }) {
   return (
     <div className="flex h-screen items-center justify-center">
       <p className="text-red-500">{message}</p>
-    </div>
-  );
-}
-
-async function ChunkContent({ fileId, filename }: { fileId: string; filename: string }) {
-  try {
-    const chunksData: Chunk[] = await getChunksData(fileId);
-    return <LibraryFileChunk filename={filename} chunks={chunksData} />;
-  } catch (error) {
-    if (error instanceof Error && error.message === "Unauthorized") {
-      return <ErrorDisplay message="You must be logged in to view this page." />;
-    }
-    return <ErrorDisplay message="Error loading chunks data. Please try again later." />;
-  }
-}
-
-export default function FileChunkPage({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
-  const fileId = searchParams.fileId as string;
-  const filename = searchParams.filename as string;
-
-  if (!fileId || !filename) {
-    notFound();
-  }
-
-  return (
-    <div className="h-full w-full">
-      <Suspense fallback={<LoadingSpinner />}>
-        <ChunkContent fileId={fileId} filename={filename} />
-      </Suspense>
     </div>
   );
 }

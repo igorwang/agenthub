@@ -298,7 +298,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
                   }}>
                   {Object.values(Chunking_Strategy_Enum).map((strategy) => (
                     <SelectItem key={strategy} value={strategy}>
-                      {t(strategy)}
+                      {strategy}
                     </SelectItem>
                   ))}
                 </Select>
