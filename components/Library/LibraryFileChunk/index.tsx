@@ -150,11 +150,11 @@ const LibraryFileChunk: React.FC<LibraryFileChunkProps> = ({
                       <p className="line-clamp-4 flex-grow text-sm text-gray-700">
                         {chunk.content}
                       </p>
-                      <div className="mt-3 flex items-center justify-end">
+                      {/* <div className="mt-3 flex items-center justify-end">
                         <span className="text-xs font-medium text-blue-600 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                           {t("View details")} →
                         </span>
-                      </div>
+                      </div> */}
                     </div>
                   </Card>
                 ))}
