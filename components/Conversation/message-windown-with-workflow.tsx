@@ -307,7 +307,6 @@ export default function MessageWindowWithWorkflow({
 
         const workflowResults: ChatFlowResponseSchema = await response.json();
         const workflowOutput = workflowResults.workflow_output;
-        console.log("workflowResults", workflowResults);
 
         if (isTestMode) {
           setWorkflowResults(workflowResults);
@@ -362,7 +361,6 @@ export default function MessageWindowWithWorkflow({
         }
 
         if (workflowOutput.context) {
-          console.log("workflowOutput.context", workflowOutput.context);
           setChatContext(workflowOutput.context);
         } else {
           setChatContext("");
@@ -388,7 +386,7 @@ export default function MessageWindowWithWorkflow({
         const historyMessage = selectedSources
           ? messages.filter((item) => item.status != "draft").slice(-1) // only last message need to generation
           : messages.filter((item) => item.status != "draft");
-
+        console.log("chatContext", chatContext, agent?.token_limit);
         const prompt = await createPrompt(
           promptTemplates || DEFAULT_TEMPLATES,
           historyMessage,
