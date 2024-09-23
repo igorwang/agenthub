@@ -155,6 +155,19 @@ const FileTable: FC<FileTableProps> = ({
         case "actions":
           return (
             <div className="flex items-center justify-center gap-1">
+              <Tooltip content="Copy">
+                <Button
+                  isIconOnly
+                  size="sm"
+                  variant="light"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    navigator.clipboard.writeText(`${file.name}(${file.id})`);
+                  }}>
+                  <Icon icon="lets-icons:copy" className="text-lg" />
+                </Button>
+              </Tooltip>
               <Tooltip content="View">
                 <Button
                   isIconOnly
