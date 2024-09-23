@@ -313,7 +313,7 @@ export const QueryDocumentNodeComponent: React.FC<NodeProps<QueryDocumentNode>> 
         className={`rounded-md border ${borderColor} bg-green-50 px-2 py-1 shadow-sm transition-colors duration-200`}>
         <div className="flex flex-col items-center">
           <div className="mb-0.5 flex h-6 w-6 items-center justify-center text-green-500">
-            <Icon icon="et:search" fontSize={16} />
+            <Icon icon="icon-park-outline:find" fontSize={16} />
           </div>
           <div className="text-center text-[10px] font-medium text-green-700">
             {data.label}

@@ -1,6 +1,7 @@
 import ChatTriggerNodeForm from "@/components/Workflow/WorkflowForm/node-forms/chat-trigger-form";
 import ChunkingNodeForm from "@/components/Workflow/WorkflowForm/node-forms/chunkging-node-form";
 import ConditionNodeForm from "@/components/Workflow/WorkflowForm/node-forms/condition-node-form";
+import DefaultNodeForm from "@/components/Workflow/WorkflowForm/node-forms/default-node-from";
 import HumanInLoopNodeForm from "@/components/Workflow/WorkflowForm/node-forms/human-in-loop-form";
 import IndexingNodeForm from "@/components/Workflow/WorkflowForm/node-forms/indexing-node-form";
 import InputNodeForm from "@/components/Workflow/WorkflowForm/node-forms/input-node-form";
@@ -33,6 +34,10 @@ export const nodeFormComponents: Map<string, any | null> = new Map([
   ["newMultiModalNode", NewMultiModalNodeForm],
   ["searchMemoryNode", SearchMemoryNodeForm],
   ["workflowInputNode", WorkflowInputNodeForm],
+  [
+    "queryDocumentNode",
+    (props) => <DefaultNodeForm {...props} title="Edit Query Document Node" />,
+  ],
 
   // 如果某种节点类型没有对应的表单，可以设置为 null
   // ['someOtherNode', null],

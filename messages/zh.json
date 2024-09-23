@@ -82,6 +82,8 @@
   "Edit Agent": "基本信息",
   "Edit HumanInLoop Node": "编辑人机交互节点",
   "Edit Multi Modal Input Node": "编辑多模态输入节点",
+  "Edit Node": "Edit Node",
+  "Edit Query Document Node": "Edit Query Document Node",
   "Edit SearchMemory Node": "编辑搜索记忆节点",
   "Edit WorkflowInput Node": "编辑工作流输入节点",
   "Embedding model": "文档向量模型",
