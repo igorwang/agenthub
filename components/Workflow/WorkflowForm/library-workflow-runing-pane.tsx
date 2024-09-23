@@ -26,7 +26,6 @@ export default function LibraryWorkflowRunningPane({
   const [results, setResults] = useState<{ [key: string]: any } | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [expandedSteps, setExpandedSteps] = useState<{ [key: number]: boolean }>({});
-  const [isRetrying, setIsRetrying] = useState(false);
   const [status, setStatus] = useState<Status_Enum | null>(null);
 
   const { data, loading, error } = useSubExecuteResultsSubscription({
@@ -39,7 +38,7 @@ export default function LibraryWorkflowRunningPane({
   });
 
   // useEffect(() => {
-  //   if (fileId && !isRetrying) {
+  //   if (fileId && !loading) {
   //     handleRedoFile();
   //   }
   // }, [fileId]);
@@ -50,7 +49,6 @@ export default function LibraryWorkflowRunningPane({
       setResults(data.execute_results[0].results);
       setErrorMessage(data.execute_results[0].error_message || null);
       setExecuteId(data.execute_results[0].id || null);
-      setIsRetrying(false);
       setStatus(data.execute_results[0].status || null);
     }
   }, [data]);
@@ -63,7 +61,6 @@ export default function LibraryWorkflowRunningPane({
   };
 
   const handleRedoFile = useCallback(async () => {
-    setIsRetrying(true);
     setResults(null);
     try {
       const response = await fetch("/api/file/reprocess", {
@@ -86,12 +83,40 @@ export default function LibraryWorkflowRunningPane({
       console.error("Error reprocessing file:", error);
       toast.error(`Failed to reprocess file "${fileName}". Please try again.`);
     }
-    setIsRetrying(false);
   }, [fileId, fileName]);
 
   const handleNewFile = () => {
     onNewFile?.();
   };
+
+  function renderButtons() {
+    return (
+      <div className="flex flex-row">
+        <Tooltip content={t("New File")}>
+          <Button
+            color="primary"
+            variant="bordered"
+            size="sm"
+            onClick={handleNewFile}
+            startContent={<Icon icon="mdi:file-plus" fontSize={18} />}>
+            {t("New File")}
+          </Button>
+        </Tooltip>
+        <Spacer />
+        <Tooltip content={loading ? `${t("Start")}...` : t("Start")}>
+          <Button
+            color="primary"
+            variant="bordered"
+            size="sm"
+            onClick={handleRedoFile}
+            isLoading={loading}
+            startContent={<Icon icon="mdi:play" fontSize={20} />}>
+            {t("Start")}
+          </Button>
+        </Tooltip>
+      </div>
+    );
+  }
 
   const renderExecutionFlow = () => {
     if (
@@ -171,48 +196,7 @@ export default function LibraryWorkflowRunningPane({
         <h1 className="max-w-md overflow-hidden text-ellipsis text-nowrap text-xl font-bold">
           {t("Input file")}: {fileName}
         </h1>
-        <div className="flex flex-row">
-          <Tooltip content={t("New File")}>
-            <Button
-              color="primary"
-              variant="bordered"
-              size="sm"
-              onClick={handleNewFile}
-              startContent={<Icon icon="mdi:file-plus" className="h-4 w-4" />}>
-              {t("New File")}
-            </Button>
-          </Tooltip>
-          <Spacer />
-          {results != null ? (
-            <Tooltip content={isRetrying ? `${t("Retry")}...` : t("Retry")}>
-              <Button
-                color="primary"
-                variant="bordered"
-                size="sm"
-                onClick={handleRedoFile}
-                disabled={isRetrying}
-                startContent={
-                  <Icon
-                    icon={isRetrying ? "eos-icons:loading" : "uil:redo"}
-                    className={`h-4 w-4 ${isRetrying ? "animate-spin" : ""}`}
-                  />
-                }>
-                {t("Retry")}
-              </Button>
-            </Tooltip>
-          ) : (
-            <Tooltip content={t("Start")}>
-              <Button
-                color="primary"
-                variant="bordered"
-                size="sm"
-                onClick={handleRedoFile}
-                startContent={<Icon icon="mdi:play" className="h-4 w-4" />}>
-                {t("Start")}
-              </Button>
-            </Tooltip>
-          )}
-        </div>
+        {renderButtons()}
       </div>
 
       {errorMessage && (

@@ -82,6 +82,8 @@
   "Edit Agent": "Edit Agent",
   "Edit HumanInLoop Node": "Edit HumanInLoop Node",
   "Edit Multi Modal Input Node": "Edit Multi Modal Input Node",
+  "Edit Node": "Edit Node",
+  "Edit Query Document Node": "Edit Query Document Node",
   "Edit SearchMemory Node": "Edit SearchMemory Node",
   "Edit WorkflowInput Node": "Edit WorkflowInput Node",
   "Embedding model": "Embedding model",

@@ -303,8 +303,38 @@ export const llmV1NodeComponent: React.FC<NodeProps<InputNode>> = memo(
   },
 );
 
-export type SearchLibraryNode = Node<CustomNodeData, "searchLibraryNode">;
+export type QueryDocumentNode = Node<CustomNodeData, "queryDocumentNode">;
+export const QueryDocumentNodeComponent: React.FC<NodeProps<QueryDocumentNode>> = memo(
+  ({ data, selected }) => {
+    const borderColor = selected ? "border-green-500" : "border-gray-200";
 
+    return (
+      <div
+        className={`rounded-md border ${borderColor} bg-green-50 px-2 py-1 shadow-sm transition-colors duration-200`}>
+        <div className="flex flex-col items-center">
+          <div className="mb-0.5 flex h-6 w-6 items-center justify-center text-green-500">
+            <Icon icon="icon-park-outline:find" fontSize={16} />
+          </div>
+          <div className="text-center text-[10px] font-medium text-green-700">
+            {data.label}
+          </div>
+        </div>
+        <Handle
+          type="target"
+          position={Position.Left}
+          className="-ml-0.5 h-4 w-0.5 !border-1 !border-green-100 !bg-green-300"
+        />
+        <Handle
+          type="source"
+          position={Position.Right}
+          className="-mr-0.5 h-4 w-0.5 !border-1 !border-green-100 !bg-green-300"
+        />
+      </div>
+    );
+  },
+);
+
+export type SearchLibraryNode = Node<CustomNodeData, "searchLibraryNode">;
 export const SearchLibraryNodeComponent: React.FC<NodeProps<SearchLibraryNode>> = memo(
   ({ data, selected }) => {
     const borderColor = selected ? "border-purple-500" : "border-gray-200";
@@ -323,18 +353,17 @@ export const SearchLibraryNodeComponent: React.FC<NodeProps<SearchLibraryNode>> 
         <Handle
           type="target"
           position={Position.Left}
-          className="-ml-0.5 h-3 w-0.5 !border-1 !border-purple-100 !bg-purple-300"
+          className="-ml-0.5 h-4 w-0.5 !border-1 !border-purple-100 !bg-purple-300"
         />
         <Handle
           type="source"
           position={Position.Right}
-          className="-mr-0.5 h-1 w-1 !border-1 !border-purple-100 !bg-purple-300"
+          className="-mr-0.5 h-4 w-1 !border-1 !border-purple-100 !bg-purple-300"
         />
       </div>
     );
   },
 );
-
 export type searchMemoryNode = Node<CustomNodeData, "searchMemoryNode">;
 
 export const SearchMemoryNodeComponent: React.FC<NodeProps<searchMemoryNode>> = memo(
@@ -355,12 +384,12 @@ export const SearchMemoryNodeComponent: React.FC<NodeProps<searchMemoryNode>> = 
         <Handle
           type="target"
           position={Position.Left}
-          className="-ml-0.5 h-3 w-0.5 !border-1 !border-purple-100 !bg-green-300"
+          className="-ml-0.5 h-4 w-0.5 !border-1 !border-purple-100 !bg-green-300"
         />
         <Handle
           type="source"
           position={Position.Right}
-          className="-mr-0.5 h-2 w-1 !border-1 !border-purple-100 !bg-green-300"
+          className="-mr-0.5 h-4 w-1 !border-1 !border-purple-100 !bg-green-300"
         />
       </div>
     );
@@ -448,7 +477,7 @@ export const NewDocumentNodeComponent: React.FC<NodeProps<newDocumentNode>> = me
         <Handle
           type="source"
           position={Position.Right}
-          className="h-2 w-2 !border-1 !border-white !bg-slate-300"
+          className="h-4 w-2 !border-1 !border-white !bg-slate-300"
         />
       </div>
     );
@@ -622,6 +651,7 @@ HumanInLoopNodeComponent.displayName = "HumanInLoopNodeComponent";
 NewMultiModalNodeComponent.displayName = "NewMultiModalNodeComponent";
 SearchMemoryNodeComponent.displayName = "SearchMemoryNodeComponent";
 workflowInputNodeComponent.displayName = "WorkflowInputNodeComponent";
+QueryDocumentNodeComponent.displayName = "QueryDocumentNodeComponent";
 
 export const nodeTypes: NodeTypes = {
   startNode: StartNodeComponent,
@@ -642,4 +672,5 @@ export const nodeTypes: NodeTypes = {
   newMultiModalNode: NewMultiModalNodeComponent,
   searchMemoryNode: SearchMemoryNodeComponent,
   workflowInputNode: workflowInputNodeComponent,
+  queryDocumentNode: QueryDocumentNodeComponent,
 };
