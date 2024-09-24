@@ -163,7 +163,9 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
               throw new Error("Invalid Lodash-style expression");
             }
             const [operation, args] = lodashMatch.slice(1);
-            const [path, ...otherArgs] = args.split(",").map((arg: string) => arg.trim());
+            const argArray = args.split(",").map((arg: string) => arg.trim());
+            const path = argArray[0];
+            const otherArgs = argArray.slice(1);
 
             // Get the array using JSONPath
             const array = JSONPath({ path, json: jsonData });
@@ -178,7 +180,8 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
               case "takeRight":
                 return JSON.stringify(array.slice(-Number(otherArgs[0])));
               case "map":
-                return handleMapOperation([path, ...otherArgs], jsonData);
+                const strArgs = otherArgs.map((arg: string) => arg.trim()).join();
+                return handleMapOperation([path, strArgs], jsonData);
               case "zip":
                 return handleZipOperation([path, ...otherArgs], jsonData);
               default:
