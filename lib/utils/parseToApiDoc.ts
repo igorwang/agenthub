@@ -40,6 +40,63 @@ function convertApiEndpointsToTiptapContent(apiEndpoint: any): any {
     {
       type: "heading",
       attrs: { level: 3 },
+      content: [{ type: "text", text: "File Template" }],
+    },
+    {
+      type: "paragraph",
+      content: [
+        {
+          type: "text",
+          text: "You can download the file template for this API ",
+        },
+        {
+          type: "text",
+          text: "here",
+          marks: [
+            {
+              type: "link",
+              attrs: { href: `https://s3api.techower.com/public/uploadTemplate.xlsx` },
+            },
+          ],
+        },
+        { type: "text", text: "." },
+      ],
+    },
+    {
+      type: "paragraph",
+      content: [
+        {
+          type: "text",
+          text: "The file template is a CSV file with the following columns:",
+        },
+      ],
+    },
+    {
+      type: "bulletList",
+      content: [
+        {
+          type: "listItem",
+          content: [
+            {
+              type: "text",
+              text: "url: The URL of files to be downloaded and uploaded to library",
+            },
+          ],
+        },
+        {
+          type: "listItem",
+          content: [
+            {
+              type: "text",
+              text: "source_url: The original URL indicating the true source of the file, such as a third-party website",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      type: "heading",
+      attrs: { level: 3 },
       content: [{ type: "text", text: "Method" }],
     },
     {
