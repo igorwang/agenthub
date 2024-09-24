@@ -192,7 +192,7 @@ export const useBlockEditor = ({
     editorProps: {
       attributes: {
         class:
-          "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl min-h-[200px] p-1 focus:outline-none",
+          "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl min-h-[200px] p-1 focus:outline-none py-8 pl-16 pr-8 lg:pl-8 lg:pr-8",
       },
     },
     extensions: [
