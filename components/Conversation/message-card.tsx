@@ -176,7 +176,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
 
     const handleExportDocument = React.useCallback(async () => {
       try {
-        const response = await fetch("/api/chat/message/export_document", {
+        const response = await fetch("chat/message/export_document", {
           method: "POST",
           body: JSON.stringify({ message_id: messageId }),
         });
