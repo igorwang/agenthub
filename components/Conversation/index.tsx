@@ -465,6 +465,7 @@ export const Conversation: React.FC<ConversationProps> = ({
                 onSelectedSource={handleSelectedSource}
                 onMessageChange={handleMessageChange}
                 sessionFilesContext={sessionFilesContext}
+                session_file_ids={sessionFiles.map((item) => item.id)}
               />
             ) : (
               <MessageWindow

@@ -63,6 +63,7 @@ type MessageWindowProps = {
   isTestMode?: boolean;
   selectedSources?: SourceType[];
   sessionFilesContext?: string;
+  session_file_ids?: string[];
   onChatingStatusChange: (isChating: boolean, status: CHAT_STATUS_ENUM | null) => void;
   onSelectedSource?: (source: SourceType, selected: boolean) => void;
   onMessageChange?: (messages: MessageType[]) => void;
@@ -87,6 +88,7 @@ export default function MessageWindowWithWorkflow({
   isTestMode = false,
   selectedSources,
   sessionFilesContext = "",
+  session_file_ids = [],
   onChatingStatusChange,
   handleCreateNewMessage,
   onSelectedSource,
@@ -283,6 +285,7 @@ export default function MessageWindowWithWorkflow({
             content: item.message || "",
           })),
           workflow_id: workflow_id,
+          session_file_ids: session_file_ids || [],
           sources: selectedSources?.map((item) => ({
             title: item.title || item.fileName,
             url: item.url,
@@ -473,7 +476,7 @@ export default function MessageWindowWithWorkflow({
         return;
       };
     }
-  }, [searchResults]);
+  }, [searchResults, isChating]);
 
   useEffect(() => {
     if (scrollRef.current) {
