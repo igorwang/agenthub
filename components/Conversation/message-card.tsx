@@ -1,4 +1,3 @@
-"use client";
 import React, { ReactNode, useCallback, useMemo, useState } from "react";
 
 import { cn } from "@/cn";
@@ -21,9 +20,20 @@ import {
   ToolType,
 } from "@/types/chatTypes";
 import { Icon } from "@iconify/react";
-import { Badge, Button, Link, Spacer, Spinner } from "@nextui-org/react";
+import {
+  Badge,
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Link,
+  Spacer,
+  Spinner,
+} from "@nextui-org/react";
 import { useClipboard } from "@nextui-org/use-clipboard";
 import clsx from "clsx";
+import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import { v4 } from "uuid";
@@ -101,6 +111,8 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
     const messageRef = React.useRef<HTMLDivElement>(null);
     const { copied, copy } = useClipboard();
 
+    const session = useSession();
+
     const { handleSetChatStatus, handleCreateNewMessage } = useConversationContext();
     const [updateMessageByIdMutation] = useUpdateMessageByIdMutation();
 
@@ -161,6 +173,25 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       },
       [onAttemptFeedback],
     );
+
+    const handleExportDocument = React.useCallback(async () => {
+      try {
+        const response = await fetch("/api/chat/message/export_document", {
+          method: "POST",
+          body: JSON.stringify({ message_id: messageId }),
+        });
+        const data = await response.json();
+        console.log("data", data);
+        if (data.url) {
+          window.open(data.url, "_blank");
+        } else {
+          toast.error(t("Failed to export document"));
+        }
+      } catch (error) {
+        console.error("Error exporting document", error);
+        toast.error(t("Failed to export document"));
+      }
+    }, [messageId, t]);
 
     const featureToolComponent = useMemo(() => {
       if (tool?.id && agentId) {
@@ -445,6 +476,24 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
                     />
                   )}
                 </Button>
+                <Dropdown>
+                  <DropdownTrigger>
+                    <Button isIconOnly radius="full" size="sm" variant="light">
+                      <Icon
+                        className="text-lg text-default-600"
+                        icon="mdi:dots-vertical"
+                      />
+                    </Button>
+                  </DropdownTrigger>
+                  <DropdownMenu aria-label="Message actions">
+                    <DropdownItem
+                      key="export"
+                      onClick={() => handleExportDocument()}
+                      startContent={<Icon icon="gravity-ui:file-export" />}>
+                      {t("Export Document")}
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
               </div>
             )}
             {/* {attempts > 1 && !hasFailed && (
