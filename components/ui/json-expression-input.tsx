@@ -99,11 +99,16 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
 }) => {
   const [parsedExpression, setParsedExpression] = useState("");
   const [isDragOver, setIsDragOver] = useState(false);
+  const escapedContent = value
+    ?.replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\n/g, "<br>");
 
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [StarterKit as any, JsonExpression],
-    content: value || defaultValue,
+    content: escapedContent || defaultValue,
     editable: !isDisabled && !isReadOnly,
     autofocus: autoFocus,
     editorProps: {
@@ -115,9 +120,14 @@ const JsonExpressionInput: React.FC<JsonExpressionInputProps> = ({
       },
     },
     onUpdate: ({ editor }) => {
+      const { from, to } = editor.state.selection;
       const content = editor.getText();
       onChange && onChange(content);
       parseExpression(content);
+      // Restore cursor position
+      setTimeout(() => {
+        editor.commands.setTextSelection({ from, to });
+      }, 0);
     },
   });
 
