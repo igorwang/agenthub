@@ -51,6 +51,7 @@ interface WorkflowFormProps {
   };
   nodeTypeList: NodeTypeFragmentFragment[];
   action: (formData: FormData) => Promise<{ success: boolean }>;
+  onHasUnsavedChanges?: (hasUnsavedChanges: boolean) => void;
 }
 
 type FormValues = {
@@ -74,6 +75,7 @@ export default function WorkflowForm({
   agentId,
   action,
   nodeTypeList,
+  onHasUnsavedChanges,
 }: WorkflowFormProps) {
   const router = useRouter();
   const t = useTranslations();
@@ -149,6 +151,7 @@ export default function WorkflowForm({
         if (result.success) {
           toast.success("Save workflow success");
           setHasUnsavedChanges(false);
+          onHasUnsavedChanges?.(false);
         } else {
           toast.error("Create error");
         }
@@ -196,6 +199,7 @@ export default function WorkflowForm({
 
   const handleEditStatusChange = useCallback(() => {
     setHasUnsavedChanges(true);
+    onHasUnsavedChanges?.(true);
   }, []);
 
   const closeUploadModal = () => {

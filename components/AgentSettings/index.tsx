@@ -56,6 +56,7 @@ export default function AgentSettings({
   const [libraryId, setLibraryId] = useState<string | null>();
   const searchParams = useSearchParams();
   const [step, setStep] = useState<number>(parseInt(searchParams.get("step") || "1"));
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState<boolean>(false);
 
   const params = useParams<{ id: string }>();
   const pathname = usePathname();
@@ -133,7 +134,8 @@ export default function AgentSettings({
               workflowType="agent"
               initialData={initialData}
               action={action}
-              nodeTypeList={nodeTypeList}></WorkflowForm>
+              nodeTypeList={nodeTypeList}
+              onHasUnsavedChanges={setHasUnsavedChanges}></WorkflowForm>
           </div>
         );
       default:
@@ -164,6 +166,14 @@ export default function AgentSettings({
     }
     setStep(currentStep + 1);
   }
+
+  const handleSave = () => {
+    if (hasUnsavedChanges) {
+      toast.warning(t("Please save your changes before you leave"));
+    } else {
+      router.push(`/chat/${id}`);
+    }
+  };
 
   return (
     <div className="flex h-screen flex-col">
@@ -203,7 +213,7 @@ export default function AgentSettings({
               {t("Next")}
             </Button>
           ) : (
-            <Button color={"primary"} onClick={() => router.push(`/chat/${id}`)}>
+            <Button color={"primary"} onClick={handleSave}>
               {t("Save")}
             </Button>
           )}
