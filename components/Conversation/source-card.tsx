@@ -63,7 +63,7 @@ export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) =
         </div>
       </CardHeader>
       <Divider />
-      <Tooltip content={source.fileName} placement="bottom" className="break-words">
+      <Tooltip content={source.fileName} placement="top" className="break-words">
         <CardBody className="px-3 py-2">
           <p className="line-clamp-2 text-small text-default-500">{source.fileName}</p>
         </CardBody>
