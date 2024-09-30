@@ -64,17 +64,22 @@ function Flow({
     });
   }, []);
 
+  useEffect(() => {
+    setNodes(initialNodes);
+    setEdges(initialEdges);
+  }, [initialNodes, initialEdges, setNodes, setEdges]);
+
   const generateFakeData = async (nodes: Node[] | undefined) => {
     if (!JSONSchemaFaker) {
       return {};
     }
 
     JSONSchemaFaker.option({
-      minItems: 1,
+      minItems: 3,
       maxItems: 3,
       ignoreMissingRefs: true,
       failOnInvalidFormat: false,
-      maxLength: 20,
+      maxLength: 10,
       minLength: 1,
       useExamplesValue: true,
     });

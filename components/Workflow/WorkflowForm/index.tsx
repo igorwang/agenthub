@@ -5,15 +5,21 @@ import WorkflowBindPane from "@/components/Workflow/WorkflowBindPane";
 import LibraryWorkflowRunningPane from "@/components/Workflow/WorkflowForm/library-workflow-runing-pane";
 import NodeTypeList from "@/components/Workflow/WorkflowForm/node-type-list";
 import WorkflowPane from "@/components/Workflow/WorkflowForm/workflow-pane";
+import WorkflowTemplate from "@/components/Workflow/WorkflowTemplate";
 import {
   FlowEdgeFragmentFragment,
   FlowNodeFragmentFragment,
   NodeTypeFragmentFragment,
   Workflow_Type_Enum,
+  WorkflowTemplateFragmentFragment,
 } from "@/graphql/generated/types";
 import { Icon } from "@iconify/react";
 import {
   Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
   Input,
   Modal,
   ModalBody,
@@ -27,9 +33,10 @@ import { Edge, Node } from "@xyflow/react";
 import "@xyflow/react/dist/base.css";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { v4 } from "uuid";
 import { Conversation } from "../../Conversation";
 
 interface WorkflowFormProps {
@@ -37,6 +44,7 @@ interface WorkflowFormProps {
   knowledgeBaseId?: string;
   workflowType: "library" | "agent" | Workflow_Type_Enum;
   initialData: {
+    initialData: any;
     id: string;
     name: string;
     description: string;
@@ -79,10 +87,13 @@ export default function WorkflowForm({
 }: WorkflowFormProps) {
   const router = useRouter();
   const t = useTranslations();
+  const [initialNodes, setInitialNodes] = useState<Node[]>([]);
+  const [initialEdges, setInitialEdges] = useState<Edge[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isWorkflowRunOpen, setIsWorkflowRunOpen] = useState(false);
+  const [isSelectTemplateOpen, setIsSelectTemplateOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [testFile, setTestFile] = useState<{ id: string; filename: string } | null>(null);
   const {
@@ -92,28 +103,6 @@ export default function WorkflowForm({
   } = useDisclosure();
 
   const flowId = initialData.id;
-
-  const initialNodes = useMemo(
-    () =>
-      initialData?.nodes?.map((item) => ({
-        id: item.id,
-        position: { x: item.position_x, y: item.position_y },
-        type: item.node_type.type,
-        data: { ...item.data },
-      })) || [],
-    [initialData?.nodes],
-  );
-
-  const initialEdges = useMemo(
-    () =>
-      initialData?.edges?.map((item) => ({
-        id: item.id,
-        source: item.source_id,
-        target: item.target_id,
-        sourceHandle: item.sourceHandle,
-      })) || [],
-    [initialData?.edges],
-  );
 
   const { control, handleSubmit, setValue, watch } = useForm<FormValues>({
     defaultValues: {
@@ -128,12 +117,31 @@ export default function WorkflowForm({
   });
   const currentNodes = watch("nodes");
   const currentEdges = watch("edges");
+  const workflowName = watch("name");
+
+  useEffect(() => {
+    setInitialNodes(
+      initialData?.nodes?.map((item) => ({
+        id: item.id,
+        position: { x: item.position_x, y: item.position_y },
+        type: item.node_type.type,
+        data: { ...item.data },
+      })) || [],
+    );
+    setInitialEdges(
+      initialData?.edges?.map((item) => ({
+        id: item.id,
+        source: item.source_id,
+        target: item.target_id,
+        sourceHandle: item.sourceHandle,
+      })) || [],
+    );
+  }, [initialData]);
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
     async (data) => {
       if (isSaving) return; // Prevent multiple submissions
       setIsSaving(true);
-      console.log("initialData", initialData);
       try {
         const formData = new FormData();
         formData.append("id", data.id);
@@ -172,6 +180,7 @@ export default function WorkflowForm({
       const hasEdgeChanges = JSON.stringify(newEdges) !== JSON.stringify(currentEdges);
 
       if (hasNodeChanges) {
+        console.log("hasNodeChanges", newNodes);
         setValue("nodes", newNodes);
       }
       if (hasEdgeChanges) {
@@ -215,6 +224,106 @@ export default function WorkflowForm({
   const handleCloseWorkflowRun = useCallback(() => {
     setIsWorkflowRunOpen(false);
   }, []);
+
+  const handleExportWorkflowTemplate = useCallback(() => {
+    const template = {
+      nodes: currentNodes,
+      edges: currentEdges,
+    };
+
+    const blob = new Blob([JSON.stringify(template, null, 2)], {
+      type: "application/json",
+    });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.style.display = "none";
+    a.href = url;
+    a.download = `${workflowName}.json`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }, [currentNodes, currentEdges, workflowName]);
+
+  const handleImportWorkflowTemplate = useCallback(() => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json";
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const content = e.target?.result as string;
+          try {
+            const parsed = JSON.parse(content);
+            if (Array.isArray(parsed.nodes) && Array.isArray(parsed.edges)) {
+              // replace id with uuid
+              const idMap = new Map<string, string>();
+              const newNodes = parsed.nodes.map((node: Node) => {
+                const newId = v4();
+                idMap.set(node.id, newId);
+                return {
+                  ...node,
+                  id: newId,
+                };
+              });
+              setInitialNodes(newNodes);
+              const newEdges = parsed.edges.map((edge: Edge) => ({
+                ...edge,
+                target: idMap.get(edge.target),
+                source: idMap.get(edge.source),
+                id: v4(),
+              }));
+              setInitialEdges(newEdges);
+              handleWorkflowChange(newNodes, newEdges);
+              setHasUnsavedChanges(true);
+            } else {
+              toast.error(t("Invalid JSON format"));
+            }
+          } catch (error) {
+            console.error("Error parsing JSON:", error);
+            toast.error(t("Invalid JSON format"));
+          }
+        };
+        reader.readAsText(file);
+      }
+    };
+    input.click();
+  }, [setValue, handleWorkflowChange]);
+
+  const handleSelectWorkflowTemplate = useCallback(
+    (template: WorkflowTemplateFragmentFragment) => {
+      setIsSelectTemplateOpen(false);
+      const data = template.data;
+      const nodes = data.nodes;
+      const edges = data.edges;
+      try {
+        const idMap = new Map<string, string>();
+        const newNodes = nodes.map((node: Node) => {
+          const newId = v4();
+          idMap.set(node.id, newId);
+          return {
+            ...node,
+            id: newId,
+          };
+        });
+        setInitialNodes(newNodes);
+        const newEdges = edges.map((edge: Edge) => ({
+          ...edge,
+          target: idMap.get(edge.target),
+          source: idMap.get(edge.source),
+          id: v4(),
+        }));
+        setInitialEdges(newEdges);
+        handleWorkflowChange(newNodes, newEdges);
+        setHasUnsavedChanges(true);
+      } catch (error) {
+        console.error("Error set template data", error);
+        toast.error(t("Invalid template data"));
+      }
+    },
+    [setInitialNodes, setInitialEdges, handleWorkflowChange, setHasUnsavedChanges],
+  );
 
   return (
     <div className="relative flex h-full flex-col gap-4">
@@ -281,6 +390,33 @@ export default function WorkflowForm({
             disabled={isSaving}>
             {isWorkflowRunOpen ? t("Close Workflow Test") : t("Run Workflow Test")}
           </Button>
+          <Spacer x={2} />
+          <Dropdown>
+            <DropdownTrigger>
+              <Button
+                color="default"
+                startContent={<Icon icon="mdi:dots-vertical" width="20" height="20" />}>
+                {t("More")}
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu>
+              <DropdownItem
+                startContent={<Icon icon="mdi:select-all" width="20" height="20" />}
+                onClick={() => setIsSelectTemplateOpen(true)}>
+                {t("Select Template")}
+              </DropdownItem>
+              <DropdownItem
+                startContent={<Icon icon="mdi:import" width="20" height="20" />}
+                onClick={handleImportWorkflowTemplate}>
+                {t("Import Template")}
+              </DropdownItem>
+              <DropdownItem
+                startContent={<Icon icon="mdi:export" width="20" height="20" />}
+                onClick={handleExportWorkflowTemplate}>
+                {t("Export Template")}
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
         </form>
       </div>
       <div className="flex h-[calc(100vh-340px)] w-full flex-row gap-2">
@@ -375,6 +511,26 @@ export default function WorkflowForm({
           </ModalContent>
         </Modal>
       )}
+      <Modal
+        isOpen={isSelectTemplateOpen}
+        onClose={() => setIsSelectTemplateOpen(false)}
+        size="4xl">
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                {t("Select Workflow Template")}
+              </ModalHeader>
+              <ModalBody>
+                <WorkflowTemplate
+                  workflowType={workflowType as Workflow_Type_Enum}
+                  onSelectWorkflowTemplate={handleSelectWorkflowTemplate}
+                />
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 }
