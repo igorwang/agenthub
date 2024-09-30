@@ -127,3 +127,28 @@ mutation insertFlowEdge($objects: [flow_edge_insert_input!] = {}) {
     affected_rows
   }
 }
+
+query getWorkflowTemplateList(
+  $where: workflow_template_bool_exp = {}
+  $limit: Int = 10
+  $offset: Int = 0
+  $order_by: [workflow_template_order_by!] = {}
+) {
+  workflow_template(where: $where, limit: $limit, offset: $offset, order_by: $order_by) {
+    ...WorkflowTemplateFragment
+  }
+  workflow_template_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+}
+
+fragment WorkflowTemplateFragment on workflow_template {
+  id
+  name
+  icon
+  description
+  data
+  workflow_type
+}

@@ -45,11 +45,11 @@ export const OutputPane: React.FC<OutputPaneProps> = ({ node }) => {
     const schema = outputSchema || {};
 
     JSONSchemaFaker.option({
-      minItems: 1,
+      minItems: 3,
       maxItems: 3,
       ignoreMissingRefs: true,
       failOnInvalidFormat: false,
-      maxLength: 20,
+      maxLength: 10,
       minLength: 1,
       useExamplesValue: true,
     });
