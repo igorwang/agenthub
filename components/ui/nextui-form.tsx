@@ -3,6 +3,8 @@ import ModelSelect from "@/components/PromptFrom/model-select";
 import JsonExpressionInput from "@/components/ui/json-expression-input";
 import JsonSchemaTooltip from "@/components/ui/json-schema-tooltip";
 import { Chunking_Strategy_Enum } from "@/graphql/generated/types";
+import { UIOptionsType } from "@rjsf/utils";
+
 import { Icon } from "@iconify/react";
 import {
   Button,
@@ -74,8 +76,6 @@ const CustomSwitch: React.FC<WidgetProps> = (props) => {
   );
 };
 
-import { UIOptionsType } from "@rjsf/utils";
-
 // 扩展 WidgetProps 接口以包含我们期望的特定属性
 interface CustomNumberWidgetProps extends WidgetProps {
   options: UIOptionsType & {
@@ -101,8 +101,15 @@ const CustomTextareaWidget: React.FC<WidgetProps> = (props) => {
     onFocus,
     autofocus,
     options,
+    uiSchema,
     formContext,
   } = props;
+
+  console.log("props", props);
+  console.log("name", value);
+  console.log("hidden", uiSchema?.["ui:hidden"]);
+
+  const hidden = uiSchema?.["ui:hidden"];
 
   return (
     <Textarea
@@ -110,7 +117,7 @@ const CustomTextareaWidget: React.FC<WidgetProps> = (props) => {
       value={value || ""}
       isRequired={required}
       disabled={disabled || readonly}
-      className="mb-2"
+      className={`mb-2`}
       autoFocus={autofocus}
       placeholder={options.placeholder}
       minRows={1}

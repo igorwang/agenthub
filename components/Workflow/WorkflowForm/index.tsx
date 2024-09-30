@@ -94,6 +94,7 @@ export default function WorkflowForm({
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isWorkflowRunOpen, setIsWorkflowRunOpen] = useState(false);
   const [isSelectTemplateOpen, setIsSelectTemplateOpen] = useState(false);
+  const [isStartGuideOpen, setIsStartGuideOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [testFile, setTestFile] = useState<{ id: string; filename: string } | null>(null);
   const {
@@ -136,6 +137,8 @@ export default function WorkflowForm({
         sourceHandle: item.sourceHandle,
       })) || [],
     );
+    console.log("initialData.nodes?.length", initialData.nodes?.length);
+    setIsStartGuideOpen(!initialData.nodes || initialData.nodes?.length === 0);
   }, [initialData]);
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
@@ -277,6 +280,7 @@ export default function WorkflowForm({
               setInitialEdges(newEdges);
               handleWorkflowChange(newNodes, newEdges);
               setHasUnsavedChanges(true);
+              onHasUnsavedChanges?.(true);
             } else {
               toast.error(t("Invalid JSON format"));
             }
@@ -317,6 +321,7 @@ export default function WorkflowForm({
         setInitialEdges(newEdges);
         handleWorkflowChange(newNodes, newEdges);
         setHasUnsavedChanges(true);
+        onHasUnsavedChanges?.(true);
       } catch (error) {
         console.error("Error set template data", error);
         toast.error(t("Invalid template data"));
@@ -526,6 +531,55 @@ export default function WorkflowForm({
                   workflowType={workflowType as Workflow_Type_Enum}
                   onSelectWorkflowTemplate={handleSelectWorkflowTemplate}
                 />
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+      <Modal
+        isOpen={isStartGuideOpen}
+        onClose={() => setIsStartGuideOpen(false)}
+        size="4xl">
+        <ModalContent>
+          {(onClose) => (
+            <>
+              {/* <ModalHeader className="flex flex-col gap-1">
+                {t("Start Guide")}
+              </ModalHeader> */}
+              <ModalBody>
+                <div className="flex flex-col items-center space-y-4">
+                  <p className="text-lg font-semibold">
+                    {t("Choose how to start your workflow")}
+                  </p>
+                  <div className="flex space-x-4">
+                    <Button
+                      size="lg"
+                      variant="bordered"
+                      startContent={<Icon icon="mdi:plus" className="text-2xl" />}
+                      className="h-48 w-48 flex-col items-center justify-center border-2 border-primary transition-colors hover:bg-primary/10"
+                      onPress={() => {
+                        setIsStartGuideOpen(false);
+                        // Add logic for starting from scratch
+                      }}>
+                      <span className="mt-2 text-lg font-semibold">
+                        {t("Start from Scratch")}
+                      </span>
+                    </Button>
+                    <Button
+                      size="lg"
+                      variant="bordered"
+                      startContent={<Icon icon="mdi:file-outline" className="text-2xl" />}
+                      className="h-48 w-48 flex-col items-center justify-center border-2 border-secondary transition-colors hover:bg-secondary/10"
+                      onPress={() => {
+                        setIsStartGuideOpen(false);
+                        setIsSelectTemplateOpen(true);
+                      }}>
+                      <span className="mt-2 text-lg font-semibold">
+                        {t("Choose a Template")}
+                      </span>
+                    </Button>
+                  </div>
+                </div>
               </ModalBody>
             </>
           )}

@@ -126,6 +126,7 @@
   "Indexing Configuration": "索引配置",
   "Input file": "输入文件",
   "Invalid JSON format": "Invalid JSON format",
+  "Invalid template data": "Invalid template data",
   "JSON Schema error": "JSON 模式错误",
   "KEY": "密钥",
   "Key Name": "密钥名称",
