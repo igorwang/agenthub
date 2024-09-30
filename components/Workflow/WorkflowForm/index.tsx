@@ -44,7 +44,6 @@ interface WorkflowFormProps {
   knowledgeBaseId?: string;
   workflowType: "library" | "agent" | Workflow_Type_Enum;
   initialData: {
-    initialData: any;
     id: string;
     name: string;
     description: string;
