@@ -63,12 +63,11 @@ export async function createPrompt(
   }
 
   const historyMessages = messages.slice(0, -1).map((msg) => [msg.role, msg.message]);
+  console.log("historyMessages", historyMessages);
 
   const contextString = [contextMessages, ...historyMessages]
     .map((msg) => `${msg[0]}:${msg[1]}`)
     .join("\n");
-
-  console.log("contextString", contextString);
 
   const latestQuery = messages.length > 0 ? messages[messages.length - 1].message : "";
   const latestMessageContent = refineQuery
@@ -83,15 +82,12 @@ export async function createPrompt(
 
   let promptFromContext = "";
 
-  console.log("contextString", contextString);
-
   if (contextString && leftTokenCount > 0) {
     const textSplitter = new TokenTextSplitter({
       chunkSize: leftTokenCount,
       chunkOverlap: 0,
     });
     const texts = await textSplitter.splitText(contextString);
-    console.log("texts", texts);
     promptFromContext = texts[0];
   }
 
@@ -106,6 +102,8 @@ export async function createPrompt(
 
   const promptFromQuery = `${latestMessages[0]}:${latestMessages[1]}`;
   const prompt = `${promptFromTemplate}\n${promptFromContext}\n${promptFromQuery}`;
+
+  console.log("prompt", prompt);
 
   return prompt;
 }

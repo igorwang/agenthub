@@ -386,10 +386,12 @@ export default function MessageWindowWithWorkflow({
       onChatingStatusChange(isChating, CHAT_STATUS_ENUM.Generating);
 
       const generateAnswer = async () => {
-        const historyMessage = selectedSources
-          ? messages.filter((item) => item.status != "draft").slice(-1) // only last message need to generation
-          : messages.filter((item) => item.status != "draft");
-        console.log("chatContext", chatContext, agent?.token_limit);
+        // const historyMessage = selectedSources
+        //   ? messages.filter((item) => item.status != "draft").slice(-1) // only last message need to generation
+        //   : messages.filter((item) => item.status != "draft");
+
+        const historyMessage = messages.filter((item) => item.status != "draft");
+
         const prompt = await createPrompt(
           promptTemplates || DEFAULT_TEMPLATES,
           historyMessage,

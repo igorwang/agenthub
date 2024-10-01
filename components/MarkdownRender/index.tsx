@@ -56,6 +56,22 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
     td: ({ children }: any) => (
       <td className="border border-gray-300 px-4 py-2">{children}</td>
     ),
+    unknown: ({ node, ...props }: any) => {
+      if (node.type === "element") {
+        return (
+          <span className="text-gray-600" {...props}>
+            &lt;{node.tagName}
+            {Object.entries(node.properties || {}).map(
+              ([key, value]) => ` ${key}="${value}"`,
+            )}
+            &gt;
+            {props.children}
+            &lt;/{node.tagName}&gt;
+          </span>
+        );
+      }
+      return <span {...props} />;
+    },
   };
 
   return (
