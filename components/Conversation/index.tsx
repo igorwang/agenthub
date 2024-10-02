@@ -372,7 +372,7 @@ export const Conversation: React.FC<ConversationProps> = ({
           <div className="flex flex-row items-center">
             <p className="pr-2 text-3xl font-medium">{agent.name}</p>
             {agent.mode === Agent_Mode_Enum.Workflow &&
-              agent.workflow_id &&
+              // agent.workflow_id &&
               agent.creator_id == userId && (
                 <div className="inline-block rounded-md px-2 py-1">
                   <Chip color="primary" variant="flat">
@@ -453,9 +453,9 @@ export const Conversation: React.FC<ConversationProps> = ({
         <div className="relative flex flex-col">{!hiddenHeader && headerElement}</div>
         <div className="flex max-h-full max-w-full flex-grow flex-row overflow-auto">
           <div className="min-[400px] mx-auto flex max-w-7xl flex-grow flex-col items-center overflow-auto px-10 pt-4">
-            {agent.mode === Agent_Mode_Enum.Workflow && agent.workflow_id ? (
+            {agent.mode === Agent_Mode_Enum.Workflow ? (
               <MessageWindowWithWorkflow
-                workflow_id={agent.workflow_id}
+                workflow_id={agent.workflow_id || ""}
                 isChating={isChating}
                 chatStatus={chatStatus}
                 selectedSources={selectedSources}
