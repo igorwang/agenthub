@@ -29,14 +29,15 @@ import {
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 
 interface TopicHistoryProps {
   agent_id?: string;
 }
 
-export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
+export function TopicHistory() {
   const dispatch: AppDispatch = useDispatch();
   const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
@@ -63,6 +64,28 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   const { data, loading, error, refetch } = getTopicListQuery;
 
   const [deleteTopicHistoryByIdMutation] = useDeleteTopicHistoryByIdMutation();
+
+  const handleExport = useCallback(
+    async (itemId: string) => {
+      try {
+        const response = await fetch("/api/chat/session/export_document", {
+          method: "POST",
+          body: JSON.stringify({ session_id: itemId }),
+        });
+        const data = await response.json();
+        console.log("data", data);
+        if (data.url) {
+          window.open(data.url, "_blank");
+        } else {
+          toast.error(t("Failed to export document"));
+        }
+      } catch (error) {
+        console.error("Error exporting document", error);
+        toast.error(t("Failed to export document"));
+      }
+    },
+    [t],
+  );
 
   useEffect(() => {
     getTopicListQuery.refetch();
@@ -115,7 +138,13 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
         />
       </DropdownTrigger>
       <DropdownMenu aria-label="Topic Actions">
-        <DropdownItem key="edit">{t("Rename")}</DropdownItem>
+        <DropdownItem
+          key="export"
+          onClick={() => {
+            handleExport(itemId);
+          }}>
+          {t("Export Session")}
+        </DropdownItem>
         <DropdownItem
           key="delete"
           className="text-danger"
@@ -178,4 +207,4 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
       )}
     </div>
   );
-};
+}
