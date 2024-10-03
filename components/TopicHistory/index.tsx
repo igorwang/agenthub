@@ -1,8 +1,10 @@
 "use client";
 
+import DeleteModal from "@/components/ui/delete-modal";
 import { DiscussionIcon, OcticonKebabHorizontalIcon } from "@/components/ui/icons";
 import {
   useAddNewTopicMutationMutation,
+  useDeleteTopicHistoryByIdMutation,
   useGetTopicHistoriesQuery,
 } from "@/graphql/generated/types";
 import {
@@ -39,6 +41,7 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
   const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
   const refreshSession = useSelector(selectRefreshSession);
+  const [deleteID, setDeleteID] = useState<string | null>(null);
   const { data: sessionData, status } = useSession();
   const userId = sessionData?.user?.id;
   const t = useTranslations();
@@ -57,7 +60,9 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
     },
     skip: !params.id || !userId,
   });
-  const { data, loading, error } = getTopicListQuery;
+  const { data, loading, error, refetch } = getTopicListQuery;
+
+  const [deleteTopicHistoryByIdMutation] = useDeleteTopicHistoryByIdMutation();
 
   useEffect(() => {
     getTopicListQuery.refetch();
@@ -88,6 +93,17 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
     router.push(`${pathname}?session_id=${sId}`);
   };
 
+  const handleDelete = (itemId: string) => {
+    deleteTopicHistoryByIdMutation({
+      variables: {
+        id: itemId,
+      },
+    }).then(() => {
+      setDeleteID(null);
+      refetch();
+    });
+  };
+
   const dropdownContent = (itemId: string) => (
     <Dropdown>
       <DropdownTrigger>
@@ -100,7 +116,14 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
       </DropdownTrigger>
       <DropdownMenu aria-label="Topic Actions">
         <DropdownItem key="edit">{t("Rename")}</DropdownItem>
-        <DropdownItem key="delete" className="text-danger" color="danger">
+        <DropdownItem
+          key="delete"
+          className="text-danger"
+          color="danger"
+          onClick={(e) => {
+            e.stopPropagation();
+            setDeleteID(itemId);
+          }}>
           {t("Delete")}
         </DropdownItem>
       </DropdownMenu>
@@ -143,6 +166,16 @@ export const TopicHistory: React.FC<TopicHistoryProps> = ({ agent_id }) => {
           </Listbox>
         )}
       </ScrollShadow>
+      {deleteID && (
+        <DeleteModal
+          id={deleteID}
+          title="Delete Session"
+          name=""
+          isOpen={deleteID !== null}
+          onClose={() => setDeleteID(null)}
+          onAffirm={() => handleDelete(deleteID)}
+        />
+      )}
     </div>
   );
 };

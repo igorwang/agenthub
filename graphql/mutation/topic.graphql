@@ -29,3 +29,9 @@ mutation updateTopicHistoryById($id: uuid = "", $_set: topic_history_set_input =
     id
   }
 }
+
+mutation deleteTopicHistoryById($id: uuid = "") {
+  delete_topic_history_by_pk(id: $id) {
+    id
+  }
+}
