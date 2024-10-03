@@ -80,8 +80,12 @@ const ChatHub = () => {
 
       dispatch(setChatList(groupedChatList));
       if (!params.id || params.id == "default") {
-        const defaultChatId = agentListData.r_agent_user?.[0].agent?.id;
-        router.push(`/chat/${defaultChatId}?openStatus=1`);
+        if (agentListData.r_agent_user?.[0]?.agent?.id) {
+          const defaultChatId = agentListData.r_agent_user?.[0].agent?.id;
+          router.push(`/chat/${defaultChatId}?openStatus=1`);
+        } else {
+          router.push(`/chat/empty`);
+        }
       }
     }
   }, [agentListData, dispatch]);

@@ -180,9 +180,10 @@ export default function WorkflowForm({
       console.log("Workflow changed:", { newNodes, newEdges });
       const hasNodeChanges = JSON.stringify(newNodes) !== JSON.stringify(currentNodes);
       const hasEdgeChanges = JSON.stringify(newEdges) !== JSON.stringify(currentEdges);
+      console.log("hasNodeChanges", newNodes);
+      console.log("hasEdgeChanges", newEdges);
 
       if (hasNodeChanges) {
-        console.log("hasNodeChanges", newNodes);
         setValue("nodes", newNodes);
       }
       if (hasEdgeChanges) {

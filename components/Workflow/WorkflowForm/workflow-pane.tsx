@@ -133,7 +133,13 @@ function Flow({
   };
 
   useEffect(() => {
-    onWorkflowChange?.(nodes, edges);
+    const uniqueEdges = edges.filter(
+      (edge, index, self) =>
+        index ===
+        self.findIndex((t) => t.source === edge.source && t.target === edge.target),
+    );
+    console.log("uniqueEdges", uniqueEdges);
+    onWorkflowChange?.(nodes, uniqueEdges);
     const graph = new Graph({ directed: true });
     nodes.forEach((node) => graph.setNode(node.id, node));
     edges.forEach((edge) => graph.setEdge(edge.source, edge.target));
@@ -145,7 +151,6 @@ function Flow({
     };
 
     updateFakeData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nodes, edges, onWorkflowChange]);
 
   const findPrevNodes = useCallback(
