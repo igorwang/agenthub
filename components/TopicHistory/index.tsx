@@ -37,7 +37,7 @@ interface TopicHistoryProps {
   agent_id?: string;
 }
 
-export function TopicHistory() {
+export function TopicHistory({ agent_id }: TopicHistoryProps) {
   const dispatch: AppDispatch = useDispatch();
   const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
