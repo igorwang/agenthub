@@ -3,7 +3,7 @@ import { ChatList } from "@/components/AgentHub/chat-list";
 import { TopicHistory } from "@/components/TopicHistory";
 import { AppDispatch } from "@/lib/store";
 import { Icon } from "@iconify/react";
-import { Divider, ScrollShadow, Spacer, Tooltip } from "@nextui-org/react";
+import { Button, Divider, ScrollShadow } from "@nextui-org/react";
 import { useDispatch } from "react-redux";
 import SearchBar from "./searchbar";
 
@@ -22,18 +22,23 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-const ChatHub = () => {
+interface ChatHubProps {
+  onToggleChatHub?: (isOpen: boolean) => void;
+}
+
+const ChatHub = ({ onToggleChatHub }: ChatHubProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const params = useParams<{ id: string }>();
   const t = useTranslations("");
   const session = useSession();
   const userRoles = session.data?.user?.roles;
-  const isCreatorView = userRoles?.some((role) =>
+  const hasCreatorPermission = userRoles?.some((role) =>
     [Role_Enum.Admin, Role_Enum.Creator].includes(role as Role_Enum),
   );
   const dispatch: AppDispatch = useDispatch();
   const chatList = useSelector(selectChatList);
+  const [isAddLoading, setIsAddLoading] = useState<boolean>(false);
   const [createAgentMutation] = useCreateOneAgentMutation();
   const [chatListOpenStatus, setChatListOpenStatus] = useState<boolean>(
     searchParams.get("openStatus") === "1",
@@ -90,37 +95,50 @@ const ChatHub = () => {
     }
   }, [agentListData, dispatch]);
 
-  function createAgent() {
+  function handleCreateAgent() {
+    setIsAddLoading(true);
     createAgentMutation({
       variables: {
         object: { name: "New Agent", type_id: 2, creator_id: userId },
       },
-    }).then((res) => {
-      const newAgentId = res?.data?.insert_agent_one?.id;
-      const path = `/chat/${newAgentId}/settings?step=0`;
-      router.push(path);
-    });
+    })
+      .then((res) => {
+        const newAgentId = res?.data?.insert_agent_one?.id;
+        const path = `/chat/${newAgentId}/settings?step=0`;
+        router.push(path);
+      })
+      .finally(() => {
+        setIsAddLoading(false);
+      });
   }
 
   return (
-    <div className="flex h-full w-full flex-col border-r-1">
+    <div className="flex h-full w-full flex-col gap-y-2 border-r-1">
       <div className="z-10 flex items-center justify-between px-2 pt-4 text-3xl font-semibold">
         <div>{t("Agenthub")}</div>
-        {isCreatorView && (
-          <Tooltip content={t("Add new agent")}>
-            <Icon
-              className="cursor-pointer"
-              onClick={createAgent}
-              icon="material-symbols-light:chat-add-on-outline"
-              width="1.2em"
-            />
-          </Tooltip>
-        )}
+        <Button
+          isIconOnly
+          variant="light"
+          onClick={() => onToggleChatHub?.(chatListOpenStatus)}>
+          <Icon icon="ant-design:menu-fold-outlined" fontSize={24} />
+        </Button>
       </div>
-      <Spacer y={4} />
+      {hasCreatorPermission && (
+        <div className="px-2 py-1">
+          <Button
+            variant="light"
+            color="primary"
+            isLoading={isAddLoading}
+            isDisabled={isAddLoading}
+            startContent={<Icon icon="mdi:plus" className="text-lg" />}
+            className="w-full rounded-lg py-4 text-sm font-medium transition-all hover:bg-primary-50 hover:text-primary-600"
+            onClick={handleCreateAgent}>
+            {t("New Agent")}
+          </Button>
+        </div>
+      )}
       <SearchBar />
-      <Spacer y={4} />
-      <div className="flex-grow overflow-hidden">
+      <div className="h-full overflow-hidden">
         <ScrollShadow className="h-full w-full" hideScrollBar={true}>
           <ChatList
             groupedChatList={chatList}
