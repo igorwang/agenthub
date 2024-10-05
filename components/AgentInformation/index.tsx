@@ -9,7 +9,15 @@ import {
 } from "@/graphql/generated/types";
 import { formatTokenLimit } from "@/lib/utils/formatTokenLimit";
 import { Input } from "@nextui-org/input";
-import { Avatar, Button, Divider, Select, SelectItem, Textarea } from "@nextui-org/react";
+import {
+  Avatar,
+  Button,
+  Divider,
+  Select,
+  SelectItem,
+  Switch,
+  Textarea,
+} from "@nextui-org/react";
 import { useTranslations } from "next-intl";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { toast } from "sonner";
@@ -30,6 +38,7 @@ interface Agent {
   enable_search?: boolean | null;
   force_search?: boolean | null;
   mode?: Agent_Mode_Enum | null;
+  is_publish?: boolean | null;
 }
 
 export interface AgentInfoRef {
@@ -49,11 +58,12 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
 
   useEffect(() => {
     if (query.data) {
+      console.log("query.data", query?.data?.agent_by_pk);
       setAgent(query?.data?.agent_by_pk);
     }
   }, [query]);
 
-  function handleSubmit() {
+  const handleSubmit = async () => {
     const input: Agent_Set_Input = {
       name: agent?.name,
       description: agent?.description,
@@ -64,18 +74,26 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
       force_search: agent?.force_search,
       mode: agent?.mode,
       embedding_model: agent?.embedding_model,
+      is_publish: agent?.is_publish || false,
     };
     delete input.id;
-    updateAgentMutation({
-      variables: {
-        pk_columns: { id: props?.agentId },
-        _set: input,
-      },
-    }).then(() => {
-      query.refetch();
-      toast.success("Agent information update succeeded！");
-    });
-  }
+    try {
+      const response = await updateAgentMutation({
+        variables: {
+          pk_columns: { id: props?.agentId },
+          _set: input,
+        },
+      });
+      if (!response.data?.update_agent_by_pk) {
+        toast.error("You don't have permission to update this agent");
+      } else {
+        query.refetch();
+        toast.success("Agent information update succeeded！");
+      }
+    } catch (error) {
+      toast.error("Agent information update failed！");
+    }
+  };
 
   useImperativeHandle(ref, () => ({
     handleSubmit,
@@ -191,20 +209,20 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
             }}
           />
         </div>
-        {/* <div className={"mt-8"}>
+        <div className={"mt-4"}>
           <Switch
             defaultSelected
-            aria-label="Enable Web Search"
-            isSelected={agent?.enable_search || false}
+            aria-label="is_publish"
+            isSelected={agent?.is_publish || false}
             onChange={() => {
               setAgent((prev) => ({
                 ...prev,
-                enable_search: agent?.enable_search ? false : true,
+                is_publish: agent?.is_publish ? false : true,
               }));
             }}>
-            Enable Web Search
+            {t("Publish")}
           </Switch>
-        </div> */}
+        </div>
         {/* <div className={"mt-8"}>
           <Switch
             defaultSelected

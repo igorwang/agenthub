@@ -1,8 +1,6 @@
 "use client";
-import MarkdownRenderer from "@/components/MarkdownRender";
-import ModelSelect from "@/components/PromptFrom/model-select";
 import PromptTemplateInput from "@/components/PromptFrom/prompt-template-input";
-import { PlusIcon, StartOutlineIcon } from "@/components/ui/icons";
+import { PlusIcon } from "@/components/ui/icons";
 import {
   Message_Role_Enum,
   useCreateNewPromptMutation,
@@ -419,14 +417,23 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
 
         const newPromptId = data?.insert_prompt_hub_one?.id;
         if (newPromptId && agentId) {
-          const { data: updateAgentData, errors: updateAgentErrors } =
-            await upadeAgentPromptMutation({
-              variables: {
-                id: agentId,
-                _set: { system_prompt_id: newPromptId },
-              },
-            });
-          onUpdateAgent?.();
+          try {
+            const { data: updateAgentData, errors: updateAgentErrors } =
+              await upadeAgentPromptMutation({
+                variables: {
+                  id: agentId,
+                  _set: { system_prompt_id: newPromptId },
+                },
+              });
+            if (!updateAgentData?.update_agent_by_pk) {
+              toast.error(t("You don't have permission to update this agent"));
+              return;
+            }
+            onUpdateAgent?.();
+          } catch (error) {
+            toast.error(t("Update agent prompt faild! Please try again!"));
+            setPromptId(null);
+          }
         }
         if (newPromptId && konwledgeBaseId) {
           const { data: updateKBData, errors: updateKBErrors } =
@@ -466,120 +473,94 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
         handleRoleSelect={handleRoleSelect}></PromptTemplateInput>
     ));
 
-    const containerClasses = clsx("flex flex-row gap-4", containerClassName);
+    const containerClasses = clsx(
+      "flex flex-col items-center w-full max-w-4xl mx-auto",
+      containerClassName,
+    );
+
+    const contentClasses = clsx("w-full max-w-3xl");
 
     const leftColumnClasses = clsx(
-      "flex h-full w-1/2 flex-col items-start justify-start gap-2",
+      "flex w-full flex-col items-start justify-start gap-2",
       leftColumnClassName,
     );
 
-    const rightColumnClasses = clsx(
-      "flex w-1/2 flex-col justify-start gap-2",
-      rightColumnClassName,
-    );
     return (
-      <div ref={ref} className="flex h-full w-full max-w-full flex-col">
-        <Spacer y={2} />
-        <div className="flex flex-row">
-          <div className="flex flex-grow flex-row items-center gap-2 pr-2">
-            {!hiddeTitle && (
-              <div className="flex flex-shrink-0 gap-2 text-xl font-bold sm:text-3xl">
-                Playground
-              </div>
-            )}
-            {/* {isEditing ? (
-              <Input
+      <div ref={ref} className="flex h-full w-full max-w-full flex-col items-center">
+        <div className={containerClasses}>
+          <Spacer y={2} />
+          <div className="flex w-full flex-row justify-between">
+            <div className="flex flex-grow flex-row items-center gap-2 pr-2">
+              {!hiddeTitle && (
+                <div className="flex flex-shrink-0 gap-2 text-xl font-bold sm:text-3xl">
+                  Playground
+                </div>
+              )}
+              {/* {isEditing ? (
+                <Input
+                  className="w-1/3"
+                  value={prompt?.name}
+                  onValueChange={(value) =>
+                    setPrompt((prevPrompt) => ({ ...prevPrompt, name: value }))
+                  }
+                  placeholder="Enter prompt name"></Input>
+              ) : (
+                <PromptSearchBar handleChangePrompt={handleChangePrompt}></PromptSearchBar>
+              )} */}
+              {/* <Input
                 className="w-1/3"
                 value={prompt?.name}
                 onValueChange={(value) =>
                   setPrompt((prevPrompt) => ({ ...prevPrompt, name: value }))
                 }
-                placeholder="Enter prompt name"></Input>
-            ) : (
-              <PromptSearchBar handleChangePrompt={handleChangePrompt}></PromptSearchBar>
-            )} */}
-            {/* <Input
-              className="w-1/3"
-              value={prompt?.name}
-              onValueChange={(value) =>
-                setPrompt((prevPrompt) => ({ ...prevPrompt, name: value }))
-              }
-              placeholder="Enter prompt name"></Input> */}
-            {/* <PromptSearchBar handleChangePrompt={handleChangePrompt}></PromptSearchBar> */}
-          </div>
-          <div className="flex flex-row gap-2">
-            <Tooltip content={t("Add new prompt")}>
+                placeholder="Enter prompt name"></Input> */}
+              {/* <PromptSearchBar handleChangePrompt={handleChangePrompt}></PromptSearchBar> */}
+            </div>
+            <div className="flex flex-row gap-2">
+              <Tooltip content={t("Add new prompt")}>
+                <Button
+                  isIconOnly
+                  variant="bordered"
+                  onClick={handleAddPrompt}
+                  className={hiddenNewButton ? "hidden" : "visible"}>
+                  <Icon icon={"ic:outline-add"} fontSize={30} color={"slate-200"}></Icon>
+                </Button>
+              </Tooltip>
               <Button
-                isIconOnly
-                variant="bordered"
-                onClick={handleAddPrompt}
-                className={hiddenNewButton ? "hidden" : "visible"}>
-                <Icon icon={"ic:outline-add"} fontSize={30} color={"slate-200"}></Icon>
+                color="primary"
+                className={hiddenSaveButton ? "hidden" : "visible"}
+                ref={saveButtonRef}
+                onClick={() => handleSavePrompt()}>
+                {t("Save")}
               </Button>
-            </Tooltip>
-            <Button
-              color="primary"
-              className={hiddenSaveButton ? "hidden" : "visible"}
-              ref={saveButtonRef}
-              onClick={() => handleSavePrompt()}>
-              {t("Save")}
-            </Button>
+            </div>
           </div>
-        </div>
-        <Spacer y={2} />
-        <div className={containerClasses}>
-          <div className={leftColumnClasses}>
-            {hiddenTemplateName && (
-              <Input
-                className="w-full"
-                label="Template Name"
-                labelPlacement="outside"
-                classNames={{ label: "text-md font-bold" }}
-                value={prompt?.name}
-                onValueChange={(value) =>
-                  setPrompt((prevPrompt) => ({ ...prevPrompt, name: value }))
-                }
-                placeholder={t("Enter prompt name")}></Input>
-            )}
+          <Spacer y={2} />
+          <div className={contentClasses}>
+            <div className={leftColumnClasses}>
+              {hiddenTemplateName && (
+                <Input
+                  className="w-full"
+                  label="Template Name"
+                  labelPlacement="outside"
+                  classNames={{ label: "text-md font-bold" }}
+                  value={prompt?.name}
+                  onValueChange={(value) =>
+                    setPrompt((prevPrompt) => ({ ...prevPrompt, name: value }))
+                  }
+                  placeholder={t("Enter prompt name")}></Input>
+              )}
 
-            <span className="text-md font-bold">{t("Template Messages")}</span>
-            {templatesElement}
-            <Button
-              className="m-2 gap-1 bg-white p-2"
-              size="sm"
-              variant="ghost"
-              isDisabled={!isEditing}
-              startContent={<PlusIcon size={14}></PlusIcon>}
-              onClick={handleAddMessage}>
-              {t("Message")}
-            </Button>
-          </div>
-          <div className={rightColumnClasses}>
-            {/* <span className="text-xl font-bold">Inputs</span>
-            <PromptVariablesInput
-              ref={variableInputRef}
-              templates={templatesState}
-              isDisabled={!isEditing}
-              setVariableInputs={handelVariableInputChange}></PromptVariablesInput> */}
-            <div className="text-md font-bold">{t("Output")}</div>
-            <div className="relative flex h-full flex-col items-baseline gap-2 border-2">
-              <div className="flex w-full flex-col">
-                <ModelSelect
-                  onSelectionChange={(modelName, limit) => setSelectedModel(modelName)}
-                  defaultModel={selectedModel}></ModelSelect>
-              </div>
-              <div className="custom-scrollbar max-h-[600px] w-full overflow-auto pb-16">
-                {message && "Assistant:"}
-                <></>
-                <MarkdownRenderer content={message}></MarkdownRenderer>
-              </div>
+              <span className="text-md font-bold">{t("Template Messages")}</span>
+              {templatesElement}
               <Button
-                className="absolute bottom-1 right-1"
-                color={isChating || selectedModel.length === 0 ? "default" : "primary"}
-                startContent={<StartOutlineIcon size={28} />}
-                isDisabled={isChating || selectedModel.length === 0}
-                onClick={handleStartChat}>
-                {t("Start")}
+                className="m-2 gap-1 bg-white p-2"
+                size="sm"
+                variant="ghost"
+                isDisabled={!isEditing}
+                startContent={<PlusIcon size={14}></PlusIcon>}
+                onClick={handleAddMessage}>
+                {t("Message")}
               </Button>
             </div>
           </div>

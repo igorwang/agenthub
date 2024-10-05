@@ -188,7 +188,7 @@ export default function AgentSettings({
                 title: t("Edit Agent"),
               },
               {
-                title: t("Configure Prompt"),
+                title: t("System Prompt"),
               },
               {
                 title: t("Select Library"),

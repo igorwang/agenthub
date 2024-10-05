@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import AgentSettings from "@/components/AgentSettings";
+import { Unauthorized } from "@/components/ui/unauthorized";
 import {
   GetAgentByIdDocument,
   GetAgentByIdQuery,
@@ -53,6 +54,7 @@ async function getNodeTypeListData() {
 export default async function AgentSettingsPage({ params }: { params: { id: string } }) {
   const t = await getTranslations();
   const agent = await fetchAgentData(params.id);
+  const session = await auth();
   const nodeTypeList = await getNodeTypeListData();
   const workflow = agent?.agent_by_pk?.workflow;
   const initialData = {
@@ -65,6 +67,10 @@ export default async function AgentSettingsPage({ params }: { params: { id: stri
   };
 
   const bindWorkflowToAgentWithId = bindWorkflowToAgent.bind(null, params.id);
+
+  if (agent?.agent_by_pk?.creator_id !== session?.user?.id) {
+    return <Unauthorized />;
+  }
 
   return (
     <div className="h-full w-full">

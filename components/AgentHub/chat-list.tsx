@@ -7,6 +7,10 @@ import { Icon } from "@iconify/react";
 import {
   Avatar,
   Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
   Listbox,
   ListboxItem,
   Modal,
@@ -112,7 +116,7 @@ export const ChatList: React.FC<ChatListProps> = ({
   };
 
   const chatListContent = (fixedChatList || []).map((group) => (
-    <div className="relative flex w-full flex-col" key={group.id}>
+    <div className="custom-scrollbar relative flex w-full flex-col" key={group.id}>
       {group.name &&
         group.name !== "system" &&
         group.name !== "default" &&
@@ -161,7 +165,7 @@ export const ChatList: React.FC<ChatListProps> = ({
                 setChatListOpenStatus?.(false);
               }}>
               <div
-                className="flex w-full items-center"
+                className="group flex w-full items-center"
                 onMouseEnter={() => setShowIconId(item.id)}
                 onMouseLeave={() => setShowIconId("")}>
                 <div className="flex min-w-0 flex-1 items-center gap-2 pr-1">
@@ -190,17 +194,18 @@ export const ChatList: React.FC<ChatListProps> = ({
                     </span>
                   </div>
                 </div>
-                {/* <div className="ml-auto flex-shrink-0">
-                  <Button
-                    isIconOnly
-                    size="sm"
-                    className={`min-w-unit-8 h-unit-8 bg-transparent p-0 transition-opacity duration-300 ${
-                      item.id === showIconId ? "opacity-100" : "opacity-0"
-                    }`}
-                    onPress={() => handleUnsubscribeClick(item)}>
-                    <Icon icon="material-symbols:delete-outline-rounded" fontSize={18} />
-                  </Button>
-                </div> */}
+                <div className="ml-auto hidden flex-shrink-0 group-hover:block">
+                  <Dropdown>
+                    <DropdownTrigger>
+                      <Icon icon="mdi:dots-vertical" fontSize={18} />
+                    </DropdownTrigger>
+                    <DropdownMenu>
+                      <DropdownItem onClick={() => handleUnsubscribeClick(item)}>
+                        <span className="text-danger">{t("Unsubscribe")}</span>
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                </div>
               </div>
             </ListboxItem>
           ))}

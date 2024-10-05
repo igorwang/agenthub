@@ -1,5 +1,5 @@
-import ComingSoonPage from "@/components/ui/coming-soon-page";
+import AgentDiscorver from "@/components/AgentDiscorver";
 
 export default function DiscoverPage() {
-  return <ComingSoonPage />;
+  return <AgentDiscorver />;
 }

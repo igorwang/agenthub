@@ -9,6 +9,7 @@ import {
 import { LibraryCardType } from "@/types/chatTypes";
 import { cn } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -25,6 +26,7 @@ export type selectedLibrariesType = {
 
 function LibraryCart({ agentId, className }: LibraryCartProps) {
   const session = useSession();
+  const t = useTranslations("");
   const [libraries, setLibraries] = useState<LibraryCardType[]>();
   const [selectedLibraries, setSelectedLibraries] = useState<selectedLibrariesType[]>([]);
 
@@ -82,7 +84,7 @@ function LibraryCart({ agentId, className }: LibraryCartProps) {
         const response = await addALibraryToAgentMutation({
           variables: { object: { agent_id: agentId, kb_id: libraryId } },
         });
-        toast.info("Add succeeded");
+        toast.info(t("Add succeeded"));
         setSelectedLibraries((prev) => {
           const newLibraryId = response.data?.insert_r_agent_kb_one?.id;
           if (newLibraryId) {
@@ -99,7 +101,15 @@ function LibraryCart({ agentId, className }: LibraryCartProps) {
         });
         selectedLibrariesQuery.refetch();
       } catch (error) {
-        toast.error("System error. Please try later.");
+        if (error instanceof Error && error.message.includes("permission")) {
+          toast.error(t("You don't have permission to add this library"));
+          return;
+        }
+        toast.error(
+          t("SystemError", {
+            defaultValue: "System error. Please try later.",
+          }),
+        );
       }
     }
   };
@@ -108,13 +118,14 @@ function LibraryCart({ agentId, className }: LibraryCartProps) {
     const removeLibrary = selectedLibraries?.find((item) => item.libraryId === libraryId);
     if (removeLibrary) {
       try {
-        await removeALibraryFromAgentMutation({
+        const response = await removeALibraryFromAgentMutation({
           variables: { id: removeLibrary.id },
         });
-        setSelectedLibraries((prev) =>
-          prev?.filter((item) => item.id !== removeLibrary.id),
-        );
-        toast.info("Remove success");
+        if (!response.data?.delete_r_agent_kb_by_pk) {
+          toast.error(t("Remove failed! Please try again!"));
+          return;
+        }
+        toast.info(t("Remove success"));
 
         // 添加重新获取数据的调用
         await Promise.all([
@@ -122,7 +133,11 @@ function LibraryCart({ agentId, className }: LibraryCartProps) {
           publicLibrariesQuery.refetch(),
         ]);
       } catch (error) {
-        toast.error("System error. Please try later.");
+        toast.error(
+          t("SystemError", {
+            defaultValue: "System error. Please try later.",
+          }),
+        );
       }
     }
   };
