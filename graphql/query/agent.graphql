@@ -20,6 +20,7 @@ query GetAgentByID($id: uuid!) {
     description
     avatar
     default_model
+    is_publish
     token_limit
     creator_id
     enable_search
@@ -127,4 +128,28 @@ query GetAgentUserRelation(
     agent_id
     user_id
   }
+}
+
+query getPublicAgentList(
+  $where: agent_bool_exp = {}
+  $order_by: [agent_order_by!] = {}
+  $offset: Int = 0
+  $limit: Int = 10
+) {
+  agent(where: $where, order_by: $order_by, offset: $offset, limit: $limit) {
+    ...agentDiscoverInfoFragment
+  }
+}
+
+fragment agentDiscoverInfoFragment on agent {
+  id
+  name
+  avatar
+  creator {
+    id
+    name
+    image
+  }
+  updated_at
+  description
 }

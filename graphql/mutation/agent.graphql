@@ -36,3 +36,9 @@ fragment AgentItem on agent {
   avatar
   type_id
 }
+
+mutation AddAgentUserRelation($object: r_agent_user_insert_input = {}) {
+  insert_r_agent_user_one(object: $object) {
+    id
+  }
+}

@@ -116,7 +116,7 @@ export const ChatList: React.FC<ChatListProps> = ({
   };
 
   const chatListContent = (fixedChatList || []).map((group) => (
-    <div className="relative flex w-full flex-col" key={group.id}>
+    <div className="custom-scrollbar relative flex w-full flex-col" key={group.id}>
       {group.name &&
         group.name !== "system" &&
         group.name !== "default" &&

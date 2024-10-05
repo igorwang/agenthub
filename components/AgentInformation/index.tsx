@@ -9,7 +9,15 @@ import {
 } from "@/graphql/generated/types";
 import { formatTokenLimit } from "@/lib/utils/formatTokenLimit";
 import { Input } from "@nextui-org/input";
-import { Avatar, Button, Divider, Select, SelectItem, Textarea } from "@nextui-org/react";
+import {
+  Avatar,
+  Button,
+  Divider,
+  Select,
+  SelectItem,
+  Switch,
+  Textarea,
+} from "@nextui-org/react";
 import { useTranslations } from "next-intl";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { toast } from "sonner";
@@ -30,6 +38,7 @@ interface Agent {
   enable_search?: boolean | null;
   force_search?: boolean | null;
   mode?: Agent_Mode_Enum | null;
+  is_publish?: boolean | null;
 }
 
 export interface AgentInfoRef {
@@ -49,6 +58,7 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
 
   useEffect(() => {
     if (query.data) {
+      console.log("query.data", query?.data?.agent_by_pk);
       setAgent(query?.data?.agent_by_pk);
     }
   }, [query]);
@@ -64,6 +74,7 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
       force_search: agent?.force_search,
       mode: agent?.mode,
       embedding_model: agent?.embedding_model,
+      is_publish: agent?.is_publish || false,
     };
     delete input.id;
     try {
@@ -198,20 +209,20 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
             }}
           />
         </div>
-        {/* <div className={"mt-8"}>
+        <div className={"mt-4"}>
           <Switch
             defaultSelected
-            aria-label="Enable Web Search"
-            isSelected={agent?.enable_search || false}
+            aria-label="is_publish"
+            isSelected={agent?.is_publish || false}
             onChange={() => {
               setAgent((prev) => ({
                 ...prev,
-                enable_search: agent?.enable_search ? false : true,
+                is_publish: agent?.is_publish ? false : true,
               }));
             }}>
-            Enable Web Search
+            {t("Publish")}
           </Switch>
-        </div> */}
+        </div>
         {/* <div className={"mt-8"}>
           <Switch
             defaultSelected
