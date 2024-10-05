@@ -53,7 +53,7 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
     }
   }, [query]);
 
-  function handleSubmit() {
+  const handleSubmit = async () => {
     const input: Agent_Set_Input = {
       name: agent?.name,
       description: agent?.description,
@@ -66,16 +66,23 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
       embedding_model: agent?.embedding_model,
     };
     delete input.id;
-    updateAgentMutation({
-      variables: {
-        pk_columns: { id: props?.agentId },
-        _set: input,
-      },
-    }).then(() => {
-      query.refetch();
-      toast.success("Agent information update succeeded！");
-    });
-  }
+    try {
+      const response = await updateAgentMutation({
+        variables: {
+          pk_columns: { id: props?.agentId },
+          _set: input,
+        },
+      });
+      if (!response.data?.update_agent_by_pk) {
+        toast.error("You don't have permission to update this agent");
+      } else {
+        query.refetch();
+        toast.success("Agent information update succeeded！");
+      }
+    } catch (error) {
+      toast.error("Agent information update failed！");
+    }
+  };
 
   useImperativeHandle(ref, () => ({
     handleSubmit,

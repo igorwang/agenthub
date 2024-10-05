@@ -33,6 +33,13 @@ export function useSidebarItems(roles: string[]): SidebarItem[] {
           endContent: "solar:add-circle-line-duotone",
         },
         {
+          key: "discover",
+          href: "/discover",
+          icon: "weui:discover-outlined",
+          title: t("Discover"),
+          endContent: "solar:add-circle-line-duotone",
+        },
+        {
           key: "workflow",
           href: "/workflow",
           icon: "hugeicons:workflow-square-01",
@@ -57,6 +64,7 @@ export function useSidebarItems(roles: string[]): SidebarItem[] {
     if (roles.includes("admin")) return true; // Admin can see everything
     if (item.key === "chat") return true; // All roles can see chat
     if (item.key === "library") return roles.includes("creator");
+    if (item.key === "discover") return true;
     if (item.key === "workflow") return roles.includes("creator");
     if (item.key === "apiKey") return roles.includes("creator");
     // Add more conditions here for other items
