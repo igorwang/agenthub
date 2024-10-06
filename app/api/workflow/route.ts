@@ -15,7 +15,15 @@ export async function POST(req: NextRequest) {
     });
     return NextResponse.json(response);
   } catch (error) {
-    console.error("Error fetching models:", error);
-    return NextResponse.error();
+    if (error instanceof Error && "status" in error && "statusText" in error) {
+      console.log("instanceof error", error);
+      return NextResponse.json(
+        { error: error.statusText },
+        { status: (error.status as number) || 500 },
+      );
+    }
+    console.error("Error in workflow:", error);
+
+    return NextResponse.json({ error: `Error in workflow` }, { status: 500 });
   }
 }

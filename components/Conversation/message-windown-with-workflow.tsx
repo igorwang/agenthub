@@ -251,6 +251,7 @@ export default function MessageWindowWithWorkflow({
       const newMessageId = v4();
       setSearchResults(null);
       setChatContext(null);
+      setWorkflowResults(null);
       setMessages((prev) => [
         ...prev,
         {
@@ -302,18 +303,22 @@ export default function MessageWindowWithWorkflow({
           body: JSON.stringify(body),
         });
 
+        console.log("response error", response);
+
         if (!response.ok) {
           setSearchResults([]);
           setChatContext("");
+          setWorkflowResults({
+            error_message: `Workflow execution failed: ${response.statusText}`,
+            workflow_output: {},
+          });
           return;
         }
 
         const workflowResults: ChatFlowResponseSchema = await response.json();
         const workflowOutput = workflowResults.workflow_output;
 
-        if (isTestMode) {
-          setWorkflowResults(workflowResults);
-        }
+        setWorkflowResults(workflowResults);
 
         if (workflowOutput.type === "humanInLoopNode") {
           onChatingStatusChange(false, CHAT_STATUS_ENUM.Finished);
@@ -371,7 +376,7 @@ export default function MessageWindowWithWorkflow({
       };
       fetchChatWithWorkflow();
     }
-  }, [chatStatus, messages]);
+  }, [chatStatus, messages, workflow_id]);
 
   useEffect(() => {
     if (
@@ -380,16 +385,12 @@ export default function MessageWindowWithWorkflow({
       chatContext != null &&
       chatStatus == CHAT_STATUS_ENUM.Searching
     ) {
+      onChatingStatusChange(isChating, CHAT_STATUS_ENUM.Generating);
+
       const controller = new AbortController(); // Create a new AbortController
       const signal = controller.signal; // Get the signal from the controller
 
-      onChatingStatusChange(isChating, CHAT_STATUS_ENUM.Generating);
-
       const generateAnswer = async () => {
-        // const historyMessage = selectedSources
-        //   ? messages.filter((item) => item.status != "draft").slice(-1) // only last message need to generation
-        //   : messages.filter((item) => item.status != "draft");
-
         const historyMessage = messages.filter((item) => item.status != "draft");
 
         const prompt = await createPrompt(
