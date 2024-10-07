@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
 import AgentSettings from "@/components/AgentSettings";
-import { Unauthorized } from "@/components/ui/unauthorized";
 import {
   GetAgentByIdDocument,
   GetAgentByIdQuery,
@@ -67,10 +66,6 @@ export default async function AgentSettingsPage({ params }: { params: { id: stri
   };
 
   const bindWorkflowToAgentWithId = bindWorkflowToAgent.bind(null, params.id);
-
-  if (agent?.agent_by_pk?.creator_id !== session?.user?.id) {
-    return <Unauthorized />;
-  }
 
   return (
     <div className="h-full w-full">

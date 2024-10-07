@@ -6,6 +6,7 @@ import { LibraryCart } from "@/components/Library/LibraryCart";
 import { LibraryFileHandle } from "@/components/Library/LibraryFile";
 import PromptFrom, { PromptFormHandle } from "@/components/PromptFrom";
 import RightHeader from "@/components/RightHeader";
+import { Unauthorized } from "@/components/ui/unauthorized";
 import WorkflowForm from "@/components/Workflow/WorkflowForm";
 import {
   FlowEdgeFragmentFragment,
@@ -16,6 +17,7 @@ import {
   Workflow_Type_Enum,
 } from "@/graphql/generated/types";
 import { Button } from "@nextui-org/react";
+import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -31,6 +33,7 @@ interface Agent {
   avatar?: string | null | undefined;
   system_prompt?: SystemPrompt | null | undefined;
   default_model?: string | null;
+  creator_id?: string | null;
 }
 
 interface AgentSettingsProps {
@@ -52,6 +55,7 @@ export default function AgentSettings({
   nodeTypeList,
 }: AgentSettingsProps) {
   const t = useTranslations();
+  const session = useSession();
   const [agent, setAgent] = useState<Agent | null>();
   const [libraryId, setLibraryId] = useState<string | null>();
   const searchParams = useSearchParams();
@@ -174,6 +178,10 @@ export default function AgentSettings({
       router.push(`/chat/${id}`);
     }
   };
+
+  if (agent && agent.creator_id !== session?.data?.user?.id) {
+    return <Unauthorized />;
+  }
 
   return (
     <div className="flex h-screen flex-col">

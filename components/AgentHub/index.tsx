@@ -95,22 +95,23 @@ const ChatHub = ({ onToggleChatHub }: ChatHubProps) => {
     }
   }, [agentListData, dispatch]);
 
-  function handleCreateAgent() {
+  const handleCreateAgent = async () => {
     setIsAddLoading(true);
-    createAgentMutation({
-      variables: {
-        object: { name: "New Agent", type_id: 2, creator_id: userId },
-      },
-    })
-      .then((res) => {
-        const newAgentId = res?.data?.insert_agent_one?.id;
-        const path = `/chat/${newAgentId}/settings?step=0`;
-        router.push(path);
-      })
-      .finally(() => {
-        setIsAddLoading(false);
+    try {
+      const res = await createAgentMutation({
+        variables: {
+          object: { name: "New Agent", type_id: 2, creator_id: userId },
+        },
       });
-  }
+      const newAgentId = res?.data?.insert_agent_one?.id;
+      const path = `/chat/${newAgentId}/settings?step=0`;
+      router.push(path);
+    } catch (error) {
+      console.error("Error creating agent:", error);
+    } finally {
+      setIsAddLoading(false);
+    }
+  };
 
   return (
     <div className="flex h-full w-full flex-col gap-y-2 border-r-1">
