@@ -266,8 +266,10 @@ export default function WorkflowForm({
                 const newId = v4();
                 idMap.set(node.id, newId);
                 return {
-                  ...node,
                   id: newId,
+                  type: node.type,
+                  position: { ...node.position },
+                  data: { ...node.data },
                 };
               });
               setInitialNodes(newNodes);
@@ -307,8 +309,10 @@ export default function WorkflowForm({
           const newId = v4();
           idMap.set(node.id, newId);
           return {
-            ...node,
             id: newId,
+            type: node.type,
+            position: { ...node.position }, // Create a new object for position
+            data: { ...node.data },
           };
         });
         setInitialNodes(newNodes);
@@ -327,7 +331,7 @@ export default function WorkflowForm({
         toast.error(t("Invalid template data"));
       }
     },
-    [setInitialNodes, setInitialEdges, handleWorkflowChange, setHasUnsavedChanges],
+    [setInitialNodes, setInitialEdges, handleWorkflowChange, setHasUnsavedChanges, t],
   );
 
   return (
