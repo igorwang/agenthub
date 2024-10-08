@@ -129,37 +129,30 @@ const LibraryFileChunk: React.FC<LibraryFileChunkProps> = ({
         {chunks.length > 0 ? (
           <>
             <h4 className="mb-4 text-lg font-semibold text-gray-700">{total} Chunks</h4>
-            <ScrollShadow className="flex-grow">
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {chunks.map((chunk) => (
-                  <Card
-                    key={chunk.id}
-                    isPressable
-                    isHoverable
-                    onPress={() => handleChunkClick(chunk)}
-                    className="group h-full w-full bg-white shadow-sm transition-all duration-200 ease-in-out hover:shadow-md">
-                    <div className="flex h-full flex-col p-4">
-                      <div className="mb-3 flex items-center justify-between">
-                        <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-600">
-                          #{chunk.sequence.toString().padStart(3, "0")}
-                        </span>
-                        <span className="text-xs font-medium text-gray-500">
-                          {chunk.doc_type || "Unknown"}
-                        </span>
-                      </div>
-                      <p className="line-clamp-4 flex-grow text-sm text-gray-700">
-                        {chunk.content}
-                      </p>
-                      {/* <div className="mt-3 flex items-center justify-end">
-                        <span className="text-xs font-medium text-blue-600 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                          {t("View details")} →
-                        </span>
-                      </div> */}
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {chunks.map((chunk) => (
+                <Card
+                  key={chunk.id}
+                  isPressable
+                  isHoverable
+                  onPress={() => handleChunkClick(chunk)}
+                  className="group h-full w-full bg-white shadow-sm transition-all duration-200 ease-in-out hover:shadow-md">
+                  <div className="flex h-full flex-col p-4">
+                    <div className="mb-3 flex items-center justify-between">
+                      <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-600">
+                        #{chunk.sequence.toString().padStart(3, "0")}
+                      </span>
+                      <span className="text-xs font-medium text-gray-500">
+                        {chunk.doc_type || "Unknown"}
+                      </span>
                     </div>
-                  </Card>
-                ))}
-              </div>
-            </ScrollShadow>
+                    <p className="line-clamp-4 flex-grow break-words text-left text-sm text-gray-700">
+                      {chunk.content}
+                    </p>
+                  </div>
+                </Card>
+              ))}
+            </div>
           </>
         ) : (
           <div className="flex flex-grow items-center justify-center">
