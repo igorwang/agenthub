@@ -48,7 +48,6 @@ function UserManagementList({ action }: UserManagementListProps) {
       const formData = new FormData();
       formData.append("user_id", user.id);
       formData.append("roles", JSON.stringify(user.roles.map((role) => role.role)));
-      console.log("handleSaveUser", formData);
 
       try {
         const result = await action(formData);

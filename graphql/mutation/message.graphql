@@ -3,6 +3,7 @@ mutation CreateMessageAndUpdateTopicHistory(
   $session_id: uuid = ""
   $role: message_role_enum = user
   $attachments: jsonb = null
+  $imageUrls: [String!] = []
 ) {
   insert_message(
     objects: {
@@ -10,6 +11,7 @@ mutation CreateMessageAndUpdateTopicHistory(
       session_id: $session_id
       role: $role
       attachments: $attachments
+      imageUrls: $imageUrls
     }
   ) {
     returning {

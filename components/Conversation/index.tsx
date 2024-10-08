@@ -95,6 +95,7 @@ export type Agent = {
   role?: string | Role_Enum;
   workflow_id?: string | null;
   mode?: Agent_Mode_Enum | null;
+  default_model?: string | null;
 };
 
 export type ConversationProps = {
@@ -219,6 +220,7 @@ export const Conversation: React.FC<ConversationProps> = ({
         creator_id: data?.agent_by_pk?.creator_id || "",
         workflow_id: data?.agent_by_pk?.workflow?.id || null,
         mode: data?.agent_by_pk?.mode || null,
+        default_model: data?.agent_by_pk?.default_model || null,
       });
       setWorkflowTools(
         data?.agent_by_pk?.r_agent_workflows
@@ -565,6 +567,7 @@ export const Conversation: React.FC<ConversationProps> = ({
               <Spacer />
               {!hiddenInput && (
                 <PromptInputWithFaq
+                  model={agent.default_model || ""}
                   agentId={agentId}
                   agentMode={agent.mode || Agent_Mode_Enum.Simple}
                   isChating={isChating}

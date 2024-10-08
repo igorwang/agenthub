@@ -63,7 +63,6 @@ export async function createPrompt(
   }
 
   const historyMessages = messages.slice(0, -1).map((msg) => [msg.role, msg.message]);
-  console.log("historyMessages", historyMessages);
 
   const contextString = [contextMessages, ...historyMessages]
     .map((msg) => `${msg[0]}:${msg[1]}`)
@@ -102,8 +101,6 @@ export async function createPrompt(
 
   const promptFromQuery = `${latestMessages[0]}:${latestMessages[1]}`;
   const prompt = `${promptFromTemplate}\n${promptFromContext}\n${promptFromQuery}`;
-
-  console.log("prompt", prompt);
 
   return prompt;
 }

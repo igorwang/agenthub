@@ -32,7 +32,6 @@ export default function SessionFilesSidebar({
 
   const handleDelete = (fileId: string) => {
     // Implement delete logic here
-    console.log(`Delete file with id: ${fileId}`);
     onFilesChange(files.filter((file) => file.id !== fileId));
     // 实现删除文件的逻辑
     batchDeleteFilesMutation({

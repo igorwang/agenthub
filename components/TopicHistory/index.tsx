@@ -73,7 +73,6 @@ export function TopicHistory({ agent_id }: TopicHistoryProps) {
           body: JSON.stringify({ session_id: itemId }),
         });
         const data = await response.json();
-        console.log("data", data);
         if (data.url) {
           window.open(data.url, "_blank");
         } else {

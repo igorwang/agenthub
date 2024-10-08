@@ -226,7 +226,6 @@ export default function MessageWindow({
       onChatingStatusChange(isChating, CHAT_STATUS_ENUM.Analyzing);
       const fetchRefineQuery = async () => {
         const historyMessage = messages.filter((item) => item.status != "draft");
-        console.log("historyMessage", historyMessage);
         try {
           const result = await queryAnalyzer(
             historyMessage,
@@ -340,8 +339,6 @@ export default function MessageWindow({
       const latestSources = messages?.filter(
         (item) => item.role == Message_Role_Enum.Assistant && item.sources,
       );
-      console.log("selectedSources", selectedSources);
-      console.log("isFollowUp", isFollowUp);
       if (selectedSources && selectedSources.length > 0) {
         setSearchResults(selectedSources);
         setMessages((prev) => [

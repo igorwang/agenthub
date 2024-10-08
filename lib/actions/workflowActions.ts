@@ -103,7 +103,6 @@ export async function createNewWorkflow(formData: FormData) {
 }
 
 export async function updateWorkflow(formData: FormData) {
-  console.log("updateWorkflow", formData);
   const session = await auth();
   const id = formData.get("id") as string;
   const name = formData.get("name") as string;
@@ -182,8 +181,6 @@ export async function updateWorkflow(formData: FormData) {
 }
 
 export async function updateWorkflowById(formData: FormData) {
-  console.log("updateWorkflow", formData);
-
   const session = await auth();
   const id = formData.get("id") as string;
   const name = formData.get("name") as string;

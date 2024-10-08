@@ -128,7 +128,6 @@ function Flow({
       },
       Promise.resolve({} as { [key: string]: any }),
     );
-    console.log("newWorkflowTestResult", newWorkflowTestResult);
     return newWorkflowTestResult;
   };
 
@@ -138,7 +137,6 @@ function Flow({
         index ===
         self.findIndex((t) => t.source === edge.source && t.target === edge.target),
     );
-    console.log("uniqueEdges", uniqueEdges);
     onWorkflowChange?.(nodes, uniqueEdges);
     const graph = new Graph({ directed: true });
     nodes.forEach((node) => graph.setNode(node.id, node));
@@ -224,7 +222,6 @@ function Flow({
       let nodeTypeData: NodeTypeFragmentFragment | null = null;
       try {
         nodeTypeData = JSON.parse(nodeTypeJson) as NodeTypeFragmentFragment;
-        // console.log("Node Type Data:", nodeTypeData);
       } catch (error) {
         // toast.error("Error parsing JSON data");
         return null;

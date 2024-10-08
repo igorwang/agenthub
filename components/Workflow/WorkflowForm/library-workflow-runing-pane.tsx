@@ -45,7 +45,6 @@ export default function LibraryWorkflowRunningPane({
 
   useEffect(() => {
     if (data && data.execute_results && data.execute_results.length > 0) {
-      console.log("execute_results", data.execute_results);
       setResults(data.execute_results[0].results);
       setErrorMessage(data.execute_results[0].error_message || null);
       setExecuteId(data.execute_results[0].id || null);

@@ -136,7 +136,6 @@ export default function WorkflowForm({
         sourceHandle: item.sourceHandle,
       })) || [],
     );
-    console.log("initialData.nodes?.length", initialData.nodes?.length);
     setIsStartGuideOpen(!initialData.nodes || initialData.nodes?.length === 0);
   }, [initialData]);
 
@@ -177,11 +176,8 @@ export default function WorkflowForm({
 
   const handleWorkflowChange = useCallback(
     (newNodes: Node[], newEdges: Edge[]) => {
-      console.log("Workflow changed:", { newNodes, newEdges });
       const hasNodeChanges = JSON.stringify(newNodes) !== JSON.stringify(currentNodes);
       const hasEdgeChanges = JSON.stringify(newEdges) !== JSON.stringify(currentEdges);
-      console.log("hasNodeChanges", newNodes);
-      console.log("hasEdgeChanges", newEdges);
 
       if (hasNodeChanges) {
         setValue("nodes", newNodes);

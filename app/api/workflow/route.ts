@@ -16,7 +16,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(response);
   } catch (error) {
     if (error instanceof Error && "status" in error && "statusText" in error) {
-      console.log("instanceof error", error);
       return NextResponse.json(
         { error: error.statusText },
         { status: (error.status as number) || 500 },

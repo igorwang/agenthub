@@ -69,6 +69,7 @@ export type MessageType = {
   sessionId?: string;
   messageType?: Message_Type_Enum | null;
   schema?: { [key: string]: any };
+  imageUrls?: string[];
 };
 
 export type LibraryCardType = {

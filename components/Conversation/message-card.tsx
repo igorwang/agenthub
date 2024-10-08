@@ -27,6 +27,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Image,
   Link,
   Spacer,
   Spinner,
@@ -60,6 +61,7 @@ export type MessageCardProps = React.HTMLAttributes<HTMLDivElement> & {
   messageType?: Message_Type_Enum | null;
   schema?: { [key: string]: any };
   sessionId?: string;
+  imageUrls?: string[];
   onAttemptChange?: (attempt: number) => void;
   onMessageCopy?: (content: string | string[]) => void;
   onFeedback?: (feedback: "like" | "dislike") => void;
@@ -90,6 +92,7 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
       messageType,
       schema,
       sessionId,
+      imageUrls,
       onMessageCopy,
       onAttemptChange,
       onFeedback,
@@ -181,7 +184,6 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
           body: JSON.stringify({ message_id: messageId }),
         });
         const data = await response.json();
-        console.log("data", data);
         if (data.url) {
           window.open(data.url, "_blank");
         } else {
@@ -226,11 +228,6 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
     }, []);
 
     const handleSubmit = (formData: any) => {
-      console.log("formData", formData);
-      console.log("messageId", messageId);
-      console.log("schema", schema);
-      console.log("sessionId", sessionId);
-
       try {
         updateMessageByIdMutation({
           variables: {
@@ -244,7 +241,6 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
         return null;
       }
       const newId = v4();
-      console.log("newId", newId);
       handleCreateNewMessage?.({
         id: newId,
         query: "",
@@ -379,6 +375,44 @@ const MessageCard = React.forwardRef<HTMLDivElement, MessageCardProps>(
               message
             )}
           </div>
+          {imageUrls && imageUrls.length > 0 && (
+            <div className="flex flex-wrap justify-end gap-2 p-2">
+              {imageUrls.map((url) => (
+                <Image
+                  key={url}
+                  src={url}
+                  alt="Uploaded Image"
+                  onClick={() => {
+                    const modal = document.createElement("div");
+                    modal.style.position = "fixed";
+                    modal.style.top = "0";
+                    modal.style.left = "0";
+                    modal.style.width = "100%";
+                    modal.style.height = "100%";
+                    modal.style.backgroundColor = "rgba(0,0,0,0.8)";
+                    modal.style.display = "flex";
+                    modal.style.justifyContent = "center";
+                    modal.style.alignItems = "center";
+                    modal.style.zIndex = "9999";
+
+                    const img = document.createElement("img");
+                    img.src = url;
+                    img.style.maxWidth = "90%";
+                    img.style.maxHeight = "90%";
+                    img.style.objectFit = "contain";
+
+                    modal.appendChild(img);
+                    document.body.appendChild(modal);
+
+                    modal.onclick = () => {
+                      document.body.removeChild(modal);
+                    };
+                  }}
+                  className="h-20 w-20 cursor-pointer rounded-md object-cover"
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     );
