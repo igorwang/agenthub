@@ -186,7 +186,7 @@ function AgentCard({ agent }: AgentCardProps) {
             onClick={handleSubscribe}
             isLoading={isSubscribing}
             disabled={isSubscribing}>
-            {isSubscribing ? t("Subscribing...") : t("Subscribe")}
+            {isSubscribing ? t("Subscribing") : t("Subscribe")}
           </Button>
         </div>
       </Card>
