@@ -37,7 +37,7 @@ const LibraryFileChunk: React.FC<LibraryFileChunkProps> = ({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [chunks, setChunks] = useState<Chunk[]>(initialChunks);
   const pageSize = 20;
-  const total = chunks[0].total || 0;
+  const total = chunks.length > 0 ? chunks[0].total || 0 : 0;
   const totalPages = Math.ceil(total / pageSize);
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(20);
@@ -113,7 +113,7 @@ const LibraryFileChunk: React.FC<LibraryFileChunkProps> = ({
   };
 
   return (
-    <div className="m container mx-auto flex flex-col bg-gray-50 p-6">
+    <div className="container mx-auto flex h-full flex-col bg-gray-50 p-6">
       <div className="mb-4 flex flex-row items-center gap-2">
         <Icon
           icon="mdi:arrow-left"
