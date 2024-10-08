@@ -4,6 +4,7 @@ import { cn } from "@/cn";
 import { Icon } from "@iconify/react";
 import {
   Button,
+  Image,
   Modal,
   ModalBody,
   ModalContent,
@@ -24,6 +25,7 @@ import {
   WorkflowFragmentFragment,
 } from "@/graphql/generated/types";
 import { selectSelectedSessionId, selectSession } from "@/lib/features/chatListSlice";
+import { checkHasVisionFunction } from "@/lib/models/visionLLM";
 import { AppDispatch } from "@/lib/store";
 import { CHAT_STATUS_ENUM } from "@/types/chatTypes";
 import { ExtFile } from "@dropzone-ui/react";
@@ -38,6 +40,7 @@ import PromptInput from "./prompt-input";
 type PromptInputWithFaqProps = {
   agentId?: string;
   agentMode?: Agent_Mode_Enum;
+  model?: string;
   isChating?: boolean;
   workflowTools?: WorkflowFragmentFragment[];
   onRunWorkflowTool?: (tool: WorkflowFragmentFragment) => void;
@@ -47,6 +50,7 @@ type PromptInputWithFaqProps = {
 export default function PromptInputWithFaq({
   agentId,
   agentMode,
+  model,
   isChating: isChating,
   workflowTools = [],
   onChatingStatus,
@@ -58,8 +62,9 @@ export default function PromptInputWithFaq({
   const dispatch: AppDispatch = useDispatch();
   const selectedSessionId = useSelector(selectSelectedSessionId);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
-
+  const [isImageUploadOpen, setIsImageUploadOpen] = useState(false);
   // const [files, setFiles] = useState<UploadFileProps[]>([]);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
 
   const [files, setFiles] = useState<ExtFile[]>([]);
   const [prompt, setPrompt] = useState<string>("");
@@ -73,6 +78,8 @@ export default function PromptInputWithFaq({
   const session = useSession();
   const user_id = session.data?.user?.id;
   // const agent_id = selectedChatId;
+
+  const hasVisionFunction = checkHasVisionFunction(model || "");
 
   const openUploadModal = useCallback(async () => {
     if (!selectedSessionId) {
@@ -119,8 +126,15 @@ export default function PromptInputWithFaq({
   };
 
   const handleFileChange = (files: UploadFileType[]) => {
-    console.log("handleFileChange", files);
     setIsUploadOpen(false);
+  };
+
+  const handleImageChange = (files: UploadFileType[]) => {
+    const imageUrls = files.map(
+      (file) => `https://${process.env.MINIO_ENDPOINT}/public/${file.objectName}`,
+    );
+    setImageUrls(imageUrls);
+    setIsImageUploadOpen(false);
   };
 
   const stopSendMessageHanlder = () => {
@@ -143,6 +157,7 @@ export default function PromptInputWithFaq({
                     content: prompt,
                     role: Message_Role_Enum.User,
                     attachments: [],
+                    imageUrls: imageUrls,
                   },
                 ],
               },
@@ -170,11 +185,13 @@ export default function PromptInputWithFaq({
           session_id: selectedSessionId,
           role: Message_Role_Enum.User,
           attachments: [],
+          imageUrls: imageUrls,
         },
       });
     }
     setPrompt("");
     setFiles([]);
+    setImageUrls([]);
   };
 
   const sendButton = (
@@ -229,6 +246,27 @@ export default function PromptInputWithFaq({
   return (
     <div className="flex w-full max-w-full flex-col items-center px-2">
       <form className="flex w-full flex-col items-start rounded-medium bg-default-100 transition-colors hover:bg-default-200/70">
+        {imageUrls.length > 0 && (
+          <div className="flex flex-row gap-2 p-2">
+            {imageUrls.map((url) => (
+              <div key={url} className="relative">
+                <Image
+                  src={url}
+                  alt="Uploaded Image"
+                  className="h-20 w-20 rounded-md object-cover"
+                />
+                <Button
+                  isIconOnly
+                  size="sm"
+                  variant="light"
+                  className="absolute -right-1 -top-1 z-10"
+                  onClick={() => setImageUrls(imageUrls.filter((i) => i !== url))}>
+                  <Icon icon="mdi:close" width={16} />
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
         <PromptInput
           classNames={{
             inputWrapper: "!bg-transparent shadow-none",
@@ -247,6 +285,7 @@ export default function PromptInputWithFaq({
           variant="flat"
           onValueChange={setPrompt}
         />
+
         {agentMode === Agent_Mode_Enum.Workflow && (
           <div className="flex items-center justify-between gap-2 px-4 pb-4">
             <div className="flex gap-1 md:gap-3">
@@ -263,6 +302,21 @@ export default function PromptInputWithFaq({
                 onClick={openUploadModal}>
                 {t("File")}
               </Button>
+              {hasVisionFunction && (
+                <Button
+                  size="sm"
+                  startContent={
+                    <Icon
+                      className="text-default-500"
+                      icon="material-symbols:image-outline"
+                      width={18}
+                    />
+                  }
+                  variant="flat"
+                  onClick={() => setIsImageUploadOpen(true)}>
+                  {t("Image")}
+                </Button>
+              )}
               {workflowTools.length > 0 && (
                 <Popover
                   placement="top"
@@ -295,6 +349,31 @@ export default function PromptInputWithFaq({
           </div>
         )}
       </form>
+      {isImageUploadOpen && (
+        <Modal
+          isOpen={isImageUploadOpen}
+          onClose={() => setIsImageUploadOpen(false)}
+          className="rounded-lg bg-white shadow-lg"
+          size="2xl">
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1 border-b pb-4 text-2xl font-semibold text-gray-700">
+                  {t("Upload Images")}
+                </ModalHeader>
+                <ModalBody className="py-6">
+                  <UploadZone
+                    isImageUpload={true}
+                    acceptFileTypes=".png,.jpg,.jpeg"
+                    onAfterUpload={handleImageChange}
+                    maxNumberOfFile={5}
+                  />
+                </ModalBody>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      )}
 
       {isUploadOpen && selectedSessionId && (
         <Modal
@@ -315,6 +394,7 @@ export default function PromptInputWithFaq({
                     sessionId={selectedSessionId}
                     onAfterUpload={handleFileChange}
                     maxNumberOfFile={5}
+                    acceptFileTypes=".doc,.docx,.pdf,.ppt,.pptx,.xls,.xlsx,.txt,.json,.md"
                   />
                 </ModalBody>
               </>

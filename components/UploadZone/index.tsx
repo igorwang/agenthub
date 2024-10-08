@@ -30,6 +30,7 @@ export type UploadZoneProps = {
   knowledgeBaseId?: string;
   sessionId?: string;
   acceptFileTypes?: string;
+  isImageUpload?: boolean;
   onAfterUpload?: (files: UploadFileType[]) => void;
   // onFileUploadCallback?: (files: { id: string | number; name: string }[]) => void;
 };
@@ -37,6 +38,7 @@ export type UploadZoneProps = {
 export default function UploadZone({
   sessionId,
   knowledgeBaseId,
+  isImageUpload = false,
   maxNumberOfFile = 10,
   maxFileSize = 100 * 1024 * 1024,
   acceptFileTypes = ".doc,.docx,.pdf,.ppt,.pptx,.xls,.xlsx,.txt,.json",
@@ -99,16 +101,23 @@ export default function UploadZone({
       const fileId = v4();
       const ext = file.name?.split(".").pop();
       let objectName: string;
+      let bucket: string;
       if (knowledgeBaseId) {
+        bucket = "chat";
         objectName = `knowledge_base/${knowledgeBaseId}/${fileId}.${ext}`;
       } else if (sessionId) {
+        bucket = "chat";
         objectName = `session/${sessionId}/${fileId}.${ext}`;
+      } else if (isImageUpload) {
+        bucket = "public";
+        objectName = `images/${fileId}.${ext}`;
       } else {
+        bucket = "public";
         objectName = `tmp/${fileId}.${ext}`;
       }
 
       const body = {
-        bucket: "chat",
+        bucket: bucket,
         objectName: objectName,
         contentType: file.type || "application/octet-stream",
         metadata: {

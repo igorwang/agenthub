@@ -7,7 +7,6 @@ const ComingSoonPage: React.FC = () => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Submitted email:", email);
     setEmail("");
   };
 

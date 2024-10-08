@@ -21,7 +21,7 @@ import {
   useUpdateTopicHistoryByIdMutation,
 } from "@/graphql/generated/types";
 import { DEFAULT_LLM_MODEL, DEFAULT_TEMPLATES } from "@/lib/models";
-import { createPrompt } from "@/lib/prompts";
+import { createMessages } from "@/lib/prompts/createMessages";
 import { ChatFlowRequestSchema, ChatFlowResponseSchema } from "@/restful/generated";
 import {
   CHAT_STATUS_ENUM,
@@ -224,6 +224,7 @@ export default function MessageWindowWithWorkflow({
         sources: item.sources?.map((item: SourceType) => ({ ...item })),
         messageType: item.message_type || Message_Type_Enum.Text,
         schema: item.schema || {},
+        imageUrls: item.imageUrls || [],
       }));
 
       if (data.message.length == 1 && selectedSessionId) {
@@ -302,8 +303,6 @@ export default function MessageWindowWithWorkflow({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
         });
-
-        console.log("response error", response);
 
         if (!response.ok) {
           setSearchResults([]);
@@ -393,31 +392,48 @@ export default function MessageWindowWithWorkflow({
       const generateAnswer = async () => {
         const historyMessage = messages.filter((item) => item.status != "draft");
 
-        const prompt = await createPrompt(
+        const chatMessages = await createMessages(
+          agent?.defaultModel || DEFAULT_LLM_MODEL,
           promptTemplates || DEFAULT_TEMPLATES,
           historyMessage,
           searchResults || [],
-          agent?.token_limit,
-          refineQuery?.refineQuery || "",
           chatContext || "",
           sessionFilesContext,
-          {},
         );
-        let answer = "";
-        // call llm
+
+        console.log("chatMessages", chatMessages);
+
         try {
-          // Fetch the streaming data from the API
-          const response = await fetch("/api/chat", {
+          const response = await fetch("/api/v1/chat", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
               model: agent?.defaultModel || DEFAULT_LLM_MODEL,
-              prompt: prompt,
+              messages: chatMessages,
+            }),
+          });
+          console.log("chatMessages response", response);
+        } catch (error) {
+          console.error("Error while streaming:", error);
+          return;
+        }
+
+        let answer = "";
+        // call llm
+        try {
+          const response = await fetch("/api/v1/chat", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              model: agent?.defaultModel || DEFAULT_LLM_MODEL,
+              messages: chatMessages.map((message) => message.toJSON()),
             }),
             signal: signal,
-          }); // Adjust the endpoint as needed
+          });
 
           if (!response.body) {
             throw new Error("ReadableStream not supported by the browser.");
@@ -540,6 +556,7 @@ export default function MessageWindowWithWorkflow({
       messageType: msg.messageType,
       schema: msg.schema,
       sessionId: selectedSessionId || "",
+      imageUrls: msg.imageUrls || [],
     }));
   }, [messages, isChating, chatStatus, agentAvatarElement, onSelectedSource]);
 

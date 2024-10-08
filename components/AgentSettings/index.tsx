@@ -101,7 +101,6 @@ export default function AgentSettings({
   }, [step, pathname, router, searchParams]);
 
   useEffect(() => {
-    console.log("data", data);
     if (data) {
       const defaultLibrary = data.agent_by_pk?.kbs.find(
         (item) => item.knowledge_base.base_type == Knowledge_Base_Type_Enum.Agent,
@@ -179,8 +178,6 @@ export default function AgentSettings({
       router.push(`/chat/${id}`);
     }
   };
-
-  console.log("Unauthorized", agent);
 
   if (loading) {
     return (

@@ -103,7 +103,6 @@ function WorkflowList({ initialWorkflowList, currentPage }: WorkflowListPageProp
       });
       if (res.data) {
         toast.success(t("New workflow created successfully"));
-        console.log("add new workflow", res);
         const newWorkflow = res.data.insert_workflow_one;
         if (newWorkflow) {
           setWorkflowList((prev) => [newWorkflow, ...prev]);

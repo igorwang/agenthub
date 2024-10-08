@@ -61,7 +61,6 @@ function KeyManagement() {
   const [deleteKeyId, setDeleteKeyId] = useState<number | null>(null);
 
   useEffect(() => {
-    console.log("data", data);
     if (data) {
       setKeys(data.api_key);
     }

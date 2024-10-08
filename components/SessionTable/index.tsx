@@ -54,7 +54,6 @@ export default function SessionTable({ agentId }: SessionTableProps) {
   });
 
   useEffect(() => {
-    console.log("data", data);
     if (data && data.topic_history) {
       setSessionList(data.topic_history);
     }
