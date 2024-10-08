@@ -16,7 +16,7 @@ import {
   useGetAgentByIdQuery,
   Workflow_Type_Enum,
 } from "@/graphql/generated/types";
-import { Button } from "@nextui-org/react";
+import { Button, Spinner } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -65,7 +65,7 @@ export default function AgentSettings({
   const params = useParams<{ id: string }>();
   const pathname = usePathname();
   const { id } = params;
-  const query = useGetAgentByIdQuery({ variables: { id: id } });
+  const { data, loading, refetch } = useGetAgentByIdQuery({ variables: { id: id } });
   const router = useRouter();
 
   const promptFormRef = useRef<PromptFormHandle>(null);
@@ -73,7 +73,7 @@ export default function AgentSettings({
   const libraryRef = useRef<LibraryFileHandle>(null);
 
   const handleUpdateAgent = () => {
-    query.refetch();
+    refetch();
     toast.success(t("Update agent prompt successfully"));
   };
 
@@ -101,16 +101,17 @@ export default function AgentSettings({
   }, [step, pathname, router, searchParams]);
 
   useEffect(() => {
-    if (query.data) {
-      const defaultLibrary = query?.data.agent_by_pk?.kbs.find(
+    console.log("data", data);
+    if (data) {
+      const defaultLibrary = data.agent_by_pk?.kbs.find(
         (item) => item.knowledge_base.base_type == Knowledge_Base_Type_Enum.Agent,
       );
       if (defaultLibrary) {
         setLibraryId(defaultLibrary.knowledge_base?.id);
       }
-      setAgent(query?.data?.agent_by_pk);
+      setAgent(data?.agent_by_pk);
     }
-  }, [query]);
+  }, [data]);
 
   const _renderContent = (currentStep: number) => {
     switch (currentStep) {
@@ -179,7 +180,17 @@ export default function AgentSettings({
     }
   };
 
-  if (agent && agent.creator_id !== session?.data?.user?.id) {
+  console.log("Unauthorized", agent);
+
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Spinner color="primary">{t("Loading")}...</Spinner>
+      </div>
+    );
+  }
+
+  if (agent?.creator_id !== session?.data?.user?.id) {
     return <Unauthorized />;
   }
 
