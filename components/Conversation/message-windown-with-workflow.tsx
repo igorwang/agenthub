@@ -414,9 +414,9 @@ export default function MessageWindowWithWorkflow({
               messages: chatMessages,
             }),
           });
-          console.log("chatMessages response", response);
         } catch (error) {
-          console.error("Error while streaming:", error);
+          // console.error("Error while streaming:", error);
+          onChatingStatusChange(false, CHAT_STATUS_ENUM.Interpret);
           return;
         }
 

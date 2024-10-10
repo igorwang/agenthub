@@ -16,6 +16,7 @@ import {
   setRefreshSession,
 } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
+import { Icon } from "@iconify/react";
 import {
   Button,
   Dropdown,
@@ -126,6 +127,21 @@ export function TopicHistory({ agent_id }: TopicHistoryProps) {
     });
   };
 
+  const handleAddNewTopic = async () => {
+    const response = await addNewTopicMutation({
+      variables: {
+        agent_id: params.id,
+        user_id: userId || "",
+        title: t("New Chat"),
+      },
+    });
+    if (response.data) {
+      const newTopicId = response.data.insert_topic_history_one?.id;
+      handleSelect(newTopicId);
+      refetch();
+    }
+  };
+
   const dropdownContent = (itemId: string) => (
     <Dropdown>
       <DropdownTrigger>
@@ -177,10 +193,18 @@ export function TopicHistory({ agent_id }: TopicHistoryProps) {
   ));
 
   return (
-    <div className="flex h-full flex-col">
-      <h2 className="px-4 py-2 text-center text-xs font-normal uppercase tracking-wide text-gray-500">
+    <div className="flex h-full flex-col gap-2">
+      <h2 className="px-4 text-center text-xs font-normal uppercase tracking-wide text-gray-500">
         {t("Chat History")}
       </h2>
+      <Button
+        variant="light"
+        color="primary"
+        startContent={<Icon icon="mdi:plus" className="text-lg" />}
+        className="w-full rounded-lg px-4 text-sm font-medium transition-all hover:bg-primary-50 hover:text-primary-600"
+        onClick={handleAddNewTopic}>
+        {t("Start New Chat")}
+      </Button>
 
       <ScrollShadow className="custom-scrollbar h-full">
         {historyItems && (

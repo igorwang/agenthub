@@ -69,11 +69,11 @@ export default function ChatPage() {
     <div className="custom-scrollbar relative flex flex-1 flex-row overflow-auto">
       <div
         className={`custom-scrollbar overflow-auto transition-all duration-300 ease-in-out ${
-          isChatHubOpen ? "w-48 min-w-48" : "w-0"
+          isChatHubOpen ? "w-56 min-w-56" : "w-0"
         }`}>
         <ChatHub onToggleChatHub={toggleChatHub} />
       </div>
-      <div className="flex-1">
+      <div className="w-full flex-1">
         <Conversation agentId={id} />
       </div>
     </div>

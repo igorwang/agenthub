@@ -4,8 +4,8 @@ export const SUPPORT_VISION_MODELS = [
   "gemini-pro",
   "gemini-flash",
   "claude-3-5-sonnet",
-  // "meta-llama/Llama-3.2-11B-Vision-Instruct",
-  // "meta-llama/Llama-3.2-90B-Vision-Instruct",
+  "meta-llama/Llama-3.2-11B-Vision-Instruct",
+  "meta-llama/Llama-3.2-90B-Vision-Instruct",
 ];
 
 export function checkHasVisionFunction(model: string) {

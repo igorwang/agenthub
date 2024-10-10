@@ -124,7 +124,7 @@ const ChatHub = ({ onToggleChatHub }: ChatHubProps) => {
           <Icon icon="ant-design:menu-fold-outlined" fontSize={24} />
         </Button>
       </div>
-      {hasCreatorPermission && (
+      {hasCreatorPermission && chatListOpenStatus && (
         <div className="px-2 py-1">
           <Button
             variant="light"

@@ -3,7 +3,7 @@
 import MessageWindow from "@/components/Conversation/message-window";
 import MessageWindowWithWorkflow from "@/components/Conversation/message-windown-with-workflow";
 import PromptInputWithFaq from "@/components/Conversation/prompt-input-with-faq";
-import SessionFilesSidebar from "@/components/Conversation/session-files-sidebar";
+import SessionFilesHeader from "@/components/Conversation/session-files-header";
 import { RoleChip } from "@/components/ui/role-icons";
 import ShareLinkCard from "@/components/ui/share-link-card";
 import {
@@ -451,10 +451,17 @@ export const Conversation: React.FC<ConversationProps> = ({
 
   return (
     <ConversationContext.Provider value={contextValue}>
-      <div className="flex h-full w-full max-w-full flex-col overflow-auto">
+      <div className="flex h-full w-full max-w-full flex-col">
         <div className="relative flex flex-col">{!hiddenHeader && headerElement}</div>
+        <div className="custom-scrollbar relative flex min-h-fit justify-normal overflow-x-auto sm:justify-center">
+          <SessionFilesHeader
+            sessionId={selectedSessionId || ""}
+            files={sessionFiles}
+            onFilesChange={handleSessionFileChange}
+          />
+        </div>
         <div className="flex max-h-full max-w-full flex-grow flex-row overflow-auto">
-          <div className="min-[400px] mx-auto flex max-w-7xl flex-grow flex-col items-center overflow-auto px-10 pt-4">
+          <div className="min-[400px] mx-auto flex max-w-7xl flex-grow flex-col items-center overflow-auto px-2 pt-4 sm:px-6 md:px-8 lg:px-10">
             {agent.mode === Agent_Mode_Enum.Workflow ? (
               <MessageWindowWithWorkflow
                 workflow_id={agent.workflow_id || ""}
@@ -580,7 +587,7 @@ export const Conversation: React.FC<ConversationProps> = ({
               </p>
             </div>
           </div>
-          {selectedSessionId && (
+          {/* {selectedSessionId && (
             <div className="max-w-64">
               <SessionFilesSidebar
                 sessionId={selectedSessionId}
@@ -588,7 +595,7 @@ export const Conversation: React.FC<ConversationProps> = ({
                 onFilesChange={handleSessionFileChange}
               />
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </ConversationContext.Provider>
