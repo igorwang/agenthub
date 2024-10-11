@@ -45,7 +45,7 @@ export async function createMessages(
   });
 
   if (chatContext) {
-    if (hasContextCacheFunction && chatContext.length > 2000) {
+    if (hasContextCacheFunction && chatContext.length > 4000) {
       chatMessages.push(
         new HumanMessage({
           content: [
@@ -64,7 +64,7 @@ export async function createMessages(
 
   if (sources && sources.length > 0) {
     const sourceContext = await createSourceContext(sources);
-    if (hasContextCacheFunction && sourceContext && sourceContext.length > 2000) {
+    if (hasContextCacheFunction && sourceContext && sourceContext.length > 4000) {
       chatMessages.push(
         new HumanMessage({
           content: [
