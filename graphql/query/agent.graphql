@@ -15,60 +15,64 @@ query GetAgentListByType($user_id: uuid) {
 
 query GetAgentByID($id: uuid!) {
   agent_by_pk(id: $id) {
+    ...agentFragment
+  }
+}
+
+fragment agentFragment on agent {
+  id
+  name
+  description
+  avatar
+  default_model
+  is_publish
+  token_limit
+  creator_id
+  enable_search
+  force_search
+  mode
+  embedding_model
+  system_prompt {
+    id
+    name
+    templates {
+      id
+      order
+      role
+      template
+    }
+  }
+  kbs {
+    knowledge_base {
+      id
+      base_type
+      name
+      description
+    }
+  }
+  tools {
+    tool {
+      id
+      name
+      output_schema
+      run_type
+      tool_type
+    }
+  }
+  workflow {
     id
     name
     description
-    avatar
-    default_model
-    is_publish
-    token_limit
-    creator_id
-    enable_search
-    force_search
-    mode
-    embedding_model
-    system_prompt {
-      id
-      name
-      templates {
-        id
-        order
-        role
-        template
-      }
+    flow_edges {
+      ...flowEdgeFragment
     }
-    kbs {
-      knowledge_base {
-        id
-        base_type
-        name
-        description
-      }
+    flow_nodes {
+      ...flowNodeFragment
     }
-    tools {
-      tool {
-        id
-        name
-        output_schema
-        run_type
-        tool_type
-      }
-    }
+  }
+  r_agent_workflows {
     workflow {
-      id
-      name
-      description
-      flow_edges {
-        ...flowEdgeFragment
-      }
-      flow_nodes {
-        ...flowNodeFragment
-      }
-    }
-    r_agent_workflows {
-      workflow {
-        ...workflowFragment
-      }
+      ...workflowFragment
     }
   }
 }

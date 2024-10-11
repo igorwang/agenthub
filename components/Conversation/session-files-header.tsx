@@ -5,24 +5,34 @@ import {
   useBatchDeleteFilesMutation,
 } from "@/graphql/generated/types";
 import { Icon } from "@iconify/react";
-import { Button, Tooltip } from "@nextui-org/react";
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Tooltip,
+} from "@nextui-org/react";
 import { useTranslations } from "next-intl";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { toast } from "sonner";
 
 interface SessionFilesHeaderProps {
+  model: string;
   sessionId: string;
   files: FilesListQuery["files"];
   onFilesChange: (files: FilesListQuery["files"]) => void;
 }
 
 export default function SessionFilesHeader({
+  model,
   sessionId,
   files,
   onFilesChange,
 }: SessionFilesHeaderProps) {
   const t = useTranslations();
   const [batchDeleteFilesMutation] = useBatchDeleteFilesMutation();
+  const [isExporting, setIsExporting] = useState(false);
 
   const handleDelete = (fileId: string) => {
     // Implement delete logic here
@@ -38,6 +48,44 @@ export default function SessionFilesHeader({
       );
     });
   };
+
+  const handleExportReviseVersion = useCallback(
+    async (fileId: string) => {
+      if (!model) {
+        toast.error(t("Model not well settings"));
+        return;
+      }
+      setIsExporting(true);
+      // Implement export revise version logic here
+      try {
+        const response = await fetch("/api/chat/session/export_revise_document", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            file_id: fileId,
+            session_id: sessionId,
+            model,
+          }),
+        });
+        if (!response.ok) {
+          throw new Error(t("Failed to export revise version"));
+        }
+        const result = await response.json();
+
+        if (result.url) {
+          window.open(result.url, "_blank");
+        }
+        toast.success(t("Export revise version successfully"));
+      } catch (error) {
+        console.error(t("Error exporting revise version"), error);
+      } finally {
+        setIsExporting(false);
+      }
+    },
+    [sessionId],
+  );
 
   const handleRedoFile = useCallback(async (fileId: string) => {
     try {
@@ -73,10 +121,10 @@ export default function SessionFilesHeader({
         {files.map((file) => (
           <li
             key={file.id}
-            className={`rounded border border-gray-200 bg-white p-1 shadow ${
+            className={`group relative flex rounded border border-gray-200 bg-white p-1 shadow ${
               file.status === Status_Enum.Failed ? "border border-red-300" : ""
             }`}>
-            <div className="flex items-center space-x-2">
+            <div className="relative flex items-center space-x-2">
               <div className="h-6 w-6">
                 {file.status === Status_Enum.Indexed ||
                 file.status === Status_Enum.Success ||
@@ -89,7 +137,7 @@ export default function SessionFilesHeader({
               <Tooltip content={file.name}>
                 <span className="max-w-[80px] truncate text-xs">{file.name}</span>
               </Tooltip>
-              <div className="flex space-x-1">
+              <div className="flex items-center">
                 {file.status === Status_Enum.Failed && (
                   <Tooltip content={t("Reprocess")}>
                     <Button
@@ -102,19 +150,39 @@ export default function SessionFilesHeader({
                     </Button>
                   </Tooltip>
                 )}
-                <Tooltip content={t("Delete file")}>
-                  <Button
-                    isIconOnly
-                    size="sm"
-                    variant="light"
-                    className="min-w-unit-8 h-unit-8 hover:text-gray-600"
-                    onClick={() => handleDelete(file.id)}
-                    aria-label={`Delete ${file.name}`}>
-                    <Icon icon="lucide:x" width="12" height="12" />
-                  </Button>
-                </Tooltip>
+                {file.ext === "docx" && (
+                  <Dropdown>
+                    <DropdownTrigger>
+                      <Button
+                        isIconOnly
+                        size="sm"
+                        variant="light"
+                        className="m h-unit-6"
+                        isLoading={isExporting}
+                        disabled={isExporting}>
+                        <Icon icon="ic:round-more-vert" fontSize={12} />
+                      </Button>
+                    </DropdownTrigger>
+                    <DropdownMenu>
+                      <DropdownItem onClick={() => handleExportReviseVersion(file.id)}>
+                        {t("Export Reivse Version")}
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                )}
               </div>
             </div>
+            <Tooltip content={t("Delete file")}>
+              <Button
+                isIconOnly
+                size="sm"
+                variant="light"
+                className="min-w-unit-6 h-unit-6 absolute -right-2 -top-2 opacity-0 group-hover:opacity-100"
+                onClick={() => handleDelete(file.id)}
+                aria-label={`Delete ${file.name}`}>
+                <Icon icon="lucide:x" width="12" height="12" />
+              </Button>
+            </Tooltip>
           </li>
         ))}
       </ul>

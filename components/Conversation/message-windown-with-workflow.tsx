@@ -1,6 +1,5 @@
 import {
   selectRefreshSession,
-  selectSelectedChatId,
   selectSelectedSessionId,
   setRefreshSession,
 } from "@/lib/features/chatListSlice";
@@ -12,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import FeatureCards from "@/components/Conversation/feature-cards";
 import { PromptTemplateType } from "@/components/PromptFrom";
 import {
+  AgentFragmentFragment,
   Message_Role_Enum,
   Message_Status_Enum,
   Message_Type_Enum,
@@ -57,6 +57,7 @@ type QueryAnalyzeResultSchema = {
 };
 
 type MessageWindowProps = {
+  agentId: string;
   workflow_id: string;
   chatStatus: CHAT_STATUS_ENUM | null;
   isChating: boolean;
@@ -82,6 +83,7 @@ type MessageWindowProps = {
 };
 
 export default function MessageWindowWithWorkflow({
+  agentId,
   workflow_id,
   isChating,
   chatStatus,
@@ -96,14 +98,13 @@ export default function MessageWindowWithWorkflow({
 }: MessageWindowProps) {
   const dispatch: AppDispatch = useDispatch();
   const t = useTranslations();
-  const selectedChatId = useSelector(selectSelectedChatId);
   const selectedSessionId = useSelector(selectSelectedSessionId);
   const refreshSession = useSelector(selectRefreshSession);
 
   const ref = useRef<HTMLDivElement>(null);
 
   const [messages, setMessages] = useState<MessageType[]>([]);
-  const [agent, setAgent] = useState<AgentProps>();
+  const [agent, setAgent] = useState<AgentFragmentFragment>();
   const [refineQuery, setRefineQuery] = useState<QueryAnalyzeResultSchema | null>(null);
   const [searchResults, setSearchResults] = useState<SourceType[] | null>(null);
   const [chatContext, setChatContext] = useState<string | null>(null);
@@ -118,7 +119,6 @@ export default function MessageWindowWithWorkflow({
 
   const session = useSession();
   const user_id = session.data?.user?.id;
-  const agent_id = selectedChatId;
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const query = useFetchAllMessageListQuery({
@@ -134,9 +134,9 @@ export default function MessageWindowWithWorkflow({
 
   const { data: agentData } = useGetAgentByIdQuery({
     variables: {
-      id: agent_id, // value for 'id'
+      id: agentId, // value for 'id'
     },
-    skip: !agent_id,
+    skip: !agentId,
   });
 
   useEffect(() => {
@@ -166,20 +166,12 @@ export default function MessageWindowWithWorkflow({
       }
     }
     query.refetch();
-  }, [selectedChatId, selectedSessionId, isChating, query]);
+  }, [agentId, selectedSessionId, isChating, query]);
 
   useEffect(() => {
-    if (agentData) {
-      setAgent({
-        id: agentData.agent_by_pk?.id,
-        name: agentData.agent_by_pk?.name,
-        avatar: agentData.agent_by_pk?.avatar || "",
-        defaultModel: agentData.agent_by_pk?.default_model || DEFAULT_LLM_MODEL,
-        token_limit: agentData.agent_by_pk?.token_limit || 4096,
-        enable_search: agentData.agent_by_pk?.enable_search || false,
-        force_search: agentData.agent_by_pk?.force_search || false,
-        tools: agentData.agent_by_pk?.tools?.map((item) => item.tool),
-      });
+    console.log("agentData", agentData);
+    if (agentData?.agent_by_pk) {
+      setAgent(agentData.agent_by_pk);
 
       const templates = agentData.agent_by_pk?.system_prompt?.templates;
       if (templates) {
@@ -206,7 +198,7 @@ export default function MessageWindowWithWorkflow({
         );
       }
     }
-  }, [selectedChatId, agentData]);
+  }, [agentId, agentData]);
 
   useEffect(() => {
     if (data && data.message) {
@@ -241,7 +233,7 @@ export default function MessageWindowWithWorkflow({
       setMessages(newMessages);
       onMessageChange?.(newMessages);
     }
-  }, [data, onMessageChange]);
+  }, [data, onMessageChange, agentId]);
 
   useEffect(() => {
     if (
@@ -280,7 +272,7 @@ export default function MessageWindowWithWorkflow({
 
       const fetchChatWithWorkflow = async () => {
         const body: ChatFlowRequestSchema = {
-          agent_id: agent_id || "",
+          agent_id: agentId || "",
           session_id: selectedSessionId || "",
           messages: messages.slice(0, -1).map((item) => ({
             role: item.role,
@@ -393,7 +385,7 @@ export default function MessageWindowWithWorkflow({
         const historyMessage = messages.filter((item) => item.status != "draft");
 
         const chatMessages = await createMessages(
-          agent?.defaultModel || DEFAULT_LLM_MODEL,
+          agent?.default_model || DEFAULT_LLM_MODEL,
           promptTemplates || DEFAULT_TEMPLATES,
           historyMessage,
           searchResults || [],
@@ -410,7 +402,7 @@ export default function MessageWindowWithWorkflow({
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              model: agent?.defaultModel || DEFAULT_LLM_MODEL,
+              model: agent?.default_model || DEFAULT_LLM_MODEL,
               messages: chatMessages,
             }),
           });
@@ -429,7 +421,7 @@ export default function MessageWindowWithWorkflow({
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              model: agent?.defaultModel || DEFAULT_LLM_MODEL,
+              model: agent?.default_model || DEFAULT_LLM_MODEL,
               messages: chatMessages.map((message) => message.toJSON()),
             }),
             signal: signal,
@@ -550,7 +542,7 @@ export default function MessageWindowWithWorkflow({
       sourceResults: msg.sources || [],
       files: msg.files,
       onSelectedSource: onSelectedSource,
-      tools: agent?.tools,
+      tools: [],
       agentId: agent?.id,
       status: msg.status,
       messageType: msg.messageType,

@@ -455,6 +455,7 @@ export const Conversation: React.FC<ConversationProps> = ({
         <div className="relative flex flex-col">{!hiddenHeader && headerElement}</div>
         <div className="custom-scrollbar relative flex min-h-fit justify-normal overflow-x-auto sm:justify-center">
           <SessionFilesHeader
+            model={agent.default_model || ""}
             sessionId={selectedSessionId || ""}
             files={sessionFiles}
             onFilesChange={handleSessionFileChange}
@@ -464,6 +465,7 @@ export const Conversation: React.FC<ConversationProps> = ({
           <div className="min-[400px] mx-auto flex max-w-7xl flex-grow flex-col items-center overflow-auto px-2 pt-4 sm:px-6 md:px-8 lg:px-10">
             {agent.mode === Agent_Mode_Enum.Workflow ? (
               <MessageWindowWithWorkflow
+                agentId={agentId}
                 workflow_id={agent.workflow_id || ""}
                 isChating={isChating}
                 chatStatus={chatStatus}

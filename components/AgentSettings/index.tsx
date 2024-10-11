@@ -9,6 +9,7 @@ import RightHeader from "@/components/RightHeader";
 import { Unauthorized } from "@/components/ui/unauthorized";
 import WorkflowForm from "@/components/Workflow/WorkflowForm";
 import {
+  AgentFragmentFragment,
   FlowEdgeFragmentFragment,
   FlowNodeFragmentFragment,
   Knowledge_Base_Type_Enum,
@@ -26,15 +27,15 @@ import { toast } from "sonner";
 interface SystemPrompt {
   id: number;
 }
-interface Agent {
-  id?: string;
-  name?: string;
-  description?: string | null | undefined;
-  avatar?: string | null | undefined;
-  system_prompt?: SystemPrompt | null | undefined;
-  default_model?: string | null;
-  creator_id?: string | null;
-}
+// interface Agent {
+//   id?: string;
+//   name?: string;
+//   description?: string | null | undefined;
+//   avatar?: string | null | undefined;
+//   system_prompt?: SystemPrompt | null | undefined;
+//   default_model?: string | null;
+//   creator_id?: string | null;
+// }
 
 interface AgentSettingsProps {
   initialData: {
@@ -56,7 +57,7 @@ export default function AgentSettings({
 }: AgentSettingsProps) {
   const t = useTranslations();
   const session = useSession();
-  const [agent, setAgent] = useState<Agent | null>();
+  const [agent, setAgent] = useState<AgentFragmentFragment | null>();
   const [libraryId, setLibraryId] = useState<string | null>();
   const searchParams = useSearchParams();
   const [step, setStep] = useState<number>(parseInt(searchParams.get("step") || "1"));
@@ -153,16 +154,19 @@ export default function AgentSettings({
       case 0:
         if (agentRef?.current) {
           agentRef?.current?.handleSubmit();
+          refetch();
         }
         break;
       case 1:
         if (promptFormRef.current) {
           promptFormRef.current.clickButton();
+          refetch();
         }
         break;
       case 2:
         if (libraryRef.current) {
           libraryRef?.current?.saveLibraryInfo();
+          refetch();
         }
         break;
       default:

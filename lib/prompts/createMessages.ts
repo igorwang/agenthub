@@ -64,7 +64,21 @@ export async function createMessages(
 
   if (sources && sources.length > 0) {
     const sourceContext = await createSourceContext(sources);
-    chatMessages.push(new HumanMessage(`Reference Sources: ${sourceContext}`));
+    if (hasContextCacheFunction && sourceContext && sourceContext.length > 2000) {
+      chatMessages.push(
+        new HumanMessage({
+          content: [
+            {
+              type: "text",
+              text: `Reference Sources: ${sourceContext}`,
+              cache_control: { type: "ephemeral" },
+            },
+          ],
+        }),
+      );
+    } else {
+      chatMessages.push(new HumanMessage(`Reference Sources: ${sourceContext}`));
+    }
   }
 
   if (sessionFilesContext) {
