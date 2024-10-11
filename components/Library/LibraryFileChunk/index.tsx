@@ -36,11 +36,13 @@ const LibraryFileChunk: React.FC<LibraryFileChunkProps> = ({
   const pathname = usePathname();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [chunks, setChunks] = useState<Chunk[]>(initialChunks);
-  const pageSize = 20;
-  const total = chunks.length > 0 ? chunks[0].total || 0 : 0;
+  const pageSize = 10;
+  const total = chunks.length > 0 ? chunks[0].total || 0 : initialChunks.length;
+  console.log("total", total);
   const totalPages = Math.ceil(total / pageSize);
+  console.log("totalPages", totalPages);
   const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(20);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const pages = Math.ceil(total / rowsPerPage);
 
@@ -185,9 +187,9 @@ const LibraryFileChunk: React.FC<LibraryFileChunkProps> = ({
             <select
               className="rounded-md bg-transparent text-small text-default-400"
               onChange={onRowsPerPageChange}>
-              <option value="20">20</option>
-              {/* <option value="40">40</option>
-              <option value="60">60</option> */}
+              <option value="10">10</option>
+              {/* <option value="40">40</option> */}
+              {/* <option value="60">60</option> */}
             </select>
           </div>
         </div>

@@ -37,7 +37,7 @@ async function renderContent(fileId: string, filename: string) {
       return <ErrorDisplay message="You must be logged in to view this page." />;
     }
 
-    const body: FileChunkRequest = { file_id: fileId };
+    const body: FileChunkRequest = { file_id: fileId, limit: 10, offset: 0 };
     const chunksData = await CollectionService.getChunksOfFileV1CollectionChunksPost({
       requestBody: body,
     });
