@@ -105,6 +105,18 @@ export async function createMessages(
           ],
         }),
       );
+    } else if (
+      hasContextCacheFunction &&
+      message.message &&
+      message.message.length > 4000
+    ) {
+      chatMessages.push(
+        new HumanMessage({
+          content: [
+            { type: "text", text: message.message, cache_control: { type: "ephemeral" } },
+          ],
+        }),
+      );
     } else {
       chatMessages.push(new HumanMessage(message.message || ""));
     }

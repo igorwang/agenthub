@@ -74,7 +74,11 @@ export default function ChatPage() {
         <ChatHub onToggleChatHub={toggleChatHub} />
       </div>
       <div className="w-full flex-1">
-        <Conversation agentId={id} />
+        <Conversation
+          agentId={id}
+          isChatHubOpen={isChatHubOpen}
+          onToggleChatHub={toggleChatHub}
+        />
       </div>
     </div>
   );

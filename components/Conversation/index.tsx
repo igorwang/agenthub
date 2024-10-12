@@ -106,11 +106,15 @@ export type ConversationProps = {
   hiddenHeader?: boolean;
   hiddenInput?: boolean;
   isTestMode?: boolean;
+  isChatHubOpen?: boolean;
+  onToggleChatHub?: (isOpen: boolean) => void;
 };
 
 export const Conversation: React.FC<ConversationProps> = ({
   agentId,
   sessionId,
+  onToggleChatHub,
+  isChatHubOpen,
   className,
   hiddenHeader = false,
   isTestMode = false,
@@ -354,6 +358,11 @@ export const Conversation: React.FC<ConversationProps> = ({
   const headerElement = (
     <div className="relative flex flex-wrap items-center justify-center gap-2 border-b-small border-divider px-2 py-1 sm:justify-between">
       <div className="flex flex-row items-center">
+        {!isChatHubOpen && (
+          <Button isIconOnly variant="light" onClick={() => onToggleChatHub?.(false)}>
+            <Icon icon="ant-design:menu-unfold-outlined" fontSize={24} />
+          </Button>
+        )}
         {agent.avatar ? (
           <Avatar
             alt={agent.name}
