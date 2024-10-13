@@ -107,14 +107,18 @@ export type ConversationProps = {
   hiddenInput?: boolean;
   isTestMode?: boolean;
   isChatHubOpen?: boolean;
+  isAircraftOpen?: boolean;
   onToggleChatHub?: (isOpen: boolean) => void;
+  onToggleAircraft?: (isOpen: boolean) => void;
 };
 
 export const Conversation: React.FC<ConversationProps> = ({
   agentId,
   sessionId,
   onToggleChatHub,
+  onToggleAircraft,
   isChatHubOpen,
+  isAircraftOpen,
   className,
   hiddenHeader = false,
   isTestMode = false,
@@ -445,6 +449,13 @@ export const Conversation: React.FC<ConversationProps> = ({
               )}
             </Button>
           </Tooltip>
+          {!isAircraftOpen && (
+            <Tooltip content={t("Aircraft")}>
+              <Button isIconOnly variant="light" onClick={() => onToggleAircraft?.(true)}>
+                <Icon icon="mdi:canvas" fontSize={24} />
+              </Button>
+            </Tooltip>
+          )}
         </div>
       )}
     </div>

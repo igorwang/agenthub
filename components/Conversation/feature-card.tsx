@@ -14,7 +14,7 @@ export type FeatureCardProps = CardProps & {
 const FeatureCard = React.forwardRef<HTMLDivElement, FeatureCardProps>(
   ({ title, descriptions = [], icon, ...props }, ref) => {
     return (
-      <Card ref={ref} className="bg-content2" shadow="none" {...props}>
+      <Card ref={ref} className="w-full bg-content2" shadow="none" {...props}>
         <CardHeader className="flex flex-col gap-2 px-4 pb-4 pt-6">
           {icon}
           <p className="text-medium text-content2-foreground">{title}</p>

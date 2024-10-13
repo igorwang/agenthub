@@ -3,25 +3,19 @@
 import { useSession } from "next-auth/react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import ChatHub from "@/components/AgentHub";
+import Aircraft from "@/components/Aircraft";
 import { Conversation } from "@/components/Conversation";
-import {
-  selectChat,
-  selectChatList,
-  selectSelectedChatId,
-  selectSession,
-} from "@/lib/features/chatListSlice";
+import { selectChat, selectSession } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
 
 export default function ChatPage() {
   const dispatch: AppDispatch = useDispatch();
-  const chatList = useSelector(selectChatList);
-  const selectedChatId = useSelector(selectSelectedChatId);
   const [isChatHubOpen, setIsChatHubOpen] = useState(true);
+  const [isAircraftOpen, setIsAircraftOpen] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [isButtonVisible, setIsButtonVisible] = useState(false);
   const [hideTimeout, setHideTimeout] = useState<NodeJS.Timeout | null>(null);
 
   const params = useParams<{ id: string }>();
@@ -57,6 +51,10 @@ export default function ChatPage() {
     setTimeout(() => setIsTransitioning(false), 1000);
   };
 
+  const toggleAircraft = () => {
+    setIsAircraftOpen(!isAircraftOpen);
+  };
+
   useEffect(() => {
     return () => {
       if (hideTimeout) {
@@ -66,7 +64,7 @@ export default function ChatPage() {
   }, [hideTimeout]);
 
   return (
-    <div className="custom-scrollbar relative flex flex-1 flex-row overflow-auto">
+    <div className="relative flex flex-1 flex-row overflow-auto">
       <div
         className={`custom-scrollbar overflow-auto transition-all duration-300 ease-in-out ${
           isChatHubOpen ? "w-56 min-w-56" : "w-0"
@@ -78,8 +76,19 @@ export default function ChatPage() {
           agentId={id}
           isChatHubOpen={isChatHubOpen}
           onToggleChatHub={toggleChatHub}
+          isAircraftOpen={isAircraftOpen}
+          onToggleAircraft={toggleAircraft}
         />
       </div>
+      {isAircraftOpen && (
+        <div className="flex w-full flex-1">
+          <Aircraft
+            isOpen={isAircraftOpen}
+            // onToggle={toggleAircraft}
+            onClose={() => setIsAircraftOpen(false)}
+          />
+        </div>
+      )}
     </div>
   );
 }

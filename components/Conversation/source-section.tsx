@@ -1,7 +1,7 @@
 import { SourceCard } from "@/components/Conversation/source-card";
 import { SourceType } from "@/types/chatTypes";
 import { Icon } from "@iconify/react";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 
 type SourceSectionProps = {
   title: string;
@@ -9,27 +9,7 @@ type SourceSectionProps = {
 };
 
 export const SourceSection = ({ title = "Source", items }: SourceSectionProps) => {
-  const [columns, setColumns] = useState(4);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const updateColumns = () => {
-      if (containerRef.current) {
-        const width = containerRef.current.offsetWidth;
-        if (width < 160) {
-          setColumns(1);
-        } else if (width < 300) {
-          setColumns(2);
-        } else {
-          setColumns(4);
-        }
-      }
-    };
-
-    updateColumns();
-    window.addEventListener("resize", updateColumns);
-    return () => window.removeEventListener("resize", updateColumns);
-  }, []);
 
   let iconType: string;
   switch (title) {
@@ -50,14 +30,15 @@ export const SourceSection = ({ title = "Source", items }: SourceSectionProps) =
         <Icon className="text-lg text-default-600" icon={iconType} />
         <span className="text-slate-500">{title}</span>
       </div>
-      <section
-        className={`grid gap-1.5 ${
-          columns === 1 ? "grid-cols-1" : columns === 2 ? "grid-cols-2" : "grid-cols-4"
-        }`}>
+      <div className="flex flex-wrap justify-start gap-4">
         {items.map((item, index) => (
-          <SourceCard key={index + 1} index={index + 1} source={item} />
+          <div
+            key={index + 1}
+            className="w-full min-w-[160px] sm:w-[calc(50%-1rem)] lg:w-[calc(25%-1rem)]">
+            <SourceCard key={index + 1} index={index + 1} source={item} />
+          </div>
         ))}
-      </section>
+      </div>
     </div>
   );
 };
