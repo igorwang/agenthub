@@ -1,4 +1,5 @@
 import { Select, SelectItem, Spinner } from "@nextui-org/react";
+import { useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
 
 export type ModelProps = {
@@ -15,6 +16,7 @@ export type ModelSelectProps = {
   defaultModel?: string;
   labelPlacement?: "outside" | "outside-left" | "inside" | undefined;
   labelClassName?: string;
+  placeholder?: string;
   onSelectionChange?: (modelName: string, limit?: number) => void;
 };
 
@@ -35,6 +37,7 @@ const ModelSelect = React.forwardRef<HTMLDivElement, ModelSelectProps>(
       labelPlacement,
       defaultModel,
       modelType = "llm",
+      placeholder = "Select an Model",
       isRequired = false,
       labelClassName,
       ...props
@@ -44,6 +47,7 @@ const ModelSelect = React.forwardRef<HTMLDivElement, ModelSelectProps>(
     const [models, setModels] = useState<ModelProps[]>(defaultModels);
     const [loading, setLoading] = useState<boolean>(true);
     const [value, setValue] = React.useState(new Set([defaultModel || ""]));
+    const t = useTranslations();
 
     useEffect(() => {
       if (defaultModel) {
@@ -57,22 +61,22 @@ const ModelSelect = React.forwardRef<HTMLDivElement, ModelSelectProps>(
         try {
           const response = await fetch(`/api/models?type=${modelType}`);
           if (!response.ok) {
-            throw new Error("Network response was not ok");
+            throw new Error(t("Network response was not ok"));
           }
           const data = await response.json();
           setModels(data);
         } catch (error) {
-          console.error("Failed to fetch models:", error);
+          console.error(t("Failed to fetch models"), error);
         } finally {
           setLoading(false);
         }
       };
 
       fetchModels();
-    }, []);
+    }, [modelType, t]);
 
     if (loading) {
-      return <Spinner label="Loading model..." />;
+      return <Spinner>{t("Loading model")}...</Spinner>;
     }
 
     const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -93,7 +97,7 @@ const ModelSelect = React.forwardRef<HTMLDivElement, ModelSelectProps>(
         label={label}
         labelPlacement={labelPlacement}
         aria-label="model-select"
-        placeholder="Select an Model"
+        placeholder={placeholder}
         // selectedKeys={value}
         selectedKeys={value}
         onChange={handleSelectionChange}

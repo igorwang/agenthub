@@ -1,6 +1,7 @@
 import { SourceCard } from "@/components/Conversation/source-card";
 import { SourceType } from "@/types/chatTypes";
 import { Icon } from "@iconify/react";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
 type SourceSectionProps = {
@@ -9,6 +10,7 @@ type SourceSectionProps = {
 };
 
 export const SourceSection = ({ title = "Source", items }: SourceSectionProps) => {
+  const t = useTranslations();
   const containerRef = useRef<HTMLDivElement>(null);
   const [showAll, setShowAll] = useState(false);
   const [itemsPerRow, setItemsPerRow] = useState(1);
@@ -55,7 +57,7 @@ export const SourceSection = ({ title = "Source", items }: SourceSectionProps) =
           <span
             className="cursor-pointer text-xs text-blue-500 hover:underline"
             onClick={() => setShowAll(!showAll)}>
-            {showAll ? "Show less" : "Show more"}
+            {showAll ? t("Show less") : t("Show more")}
           </span>
         )}
       </div>
@@ -71,3 +73,6 @@ export const SourceSection = ({ title = "Source", items }: SourceSectionProps) =
     </div>
   );
 };
+function useTranslation(): { t: any } {
+  throw new Error("Function not implemented.");
+}

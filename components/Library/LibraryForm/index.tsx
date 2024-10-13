@@ -126,7 +126,7 @@ export default function LibraryForm({ initLibrary }: LibraryFormProps) {
               // setIsModalOpen(false);
               handleDeleteLibrary();
             }}>
-            {t("Affirm")}
+            {t("Confirm")}
           </Button>
         </ModalFooter>
       </ModalContent>

@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/SmartEditor/extensions/Table";
 import { Mathematics } from "@tiptap-pro/extension-mathematics";
+import Placeholder from "@tiptap/extension-placeholder";
 
 import { TableOfContentsNode } from "@/components/SmartEditor/extensions/TableOfContentsNode";
 import "@/styles/index.css";
@@ -187,10 +188,12 @@ export const useBlockEditor = ({
   className = "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl min-h-[200px] p-1 focus:outline-none py-8 pl-16 pr-8 lg:pl-8 lg:pr-8",
   editable = true,
   content,
+  placeholder = "Write something...",
 }: {
   className?: string;
   editable?: boolean;
   content?: any;
+  placeholder?: string;
 }) => {
   const editor = useEditor({
     content: content,
@@ -205,6 +208,11 @@ export const useBlockEditor = ({
         codeBlock: false,
         heading: false,
       }) as Extension,
+      Placeholder.configure({
+        includeChildren: true,
+        showOnlyCurrent: false,
+        placeholder: () => placeholder,
+      }),
       TableOfContents,
       TableOfContentsNode,
       CodeBlock,
@@ -253,7 +261,7 @@ export const useBlockEditor = ({
   });
 
   editor?.on("contentError", (e) => {
-    console.log(e);
+    console.log("contentError", e);
   });
 
   return editor;

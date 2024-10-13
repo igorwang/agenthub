@@ -595,11 +595,6 @@ export const HumanInLoopNodeComponent: React.FC<NodeProps<HumanInLoopNode>> = me
           position={Position.Left}
           className="-ml-0.5 h-3 w-0.5 !border-1 !border-white !bg-gray-300"
         />
-        <Handle
-          type="source"
-          position={Position.Right}
-          className="-mr-0.5 h-2 w-0.5 !border-1 !border-white !bg-gray-300"
-        />
       </div>
     );
   },

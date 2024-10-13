@@ -243,7 +243,7 @@ export const ChatList: React.FC<ChatListProps> = ({
               {t("Close")}
             </Button>
             <Button color="danger" onPress={handleDeleteAgentRelation}>
-              {t("Affirm")}
+              {t("Confirm")}
             </Button>
           </ModalFooter>
         </ModalContent>

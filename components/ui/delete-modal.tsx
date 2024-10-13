@@ -47,7 +47,7 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
               onAffirm(id);
               onClose();
             }}>
-            {t("Affirm")}
+            {t("Confirm")}
           </Button>
         </ModalFooter>
       </ModalContent>

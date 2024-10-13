@@ -151,26 +151,6 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
             onChange={(e) => setAgent({ ...agent, description: e.target.value })}
           />
         </div>
-        <div className={"mt-8"}>
-          <Select
-            label={t("Agent Work Mode")}
-            className="pt-2"
-            isRequired
-            labelPlacement="outside"
-            placeholder={t("Select your mode for this agent")}
-            selectedKeys={agent?.mode ? [agent?.mode] : []}
-            disallowEmptySelection={false}
-            onSelectionChange={(keys) => {
-              const selectedMode = Array.from(keys)[0];
-              setAgent({ ...agent, mode: selectedMode as Agent_Mode_Enum });
-            }}>
-            {Object.values(Agent_Mode_Enum).map((mode) => (
-              <SelectItem key={mode} value={mode}>
-                {mode}
-              </SelectItem>
-            ))}
-          </Select>
-        </div>
         <div className={"mt-10"}>
           <ModelSelect
             label={
@@ -198,6 +178,9 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
                 : `${t("Embedding model")}`
             }
             labelPlacement="outside"
+            placeholder={t(
+              "Select an Embedding Model, Please Ensure it same as your workflow index setting",
+            )}
             modelType="embedding"
             defaultModel={agent?.embedding_model || ""}
             onSelectionChange={(modelName, limit) => {
@@ -208,6 +191,27 @@ const AgentInformation = forwardRef<AgentInfoRef, AgentInfoProps>((props, ref) =
             }}
           />
         </div>
+        <div className={"mt-8"}>
+          <Select
+            label={t("Agent Work Mode")}
+            className="pt-2"
+            isRequired
+            labelPlacement="outside"
+            placeholder={t("Select your mode for this agent")}
+            selectedKeys={agent?.mode ? [agent?.mode] : []}
+            disallowEmptySelection={false}
+            onSelectionChange={(keys) => {
+              const selectedMode = Array.from(keys)[0];
+              setAgent({ ...agent, mode: selectedMode as Agent_Mode_Enum });
+            }}>
+            {Object.values(Agent_Mode_Enum).map((mode) => (
+              <SelectItem key={mode} value={mode}>
+                {mode}
+              </SelectItem>
+            ))}
+          </Select>
+        </div>
+
         <div className={"mt-4"}>
           <Switch
             defaultSelected
