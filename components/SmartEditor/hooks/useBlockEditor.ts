@@ -10,6 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/SmartEditor/extensions/Table";
+import { Mathematics } from "@tiptap-pro/extension-mathematics";
+
 import { TableOfContentsNode } from "@/components/SmartEditor/extensions/TableOfContentsNode";
 import "@/styles/index.css";
 import TableOfContents from "@tiptap-pro/extension-table-of-contents";
@@ -18,6 +20,7 @@ import BulletList from "@tiptap/extension-bullet-list";
 import Code from "@tiptap/extension-code";
 import Color from "@tiptap/extension-color";
 import Highlight from "@tiptap/extension-highlight";
+import Image from "@tiptap/extension-image";
 import Italic from "@tiptap/extension-italic";
 import Link from "@tiptap/extension-link";
 import OrderedList from "@tiptap/extension-ordered-list";
@@ -29,6 +32,7 @@ import TextStyle from "@tiptap/extension-text-style";
 import Underline from "@tiptap/extension-underline";
 import UniqueID from "@tiptap/extension-unique-id";
 import StarterKit from "@tiptap/starter-kit";
+import "katex/dist/katex.min.css";
 export { TableOfContents } from "@tiptap-pro/extension-table-of-contents";
 TableOfContentsNode;
 
@@ -180,9 +184,11 @@ const defaultContent = {
 };
 
 export const useBlockEditor = ({
+  className = "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl min-h-[200px] p-1 focus:outline-none py-8 pl-16 pr-8 lg:pl-8 lg:pr-8",
   editable = true,
   content,
 }: {
+  className?: string;
   editable?: boolean;
   content?: any;
 }) => {
@@ -191,8 +197,7 @@ export const useBlockEditor = ({
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        class:
-          "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl min-h-[200px] p-1 focus:outline-none py-8 pl-16 pr-8 lg:pl-8 lg:pr-8",
+        class: className,
       },
     },
     extensions: [
@@ -206,6 +211,7 @@ export const useBlockEditor = ({
       Bold,
       Strike,
       Italic,
+      Mathematics,
       Underline,
       Code,
       Heading,
@@ -233,6 +239,7 @@ export const useBlockEditor = ({
         types: ["heading", "paragraph"],
       }),
       TextStyle,
+      Image,
     ],
     editable: editable,
     autofocus: true,

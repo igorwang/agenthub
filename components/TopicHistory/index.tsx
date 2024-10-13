@@ -27,6 +27,7 @@ import {
   ListboxItem,
   ScrollShadow,
 } from "@nextui-org/react";
+import { formatDate } from "date-fns";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useParams, usePathname, useRouter } from "next/navigation";
@@ -106,6 +107,7 @@ export function TopicHistory({ agent_id }: TopicHistoryProps) {
     id: item.id,
     title: item.title,
     agent_id: item.agent_id,
+    updated_at: item.updated_at || item.created_at,
   }));
 
   const defaultSelectedKey = data?.topic_history[0]?.id;
@@ -184,6 +186,9 @@ export function TopicHistory({ agent_id }: TopicHistoryProps) {
       textValue={item.title}
       onClick={() => handleSelect(item.id)}>
       <div className="w-full truncate pr-8">{item.title}</div>
+      <div className="text-xs text-gray-500">
+        {formatDate(item.updated_at, "yyyy-MM-dd HH:mm")}
+      </div>
       <div
         className="absolute right-0 top-0 flex h-full w-10 items-center justify-center"
         onClick={(e) => e.stopPropagation()}>

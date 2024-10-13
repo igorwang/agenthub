@@ -1,7 +1,7 @@
 import { SourceCard } from "@/components/Conversation/source-card";
 import { SourceType } from "@/types/chatTypes";
 import { Icon } from "@iconify/react";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type SourceSectionProps = {
   title: string;
@@ -10,6 +10,24 @@ type SourceSectionProps = {
 
 export const SourceSection = ({ title = "Source", items }: SourceSectionProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [showAll, setShowAll] = useState(false);
+  const [itemsPerRow, setItemsPerRow] = useState(1);
+
+  useEffect(() => {
+    const updateItemsPerRow = () => {
+      if (window.innerWidth >= 1024) {
+        setItemsPerRow(4);
+      } else if (window.innerWidth >= 640) {
+        setItemsPerRow(2);
+      } else {
+        setItemsPerRow(1);
+      }
+    };
+
+    updateItemsPerRow();
+    window.addEventListener("resize", updateItemsPerRow);
+    return () => window.removeEventListener("resize", updateItemsPerRow);
+  }, []);
 
   let iconType: string;
   switch (title) {
@@ -24,14 +42,25 @@ export const SourceSection = ({ title = "Source", items }: SourceSectionProps) =
       break;
   }
 
+  const displayedItems = showAll ? items : items.slice(0, itemsPerRow);
+
   return (
     <div className="w-full" ref={containerRef}>
-      <div className="flex flex-row items-center justify-start gap-1 p-1">
-        <Icon className="text-lg text-default-600" icon={iconType} />
-        <span className="text-slate-500">{title}</span>
+      <div className="flex flex-row items-center justify-between p-1">
+        <div className="flex items-center gap-1">
+          <Icon className="text-lg text-default-600" icon={iconType} />
+          <span className="text-slate-500">{title}</span>
+        </div>
+        {items.length > itemsPerRow && (
+          <span
+            className="cursor-pointer text-xs text-blue-500 hover:underline"
+            onClick={() => setShowAll(!showAll)}>
+            {showAll ? "Show less" : "Show more"}
+          </span>
+        )}
       </div>
       <div className="flex flex-wrap justify-start gap-4">
-        {items.map((item, index) => (
+        {displayedItems.map((item, index) => (
           <div
             key={index + 1}
             className="w-full min-w-[160px] sm:w-[calc(50%-1rem)] lg:w-[calc(25%-1rem)]">

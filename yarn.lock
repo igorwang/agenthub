@@ -3810,6 +3810,11 @@
   dependencies:
     tippy.js "^6.3.7"
 
+"@tiptap-pro/extension-mathematics@^2.11.9":
+  version "2.11.9"
+  resolved "https://registry.tiptap.dev/@tiptap-pro%2fextension-mathematics/-/extension-mathematics-2.11.9.tgz#84e8bee76b28a1df4c68939420fd01224aa86991"
+  integrity sha512-CkbX5Pg87fGxsBSxLtYV0GL23ahzgAL9SFm/7pqClsNQSGpssROshmMII2NljO0klkcG1sW6tzH6dC9cgw5icA==
+
 "@tiptap-pro/extension-node-range@^2.11.2":
   version "2.11.2"
   resolved "https://registry.tiptap.dev/@tiptap-pro%2fextension-node-range/-/extension-node-range-2.11.2.tgz#992618f928c7e35e6600aaf42a2864c586d8be7d"
@@ -3942,6 +3947,11 @@
   version "2.6.6"
   resolved "https://registry.yarnpkg.com/@tiptap/extension-horizontal-rule/-/extension-horizontal-rule-2.6.6.tgz#3bc88048a9eb22ef8b6a9c4514701f79176eb495"
   integrity sha512-cFEfv7euDpuLSe8exY8buwxkreKBAZY9Hn3EetKhPcLQo+ut5Y24chZTxFyf9b+Y0wz3UhOhLTZSz7fTobLqBA==
+
+"@tiptap/extension-image@^2.8.0":
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/@tiptap/extension-image/-/extension-image-2.8.0.tgz#e1b135c1fb079048bb4261a0546c3374fe6192d7"
+  integrity sha512-5CReomgHGTUgxaX8P3i6qiC9VRWcWQgVoYtds4ZM52LVx/oGwMxQ4ECyzdVYKaRW+6PrNnAe6ew3Qpd5Wk0cIg==
 
 "@tiptap/extension-italic@^2.6.6":
   version "2.6.6"
@@ -8186,10 +8196,17 @@ jws@^3.2.2:
     jwa "^1.4.1"
     safe-buffer "^5.0.1"
 
-katex@^0.16.0, katex@^0.16.10:
+katex@^0.16.0:
   version "0.16.10"
   resolved "https://registry.yarnpkg.com/katex/-/katex-0.16.10.tgz#6f81b71ac37ff4ec7556861160f53bc5f058b185"
   integrity sha512-ZiqaC04tp2O5utMsl2TEZTXxa6WSC4yo0fv5ML++D3QZv/vx2Mct0mTlRx3O+uUkjfuAgOkzsCmq5MiUEsDDdA==
+  dependencies:
+    commander "^8.3.0"
+
+katex@^0.16.11:
+  version "0.16.11"
+  resolved "https://registry.yarnpkg.com/katex/-/katex-0.16.11.tgz#4bc84d5584f996abece5f01c6ad11304276a33f5"
+  integrity sha512-RQrI8rlHY92OLf3rho/Ts8i/XvjgguEjOkO1BEXcU3N8BqPpSzBNwV/G0Ukr+P/l3ivvJUE/Fa/CwbS6HesGNQ==
   dependencies:
     commander "^8.3.0"
 
