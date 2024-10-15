@@ -1,6 +1,8 @@
 import {
+  selectChatSessionContext,
   selectRefreshSession,
   selectSelectedSessionId,
+  setChatSessionContext,
   setRefreshSession,
 } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
@@ -29,24 +31,12 @@ import {
   MessageType,
   SOURCE_TYPE_ENUM,
   SourceType,
-  ToolType,
 } from "@/types/chatTypes";
 import { Avatar, ScrollShadow } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
 import { v4 } from "uuid";
 import AgentWorkflowResultsPane from "./agent-workflow-result-pane";
 import MessageCard from "./message-card";
-
-type AgentProps = {
-  id: string;
-  name?: string;
-  avatar?: string;
-  defaultModel?: string;
-  token_limit?: number;
-  enable_search?: boolean | null;
-  force_search?: boolean | null;
-  tools?: ToolType[];
-};
 
 type QueryAnalyzeResultSchema = {
   isRelated?: boolean;
@@ -115,7 +105,10 @@ export default function MessageWindowWithWorkflow({
   const [workflowResults, setWorkflowResults] = useState<ChatFlowResponseSchema | null>(
     null,
   );
+
   const [updateTopicHistoryByIdMutation] = useUpdateTopicHistoryByIdMutation();
+
+  const chatSessionContext = useSelector(selectChatSessionContext);
 
   const session = useSession();
   const user_id = session.data?.user?.id;
@@ -245,6 +238,7 @@ export default function MessageWindowWithWorkflow({
       setSearchResults(null);
       setChatContext(null);
       setWorkflowResults(null);
+      dispatch(setChatSessionContext(null));
       setMessages((prev) => [
         ...prev,
         {
@@ -310,11 +304,14 @@ export default function MessageWindowWithWorkflow({
         const workflowOutput = workflowResults.workflow_output;
 
         setWorkflowResults(workflowResults);
+        console.log("workflowOutput", workflowOutput);
 
+        // Stop workflow
         if (workflowOutput.type === "humanInLoopNode") {
           onChatingStatusChange(false, CHAT_STATUS_ENUM.Finished);
           setSearchResults(null);
           setChatContext(null);
+          dispatch(setChatSessionContext(null));
           setMessages((prev) => [
             ...prev.slice(0, -1),
             {

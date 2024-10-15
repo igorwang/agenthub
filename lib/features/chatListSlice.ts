@@ -1,5 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { GroupedChatListDTO } from "../../types/chatTypes";
+import {
+  CHAT_STATUS_ENUM,
+  ChatSessionContext,
+  GroupedChatListDTO,
+} from "../../types/chatTypes";
 import { RootState } from "../store";
 
 interface ChatListState {
@@ -9,6 +13,11 @@ interface ChatListState {
   isFollowUp: boolean;
   isChangeSession: boolean;
   refreshSession: boolean;
+  isAircraftOpen: boolean;
+  isAircraftGenerating: boolean;
+  isChating: boolean;
+  chatStatus: CHAT_STATUS_ENUM | null;
+  chatSessionContext: ChatSessionContext | null;
 }
 
 const initialState: ChatListState = {
@@ -19,11 +28,16 @@ const initialState: ChatListState = {
       agents: [],
     },
   ],
+  isChating: false,
+  chatStatus: null,
   selectedChatId: null,
   selectedSessionId: null,
   isFollowUp: false,
   isChangeSession: false,
   refreshSession: false,
+  chatSessionContext: null,
+  isAircraftGenerating: false,
+  isAircraftOpen: false,
 };
 
 const chatListSlice = createSlice({
@@ -48,6 +62,15 @@ const chatListSlice = createSlice({
     setRefreshSession: (state, action: PayloadAction<boolean>) => {
       state.refreshSession = action.payload;
     },
+    setChatSessionContext: (state, action: PayloadAction<ChatSessionContext | null>) => {
+      state.chatSessionContext = action.payload;
+    },
+    setIsAircraftGenerating: (state, action: PayloadAction<boolean>) => {
+      state.isAircraftGenerating = action.payload;
+    },
+    setIsAircraftOpen: (state, action: PayloadAction<boolean>) => {
+      state.isAircraftOpen = action.payload;
+    },
   },
 });
 
@@ -58,6 +81,9 @@ export const {
   setIsFollowUp,
   setIsChangeSession,
   setRefreshSession,
+  setChatSessionContext,
+  setIsAircraftGenerating,
+  setIsAircraftOpen,
 } = chatListSlice.actions;
 
 export const selectChatList = (state: RootState): GroupedChatListDTO[] =>
@@ -71,5 +97,11 @@ export const selectIsChangeSession = (state: RootState): boolean =>
   state.chatList.isChangeSession;
 export const selectRefreshSession = (state: RootState): boolean =>
   state.chatList.refreshSession;
+export const selectChatSessionContext = (state: RootState): ChatSessionContext | null =>
+  state.chatList.chatSessionContext;
+export const selectIsAircraftGenerating = (state: RootState): boolean =>
+  state.chatList.isAircraftGenerating;
+export const selectIsAircraftOpen = (state: RootState): boolean =>
+  state.chatList.isAircraftOpen;
 
 export default chatListSlice.reducer;

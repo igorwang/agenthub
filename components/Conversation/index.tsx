@@ -24,6 +24,7 @@ import {
   selectIsChangeSession,
   selectSelectedSessionId,
   selectSession,
+  setIsAircraftOpen,
   setIsChangeSession,
 } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
@@ -109,14 +110,12 @@ export type ConversationProps = {
   isChatHubOpen?: boolean;
   isAircraftOpen?: boolean;
   onToggleChatHub?: (isOpen: boolean) => void;
-  onToggleAircraft?: (isOpen: boolean) => void;
 };
 
 export const Conversation: React.FC<ConversationProps> = ({
   agentId,
   sessionId,
   onToggleChatHub,
-  onToggleAircraft,
   isChatHubOpen,
   isAircraftOpen,
   className,
@@ -406,58 +405,63 @@ export const Conversation: React.FC<ConversationProps> = ({
           </div>
         </div>
       </div>
-      {agent.creator_id === session.data?.user?.id && (
-        <div className="flex gap-1">
-          <Popover
-            isOpen={isSharePopoverOpen}
-            onOpenChange={(open) => setIsSharePopoverOpen(open)}
-            triggerRef={shareButtonRef}>
-            <Tooltip content={t("Share")}>
+      <div className="flex gap-1">
+        {agent.creator_id === session.data?.user?.id && (
+          <>
+            <Popover
+              isOpen={isSharePopoverOpen}
+              onOpenChange={(open) => setIsSharePopoverOpen(open)}
+              triggerRef={shareButtonRef}>
+              <Tooltip content={t("Share")}>
+                <Button
+                  ref={shareButtonRef}
+                  isIconOnly
+                  variant="light"
+                  onClick={handleShareClick}
+                  isLoading={isShareLoading}
+                  disabled={isShareLoading}>
+                  {!isShareLoading && <Icon icon="lucide:share" fontSize={24} />}
+                </Button>
+              </Tooltip>
+              <PopoverContent>
+                {shareLink && <ShareLinkCard shareLink={shareLink} />}
+              </PopoverContent>
+            </Popover>
+            <Tooltip content={t("Configure Agent")}>
               <Button
-                ref={shareButtonRef}
                 isIconOnly
                 variant="light"
-                onClick={handleShareClick}
-                isLoading={isShareLoading}
-                disabled={isShareLoading}>
-                {!isShareLoading && <Icon icon="lucide:share" fontSize={24} />}
+                onClick={handleConfigClick}
+                isLoading={isConfigLoading}
+                disabled={isConfigLoading || isDashboardLoading}>
+                {!isConfigLoading && <Icon icon="lucide:settings" fontSize={24} />}
               </Button>
             </Tooltip>
-            <PopoverContent>
-              {shareLink && <ShareLinkCard shareLink={shareLink} />}
-            </PopoverContent>
-          </Popover>
-          <Tooltip content={t("Configure Agent")}>
+            <Tooltip content={t("Agent Dashboard")}>
+              <Button
+                isIconOnly
+                variant="light"
+                onClick={handleToDashboard}
+                isLoading={isDashboardLoading}
+                disabled={isConfigLoading || isDashboardLoading}>
+                {!isDashboardLoading && (
+                  <Icon icon="lucide:layout-dashboard" fontSize={24} />
+                )}
+              </Button>
+            </Tooltip>
+          </>
+        )}
+        {!isAircraftOpen && (
+          <Tooltip content={t("Aircraft")}>
             <Button
               isIconOnly
               variant="light"
-              onClick={handleConfigClick}
-              isLoading={isConfigLoading}
-              disabled={isConfigLoading || isDashboardLoading}>
-              {!isConfigLoading && <Icon icon="lucide:settings" fontSize={24} />}
+              onClick={() => dispatch(setIsAircraftOpen(true))}>
+              <Icon icon="mdi:canvas" fontSize={24} />
             </Button>
           </Tooltip>
-          <Tooltip content={t("Agent Dashboard")}>
-            <Button
-              isIconOnly
-              variant="light"
-              onClick={handleToDashboard}
-              isLoading={isDashboardLoading}
-              disabled={isConfigLoading || isDashboardLoading}>
-              {!isDashboardLoading && (
-                <Icon icon="lucide:layout-dashboard" fontSize={24} />
-              )}
-            </Button>
-          </Tooltip>
-          {!isAircraftOpen && (
-            <Tooltip content={t("Aircraft")}>
-              <Button isIconOnly variant="light" onClick={() => onToggleAircraft?.(true)}>
-                <Icon icon="mdi:canvas" fontSize={24} />
-              </Button>
-            </Tooltip>
-          )}
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 
@@ -487,8 +491,8 @@ export const Conversation: React.FC<ConversationProps> = ({
               <MessageWindowWithWorkflow
                 agentId={agentId}
                 workflow_id={agent.workflow_id || ""}
-                isChating={isChating}
-                chatStatus={chatStatus}
+                // isChating={isChating}
+                // chatStatus={chatStatus}
                 selectedSources={selectedSources}
                 isTestMode={isTestMode}
                 onChatingStatusChange={handleSetChatStatus}

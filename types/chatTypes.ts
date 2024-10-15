@@ -1,4 +1,5 @@
 import {
+  AircraftFragmentFragment,
   Knowledge_Base_Type_Enum,
   Message_Status_Enum,
   Message_Type_Enum,
@@ -105,4 +106,10 @@ export type SchemaType = {
     [key: string]: SchemaPropertyType;
   };
   description: string;
+};
+
+export type ChatSessionContext = {
+  context: string | null;
+  sources: SourceType[] | null;
+  aircraft: AircraftFragmentFragment | null;
 };

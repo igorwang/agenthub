@@ -38,6 +38,7 @@ export const nodeFormComponents: Map<string, any | null> = new Map([
     "queryDocumentNode",
     (props) => <DefaultNodeForm {...props} title="Edit Query Document Node" />,
   ],
+  ["aircraftNode", (props) => <DefaultNodeForm {...props} title="Edit Aircraft Node" />],
 
   // 如果某种节点类型没有对应的表单，可以设置为 null
   // ['someOtherNode', null],

@@ -11,6 +11,9 @@ fragment messageFragment on message {
   message_type
   schema
   imageUrls
+  aircraft {
+    ...aircraftFragment
+  }
 }
 
 query fetchAllMessageList(

@@ -251,6 +251,7 @@ function Flow({
           outputSchema: nodeTypeData.default_data?.outputSchema || {},
         },
       };
+
       setNodes((nds) => nds.concat(newNode));
       setSelectedNode(newNode);
       onEditStatusChange?.();
