@@ -4,6 +4,7 @@ import {
   Status_Enum,
   useBatchDeleteFilesMutation,
 } from "@/graphql/generated/types";
+import { selectSessionFiles } from "@/lib/features/chatListSlice";
 import { Icon } from "@iconify/react";
 import {
   Button,
@@ -15,24 +16,26 @@ import {
 } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
 import { useCallback, useState } from "react";
+import { useSelector } from "react-redux";
 import { toast } from "sonner";
 
 interface SessionFilesHeaderProps {
   model: string;
   sessionId: string;
-  files: FilesListQuery["files"];
+  // files: FilesListQuery["files"];
   onFilesChange: (files: FilesListQuery["files"]) => void;
 }
 
 export default function SessionFilesHeader({
   model,
   sessionId,
-  files,
+  // files,
   onFilesChange,
 }: SessionFilesHeaderProps) {
   const t = useTranslations();
   const [batchDeleteFilesMutation] = useBatchDeleteFilesMutation();
   const [isExporting, setIsExporting] = useState(false);
+  const files = useSelector(selectSessionFiles);
 
   const handleDelete = (fileId: string) => {
     // Implement delete logic here

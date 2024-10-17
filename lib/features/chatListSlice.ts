@@ -1,8 +1,10 @@
+import { FilesListQuery } from "@/graphql/generated/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   CHAT_STATUS_ENUM,
   ChatSessionContext,
   GroupedChatListDTO,
+  SourceType,
 } from "../../types/chatTypes";
 import { RootState } from "../store";
 
@@ -10,6 +12,7 @@ interface ChatListState {
   chatList: GroupedChatListDTO[];
   selectedChatId: string | null;
   selectedSessionId: string | null;
+  selectedSources: SourceType[];
   isFollowUp: boolean;
   isChangeSession: boolean;
   refreshSession: boolean;
@@ -18,6 +21,7 @@ interface ChatListState {
   isChating: boolean;
   chatStatus: CHAT_STATUS_ENUM | null;
   chatSessionContext: ChatSessionContext | null;
+  sessionFiles: FilesListQuery["files"];
 }
 
 const initialState: ChatListState = {
@@ -35,9 +39,11 @@ const initialState: ChatListState = {
   isFollowUp: false,
   isChangeSession: false,
   refreshSession: false,
+  selectedSources: [],
   chatSessionContext: null,
   isAircraftGenerating: false,
   isAircraftOpen: false,
+  sessionFiles: [],
 };
 
 const chatListSlice = createSlice({
@@ -71,6 +77,19 @@ const chatListSlice = createSlice({
     setIsAircraftOpen: (state, action: PayloadAction<boolean>) => {
       state.isAircraftOpen = action.payload;
     },
+    setIsChating: (state, action: PayloadAction<boolean>) => {
+      state.isChating = action.payload;
+    },
+    setChatStatus: (state, action: PayloadAction<CHAT_STATUS_ENUM | null>) => {
+      state.chatStatus = action.payload;
+    },
+    setSessionFiles: (state, action: PayloadAction<FilesListQuery["files"]>) => {
+      state.sessionFiles = action.payload;
+    },
+
+    setSelectedSources: (state, action: PayloadAction<SourceType[]>) => {
+      state.selectedSources = action.payload;
+    },
   },
 });
 
@@ -84,6 +103,10 @@ export const {
   setChatSessionContext,
   setIsAircraftGenerating,
   setIsAircraftOpen,
+  setIsChating,
+  setChatStatus,
+  setSessionFiles,
+  setSelectedSources,
 } = chatListSlice.actions;
 
 export const selectChatList = (state: RootState): GroupedChatListDTO[] =>
@@ -103,5 +126,11 @@ export const selectIsAircraftGenerating = (state: RootState): boolean =>
   state.chatList.isAircraftGenerating;
 export const selectIsAircraftOpen = (state: RootState): boolean =>
   state.chatList.isAircraftOpen;
-
+export const selectIsChating = (state: RootState): boolean => state.chatList.isChating;
+export const selectChatStatus = (state: RootState): CHAT_STATUS_ENUM | null =>
+  state.chatList.chatStatus;
+export const selectSessionFiles = (state: RootState): FilesListQuery["files"] =>
+  state.chatList.sessionFiles;
+export const selectSelectedSources = (state: RootState): SourceType[] =>
+  state.chatList.selectedSources;
 export default chatListSlice.reducer;

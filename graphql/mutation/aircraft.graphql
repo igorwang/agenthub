@@ -1,0 +1,14 @@
+mutation createOneAircraft($object: aircraft_insert_input = {}) {
+  insert_aircraft_one(object: $object) {
+    ...aircraftFragment
+  }
+}
+
+mutation updateAircraftById(
+  $pk_columns: aircraft_pk_columns_input = { id: "" }
+  $_set: aircraft_set_input = {}
+) {
+  update_aircraft_by_pk(pk_columns: $pk_columns, _set: $_set) {
+    ...aircraftFragment
+  }
+}

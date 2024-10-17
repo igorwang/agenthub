@@ -139,6 +139,7 @@ export function TopicHistory({ agent_id }: TopicHistoryProps) {
     });
     if (response.data) {
       const newTopicId = response.data.insert_topic_history_one?.id;
+      dispatch(setIsChangeSession(true));
       handleSelect(newTopicId);
       refetch();
     }

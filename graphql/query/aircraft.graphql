@@ -1,0 +1,17 @@
+query getAircraftById($id: uuid = "") {
+  aircraft_by_pk(id: $id) {
+    ...aircraftFragment
+  }
+}
+
+fragment aircraftFragment on aircraft {
+  id
+  description
+  created_at
+  content
+  commentary
+  message_id
+  template
+  title
+  updated_at
+}

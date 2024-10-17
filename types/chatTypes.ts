@@ -7,6 +7,7 @@ import {
   Run_Type_Enum,
   Tool_Type_Enum,
 } from "@/graphql/generated/types";
+import { AircraftModel } from "@/restful/generated";
 
 export enum CHAT_STATUS_ENUM {
   New,
@@ -15,6 +16,7 @@ export enum CHAT_STATUS_ENUM {
   Generating,
   Interpret,
   Finished,
+  Failed,
 }
 
 export enum CHAT_MODE {
@@ -111,5 +113,5 @@ export type SchemaType = {
 export type ChatSessionContext = {
   context: string | null;
   sources: SourceType[] | null;
-  aircraft: AircraftFragmentFragment | null;
+  aircraft: AircraftFragmentFragment | null | AircraftModel;
 };
