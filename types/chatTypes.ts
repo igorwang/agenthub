@@ -73,6 +73,7 @@ export type MessageType = {
   messageType?: Message_Type_Enum | null;
   schema?: { [key: string]: any };
   imageUrls?: string[];
+  aircraft?: AircraftFragmentFragment[];
 };
 
 export type LibraryCardType = {
@@ -113,5 +114,5 @@ export type SchemaType = {
 export type ChatSessionContext = {
   context: string | null;
   sources: SourceType[] | null;
-  aircraft: AircraftFragmentFragment | null | AircraftModel;
+  aircraft: AircraftModel | null;
 };

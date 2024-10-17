@@ -29,6 +29,9 @@ import {
   selectSelectedSessionId,
   selectSession,
   setChatStatus,
+  setCurrentAircraftId,
+  setIsAircraftGenerating,
+  setIsAircraftOpen,
   setIsChating,
 } from "@/lib/features/chatListSlice";
 import { checkHasVisionFunction } from "@/lib/models/visionLLM";
@@ -143,6 +146,9 @@ export default function PromptInputWithFaqV1({
   const stopSendMessageHanlder = () => {
     dispatch(setIsChating(false));
     dispatch(setChatStatus(CHAT_STATUS_ENUM.Interpret));
+    dispatch(setIsAircraftGenerating(false));
+    dispatch(setIsAircraftOpen(false));
+    dispatch(setCurrentAircraftId(null));
   };
 
   const sendMessageHanlder = async () => {
@@ -182,6 +188,7 @@ export default function PromptInputWithFaqV1({
         });
         dispatch(setIsChating(false));
         dispatch(setChatStatus(null));
+        dispatch(setIsAircraftGenerating(false));
       }
     } else {
       createMessageAndUpdateTopicHistoryMutation({

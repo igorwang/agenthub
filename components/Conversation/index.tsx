@@ -274,7 +274,6 @@ export const Conversation: React.FC<ConversationProps> = ({
             session_id: params.session_id,
           },
         });
-        console.log("createNewMessageMutation", result);
       } catch (error) {
         toast.error("Create message error");
       }

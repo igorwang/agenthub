@@ -7,6 +7,7 @@ import MarkdownRenderer from "@/components/MarkdownRender";
 import { PromptTemplateType } from "@/components/PromptFrom";
 import { MessageSkeleton } from "@/components/ui/message-skeleton";
 import {
+  AircraftFragmentFragment,
   Message_Role_Enum,
   Message_Status_Enum,
   Message_Type_Enum,
@@ -15,8 +16,13 @@ import {
 import {
   selectChatSessionContext,
   selectChatStatus,
+  selectCurrentAircraftId,
+  selectIsAircraftGenerating,
   selectSelectedSessionId,
+  setCurrentAircraftId,
+  setIsAircraftOpen,
 } from "@/lib/features/chatListSlice";
+import { AppDispatch } from "@/lib/store";
 import {
   CHAT_STATUS_ENUM,
   MessageType,
@@ -40,7 +46,7 @@ import {
 import { useClipboard } from "@nextui-org/use-clipboard";
 import clsx from "clsx";
 import { useSession } from "next-auth/react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { useTranslations } from "use-intl";
 import { v4 } from "uuid";
@@ -96,15 +102,14 @@ const MessageCardV1 = React.forwardRef<HTMLDivElement, MessageCardProps>(
     const isChating = useSelector(selectChatStatus);
     const chatStatus = useSelector(selectChatStatus);
     const selectedSessionId = useSelector(selectSelectedSessionId);
-    // const selectedSources = useSelector(selectSelectedSources);
-    // const session_file_ids = useSelector(selectSessionFileIds);
     const chatSessionContext = useSelector(selectChatSessionContext);
     const isUser = message.role === Message_Role_Enum.User;
     const session = useSession();
-
+    const currentAircraftId = useSelector(selectCurrentAircraftId);
+    const isAircraftGenerating = useSelector(selectIsAircraftGenerating);
     const { handleSetChatStatus, handleCreateNewMessage } = useConversationContext();
     const [updateMessageByIdMutation] = useUpdateMessageByIdMutation();
-
+    const dispatch: AppDispatch = useDispatch();
     const failedMessageClassName =
       message.status === Message_Status_Enum.Failed
         ? "bg-danger-100/50 border border-danger-100 text-foreground"
@@ -333,6 +338,11 @@ const MessageCardV1 = React.forwardRef<HTMLDivElement, MessageCardProps>(
 
     const cleanSchema = removeDescSchema(message.schema || {});
 
+    const handleAircraftClick = async (aircraft: AircraftFragmentFragment) => {
+      dispatch(setCurrentAircraftId(aircraft.id));
+      dispatch(setIsAircraftOpen(true));
+    };
+
     const userMessageContent = (
       <div className="w-8/10 ml-14 flex flex-grow flex-col gap-2">
         <div
@@ -437,6 +447,30 @@ const MessageCardV1 = React.forwardRef<HTMLDivElement, MessageCardProps>(
               <div className={clsx("flex flex-col overflow-hidden p-1")}>
                 <MarkdownRenderer content={message.message || ""}></MarkdownRenderer>
               </div>
+              {message.aircraft && message.aircraft.length > 0 && (
+                <div className="flex w-full select-none items-center rounded-xl border py-2 pl-2 hover:cursor-pointer hover:bg-white dark:hover:bg-white/5 md:w-max">
+                  {message.aircraft.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex flex-row items-center gap-2"
+                      onClick={() => handleAircraftClick(item)}>
+                      {isAircraftGenerating && currentAircraftId === item.id ? (
+                        <Spinner size="sm" />
+                      ) : (
+                        <Icon icon="file-icons:docz" fontSize={24} color="#6366f1" />
+                      )}
+                      <div className="flex flex-col">
+                        <div className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                          {item.title}
+                        </div>
+                        <div className="truncate text-xs text-slate-500 dark:text-slate-400">
+                          {item.description}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 

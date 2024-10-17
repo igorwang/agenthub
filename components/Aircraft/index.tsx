@@ -5,14 +5,29 @@ import { TableColumnMenu } from "@/components/SmartEditor/extensions/Table/menus
 import TableRowMenu from "@/components/SmartEditor/extensions/Table/menus/TableRow";
 import { useBlockEditor } from "@/components/SmartEditor/hooks/useBlockEditor";
 import { useEditorSidebar } from "@/components/SmartEditor/hooks/useSideBar";
-import { setIsAircraftOpen } from "@/lib/features/chatListSlice";
+import {
+  AircraftFragmentFragment,
+  useGetAircraftByIdQuery,
+} from "@/graphql/generated/types";
+import {
+  selectCurrentAircraftId,
+  selectIsAircraftGenerating,
+  selectMessagesContext,
+  selectSelectedChatId,
+  selectSelectedSessionId,
+  setIsAircraftGenerating,
+  setIsAircraftOpen,
+  setIsChating,
+} from "@/lib/features/chatListSlice";
+import { DEFAULT_LLM_MODEL } from "@/lib/models";
 import "@/styles/index.css";
 import { Icon } from "@iconify/react";
+import { HumanMessage, mapStoredMessagesToChatMessages } from "@langchain/core/messages";
 import { Button, Tooltip } from "@nextui-org/react";
 import { EditorContent } from "@tiptap/react";
 import { useTranslations } from "next-intl";
-import { useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 interface AircraftProps {
   // isOpen: boolean;
@@ -24,9 +39,14 @@ export default function Aircraft({ editable = true }: AircraftProps) {
   const t = useTranslations();
   const menuContainerRef = useRef(null);
   const dispatch = useDispatch();
-
+  const [aircraft, setAircraft] = useState<AircraftFragmentFragment | null>(null);
+  const currentAircraftId = useSelector(selectCurrentAircraftId);
+  const isAircraftGenerating = useSelector(selectIsAircraftGenerating);
+  const chatId = useSelector(selectSelectedChatId);
+  const sessionId = useSelector(selectSelectedSessionId);
+  const messagesContext = useSelector(selectMessagesContext);
   const editor = useBlockEditor({
-    // content: "<h1>Hello</h1>",
+    content: aircraft?.content || "",
     editable,
     className:
       "prose prose-sm sm:prose lg:prose-lg xl:prose-2x lg:prose-lg min-h-[200px] pl-16 pr-2 ",
@@ -38,38 +58,119 @@ export default function Aircraft({ editable = true }: AircraftProps) {
     rightSidebar.isOpen ? rightSidebar.close() : rightSidebar.open();
   };
 
+  const { data, loading, refetch } = useGetAircraftByIdQuery({
+    variables: { id: currentAircraftId },
+    skip: !currentAircraftId,
+  });
+
+  useEffect(() => {
+    if (data && data.aircraft_by_pk) {
+      setAircraft(data.aircraft_by_pk);
+      if (editor) {
+        editor.commands.setContent(aircraft?.content || "");
+      }
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (
+      isAircraftGenerating &&
+      currentAircraftId &&
+      aircraft &&
+      editor &&
+      messagesContext
+    ) {
+      handleGenerateAnswer();
+    }
+  }, [isAircraftGenerating, currentAircraftId, aircraft, editor, messagesContext]);
+
+  useEffect(() => {
+    if (currentAircraftId) {
+      refetch();
+    }
+  }, [currentAircraftId]);
+
+  const handleGenerateAnswer = async () => {
+    const controller = new AbortController(); // Create a new AbortController
+    const signal = controller.signal; // Get the signal from the controller
+    const historyMessages = mapStoredMessagesToChatMessages(messagesContext) || [];
+
+    const chatMessages = [
+      ...historyMessages,
+      new HumanMessage({
+        content: `You are writing a document based on the our conversation.
+        Do not ask me any questions, just write the content.
+        Return the content in tiptap markdown format. Do not use set header tag <html> or <body>.
+        Example:
+        Image: <img src="https://placehold.co/800x400" />
+        Paragraph:<p>This is a paragraph.</p>
+        Bold: <p><b>This is bold text.</b></p>
+        Heading:<h1>This is a heading.</h1>
+        List:<ul><li>This is a list item.</li></ul>
+        Link:<a href="https://www.example.com">This is a link.</a>
+        Code:<pre class="whitespace-pre-wrap"><code class="language-css">body { \n display: none;
+}</code></pre>
+        Quote:<blockquote>This is a quote.</blockquote>
+        Horizontal Rule:<hr />
+        LaTex: The Pythagorean theorem is <code><pre>$\\LaTeX$</pre></code>.
+          `,
+      }),
+    ];
+
+    let answer = aircraft?.content || "";
+
+    try {
+      const response = await fetch("/api/v1/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: DEFAULT_LLM_MODEL,
+          messages: chatMessages.map((message) => message.toJSON()),
+        }),
+        signal: signal,
+      });
+
+      if (!response.body) {
+        throw new Error("ReadableStream not supported by the browser.");
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      // Function to read the stream
+      const readStream = async () => {
+        const { done, value } = await reader.read();
+        if (done) {
+          dispatch(setIsAircraftGenerating(false));
+          dispatch(setIsChating(false));
+          editor?.commands.setContent(answer);
+          return;
+        }
+        const chunk = decoder.decode(value, { stream: true });
+        answer += chunk;
+        editor?.commands.insertContent(chunk);
+        await readStream();
+      };
+      await readStream();
+    } catch (error) {
+      console.error("Error while streaming:", error);
+      return;
+    } finally {
+      dispatch(setIsAircraftGenerating(false));
+      dispatch(setIsChating(false));
+      editor?.commands.setContent(answer);
+    }
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   if (!editor) {
     return null;
   }
   const handleSave = () => {
-    console.log("The HTML is:", editor.getHTML());
-    editor.commands.setContent(
-      ` 
-       <img src="https://placehold.co/800x400" />
-      <p>This isn’t code.</p>
-      <Hello>1111</Hello>
-      <p><b>bold</b></p>
-       <p><Hello>bold</Hello></p>
-      <p>
-        Did you know that $3 * 3 = 9$? Isn't that crazy? Also Pythagoras' theorem is $a^2 + b^2 = c^2$.<br />
-        Also the square root of 2 is $\\sqrt{2}$. If you want to know more about $\\LaTeX$ visit <a href="https://katex.org/docs/supported.html" target="_blank">katex.org</a>.
-      </p>
-
-        <pre class="whitespace-pre-wrap"><code class="language-css">body { \n display: none;
-}</code></pre>
-<pre class="whitespace-pre-wrap"><code class="language-css">
-# Title 1
-## Title 2
-### Title 3
-</code></pre>
-      <code>
-        <pre>$\\LaTeX$</pre>
-      </code>
-
-<img src="https://placehold.co/800x400/6A00F5/white" />
-`,
-    );
-
     console.log("The HTML is:", editor.getJSON());
   };
 
@@ -88,7 +189,7 @@ export default function Aircraft({ editable = true }: AircraftProps) {
 
   return (
     <div className="bg-popover absolute left-0 top-0 flex h-full w-full flex-col shadow-2xl md:relative md:rounded-bl-3xl md:rounded-tl-3xl md:border-y md:border-l">
-      <div className="bg-popover sticky left-0 right-0 top-0 z-10 flex w-full flex-row items-center justify-between border-b p-2">
+      <div className="bg-popover sticky left-0 right-0 top-0 z-10 flex w-full flex-row items-center gap-2 border-b p-2">
         <Tooltip content="Close sidebar">
           <Button
             isIconOnly
@@ -99,6 +200,7 @@ export default function Aircraft({ editable = true }: AircraftProps) {
             <Icon icon="lucide:chevrons-right" width={20} height={20} />
           </Button>
         </Tooltip>
+        <div>{aircraft?.title}</div>
 
         {/* <Button isIconOnly onClick={handleSave}>
           <Icon icon="lucide:save" width={20} height={20} />

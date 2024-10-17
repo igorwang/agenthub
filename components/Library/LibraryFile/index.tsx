@@ -285,7 +285,7 @@ const LibraryFile = forwardRef<LibraryFileHandle, LibraryFileProps>(
                 <Tooltip content="Delete selected files">
                   <Icon
                     className={"mx-1 cursor-pointer"}
-                    onClick={() => console.log("111")}
+                    onClick={onClickBatchDelelteIcon}
                     icon="material-symbols-light:delete-outline"
                     width={"1.5em"}
                   />

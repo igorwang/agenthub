@@ -8,14 +8,18 @@ import {
   selectSessionFiles,
   setChatSessionContext,
   setChatStatus,
+  setCurrentAircraftId,
+  setIsAircraftGenerating,
+  setIsAircraftOpen,
   setIsChangeSession,
   setIsChating,
+  setMessagesContext,
   setRefreshSession,
   setSelectedSources,
 } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
 import { useSession } from "next-auth/react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import FeatureCards from "@/components/Conversation/feature-cards";
@@ -27,19 +31,25 @@ import {
   Message_Status_Enum,
   Message_Type_Enum,
   Order_By,
+  useCreateOneAircraftMutation,
   useFetchAllMessageListQuery,
   useGetAgentByIdQuery,
   useUpdateTopicHistoryByIdMutation,
 } from "@/graphql/generated/types";
 import { DEFAULT_LLM_MODEL, DEFAULT_TEMPLATES } from "@/lib/models";
 import { createMessages } from "@/lib/prompts/createMessages";
-import { ChatFlowRequestSchema, ChatFlowResponseSchema } from "@/restful/generated";
+import {
+  AircraftModel,
+  ChatFlowRequestSchema,
+  ChatFlowResponseSchema,
+} from "@/restful/generated";
 import {
   CHAT_STATUS_ENUM,
   MessageType,
   SOURCE_TYPE_ENUM,
   SourceType,
 } from "@/types/chatTypes";
+import { mapChatMessagesToStoredMessages } from "@langchain/core/messages";
 import { Avatar, ScrollShadow } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
 import { v4 } from "uuid";
@@ -97,6 +107,8 @@ export default function MessageWindowWithWorkflow({
 
   const [updateTopicHistoryByIdMutation] = useUpdateTopicHistoryByIdMutation();
 
+  const [createOneAircraftMutation] = useCreateOneAircraftMutation();
+
   const chatSessionContext = useSelector(selectChatSessionContext);
   const sessionFiles = useSelector(selectSessionFiles);
   const selectedSources = useSelector(selectSelectedSources);
@@ -123,6 +135,53 @@ export default function MessageWindowWithWorkflow({
     skip: !agentId,
   });
 
+  const handleCreateNewAircraft = useCallback(
+    async (message_id: string, aircraft: AircraftModel) => {
+      try {
+        const response = await createOneAircraftMutation({
+          variables: {
+            object: {
+              title: aircraft.title,
+              description: aircraft.description,
+              template: aircraft.template,
+              commentary: aircraft.commentary,
+              message_id: message_id,
+              content: "",
+            },
+          },
+        });
+        dispatch(setIsAircraftOpen(true));
+        dispatch(setCurrentAircraftId(response.data?.insert_aircraft_one?.id || null));
+        dispatch(setIsAircraftGenerating(true));
+      } catch (error) {
+        console.error("Error while creating aircraft:", error);
+        dispatch(setChatStatus(CHAT_STATUS_ENUM.Failed));
+        dispatch(setIsChating(false));
+      }
+    },
+    [createOneAircraftMutation],
+  );
+
+  const createMessagesContext = useCallback(async () => {
+    const historyMessage = messages.filter((item) => item.status != "draft");
+    const sessionFileContexts = sessionFiles
+      ?.map((item) => {
+        const content = `<File fileName=${item.name} fileId=${item.id} />`;
+        return content;
+      })
+      .join("\n");
+    const chatMessages = await createMessages(
+      agent?.default_model || DEFAULT_LLM_MODEL,
+      promptTemplates || DEFAULT_TEMPLATES,
+      historyMessage,
+      chatSessionContext?.sources || [],
+      chatSessionContext?.context || "",
+      `User uploaded files: <UserUploadedFiles>${sessionFileContexts}</UserUploadedFiles>`,
+    );
+    console.log("chatMessages", mapChatMessagesToStoredMessages(chatMessages));
+    dispatch(setMessagesContext(mapChatMessagesToStoredMessages(chatMessages)));
+  }, [agent, promptTemplates, messages, chatSessionContext]);
+
   // set agent
   useEffect(() => {
     if (agentData?.agent_by_pk) {
@@ -148,6 +207,7 @@ export default function MessageWindowWithWorkflow({
   // set messages
   useEffect(() => {
     if (data && data.message) {
+      console.log("data.message", data.message);
       const newMessages = data.message.map((item) => ({
         id: item.id,
         role: item.role,
@@ -163,6 +223,7 @@ export default function MessageWindowWithWorkflow({
         messageType: item.message_type || Message_Type_Enum.Text,
         schema: item.schema || {},
         imageUrls: item.imageUrls || [],
+        aircraft: item.aircraft || null,
       }));
 
       if (data.message.length == 1 && selectedSessionId) {
@@ -187,6 +248,9 @@ export default function MessageWindowWithWorkflow({
       dispatch(setIsChangeSession(false));
       dispatch(setSelectedSources([]));
       dispatch(setIsChating(false));
+      dispatch(setCurrentAircraftId(null));
+      dispatch(setIsAircraftGenerating(false));
+      dispatch(setIsAircraftOpen(false));
     }
   }, [selectedSessionId, isChangeSession]);
 
@@ -257,7 +321,6 @@ export default function MessageWindowWithWorkflow({
       messages[messages.length - 1].status === "draft"
     ) {
       dispatch(setChatStatus(CHAT_STATUS_ENUM.Searching));
-      console.log("chat with workflow");
       const fetchChatWithWorkflow = async () => {
         const body: ChatFlowRequestSchema = {
           agent_id: agentId || "",
@@ -355,6 +418,27 @@ export default function MessageWindowWithWorkflow({
       messages.length > 0 &&
       messages[messages.length - 1].status === "draft"
     ) {
+      console.log("chatSessionContext", chatSessionContext.aircraft);
+
+      const aircraft = chatSessionContext?.aircraft;
+      if (aircraft && aircraft.action !== "none") {
+        handleCreateNewMessage?.({
+          id: messages[messages.length - 1].id,
+          query: "",
+          content: aircraft.commentary || "",
+          session_id: selectedSessionId || "",
+          role: Message_Role_Enum.Assistant,
+          sources: chatSessionContext?.sources || [],
+          status: Message_Status_Enum.Generating,
+        });
+        // create new aircraft
+
+        handleCreateNewAircraft(messages[messages.length - 1].id, aircraft);
+        createMessagesContext();
+        query.refetch();
+        return;
+      }
+
       const controller = new AbortController(); // Create a new AbortController
       const signal = controller.signal; // Get the signal from the controller
 
@@ -376,23 +460,6 @@ export default function MessageWindowWithWorkflow({
           chatSessionContext?.context || "",
           `User uploaded files: <UserUploadedFiles>${sessionFileContexts}</UserUploadedFiles>`,
         );
-
-        try {
-          const response = await fetch("/api/v1/chat", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              model: agent?.default_model || DEFAULT_LLM_MODEL,
-              messages: chatMessages,
-            }),
-          });
-        } catch (error) {
-          // console.error("Error while streaming:", error);
-          dispatch(setChatStatus(CHAT_STATUS_ENUM.Interpret));
-          return;
-        }
 
         let answer = "";
 
