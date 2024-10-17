@@ -25,7 +25,6 @@ import {
   selectIsChangeSession,
   selectSelectedSessionId,
   selectSession,
-  setIsAircraftOpen,
   setIsChangeSession,
   setSessionFiles,
 } from "@/lib/features/chatListSlice";
@@ -454,7 +453,7 @@ export const Conversation: React.FC<ConversationProps> = ({
             </Tooltip>
           </>
         )}
-        {!isAircraftOpen && (
+        {/* {!isAircraftOpen && (
           <Tooltip content={t("Aircraft")}>
             <Button
               isIconOnly
@@ -463,7 +462,7 @@ export const Conversation: React.FC<ConversationProps> = ({
               <Icon icon="mdi:canvas" fontSize={24} />
             </Button>
           </Tooltip>
-        )}
+        )} */}
       </div>
     </div>
   );

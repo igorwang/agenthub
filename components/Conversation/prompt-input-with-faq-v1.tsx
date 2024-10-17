@@ -31,7 +31,6 @@ import {
   setChatStatus,
   setCurrentAircraftId,
   setIsAircraftGenerating,
-  setIsAircraftOpen,
   setIsChating,
 } from "@/lib/features/chatListSlice";
 import { checkHasVisionFunction } from "@/lib/models/visionLLM";
@@ -147,7 +146,6 @@ export default function PromptInputWithFaqV1({
     dispatch(setIsChating(false));
     dispatch(setChatStatus(CHAT_STATUS_ENUM.Interpret));
     dispatch(setIsAircraftGenerating(false));
-    dispatch(setIsAircraftOpen(false));
     dispatch(setCurrentAircraftId(null));
   };
 

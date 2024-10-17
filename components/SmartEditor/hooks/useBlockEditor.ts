@@ -196,7 +196,7 @@ export const useBlockEditor = ({
   placeholder?: string;
 }) => {
   const editor = useEditor({
-    content: content,
+    content: content || defaultContent,
     immediatelyRender: false,
     editorProps: {
       attributes: {
@@ -207,6 +207,12 @@ export const useBlockEditor = ({
       StarterKit.configure({
         codeBlock: false,
         heading: false,
+        bold: false,
+        strike: false,
+        italic: false,
+        code: false,
+        bulletList: false,
+        orderedList: false,
       }) as Extension,
       Placeholder.configure({
         includeChildren: true,
@@ -254,7 +260,7 @@ export const useBlockEditor = ({
     onCreate: (ctx) => {
       console.log("ctx", ctx, ctx.editor);
       if (ctx.editor.isEmpty) {
-        ctx.editor.commands.setContent(defaultContent);
+        ctx.editor.commands.setContent("");
         ctx.editor.commands.focus("start", { scrollIntoView: true });
       }
     },

@@ -448,23 +448,26 @@ const MessageCardV1 = React.forwardRef<HTMLDivElement, MessageCardProps>(
                 <MarkdownRenderer content={message.message || ""}></MarkdownRenderer>
               </div>
               {message.aircraft && message.aircraft.length > 0 && (
-                <div className="flex w-full select-none items-center rounded-xl border py-2 pl-2 hover:cursor-pointer hover:bg-white dark:hover:bg-white/5 md:w-max">
+                <div>
                   {message.aircraft.map((item) => (
                     <div
                       key={item.id}
-                      className="flex flex-row items-center gap-2"
-                      onClick={() => handleAircraftClick(item)}>
-                      {isAircraftGenerating && currentAircraftId === item.id ? (
-                        <Spinner size="sm" />
-                      ) : (
-                        <Icon icon="file-icons:docz" fontSize={24} color="#6366f1" />
-                      )}
-                      <div className="flex flex-col">
-                        <div className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                          {item.title}
-                        </div>
-                        <div className="truncate text-xs text-slate-500 dark:text-slate-400">
-                          {item.description}
+                      className={`flex w-full select-none items-center rounded-xl py-2 pl-2 hover:cursor-pointer hover:bg-white dark:hover:bg-white/5 md:w-max ${currentAircraftId === item.id ? "border-2 border-blue-500" : "border-500 border-2"}`}>
+                      <div
+                        className={`flex flex-row items-center gap-2`}
+                        onClick={() => handleAircraftClick(item)}>
+                        {isAircraftGenerating && currentAircraftId === item.id ? (
+                          <Spinner size="sm" />
+                        ) : (
+                          <Icon icon="file-icons:docz" fontSize={24} color="#6366f1" />
+                        )}
+                        <div className="flex flex-col">
+                          <div className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                            {item.title}
+                          </div>
+                          <div className="truncate text-xs text-slate-500 dark:text-slate-400">
+                            {item.description}
+                          </div>
                         </div>
                       </div>
                     </div>
