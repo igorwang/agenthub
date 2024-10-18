@@ -1,5 +1,6 @@
 "use client";
 import { EditorSideBar } from "@/components/EditorSideBar";
+import { AIBubbleMenu } from "@/components/menus/AIBubbleMenu";
 import { ContentItemMenu } from "@/components/menus/ContentItemMenu";
 import { TableColumnMenu } from "@/components/SmartEditor/extensions/Table/menus";
 import TableRowMenu from "@/components/SmartEditor/extensions/Table/menus/TableRow";
@@ -36,6 +37,48 @@ interface AircraftProps {
   // onClose: () => void;
 }
 
+const AI_WRITE_PROMPT = `
+You are an expert in creating documents compatible with the TipTap rich text editor. 
+Your task is to generate HTML content based on our conversation or the provided information. 
+Follow these guidelines:
+1. Content Generation:
+  - Write the content directly without asking questions.
+  - Ensure the content is relevant, well-structured, and coherent.
+2. Format:
+  - Use TipTap-compatible HTML format.
+  - Do not include <html> or <body> tags.
+
+3. Structure and Formatting:
+  - Use appropriate HTML tags for content structure:
+    - <h1>, <h2>, <h3> for headings
+    - <p> for paragraphs
+    - <ul> and <li> for unordered lists
+    - <ol> and <li> for ordered lists
+    - <strong> for bold text
+    - <em> for italic text
+    - <a href="..."> for links
+    - <blockquote> for quotations
+    - <code> for inline code
+    - <pre><code> for code blocks
+  - Properly nest all tags.
+
+4. Special Content:
+  - Images: Use <img src="..." alt="..."> tags. Ensure proper attribution if necessary.
+  - Quotes: Enclose in <blockquote> tags.
+  - Code: Use <code> for inline code and <pre><code> for code blocks.
+  - Mathematics: Represent LaTeX formulas as text within <code> tags. Note that TipTap doesn't render LaTeX natively.
+
+5. Accessibility:
+  - Include descriptive alt text for images.
+  - Use semantic HTML to enhance accessibility.
+
+6. Additional Notes:
+  - If including content that requires special rendering (e.g., LaTeX, complex diagrams), add a note about potential rendering limitations in TipTap.
+  - Ensure all links are properly formatted and, if possible, include relevant target attributes.
+
+Generate the content maintaining a balance between informativeness and readability. The output should be directly usable in a TipTap editor environment.
+`;
+
 export default function Aircraft({ editable = true }: AircraftProps) {
   const t = useTranslations();
   const editorContentRef = useRef<HTMLDivElement>(null);
@@ -66,6 +109,7 @@ export default function Aircraft({ editable = true }: AircraftProps) {
     variables: { id: currentAircraftId },
     skip: !currentAircraftId,
   });
+
   useEffect(() => {
     if (data && data.aircraft_by_pk) {
       setAircraft(data.aircraft_by_pk);
@@ -86,9 +130,10 @@ export default function Aircraft({ editable = true }: AircraftProps) {
       editor &&
       messagesContext
     ) {
+      const currentContent = editor.getText();
       editor.commands.setContent("");
       editor.commands.focus("start");
-      handleGenerateAnswer();
+      handleGenerateAnswer(currentContent);
     }
   }, [isAircraftGenerating, currentAircraftId, aircraft, editor, messagesContext]);
 
@@ -105,7 +150,7 @@ export default function Aircraft({ editable = true }: AircraftProps) {
     return <div>Loading...</div>;
   }
 
-  const handleGenerateAnswer = async () => {
+  const handleGenerateAnswer = async (currentContent?: string) => {
     const controller = new AbortController(); // Create a new AbortController
     const signal = controller.signal; // Get the signal from the controller
     const historyMessages = mapStoredMessagesToChatMessages(messagesContext) || [];
@@ -113,46 +158,10 @@ export default function Aircraft({ editable = true }: AircraftProps) {
     const chatMessages = [
       ...historyMessages,
       new HumanMessage({
-        content: `You are an expert in creating documents compatible with the TipTap rich text editor. 
-        Your task is to generate HTML content based on our conversation or the provided information. 
-        Follow these guidelines:
-            1. Content Generation:
-              - Write the content directly without asking questions.
-              - Ensure the content is relevant, well-structured, and coherent.
-            2. Format:
-              - Use TipTap-compatible HTML format.
-              - Do not include <html> or <body> tags.
-
-            3. Structure and Formatting:
-              - Use appropriate HTML tags for content structure:
-                - <h1>, <h2>, <h3> for headings
-                - <p> for paragraphs
-                - <ul> and <li> for unordered lists
-                - <ol> and <li> for ordered lists
-                - <strong> for bold text
-                - <em> for italic text
-                - <a href="..."> for links
-                - <blockquote> for quotations
-                - <code> for inline code
-                - <pre><code> for code blocks
-              - Properly nest all tags.
-
-            4. Special Content:
-              - Images: Use <img src="..." alt="..."> tags. Ensure proper attribution if necessary.
-              - Quotes: Enclose in <blockquote> tags.
-              - Code: Use <code> for inline code and <pre><code> for code blocks.
-              - Mathematics: Represent LaTeX formulas as text within <code> tags. Note that TipTap doesn't render LaTeX natively.
-
-            5. Accessibility:
-              - Include descriptive alt text for images.
-              - Use semantic HTML to enhance accessibility.
-
-            6. Additional Notes:
-              - If including content that requires special rendering (e.g., LaTeX, complex diagrams), add a note about potential rendering limitations in TipTap.
-              - Ensure all links are properly formatted and, if possible, include relevant target attributes.
-
-            Generate the content maintaining a balance between informativeness and readability. The output should be directly usable in a TipTap editor environment.
-          `,
+        content: `The current aircraft content is: ${currentContent || ""}`,
+      }),
+      new HumanMessage({
+        content: `${AI_WRITE_PROMPT}`,
       }),
     ];
 
@@ -212,6 +221,107 @@ export default function Aircraft({ editable = true }: AircraftProps) {
       dispatch(setIsChating(false));
     }
   };
+
+  const handleAskAI = useCallback(
+    async (inputValue: string, selectedText: string, startPos: number) => {
+      const controller = new AbortController(); // Create a new AbortController
+      const signal = controller.signal; // Get the signal from the controller
+      const historyMessages = mapStoredMessagesToChatMessages(messagesContext) || [];
+
+      const currentContent = editor?.getText() || "";
+      const chatMessages = [
+        ...historyMessages,
+        new HumanMessage({
+          content: `The current aircraft content is: ${currentContent}`,
+        }),
+        new HumanMessage({
+          content: `${AI_WRITE_PROMPT}`,
+        }),
+        new HumanMessage({
+          content: `The user selected text is: ${selectedText}`,
+        }),
+        new HumanMessage({
+          content: `${inputValue}`,
+        }),
+      ];
+
+      let answer = "";
+
+      try {
+        const response = await fetch("/api/v1/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: DEFAULT_LLM_MODEL,
+            messages: chatMessages.map((message) => message.toJSON()),
+          }),
+          signal: signal,
+        });
+
+        if (!response.body) {
+          throw new Error("ReadableStream not supported by the browser.");
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        // Function to read the stream
+
+        const readStream = async () => {
+          const { done, value } = await reader.read();
+          if (done) {
+            // dispatch(setIsAircraftGenerating(false));
+            // dispatch(setIsChating(false));
+            // if (aircraft?.id) {
+            //   const response = await updateAircraftMutation({
+            //     variables: { pk_columns: { id: aircraft.id }, _set: { content: answer } },
+            //   });
+            //   if (response.data?.update_aircraft_by_pk) {
+            //     setAircraft(response.data?.update_aircraft_by_pk);
+            //   }
+            // }
+            // editor?.commands.setContent(answer);
+            // const content = editor?.getHTML();
+            // console.log("answer:", content);
+            editor?.commands.insertContent(answer);
+            // editor
+            //   ?.chain()
+            //   .insertContentAt(startPos, {
+            //     type: "paragraph",
+            //     content: [{ type: "text", text: `${answer}` }],
+            //   })
+            //   .focus()
+            //   .run();
+            // return;
+          }
+          const chunk = decoder.decode(value, { stream: true });
+          answer += chunk;
+          try {
+            // editor
+            //   ?.chain()
+            //   .focus()
+            //   .setTextSelection({ from: to + offset, to: to + offset })
+            //   .insertContent(chunk)
+            //   .run();
+            // offset += chunk.length;
+            // editor?.commands.insertContent(chunk);
+          } catch (error) {
+            console.error("Error while inserting content:", error);
+          }
+          await readStream();
+        };
+        await readStream();
+      } catch (error) {
+        console.error("Error while streaming:", error);
+        return;
+      } finally {
+        dispatch(setIsAircraftGenerating(false));
+        dispatch(setIsChating(false));
+      }
+    },
+    [messagesContext],
+  );
 
   const handleSave = () => {
     console.log("The HTML is:", editor?.getJSON());
@@ -333,6 +443,7 @@ export default function Aircraft({ editable = true }: AircraftProps) {
           <TableRowMenu editor={editor} appendTo={menuContainerRef} />
           <TableColumnMenu editor={editor} appendTo={menuContainerRef} />
           <EditorContent editor={editor} />
+          <AIBubbleMenu editor={editor} onAskAI={handleAskAI} />
         </div>
         <EditorSideBar
           isOpen={rightSidebar.isOpen}
