@@ -44,6 +44,7 @@ Follow these guidelines:
 1. Content Generation:
   - Write the content directly without asking questions.
   - Ensure the content is relevant, well-structured, and coherent.
+  - Do not start html tags
 2. Format:
   - Use TipTap-compatible HTML format.
   - Do not include <html> or <body> tags.
@@ -90,7 +91,6 @@ export default function Aircraft({ editable = true }: AircraftProps) {
   const chatId = useSelector(selectSelectedChatId);
   const sessionId = useSelector(selectSelectedSessionId);
   const messagesContext = useSelector(selectMessagesContext);
-  const [isChanging, setIsChanging] = useState(false);
   const [userScrolling, setUserScrolling] = useState(false);
 
   const editor = useBlockEditor({
@@ -138,17 +138,44 @@ export default function Aircraft({ editable = true }: AircraftProps) {
   }, [isAircraftGenerating, currentAircraftId, aircraft, editor, messagesContext]);
 
   useEffect(() => {
-    setIsChanging(true);
-    editor?.commands.setContent("");
     if (currentAircraftId) {
       refetch();
     }
-    setIsChanging(false);
   }, [currentAircraftId]);
 
-  if (isChanging) {
-    return <div>Loading...</div>;
-  }
+  const scrollToBottom = useCallback(() => {
+    if (editorContentRef.current && !userScrolling) {
+      editorContentRef.current.scrollTop = editorContentRef.current.scrollHeight;
+    }
+  }, [userScrolling]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (editorContentRef.current) {
+        const { scrollTop, scrollHeight, clientHeight } = editorContentRef.current;
+        const isAtBottom = scrollTop + clientHeight >= scrollHeight - 10;
+        setUserScrolling(!isAtBottom);
+      }
+    };
+
+    const editorContent = editorContentRef.current;
+    if (editorContent) {
+      editorContent.addEventListener("scroll", handleScroll);
+    }
+
+    return () => {
+      if (editorContent) {
+        editorContent.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isAircraftGenerating) {
+      const interval = setInterval(scrollToBottom, 100);
+      return () => clearInterval(interval);
+    }
+  }, [isAircraftGenerating, scrollToBottom]);
 
   const handleGenerateAnswer = async (currentContent?: string) => {
     const controller = new AbortController(); // Create a new AbortController
@@ -223,7 +250,13 @@ export default function Aircraft({ editable = true }: AircraftProps) {
   };
 
   const handleAskAI = useCallback(
-    async (inputValue: string, selectedText: string, startPos: number) => {
+    async (inputValue: string, selectedText: string, from: number, to: number) => {
+      console.log(
+        "selectedText",
+        editor?.getText(),
+        editor?.state.doc.textBetween(from, to, " "),
+      );
+
       const controller = new AbortController(); // Create a new AbortController
       const signal = controller.signal; // Get the signal from the controller
       const historyMessages = mapStoredMessagesToChatMessages(messagesContext) || [];
@@ -235,17 +268,16 @@ export default function Aircraft({ editable = true }: AircraftProps) {
           content: `The current aircraft content is: ${currentContent}`,
         }),
         new HumanMessage({
-          content: `${AI_WRITE_PROMPT}`,
-        }),
-        new HumanMessage({
           content: `The user selected text is: ${selectedText}`,
         }),
         new HumanMessage({
-          content: `${inputValue}`,
+          content: `Update user content based on the following instructions: ${inputValue}, 
+          you must return a clear and concise content without any explanation
+          do not start html tags
+          `,
         }),
       ];
-
-      let answer = "";
+      let answer = aircraft?.content || "";
 
       try {
         const response = await fetch("/api/v1/chat", {
@@ -268,6 +300,18 @@ export default function Aircraft({ editable = true }: AircraftProps) {
         const decoder = new TextDecoder();
         // Function to read the stream
 
+        // add a new paragraph at the end of the selected text
+        editor
+          ?.chain()
+          .insertContentAt(to, {
+            type: "paragraph",
+            content: [{ type: "text", text: "\n" }],
+          })
+          .focus()
+          .run();
+
+        let insertPos = to + "\n".length + 1;
+
         const readStream = async () => {
           const { done, value } = await reader.read();
           if (done) {
@@ -281,31 +325,22 @@ export default function Aircraft({ editable = true }: AircraftProps) {
             //     setAircraft(response.data?.update_aircraft_by_pk);
             //   }
             // }
-            // editor?.commands.setContent(answer);
-            // const content = editor?.getHTML();
-            // console.log("answer:", content);
-            editor?.commands.insertContent(answer);
-            // editor
-            //   ?.chain()
-            //   .insertContentAt(startPos, {
-            //     type: "paragraph",
-            //     content: [{ type: "text", text: `${answer}` }],
-            //   })
-            //   .focus()
-            //   .run();
-            // return;
+            // strike  text
+            editor
+              ?.chain()
+              .setTextSelection({ from: from, to: to })
+              .focus()
+              .setStrike()
+              .run();
+            // editor?.commands.insertContent(answer);
+            return;
           }
           const chunk = decoder.decode(value, { stream: true });
           answer += chunk;
           try {
-            // editor
-            //   ?.chain()
-            //   .focus()
-            //   .setTextSelection({ from: to + offset, to: to + offset })
-            //   .insertContent(chunk)
-            //   .run();
-            // offset += chunk.length;
-            // editor?.commands.insertContent(chunk);
+            console.log("insertPos", insertPos, chunk);
+            editor?.chain().insertContentAt(insertPos, chunk).focus().run();
+            insertPos += chunk.length;
           } catch (error) {
             console.error("Error while inserting content:", error);
           }
@@ -320,7 +355,7 @@ export default function Aircraft({ editable = true }: AircraftProps) {
         dispatch(setIsChating(false));
       }
     },
-    [messagesContext],
+    [messagesContext, editor],
   );
 
   const handleSave = () => {
@@ -340,47 +375,17 @@ export default function Aircraft({ editable = true }: AircraftProps) {
     a.click();
   };
 
-  const scrollToBottom = useCallback(() => {
-    if (editorContentRef.current && !userScrolling) {
-      editorContentRef.current.scrollTop = editorContentRef.current.scrollHeight;
-    }
-  }, [userScrolling]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (editorContentRef.current) {
-        const { scrollTop, scrollHeight, clientHeight } = editorContentRef.current;
-        const isAtBottom = scrollTop + clientHeight >= scrollHeight - 10;
-        setUserScrolling(!isAtBottom);
-      }
-    };
-
-    const editorContent = editorContentRef.current;
-    if (editorContent) {
-      editorContent.addEventListener("scroll", handleScroll);
-    }
-
-    return () => {
-      if (editorContent) {
-        editorContent.removeEventListener("scroll", handleScroll);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (isAircraftGenerating) {
-      const interval = setInterval(scrollToBottom, 100);
-      return () => clearInterval(interval);
-    }
-  }, [isAircraftGenerating, scrollToBottom]);
-
-  if (loading) {
-    return <div>Loading...</div>;
+  if (loading || !editor) {
+    return (
+      <div className="flex h-full w-full items-center justify-center rounded-lg border border-gray-200">
+        <div className="flex flex-col items-center">
+          <div className="mb-2 h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-primary"></div>
+          <span className="text-sm text-gray-600">{t("Loading")}...</span>
+        </div>
+      </div>
+    );
   }
 
-  if (!editor) {
-    return null;
-  }
   return (
     <div className="bg-popover absolute left-0 top-0 flex h-full w-full flex-col shadow-2xl md:relative md:rounded-bl-3xl md:rounded-tl-3xl md:border-y md:border-l">
       <div className="bg-popover sticky left-0 right-0 top-0 z-10 flex w-full flex-row items-center gap-2 border-b p-2">
