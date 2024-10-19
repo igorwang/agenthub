@@ -31,12 +31,6 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-interface AircraftProps {
-  // isOpen: boolean;
-  editable?: boolean;
-  // onClose: () => void;
-}
-
 const AI_WRITE_PROMPT = `
 You are an expert in creating documents compatible with the TipTap rich text editor. 
 Your task is to generate HTML content based on our conversation or the provided information. 
@@ -80,18 +74,27 @@ Follow these guidelines:
 Generate the content maintaining a balance between informativeness and readability. The output should be directly usable in a TipTap editor environment.
 `;
 
+interface AircraftProps {
+  // isOpen: boolean;
+  // aircraftId: string | null;
+  editable?: boolean;
+  // onClose: () => void;
+}
+
 export default function Aircraft({ editable = true }: AircraftProps) {
+  const aircraftId = useSelector(selectCurrentAircraftId);
   const t = useTranslations();
   const editorContentRef = useRef<HTMLDivElement>(null);
   const menuContainerRef = useRef(null);
   const dispatch = useDispatch();
   const [aircraft, setAircraft] = useState<AircraftFragmentFragment | null>(null);
-  const currentAircraftId = useSelector(selectCurrentAircraftId);
   const isAircraftGenerating = useSelector(selectIsAircraftGenerating);
   const chatId = useSelector(selectSelectedChatId);
   const sessionId = useSelector(selectSelectedSessionId);
   const messagesContext = useSelector(selectMessagesContext);
   const [userScrolling, setUserScrolling] = useState(false);
+  const [isLocalGenerating, setIsLocalGenerating] = useState(false);
+  const [previousContent, setPreviousContent] = useState("");
 
   const editor = useBlockEditor({
     content: aircraft?.content || "",
@@ -106,27 +109,32 @@ export default function Aircraft({ editable = true }: AircraftProps) {
   };
   const [updateAircraftMutation] = useUpdateAircraftByIdMutation();
   const { data, loading, refetch } = useGetAircraftByIdQuery({
-    variables: { id: currentAircraftId },
-    skip: !currentAircraftId,
+    variables: { id: aircraftId },
+    skip: !aircraftId,
   });
 
   useEffect(() => {
     if (data && data.aircraft_by_pk) {
+      const currentContent = editor?.getText();
       setAircraft(data.aircraft_by_pk);
+      editor?.commands.setContent(data.aircraft_by_pk.content || "");
+      if (currentContent !== data.aircraft_by_pk.content) {
+        setPreviousContent(currentContent || "");
+      }
     }
-  }, [data]);
+  }, [data, editor]);
 
-  useEffect(() => {
-    if (aircraft && aircraft.content) {
-      editor?.commands.setContent(aircraft.content);
-    }
-  }, [aircraft]);
+  // useEffect(() => {
+  //   if (aircraft) {
+  //     console.log("aircraft setContent", aircraft);
+  //     editor?.commands.setContent(aircraft.content || "");
+  //   }
+  // }, [aircraft]);
 
   useEffect(() => {
     if (
       isAircraftGenerating &&
-      currentAircraftId &&
-      aircraft &&
+      aircraftId === aircraft?.id &&
       editor &&
       messagesContext
     ) {
@@ -135,13 +143,7 @@ export default function Aircraft({ editable = true }: AircraftProps) {
       editor.commands.focus("start");
       handleGenerateAnswer(currentContent);
     }
-  }, [isAircraftGenerating, currentAircraftId, aircraft, editor, messagesContext]);
-
-  useEffect(() => {
-    if (currentAircraftId) {
-      refetch();
-    }
-  }, [currentAircraftId]);
+  }, [isAircraftGenerating, editor, messagesContext, aircraftId, aircraft]);
 
   const scrollToBottom = useCallback(() => {
     if (editorContentRef.current && !userScrolling) {
@@ -177,6 +179,20 @@ export default function Aircraft({ editable = true }: AircraftProps) {
     }
   }, [isAircraftGenerating, scrollToBottom]);
 
+  const handleUpdateAircraft = useCallback(
+    async (content: string) => {
+      if (aircraft?.id) {
+        const response = await updateAircraftMutation({
+          variables: { pk_columns: { id: aircraft.id }, _set: { content } },
+        });
+        if (response.data?.update_aircraft_by_pk) {
+          setAircraft(response.data?.update_aircraft_by_pk);
+        }
+      }
+    },
+    [aircraft, updateAircraftMutation],
+  );
+
   const handleGenerateAnswer = async (currentContent?: string) => {
     const controller = new AbortController(); // Create a new AbortController
     const signal = controller.signal; // Get the signal from the controller
@@ -185,14 +201,14 @@ export default function Aircraft({ editable = true }: AircraftProps) {
     const chatMessages = [
       ...historyMessages,
       new HumanMessage({
-        content: `The current aircraft content is: ${currentContent || ""}`,
+        content: `The previous aircraft content is: ${previousContent}`,
       }),
       new HumanMessage({
-        content: `${AI_WRITE_PROMPT}`,
+        content: `${AI_WRITE_PROMPT}\nWrite based on the following instructions: ${aircraft?.commentary}`,
       }),
     ];
 
-    let answer = aircraft?.content || "";
+    let answer = "";
 
     try {
       const response = await fetch("/api/v1/chat", {
@@ -219,14 +235,8 @@ export default function Aircraft({ editable = true }: AircraftProps) {
         if (done) {
           dispatch(setIsAircraftGenerating(false));
           dispatch(setIsChating(false));
-          if (aircraft?.id) {
-            const response = await updateAircraftMutation({
-              variables: { pk_columns: { id: aircraft.id }, _set: { content: answer } },
-            });
-            if (response.data?.update_aircraft_by_pk) {
-              setAircraft(response.data?.update_aircraft_by_pk);
-            }
-          }
+
+          handleUpdateAircraft(answer);
           editor?.commands.setContent(answer);
           return;
         }
@@ -264,6 +274,7 @@ export default function Aircraft({ editable = true }: AircraftProps) {
       const currentContent = editor?.getText() || "";
       const chatMessages = [
         ...historyMessages,
+
         new HumanMessage({
           content: `The current aircraft content is: ${currentContent}`,
         }),
@@ -272,8 +283,8 @@ export default function Aircraft({ editable = true }: AircraftProps) {
         }),
         new HumanMessage({
           content: `Update user content based on the following instructions: ${inputValue}, 
-          you must return a clear and concise content without any explanation
-          do not start html tags
+         Return only the concise modified content without explanation
+         Do not add any HTML tags
           `,
         }),
       ];
@@ -301,6 +312,7 @@ export default function Aircraft({ editable = true }: AircraftProps) {
         // Function to read the stream
 
         // add a new paragraph at the end of the selected text
+
         editor
           ?.chain()
           .insertContentAt(to, {
@@ -315,30 +327,19 @@ export default function Aircraft({ editable = true }: AircraftProps) {
         const readStream = async () => {
           const { done, value } = await reader.read();
           if (done) {
-            // dispatch(setIsAircraftGenerating(false));
-            // dispatch(setIsChating(false));
-            // if (aircraft?.id) {
-            //   const response = await updateAircraftMutation({
-            //     variables: { pk_columns: { id: aircraft.id }, _set: { content: answer } },
-            //   });
-            //   if (response.data?.update_aircraft_by_pk) {
-            //     setAircraft(response.data?.update_aircraft_by_pk);
-            //   }
-            // }
-            // strike  text
             editor
               ?.chain()
               .setTextSelection({ from: from, to: to })
               .focus()
               .setStrike()
               .run();
-            // editor?.commands.insertContent(answer);
+            const content = editor?.getHTML();
+            handleUpdateAircraft(content || "");
             return;
           }
           const chunk = decoder.decode(value, { stream: true });
           answer += chunk;
           try {
-            console.log("insertPos", insertPos, chunk);
             editor?.chain().insertContentAt(insertPos, chunk).focus().run();
             insertPos += chunk.length;
           } catch (error) {

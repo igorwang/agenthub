@@ -150,6 +150,7 @@ export default function MessageWindowWithWorkflow({
             },
           },
         });
+        console.log("new aircraft", response);
         dispatch(setIsAircraftOpen(true));
         dispatch(setCurrentAircraftId(response.data?.insert_aircraft_one?.id || null));
         dispatch(setIsAircraftGenerating(true));
@@ -350,6 +351,7 @@ export default function MessageWindowWithWorkflow({
         if (!response.ok) {
           dispatch(setChatStatus(CHAT_STATUS_ENUM.Failed));
           dispatch(setChatSessionContext(null));
+          dispatch(setIsChating(false));
           setMessages((prev) => [
             ...prev.slice(0, -1),
             {

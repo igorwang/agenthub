@@ -142,19 +142,21 @@ export const AIBubbleMenu = ({ editor, onAskAI }: AIBubbleMenuProps) => {
             inputWrapper: "bg-transparent data-[hover=true]:bg-gray-50 transition-colors",
             innerWrapper: "py-0",
           }}
+          endContent={
+            <Button
+              isIconOnly
+              isDisabled={isAskAI || !inputValue.trim()}
+              isLoading={isAskAI}
+              variant="light"
+              aria-label="Send"
+              size="sm"
+              className="z-40"
+              onClick={handleAskAI}
+              onMouseDown={(e) => e.stopPropagation()}>
+              <Icon icon="mdi:send" className="text-gray-600" fontSize={24} />
+            </Button>
+          }
         />
-        <Button
-          isIconOnly
-          isDisabled={isAskAI || !inputValue.trim()}
-          isLoading={isAskAI}
-          variant="light"
-          aria-label="Send"
-          size="sm"
-          className="z-40"
-          onClick={handleAskAI}
-          onMouseDown={(e) => e.stopPropagation()}>
-          <Icon icon="mdi:send" className="text-gray-600" fontSize={24} />
-        </Button>
       </div>
     </BubbleMenu>
   );

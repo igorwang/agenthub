@@ -10,7 +10,7 @@ import Aircraft from "@/components/Aircraft";
 import { Conversation } from "@/components/Conversation";
 import {
   selectChat,
-  selectIsAircraftGenerating,
+  selectCurrentAircraftId,
   selectIsAircraftOpen,
   selectSession,
 } from "@/lib/features/chatListSlice";
@@ -30,8 +30,8 @@ export default function ChatPage() {
   const userId = sessionData?.user?.id;
   const sessionId = searchParams.get("session_id");
 
-  const isAircraftGenerating = useSelector(selectIsAircraftGenerating);
   const isAircraftOpen = useSelector(selectIsAircraftOpen);
+  const currentAircraftId = useSelector(selectCurrentAircraftId);
 
   useEffect(() => {
     dispatch(selectChat(id));
