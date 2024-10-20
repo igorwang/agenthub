@@ -96,8 +96,8 @@ export default function Aircraft({ editable = true }: AircraftProps) {
   const sessionId = useSelector(selectSelectedSessionId);
   const messagesContext = useSelector(selectMessagesContext);
   const [userScrolling, setUserScrolling] = useState(false);
-  const [isLocalGenerating, setIsLocalGenerating] = useState(false);
   const [previousContent, setPreviousContent] = useState("");
+  const [isExporting, setIsExporting] = useState(false);
   const session = useSession();
 
   const editor = useBlockEditor({
@@ -127,13 +127,6 @@ export default function Aircraft({ editable = true }: AircraftProps) {
       }
     }
   }, [data, editor]);
-
-  // useEffect(() => {
-  //   if (aircraft) {
-  //     console.log("aircraft setContent", aircraft);
-  //     editor?.commands.setContent(aircraft.content || "");
-  //   }
-  // }, [aircraft]);
 
   useEffect(() => {
     if (
@@ -265,12 +258,6 @@ export default function Aircraft({ editable = true }: AircraftProps) {
 
   const handleAskAI = useCallback(
     async (inputValue: string, selectedText: string, from: number, to: number) => {
-      console.log(
-        "selectedText",
-        editor?.getText(),
-        editor?.state.doc.textBetween(from, to, " "),
-      );
-
       const controller = new AbortController(); // Create a new AbortController
       const signal = controller.signal; // Get the signal from the controller
       const historyMessages = mapStoredMessagesToChatMessages(messagesContext) || [];
@@ -372,12 +359,7 @@ export default function Aircraft({ editable = true }: AircraftProps) {
   };
 
   const handleDownload = async () => {
-    // const blob = new Blob([editor?.getHTML() || ""], { type: "text/html" });
-    // const url = URL.createObjectURL(blob);
-    // const a = document.createElement("a");
-    // a.href = url;
-    // a.download = "download.html";
-    // a.click();
+    setIsExporting(true);
 
     const fileName = `${aircraft?.title || "Untitled"}-${formatDate(new Date(), "yyyy-MM-dd-HH")}.html`;
     const objectName = `/aircraft/${fileName}`;
@@ -428,9 +410,12 @@ export default function Aircraft({ editable = true }: AircraftProps) {
       }
       const { url } = await exportResponse.json();
       window.open(url, "_blank");
+      setIsExporting(false);
     } catch (error) {
       console.error("error:", error);
       toast.error("Error uploading data");
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -478,6 +463,8 @@ export default function Aircraft({ editable = true }: AircraftProps) {
         <Tooltip content={t("Download")}>
           <Button
             isIconOnly
+            isLoading={isExporting}
+            isDisabled={isExporting}
             onClick={handleDownload}
             variant="light"
             className="transition-colors duration-200 hover:bg-gray-100">
