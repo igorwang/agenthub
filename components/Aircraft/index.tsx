@@ -27,9 +27,12 @@ import { Icon } from "@iconify/react";
 import { HumanMessage, mapStoredMessagesToChatMessages } from "@langchain/core/messages";
 import { Button, Tooltip } from "@nextui-org/react";
 import { EditorContent } from "@tiptap/react";
+import { formatDate } from "date-fns";
+import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 
 const AI_WRITE_PROMPT = `
 You are an expert in creating documents compatible with the TipTap rich text editor. 
@@ -95,6 +98,7 @@ export default function Aircraft({ editable = true }: AircraftProps) {
   const [userScrolling, setUserScrolling] = useState(false);
   const [isLocalGenerating, setIsLocalGenerating] = useState(false);
   const [previousContent, setPreviousContent] = useState("");
+  const session = useSession();
 
   const editor = useBlockEditor({
     content: aircraft?.content || "",
@@ -367,13 +371,67 @@ export default function Aircraft({ editable = true }: AircraftProps) {
     navigator.clipboard.writeText(editor?.getText() || "");
   };
 
-  const handleDownload = () => {
-    const blob = new Blob([editor?.getHTML() || ""], { type: "text/html" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "download.html";
-    a.click();
+  const handleDownload = async () => {
+    // const blob = new Blob([editor?.getHTML() || ""], { type: "text/html" });
+    // const url = URL.createObjectURL(blob);
+    // const a = document.createElement("a");
+    // a.href = url;
+    // a.download = "download.html";
+    // a.click();
+
+    const fileName = `${aircraft?.title || "Untitled"}-${formatDate(new Date(), "yyyy-MM-dd-HH")}.html`;
+    const objectName = `/aircraft/${fileName}`;
+    const body = {
+      bucket: "tmp",
+      objectName,
+      contentType: "text/html",
+      metadata: {
+        fileName,
+        creatorId: session.data?.user?.id || "",
+      },
+    };
+    // step 1: upload to s3
+    try {
+      const response = await fetch("/api/file/presigned_url/v1", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) {
+        toast.error("System error, failed to export file");
+        return;
+      }
+      const { presignedPutUrl } = await response.json();
+
+      const uploadResponse = await fetch(presignedPutUrl, {
+        method: "PUT",
+        body: editor?.getHTML() || "",
+        headers: {
+          "Content-Type": "text/html",
+        },
+      });
+
+      if (!uploadResponse.ok) {
+        toast.error("System error, failed to export file");
+        return;
+      }
+
+      const exportResponse = await fetch("/api/chat/aircraft/export", {
+        method: "POST",
+        body: JSON.stringify({ object_name: objectName }),
+      });
+      if (!exportResponse.ok) {
+        toast.error("System error, failed to export file");
+        return;
+      }
+      const { url } = await exportResponse.json();
+      window.open(url, "_blank");
+    } catch (error) {
+      console.error("error:", error);
+      toast.error("Error uploading data");
+    }
   };
 
   if (loading || !editor) {

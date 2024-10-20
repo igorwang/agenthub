@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const parsedBody = bodySchema.parse(body); // Validate the body
 
-    const supportedLocations = ["chat", "nextcloud", "public"];
+    const supportedLocations = ["chat", "nextcloud", "public", "tmp"];
     if (!supportedLocations.includes(parsedBody.bucket)) {
       return NextResponse.json(
         { error: "Unsupported location to upload" },

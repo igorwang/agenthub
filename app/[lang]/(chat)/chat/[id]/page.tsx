@@ -28,6 +28,7 @@ export default function ChatPage() {
   const { id } = params;
   const { data: sessionData, status } = useSession();
   const userId = sessionData?.user?.id;
+
   const sessionId = searchParams.get("session_id");
 
   const isAircraftOpen = useSelector(selectIsAircraftOpen);
@@ -82,7 +83,7 @@ export default function ChatPage() {
           isAircraftOpen={isAircraftOpen}
         />
       </div>
-      {isAircraftOpen && (
+      {isAircraftOpen && sessionId && (
         <div className="flex w-full flex-1">
           <Aircraft />
         </div>
