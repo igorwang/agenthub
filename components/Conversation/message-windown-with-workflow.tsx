@@ -116,6 +116,7 @@ export default function MessageWindowWithWorkflow({
   const session = useSession();
   const user_id = session.data?.user?.id;
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [isUserScrolling, setIsUserScrolling] = useState(false);
 
   const query = useFetchAllMessageListQuery({
     variables: {
@@ -272,6 +273,7 @@ export default function MessageWindowWithWorkflow({
     ) {
       const newMessageId = v4();
       setWorkflowResults(null);
+      setIsUserScrolling(false);
       dispatch(setChatSessionContext(null));
       setMessages((prev) => [
         ...prev,
@@ -420,8 +422,6 @@ export default function MessageWindowWithWorkflow({
       messages.length > 0 &&
       messages[messages.length - 1].status === "draft"
     ) {
-      console.log("chatSessionContext", chatSessionContext.aircraft);
-
       const aircraft = chatSessionContext?.aircraft;
       if (aircraft && aircraft.action !== "none") {
         handleCreateNewMessage?.({
@@ -542,10 +542,27 @@ export default function MessageWindowWithWorkflow({
   }, [chatSessionContext, chatStatus]);
 
   useEffect(() => {
-    if (scrollRef.current) {
+    const scrollElement = scrollRef.current;
+    if (!scrollElement) return;
+
+    const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } = scrollElement;
+      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 10; // 10px threshold
+      setIsUserScrolling(!isAtBottom);
+    };
+
+    scrollElement.addEventListener("scroll", handleScroll);
+
+    return () => {
+      scrollElement.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (scrollRef.current && !isUserScrolling) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages, chatStatus, isChating]);
+  }, [messages, chatStatus, isChating, isUserScrolling]);
 
   const agentAvatarElement =
     agent && agent?.avatar ? (
