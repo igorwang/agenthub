@@ -16,6 +16,7 @@ import {
   setMessagesContext,
   setRefreshSession,
   setSelectedSources,
+  setSessionFiles,
 } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
 import { useSession } from "next-auth/react";
@@ -256,6 +257,7 @@ export default function MessageWindowWithWorkflow({
 
     if (!selectedSessionId) {
       setMessages([]);
+      dispatch(setSessionFiles([]));
     }
   }, [selectedSessionId, isChangeSession]);
 

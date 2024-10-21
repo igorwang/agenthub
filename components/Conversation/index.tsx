@@ -143,11 +143,8 @@ export const Conversation: React.FC<ConversationProps> = ({
   const [selectedSources, setSelectedSources] = useState<SourceType[]>([]);
   const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
   const [recentUsedTools, setRecentUsedTools] = useState<WorkflowFragmentFragment[]>([]);
-  // const [sessionFiles, setSessionFiles] = useState<FilesListQuery["files"]>([]);
   const [shareLink, setShareLink] = useState<string | null>(null);
   const [isSharePopoverOpen, setIsSharePopoverOpen] = useState<boolean>(false);
-
-  // const [sessionFilesContext, setSessionFilesContext] = useState("");
 
   const { data: sessionFilesData } = useSubscriptionFilesListSubscription({
     variables: {
@@ -180,16 +177,7 @@ export const Conversation: React.FC<ConversationProps> = ({
   const shareButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (sessionFilesData?.files) {
-      // setSessionFiles(sessionFilesData?.files);
-
-      // setSessionFilesContext(
-      //   sessionFilesData.files
-      //     .map((item, index) => `File-${index + 1}:${item.name}`)
-      //     .join("\n"),
-      // );
-      dispatch(setSessionFiles(sessionFilesData.files));
-    }
+    dispatch(setSessionFiles(sessionFilesData?.files || []));
   }, [sessionFilesData]);
 
   useEffect(() => {
