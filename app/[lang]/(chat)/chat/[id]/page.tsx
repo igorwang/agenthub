@@ -8,12 +8,14 @@ import { useDispatch, useSelector } from "react-redux";
 import ChatHub from "@/components/AgentHub";
 import Aircraft from "@/components/Aircraft";
 import { Conversation } from "@/components/Conversation";
+import { AgentFragmentFragment, useGetAgentByIdQuery } from "@/graphql/generated/types";
 import {
   selectChat,
   selectCurrentAircraftId,
   selectIsAircraftOpen,
   selectSession,
 } from "@/lib/features/chatListSlice";
+import { DEFAULT_LLM_MODEL } from "@/lib/models";
 import { AppDispatch } from "@/lib/store";
 
 export default function ChatPage() {
@@ -29,10 +31,25 @@ export default function ChatPage() {
   const { data: sessionData, status } = useSession();
   const userId = sessionData?.user?.id;
 
+  const [agent, setAgent] = useState<AgentFragmentFragment | null>(null);
+
+  const { data: agentData } = useGetAgentByIdQuery({
+    variables: {
+      id: id,
+    },
+    skip: !id,
+  });
+
   const sessionId = searchParams.get("session_id");
 
   const isAircraftOpen = useSelector(selectIsAircraftOpen);
   const currentAircraftId = useSelector(selectCurrentAircraftId);
+
+  useEffect(() => {
+    if (agentData?.agent_by_pk) {
+      setAgent(agentData.agent_by_pk);
+    }
+  }, [agentData]);
 
   useEffect(() => {
     dispatch(selectChat(id));
@@ -85,7 +102,7 @@ export default function ChatPage() {
       </div>
       {isAircraftOpen && sessionId && (
         <div className="flex w-full flex-1">
-          <Aircraft />
+          <Aircraft model={agent?.default_model || DEFAULT_LLM_MODEL} />
         </div>
       )}
     </div>

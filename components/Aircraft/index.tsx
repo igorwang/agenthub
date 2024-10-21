@@ -81,10 +81,14 @@ interface AircraftProps {
   // isOpen: boolean;
   // aircraftId: string | null;
   editable?: boolean;
+  model?: string;
   // onClose: () => void;
 }
 
-export default function Aircraft({ editable = true }: AircraftProps) {
+export default function Aircraft({
+  editable = true,
+  model = DEFAULT_LLM_MODEL,
+}: AircraftProps) {
   const aircraftId = useSelector(selectCurrentAircraftId);
   const t = useTranslations();
   const editorContentRef = useRef<HTMLDivElement>(null);
@@ -214,7 +218,7 @@ export default function Aircraft({ editable = true }: AircraftProps) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: DEFAULT_LLM_MODEL,
+          model,
           messages: chatMessages.map((message) => message.toJSON()),
         }),
         signal: signal,
@@ -288,7 +292,7 @@ export default function Aircraft({ editable = true }: AircraftProps) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            model: DEFAULT_LLM_MODEL,
+            model,
             messages: chatMessages.map((message) => message.toJSON()),
           }),
           signal: signal,
