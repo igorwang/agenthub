@@ -151,7 +151,6 @@ export default function MessageWindowWithWorkflow({
             },
           },
         });
-        console.log("new aircraft", response);
         dispatch(setIsAircraftOpen(true));
         dispatch(setCurrentAircraftId(response.data?.insert_aircraft_one?.id || null));
         dispatch(setIsAircraftGenerating(true));
@@ -253,6 +252,10 @@ export default function MessageWindowWithWorkflow({
       dispatch(setCurrentAircraftId(null));
       dispatch(setIsAircraftGenerating(false));
       dispatch(setIsAircraftOpen(false));
+    }
+
+    if (!selectedSessionId) {
+      setMessages([]);
     }
   }, [selectedSessionId, isChangeSession]);
 
@@ -423,7 +426,7 @@ export default function MessageWindowWithWorkflow({
       messages[messages.length - 1].status === "draft"
     ) {
       const aircraft = chatSessionContext?.aircraft;
-      if (aircraft && aircraft.action !== "none") {
+      if (aircraft && (aircraft.action == "create" || aircraft.action == "update")) {
         handleCreateNewMessage?.({
           id: messages[messages.length - 1].id,
           query: "",

@@ -29,7 +29,12 @@ export default function DefaultNodeForm({
   const t = useTranslations("");
   const nodeData = node.data || {};
 
-  const showTitle = title || t("Edit Node") || t("Edit Query Document Node");
+  const showTitle =
+    title ||
+    t("Edit Node") ||
+    t("Edit Query Document Node") ||
+    t("Edit Aircraft Node") ||
+    t("Edit HttpRequest Node");
 
   const onSubmit = (data: any) => {
     onNodeChange?.(data);
@@ -38,7 +43,7 @@ export default function DefaultNodeForm({
 
   return (
     <div className="flex flex-col gap-4 p-4">
-      <div className="text-2xl font-bold">{showTitle}</div>
+      <div className="text-2xl font-bold">{t(showTitle)}</div>
       <Divider />
       <CustomForm
         schema={nodeData.schema}
