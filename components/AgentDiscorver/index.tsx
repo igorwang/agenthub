@@ -168,7 +168,7 @@ function AgentCard({ agent }: AgentCardProps) {
         <div className="flex flex-grow items-start gap-4">
           <Avatar
             src={agent.avatar || undefined}
-            name={agent.name}
+            name={agent.name[0]}
             className="h-16 w-16 flex-shrink-0 text-large"
           />
           <div className="flex flex-grow flex-col">

@@ -39,14 +39,17 @@ export default function FeatureCards() {
   ];
 
   return (
-    <div className="mx-4 grid max-w-[1000px] grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+    <div className="mx-auto flex flex-wrap justify-center gap-4 px-10">
       {featuresCategories.map((category) => (
-        <FeatureCard
+        <div
           key={category.key}
-          descriptions={category.descriptions}
-          icon={category.icon}
-          title={category.title}
-        />
+          className="w-full min-w-[200px] sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1rem)]">
+          <FeatureCard
+            descriptions={category.descriptions}
+            icon={category.icon}
+            title={category.title}
+          />
+        </div>
       ))}
     </div>
   );

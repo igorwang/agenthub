@@ -1,6 +1,7 @@
 import { SourceCard } from "@/components/Conversation/source-card";
 import { SourceType } from "@/types/chatTypes";
 import { Icon } from "@iconify/react";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
 type SourceSectionProps = {
@@ -9,26 +10,25 @@ type SourceSectionProps = {
 };
 
 export const SourceSection = ({ title = "Source", items }: SourceSectionProps) => {
-  const [columns, setColumns] = useState(4);
+  const t = useTranslations();
   const containerRef = useRef<HTMLDivElement>(null);
+  const [showAll, setShowAll] = useState(false);
+  const [itemsPerRow, setItemsPerRow] = useState(1);
 
   useEffect(() => {
-    const updateColumns = () => {
-      if (containerRef.current) {
-        const width = containerRef.current.offsetWidth;
-        if (width < 160) {
-          setColumns(1);
-        } else if (width < 300) {
-          setColumns(2);
-        } else {
-          setColumns(4);
-        }
+    const updateItemsPerRow = () => {
+      if (window.innerWidth >= 1024) {
+        setItemsPerRow(4);
+      } else if (window.innerWidth >= 640) {
+        setItemsPerRow(2);
+      } else {
+        setItemsPerRow(1);
       }
     };
 
-    updateColumns();
-    window.addEventListener("resize", updateColumns);
-    return () => window.removeEventListener("resize", updateColumns);
+    updateItemsPerRow();
+    window.addEventListener("resize", updateItemsPerRow);
+    return () => window.removeEventListener("resize", updateItemsPerRow);
   }, []);
 
   let iconType: string;
@@ -44,20 +44,35 @@ export const SourceSection = ({ title = "Source", items }: SourceSectionProps) =
       break;
   }
 
+  const displayedItems = showAll ? items : items.slice(0, itemsPerRow);
+
   return (
     <div className="w-full" ref={containerRef}>
-      <div className="flex flex-row items-center justify-start gap-1 p-1">
-        <Icon className="text-lg text-default-600" icon={iconType} />
-        <span className="text-slate-500">{title}</span>
+      <div className="flex flex-row items-center justify-between p-1">
+        <div className="flex items-center gap-1">
+          <Icon className="text-lg text-default-600" icon={iconType} />
+          <span className="text-slate-500">{title}</span>
+        </div>
+        {items.length > itemsPerRow && (
+          <span
+            className="cursor-pointer text-xs text-blue-500 hover:underline"
+            onClick={() => setShowAll(!showAll)}>
+            {showAll ? t("Show less") : t("Show more")}
+          </span>
+        )}
       </div>
-      <section
-        className={`grid gap-1.5 ${
-          columns === 1 ? "grid-cols-1" : columns === 2 ? "grid-cols-2" : "grid-cols-4"
-        }`}>
-        {items.map((item, index) => (
-          <SourceCard key={index + 1} index={index + 1} source={item} />
+      <div className="flex flex-wrap justify-start gap-4">
+        {displayedItems.map((item, index) => (
+          <div
+            key={index + 1}
+            className="w-full min-w-[160px] sm:w-[calc(50%-1rem)] lg:w-[calc(25%-1rem)]">
+            <SourceCard key={index + 1} index={index + 1} source={item} />
+          </div>
         ))}
-      </section>
+      </div>
     </div>
   );
 };
+function useTranslation(): { t: any } {
+  throw new Error("Function not implemented.");
+}

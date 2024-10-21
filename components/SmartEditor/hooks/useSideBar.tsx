@@ -8,7 +8,7 @@ export type EditorSidebarState = {
 };
 
 export const useEditorSidebar = (): EditorSidebarState => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   return useMemo(() => {
     return {
       isOpen,

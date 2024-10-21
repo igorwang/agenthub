@@ -1,4 +1,5 @@
 import {
+  AircraftFragmentFragment,
   Knowledge_Base_Type_Enum,
   Message_Status_Enum,
   Message_Type_Enum,
@@ -6,6 +7,7 @@ import {
   Run_Type_Enum,
   Tool_Type_Enum,
 } from "@/graphql/generated/types";
+import { AircraftModel } from "@/restful/generated";
 
 export enum CHAT_STATUS_ENUM {
   New,
@@ -14,6 +16,7 @@ export enum CHAT_STATUS_ENUM {
   Generating,
   Interpret,
   Finished,
+  Failed,
 }
 
 export enum CHAT_MODE {
@@ -70,6 +73,7 @@ export type MessageType = {
   messageType?: Message_Type_Enum | null;
   schema?: { [key: string]: any };
   imageUrls?: string[];
+  aircraft?: AircraftFragmentFragment[];
 };
 
 export type LibraryCardType = {
@@ -105,4 +109,10 @@ export type SchemaType = {
     [key: string]: SchemaPropertyType;
   };
   description: string;
+};
+
+export type ChatSessionContext = {
+  context: string | null;
+  sources: SourceType[] | null;
+  aircraft: AircraftModel | null;
 };

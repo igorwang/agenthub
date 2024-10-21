@@ -9,6 +9,7 @@ import {
   SelectItem,
 } from "@nextui-org/react";
 import { Node } from "@xyflow/react";
+import { useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
 
 interface NodeData {
@@ -27,6 +28,7 @@ export const InputSelectionPane: React.FC<InputSelectionPaneProps> = ({
   nodes,
   workflowTestResult,
 }) => {
+  const t = useTranslations();
   const [selectedNode, setSelectedNode] = useState<Node<NodeData> | null>(null);
 
   useEffect(() => {
@@ -56,7 +58,7 @@ export const InputSelectionPane: React.FC<InputSelectionPaneProps> = ({
       <Divider />
       <CardBody>
         <Select
-          label="Select Input Node"
+          label={t("Select Input Node")}
           className="mb-4"
           selectedKeys={selectedNode ? new Set([selectedNode.id]) : new Set()}
           onSelectionChange={handleSelectionChange}>
@@ -71,9 +73,11 @@ export const InputSelectionPane: React.FC<InputSelectionPaneProps> = ({
 
         {nodes.length > 0 && (
           <p className="mb-4 text-sm text-gray-600">
-            Please select the input data for the current node. Each node can use the
+            {t("InputTips", {
+              defaultValue: `Please select the input data for the current node. Each node can use the
             output of preceding nodes as input. The data shown below simulates the output
-            from preceding nodes for your reference and selection.
+            from preceding nodes for your reference and selection.`,
+            })}
           </p>
         )}
 
@@ -89,11 +93,21 @@ export const InputSelectionPane: React.FC<InputSelectionPaneProps> = ({
                 />
               </pre>
             ) : (
-              <p className="mt-2 text-gray-500">No input data yet</p>
+              <p className="mt-2 text-gray-500">
+                {t("No input data yet", {
+                  defaultValue: "No input data yet",
+                })}
+              </p>
             )}
           </div>
         )}
-        {nodes.length === 0 && <p className="text-gray-500">No nodes available</p>}
+        {nodes.length === 0 && (
+          <p className="text-gray-500">
+            {t("No nodes available", {
+              defaultValue: "No nodes available",
+            })}
+          </p>
+        )}
       </CardBody>
     </Card>
   );

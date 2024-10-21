@@ -43,7 +43,6 @@ export const MessageCard: React.FC<MessageCardProps> = ({
       <span className="text-2xl">{message.query}</span>
       <Button
         isIconOnly
-        disableAnimation
         disableRipple
         variant="light"
         onClick={() => setIsOpen((prev) => !prev)}
@@ -99,7 +98,6 @@ export const MessageCard: React.FC<MessageCardProps> = ({
         endContent={
           <Button
             isIconOnly
-            disableAnimation
             disableRipple
             variant="light"
             className={input.length > 0 ? "visible" : "hidden"}

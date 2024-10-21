@@ -31,7 +31,7 @@ import {
 import validator from "@rjsf/validator-ajv8";
 import { Node } from "@xyflow/react";
 import { JsonEditor } from "json-edit-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslations } from "use-intl";
 
 // Custom Widgets
@@ -92,7 +92,9 @@ interface CustomNumberWidgetProps extends WidgetProps {
 const CustomTextareaWidget: React.FC<WidgetProps> = (props) => {
   const {
     id,
+    name,
     value,
+    defaultValue,
     required,
     disabled,
     readonly,
@@ -101,13 +103,12 @@ const CustomTextareaWidget: React.FC<WidgetProps> = (props) => {
     onFocus,
     autofocus,
     options,
+    schema,
     uiSchema,
     formContext,
   } = props;
 
-  console.log("props", props);
-  console.log("name", value);
-  console.log("hidden", uiSchema?.["ui:hidden"]);
+  console.log("name", name, value, defaultValue, schema);
 
   const hidden = uiSchema?.["ui:hidden"];
 
@@ -358,6 +359,7 @@ const CustomExpressionInputField: React.FC<FieldProps> = (props) => {
   const {
     id,
     formData,
+    defaultValue,
     required,
     disabled,
     readonly,
@@ -475,6 +477,12 @@ const CustomChunkingSelectField: React.FC<FieldProps> = (props) => {
 const CustomModelField: React.FC<FieldProps> = (props) => {
   const { name, schema, value, uiSchema, required, formData, onChange, registry } = props;
 
+  useEffect(() => {
+    if (!formData) {
+      onChange("gpt-4o-mini");
+    }
+  }, []);
+
   if (schema.format === "model" || uiSchema?.["ui:field"] === "model") {
     return (
       <div className="mb-2">
@@ -483,7 +491,7 @@ const CustomModelField: React.FC<FieldProps> = (props) => {
         </label>
         <ModelSelect
           label=""
-          defaultModel={formData || ""}
+          defaultModel={formData || "gpt-4o-mini"}
           modelType={schema.modelType || "llm"}
           onSelectionChange={(modelName, limit) => {
             // Update the form data with the new model name

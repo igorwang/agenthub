@@ -3,6 +3,7 @@
 import MessageWindow from "@/components/Conversation/message-window";
 import MessageWindowWithWorkflow from "@/components/Conversation/message-windown-with-workflow";
 import PromptInputWithFaq from "@/components/Conversation/prompt-input-with-faq";
+import PromptInputWithFaqV1 from "@/components/Conversation/prompt-input-with-faq-v1";
 import SessionFilesHeader from "@/components/Conversation/session-files-header";
 import { RoleChip } from "@/components/ui/role-icons";
 import ShareLinkCard from "@/components/ui/share-link-card";
@@ -25,6 +26,7 @@ import {
   selectSelectedSessionId,
   selectSession,
   setIsChangeSession,
+  setSessionFiles,
 } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
 import { CHAT_STATUS_ENUM, MessageType, SourceType } from "@/types/chatTypes";
@@ -107,6 +109,7 @@ export type ConversationProps = {
   hiddenInput?: boolean;
   isTestMode?: boolean;
   isChatHubOpen?: boolean;
+  isAircraftOpen?: boolean;
   onToggleChatHub?: (isOpen: boolean) => void;
 };
 
@@ -115,6 +118,7 @@ export const Conversation: React.FC<ConversationProps> = ({
   sessionId,
   onToggleChatHub,
   isChatHubOpen,
+  isAircraftOpen,
   className,
   hiddenHeader = false,
   isTestMode = false,
@@ -139,11 +143,11 @@ export const Conversation: React.FC<ConversationProps> = ({
   const [selectedSources, setSelectedSources] = useState<SourceType[]>([]);
   const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
   const [recentUsedTools, setRecentUsedTools] = useState<WorkflowFragmentFragment[]>([]);
-  const [sessionFiles, setSessionFiles] = useState<FilesListQuery["files"]>([]);
+  // const [sessionFiles, setSessionFiles] = useState<FilesListQuery["files"]>([]);
   const [shareLink, setShareLink] = useState<string | null>(null);
   const [isSharePopoverOpen, setIsSharePopoverOpen] = useState<boolean>(false);
 
-  const [sessionFilesContext, setSessionFilesContext] = useState("");
+  // const [sessionFilesContext, setSessionFilesContext] = useState("");
 
   const { data: sessionFilesData } = useSubscriptionFilesListSubscription({
     variables: {
@@ -177,13 +181,14 @@ export const Conversation: React.FC<ConversationProps> = ({
 
   useEffect(() => {
     if (sessionFilesData?.files) {
-      setSessionFiles(sessionFilesData?.files);
+      // setSessionFiles(sessionFilesData?.files);
 
-      setSessionFilesContext(
-        sessionFilesData.files
-          .map((item, index) => `File-${index + 1}:${item.name}`)
-          .join("\n"),
-      );
+      // setSessionFilesContext(
+      //   sessionFilesData.files
+      //     .map((item, index) => `File-${index + 1}:${item.name}`)
+      //     .join("\n"),
+      // );
+      dispatch(setSessionFiles(sessionFilesData.files));
     }
   }, [sessionFilesData]);
 
@@ -238,7 +243,7 @@ export const Conversation: React.FC<ConversationProps> = ({
   }, [agentId, data]);
 
   const handleCreateNewMessage = useCallback(
-    (params: {
+    async (params: {
       id: string;
       query: string;
       content: string;
@@ -251,7 +256,7 @@ export const Conversation: React.FC<ConversationProps> = ({
       schema?: { [key: string]: any };
     }) => {
       try {
-        createNewMessageMutation({
+        const result = await createNewMessageMutation({
           variables: {
             object: {
               id: params.id,
@@ -402,51 +407,63 @@ export const Conversation: React.FC<ConversationProps> = ({
           </div>
         </div>
       </div>
-      {agent.creator_id === session.data?.user?.id && (
-        <div className="flex gap-1">
-          <Popover
-            isOpen={isSharePopoverOpen}
-            onOpenChange={(open) => setIsSharePopoverOpen(open)}
-            triggerRef={shareButtonRef}>
-            <Tooltip content={t("Share")}>
+      <div className="flex gap-1">
+        {agent.creator_id === session.data?.user?.id && (
+          <>
+            <Popover
+              isOpen={isSharePopoverOpen}
+              onOpenChange={(open) => setIsSharePopoverOpen(open)}
+              triggerRef={shareButtonRef}>
+              <Tooltip content={t("Share")}>
+                <Button
+                  ref={shareButtonRef}
+                  isIconOnly
+                  variant="light"
+                  onClick={handleShareClick}
+                  isLoading={isShareLoading}
+                  disabled={isShareLoading}>
+                  {!isShareLoading && <Icon icon="lucide:share" fontSize={24} />}
+                </Button>
+              </Tooltip>
+              <PopoverContent>
+                {shareLink && <ShareLinkCard shareLink={shareLink} />}
+              </PopoverContent>
+            </Popover>
+            <Tooltip content={t("Configure Agent")}>
               <Button
-                ref={shareButtonRef}
                 isIconOnly
                 variant="light"
-                onClick={handleShareClick}
-                isLoading={isShareLoading}
-                disabled={isShareLoading}>
-                {!isShareLoading && <Icon icon="lucide:share" fontSize={24} />}
+                onClick={handleConfigClick}
+                isLoading={isConfigLoading}
+                disabled={isConfigLoading || isDashboardLoading}>
+                {!isConfigLoading && <Icon icon="lucide:settings" fontSize={24} />}
               </Button>
             </Tooltip>
-            <PopoverContent>
-              {shareLink && <ShareLinkCard shareLink={shareLink} />}
-            </PopoverContent>
-          </Popover>
-          <Tooltip content={t("Configure Agent")}>
+            <Tooltip content={t("Agent Dashboard")}>
+              <Button
+                isIconOnly
+                variant="light"
+                onClick={handleToDashboard}
+                isLoading={isDashboardLoading}
+                disabled={isConfigLoading || isDashboardLoading}>
+                {!isDashboardLoading && (
+                  <Icon icon="lucide:layout-dashboard" fontSize={24} />
+                )}
+              </Button>
+            </Tooltip>
+          </>
+        )}
+        {/* {!isAircraftOpen && (
+          <Tooltip content={t("Aircraft")}>
             <Button
               isIconOnly
               variant="light"
-              onClick={handleConfigClick}
-              isLoading={isConfigLoading}
-              disabled={isConfigLoading || isDashboardLoading}>
-              {!isConfigLoading && <Icon icon="lucide:settings" fontSize={24} />}
+              onClick={() => dispatch(setIsAircraftOpen(true))}>
+              <Icon icon="mdi:canvas" fontSize={24} />
             </Button>
           </Tooltip>
-          <Tooltip content={t("Agent Dashboard")}>
-            <Button
-              isIconOnly
-              variant="light"
-              onClick={handleToDashboard}
-              isLoading={isDashboardLoading}
-              disabled={isConfigLoading || isDashboardLoading}>
-              {!isDashboardLoading && (
-                <Icon icon="lucide:layout-dashboard" fontSize={24} />
-              )}
-            </Button>
-          </Tooltip>
-        </div>
-      )}
+        )} */}
+      </div>
     </div>
   );
 
@@ -466,7 +483,7 @@ export const Conversation: React.FC<ConversationProps> = ({
           <SessionFilesHeader
             model={agent.default_model || ""}
             sessionId={selectedSessionId || ""}
-            files={sessionFiles}
+            // files={sessionFiles}
             onFilesChange={handleSessionFileChange}
           />
         </div>
@@ -476,16 +493,9 @@ export const Conversation: React.FC<ConversationProps> = ({
               <MessageWindowWithWorkflow
                 agentId={agentId}
                 workflow_id={agent.workflow_id || ""}
-                isChating={isChating}
-                chatStatus={chatStatus}
-                selectedSources={selectedSources}
                 isTestMode={isTestMode}
-                onChatingStatusChange={handleSetChatStatus}
-                handleCreateNewMessage={handleCreateNewMessage}
-                onSelectedSource={handleSelectedSource}
                 onMessageChange={handleMessageChange}
-                sessionFilesContext={sessionFilesContext}
-                session_file_ids={sessionFiles.map((item) => item.id)}
+                handleCreateNewMessage={handleCreateNewMessage}
               />
             ) : (
               <MessageWindow
@@ -583,30 +593,31 @@ export const Conversation: React.FC<ConversationProps> = ({
                 </div>
               )}
               <Spacer />
-              {!hiddenInput && (
-                <PromptInputWithFaq
-                  model={agent.default_model || ""}
-                  agentId={agentId}
-                  agentMode={agent.mode || Agent_Mode_Enum.Simple}
-                  isChating={isChating}
-                  onChatingStatus={handleSetChatStatus}
-                  workflowTools={workflowTools}
-                  onRunWorkflowTool={handleRunWorkflowTool}></PromptInputWithFaq>
-              )}
+              {!hiddenInput &&
+                (agent.mode === Agent_Mode_Enum.Workflow ? (
+                  <PromptInputWithFaqV1
+                    model={agent.default_model || ""}
+                    agentId={agentId}
+                    agentMode={agent.mode || Agent_Mode_Enum.Simple}
+                    workflowTools={workflowTools}
+                    onRunWorkflowTool={handleRunWorkflowTool}
+                  />
+                ) : (
+                  <PromptInputWithFaq
+                    model={agent.default_model || ""}
+                    agentId={agentId}
+                    agentMode={agent.mode || Agent_Mode_Enum.Simple}
+                    isChating={isChating}
+                    onChatingStatus={handleSetChatStatus}
+                    workflowTools={workflowTools}
+                    onRunWorkflowTool={handleRunWorkflowTool}
+                  />
+                ))}
               <p className="px-2 text-tiny text-default-400">
                 {t("AI can also make mistakes")}
               </p>
             </div>
           </div>
-          {/* {selectedSessionId && (
-            <div className="max-w-64">
-              <SessionFilesSidebar
-                sessionId={selectedSessionId}
-                files={sessionFiles}
-                onFilesChange={handleSessionFileChange}
-              />
-            </div>
-          )} */}
         </div>
       </div>
     </ConversationContext.Provider>

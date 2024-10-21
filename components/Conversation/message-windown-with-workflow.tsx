@@ -1,14 +1,29 @@
 import {
-  selectRefreshSession,
+  selectChatSessionContext,
+  selectChatStatus,
+  selectIsChangeSession,
+  selectIsChating,
   selectSelectedSessionId,
+  selectSelectedSources,
+  selectSessionFiles,
+  setChatSessionContext,
+  setChatStatus,
+  setCurrentAircraftId,
+  setIsAircraftGenerating,
+  setIsAircraftOpen,
+  setIsChangeSession,
+  setIsChating,
+  setMessagesContext,
   setRefreshSession,
+  setSelectedSources,
 } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
 import { useSession } from "next-auth/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import FeatureCards from "@/components/Conversation/feature-cards";
+import MessageCardV1 from "@/components/Conversation/message-card-v1";
 import { PromptTemplateType } from "@/components/PromptFrom";
 import {
   AgentFragmentFragment,
@@ -16,37 +31,29 @@ import {
   Message_Status_Enum,
   Message_Type_Enum,
   Order_By,
+  useCreateOneAircraftMutation,
   useFetchAllMessageListQuery,
   useGetAgentByIdQuery,
   useUpdateTopicHistoryByIdMutation,
 } from "@/graphql/generated/types";
 import { DEFAULT_LLM_MODEL, DEFAULT_TEMPLATES } from "@/lib/models";
 import { createMessages } from "@/lib/prompts/createMessages";
-import { ChatFlowRequestSchema, ChatFlowResponseSchema } from "@/restful/generated";
+import {
+  AircraftModel,
+  ChatFlowRequestSchema,
+  ChatFlowResponseSchema,
+} from "@/restful/generated";
 import {
   CHAT_STATUS_ENUM,
-  LibraryCardType,
   MessageType,
   SOURCE_TYPE_ENUM,
   SourceType,
-  ToolType,
 } from "@/types/chatTypes";
+import { mapChatMessagesToStoredMessages } from "@langchain/core/messages";
 import { Avatar, ScrollShadow } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
 import { v4 } from "uuid";
 import AgentWorkflowResultsPane from "./agent-workflow-result-pane";
-import MessageCard from "./message-card";
-
-type AgentProps = {
-  id: string;
-  name?: string;
-  avatar?: string;
-  defaultModel?: string;
-  token_limit?: number;
-  enable_search?: boolean | null;
-  force_search?: boolean | null;
-  tools?: ToolType[];
-};
 
 type QueryAnalyzeResultSchema = {
   isRelated?: boolean;
@@ -59,14 +66,7 @@ type QueryAnalyzeResultSchema = {
 type MessageWindowProps = {
   agentId: string;
   workflow_id: string;
-  chatStatus: CHAT_STATUS_ENUM | null;
-  isChating: boolean;
   isTestMode?: boolean;
-  selectedSources?: SourceType[];
-  sessionFilesContext?: string;
-  session_file_ids?: string[];
-  onChatingStatusChange: (isChating: boolean, status: CHAT_STATUS_ENUM | null) => void;
-  onSelectedSource?: (source: SourceType, selected: boolean) => void;
   onMessageChange?: (messages: MessageType[]) => void;
   handleCreateNewMessage?: (params: {
     id: string;
@@ -85,41 +85,38 @@ type MessageWindowProps = {
 export default function MessageWindowWithWorkflow({
   agentId,
   workflow_id,
-  isChating,
-  chatStatus,
   isTestMode = false,
-  selectedSources,
-  sessionFilesContext = "",
-  session_file_ids = [],
-  onChatingStatusChange,
   handleCreateNewMessage,
-  onSelectedSource,
   onMessageChange,
 }: MessageWindowProps) {
   const dispatch: AppDispatch = useDispatch();
   const t = useTranslations();
   const selectedSessionId = useSelector(selectSelectedSessionId);
-  const refreshSession = useSelector(selectRefreshSession);
+  const isChating = useSelector(selectIsChating);
+  const chatStatus = useSelector(selectChatStatus);
 
   const ref = useRef<HTMLDivElement>(null);
 
   const [messages, setMessages] = useState<MessageType[]>([]);
-  const [agent, setAgent] = useState<AgentFragmentFragment>();
-  const [refineQuery, setRefineQuery] = useState<QueryAnalyzeResultSchema | null>(null);
-  const [searchResults, setSearchResults] = useState<SourceType[] | null>(null);
-  const [chatContext, setChatContext] = useState<string | null>(null);
 
-  const [promptTemplates, setPromptTemplates] = useState<PromptTemplateType[]>();
-  // const [chatStatus, setChatStatus] = useState<CHAT_STATUS_ENUM | null>(null);
-  const [libraries, setLibraries] = useState<LibraryCardType[]>();
+  const [agent, setAgent] = useState<AgentFragmentFragment>();
   const [workflowResults, setWorkflowResults] = useState<ChatFlowResponseSchema | null>(
     null,
   );
+  const [promptTemplates, setPromptTemplates] = useState<PromptTemplateType[]>();
+
   const [updateTopicHistoryByIdMutation] = useUpdateTopicHistoryByIdMutation();
 
+  const [createOneAircraftMutation] = useCreateOneAircraftMutation();
+
+  const chatSessionContext = useSelector(selectChatSessionContext);
+  const sessionFiles = useSelector(selectSessionFiles);
+  const selectedSources = useSelector(selectSelectedSources);
+  const isChangeSession = useSelector(selectIsChangeSession);
   const session = useSession();
   const user_id = session.data?.user?.id;
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [isUserScrolling, setIsUserScrolling] = useState(false);
 
   const query = useFetchAllMessageListQuery({
     variables: {
@@ -127,9 +124,9 @@ export default function MessageWindowWithWorkflow({
       order_by: { created_at: Order_By.AscNullsLast },
       limit: 100,
     },
-
     skip: !selectedSessionId, // Skip the query if session_id is not provided
   });
+
   const { data, loading, error } = query;
 
   const { data: agentData } = useGetAgentByIdQuery({
@@ -139,37 +136,55 @@ export default function MessageWindowWithWorkflow({
     skip: !agentId,
   });
 
-  useEffect(() => {
-    setRefineQuery(null);
-    onChatingStatusChange(isChating, null);
-    if (!selectedSessionId) {
-      setMessages([]);
-      setWorkflowResults(null);
-    }
-    if (
-      chatStatus == CHAT_STATUS_ENUM.Interpret &&
-      messages.length > 0 &&
-      messages[messages.length - 1].status == "draft"
-    ) {
-      const draftMessage = messages[messages.length - 1];
-      if (draftMessage.message) {
-        handleCreateNewMessage?.({
-          ...draftMessage,
-          query: messages[messages.length - 2].message || "",
-          content: draftMessage.message || "",
-          session_id: selectedSessionId || "",
-          role: Message_Role_Enum.Assistant,
-          status: Message_Status_Enum.Failed,
+  const handleCreateNewAircraft = useCallback(
+    async (message_id: string, aircraft: AircraftModel) => {
+      try {
+        const response = await createOneAircraftMutation({
+          variables: {
+            object: {
+              title: aircraft.title,
+              description: aircraft.description,
+              template: aircraft.template,
+              commentary: aircraft.commentary,
+              message_id: message_id,
+              content: "",
+            },
+          },
         });
-      } else {
-        setMessages((prev) => prev.filter((item) => item.status != "draft"));
+        dispatch(setIsAircraftOpen(true));
+        dispatch(setCurrentAircraftId(response.data?.insert_aircraft_one?.id || null));
+        dispatch(setIsAircraftGenerating(true));
+      } catch (error) {
+        console.error("Error while creating aircraft:", error);
+        dispatch(setChatStatus(CHAT_STATUS_ENUM.Failed));
+        dispatch(setIsChating(false));
       }
-    }
-    query.refetch();
-  }, [agentId, selectedSessionId, isChating, query]);
+    },
+    [createOneAircraftMutation],
+  );
 
+  const createMessagesContext = useCallback(async () => {
+    const historyMessage = messages.filter((item) => item.status != "draft");
+    const sessionFileContexts = sessionFiles
+      ?.map((item) => {
+        const content = `<File fileName=${item.name} fileId=${item.id} />`;
+        return content;
+      })
+      .join("\n");
+    const chatMessages = await createMessages(
+      agent?.default_model || DEFAULT_LLM_MODEL,
+      promptTemplates || DEFAULT_TEMPLATES,
+      historyMessage,
+      chatSessionContext?.sources || [],
+      chatSessionContext?.context || "",
+      `User uploaded files: <UserUploadedFiles>${sessionFileContexts}</UserUploadedFiles>`,
+    );
+    console.log("chatMessages", mapChatMessagesToStoredMessages(chatMessages));
+    dispatch(setMessagesContext(mapChatMessagesToStoredMessages(chatMessages)));
+  }, [agent, promptTemplates, messages, chatSessionContext]);
+
+  // set agent
   useEffect(() => {
-    console.log("agentData", agentData);
     if (agentData?.agent_by_pk) {
       setAgent(agentData.agent_by_pk);
 
@@ -187,21 +202,13 @@ export default function MessageWindowWithWorkflow({
       } else {
         setPromptTemplates(DEFAULT_TEMPLATES);
       }
-      if (agentData.agent_by_pk?.kbs) {
-        setLibraries(
-          agentData.agent_by_pk?.kbs.map((item) => ({
-            id: item.knowledge_base.id,
-            name: item.knowledge_base.name,
-            description: item.knowledge_base.description || "",
-            base_type: item.knowledge_base.base_type,
-          })),
-        );
-      }
     }
   }, [agentId, agentData]);
 
+  // set messages
   useEffect(() => {
     if (data && data.message) {
+      console.log("data.message", data.message);
       const newMessages = data.message.map((item) => ({
         id: item.id,
         role: item.role,
@@ -217,6 +224,7 @@ export default function MessageWindowWithWorkflow({
         messageType: item.message_type || Message_Type_Enum.Text,
         schema: item.schema || {},
         imageUrls: item.imageUrls || [],
+        aircraft: item.aircraft || null,
       }));
 
       if (data.message.length == 1 && selectedSessionId) {
@@ -224,27 +232,52 @@ export default function MessageWindowWithWorkflow({
         const response = updateTopicHistoryByIdMutation({
           variables: {
             id: selectedSessionId,
-            _set: { title: newMessageContent.slice(0, 15) },
+            _set: { title: newMessageContent.slice(0, 50) },
           },
         });
         dispatch(setRefreshSession(true));
       }
-
       setMessages(newMessages);
-      onMessageChange?.(newMessages);
+      // onMessageChange?.(messages);
     }
-  }, [data, onMessageChange, agentId]);
+  }, [data]);
 
+  // control session change
+  useEffect(() => {
+    if (!selectedSessionId || isChangeSession) {
+      setWorkflowResults(null);
+      dispatch(setIsChangeSession(false));
+      dispatch(setSelectedSources([]));
+      dispatch(setIsChating(false));
+      dispatch(setCurrentAircraftId(null));
+      dispatch(setIsAircraftGenerating(false));
+      dispatch(setIsAircraftOpen(false));
+    }
+
+    if (!selectedSessionId) {
+      setMessages([]);
+    }
+  }, [selectedSessionId, isChangeSession]);
+
+  // refetch message list
+  useEffect(() => {
+    if (chatStatus === CHAT_STATUS_ENUM.New) {
+      query.refetch();
+      dispatch(setChatStatus(CHAT_STATUS_ENUM.Analyzing));
+    }
+  }, [chatStatus]);
+
+  // new chat message check
   useEffect(() => {
     if (
-      isChating &&
+      chatStatus === CHAT_STATUS_ENUM.Analyzing &&
       messages.length > 0 &&
       messages[messages.length - 1].status != "draft"
     ) {
       const newMessageId = v4();
-      setSearchResults(null);
-      setChatContext(null);
       setWorkflowResults(null);
+      setIsUserScrolling(false);
+      dispatch(setChatSessionContext(null));
       setMessages((prev) => [
         ...prev,
         {
@@ -257,19 +290,43 @@ export default function MessageWindowWithWorkflow({
           // query: query,
         },
       ]);
-      onChatingStatusChange(isChating, CHAT_STATUS_ENUM.New);
     }
   }, [messages]);
 
+  // chat interpret
   useEffect(() => {
     if (
-      isChating &&
-      chatStatus === CHAT_STATUS_ENUM.New &&
+      chatStatus == CHAT_STATUS_ENUM.Interpret &&
       messages.length > 0 &&
       messages[messages.length - 1].status == "draft"
     ) {
-      onChatingStatusChange(isChating, CHAT_STATUS_ENUM.Searching);
+      const draftMessage = messages[messages.length - 1];
+      if (draftMessage.message) {
+        handleCreateNewMessage?.({
+          ...draftMessage,
+          query: messages[messages.length - 2].message || "",
+          content: draftMessage.message || "",
+          session_id: selectedSessionId || "",
+          role: Message_Role_Enum.Assistant,
+          status: Message_Status_Enum.Failed,
+        });
+        dispatch(setChatStatus(null));
+        query.refetch();
+      } else {
+        setMessages((prev) => prev.filter((item) => item.status != "draft"));
+      }
+    }
+  }, [chatStatus, isChating, messages]);
 
+  // chat with workflow
+  useEffect(() => {
+    if (
+      chatStatus === CHAT_STATUS_ENUM.Analyzing &&
+      chatSessionContext === null &&
+      messages.length > 0 &&
+      messages[messages.length - 1].status === "draft"
+    ) {
+      dispatch(setChatStatus(CHAT_STATUS_ENUM.Searching));
       const fetchChatWithWorkflow = async () => {
         const body: ChatFlowRequestSchema = {
           agent_id: agentId || "",
@@ -279,7 +336,7 @@ export default function MessageWindowWithWorkflow({
             content: item.message || "",
           })),
           workflow_id: workflow_id,
-          session_file_ids: session_file_ids || [],
+          session_file_ids: sessionFiles?.map((item) => item.id) || [],
           sources: selectedSources?.map((item) => ({
             title: item.title || item.fileName,
             url: item.url,
@@ -297,8 +354,18 @@ export default function MessageWindowWithWorkflow({
         });
 
         if (!response.ok) {
-          setSearchResults([]);
-          setChatContext("");
+          dispatch(setChatStatus(CHAT_STATUS_ENUM.Failed));
+          dispatch(setChatSessionContext(null));
+          dispatch(setIsChating(false));
+          setMessages((prev) => [
+            ...prev.slice(0, -1),
+            {
+              ...prev[prev.length - 1],
+              message: t("Agent execution failed, please try again"),
+              status: "failed",
+            },
+          ]);
+
           setWorkflowResults({
             error_message: `Workflow execution failed: ${response.statusText}`,
             workflow_output: {},
@@ -311,33 +378,27 @@ export default function MessageWindowWithWorkflow({
 
         setWorkflowResults(workflowResults);
 
+        // Stop workflow
         if (workflowOutput.type === "humanInLoopNode") {
-          onChatingStatusChange(false, CHAT_STATUS_ENUM.Finished);
-          setSearchResults(null);
-          setChatContext(null);
-          setMessages((prev) => [
-            ...prev.slice(0, -1),
-            {
-              ...prev[prev.length - 1],
-              message: workflowOutput.question,
-            },
-          ]);
-          handleCreateNewMessage?.({
+          await handleCreateNewMessage?.({
             id: messages[messages.length - 1].id,
             query: "",
             content: workflowOutput.question || "",
             session_id: selectedSessionId || "",
             role: Message_Role_Enum.Assistant,
-            sources: searchResults,
+            sources: [],
             status: Message_Status_Enum.Waiting,
             message_type: (workflowOutput.response_format || "text") as Message_Type_Enum,
             schema: workflowOutput.schema || {},
           });
+          dispatch(setChatSessionContext(null));
+          dispatch(setChatStatus(null));
+          query.refetch();
           return null;
         }
 
-        if (workflowOutput.sources) {
-          const newSources = workflowOutput.sources.map((item) => ({
+        const sources =
+          workflowOutput.sources?.map((item) => ({
             fileName: item.title || "",
             fileId: item.file_id || "",
             url: item.url || "",
@@ -346,37 +407,42 @@ export default function MessageWindowWithWorkflow({
             sourceType: SOURCE_TYPE_ENUM.file,
             knowledgeBaseId: item.knowledge_base_id || "",
             ext: item.ext || "Unknow",
-          }));
-          setSearchResults(newSources.slice(0, 10));
-          setMessages((prev) => [
-            ...prev.slice(0, -1),
-            {
-              ...prev[prev.length - 1],
-              sources: newSources.slice(0, 10) || [],
-            },
-          ]);
-        } else {
-          setSearchResults([]);
-        }
+          })) || [];
 
-        if (workflowOutput.context) {
-          setChatContext(workflowOutput.context);
-        } else {
-          setChatContext("");
-        }
+        const context = workflowOutput.context || "";
+        const aircraft = workflowOutput.aircraft || {};
+        dispatch(setChatSessionContext({ context, aircraft, sources }));
+        dispatch(setChatStatus(CHAT_STATUS_ENUM.Generating));
       };
       fetchChatWithWorkflow();
     }
-  }, [chatStatus, messages, workflow_id]);
+  }, [chatStatus, messages]);
 
   useEffect(() => {
     if (
-      isChating &&
-      searchResults != null &&
-      chatContext != null &&
-      chatStatus == CHAT_STATUS_ENUM.Searching
+      chatStatus == CHAT_STATUS_ENUM.Generating &&
+      chatSessionContext != null &&
+      messages.length > 0 &&
+      messages[messages.length - 1].status === "draft"
     ) {
-      onChatingStatusChange(isChating, CHAT_STATUS_ENUM.Generating);
+      const aircraft = chatSessionContext?.aircraft;
+      if (aircraft && (aircraft.action == "create" || aircraft.action == "update")) {
+        handleCreateNewMessage?.({
+          id: messages[messages.length - 1].id,
+          query: "",
+          content: aircraft.commentary || "",
+          session_id: selectedSessionId || "",
+          role: Message_Role_Enum.Assistant,
+          sources: chatSessionContext?.sources || [],
+          status: Message_Status_Enum.Generating,
+        });
+        // create new aircraft
+
+        handleCreateNewAircraft(messages[messages.length - 1].id, aircraft);
+        createMessagesContext();
+        query.refetch();
+        return;
+      }
 
       const controller = new AbortController(); // Create a new AbortController
       const signal = controller.signal; // Get the signal from the controller
@@ -384,36 +450,24 @@ export default function MessageWindowWithWorkflow({
       const generateAnswer = async () => {
         const historyMessage = messages.filter((item) => item.status != "draft");
 
+        const sessionFileContexts = sessionFiles
+          ?.map((item) => {
+            const content = `<File fileName=${item.name} fileId=${item.id} />`;
+            return content;
+          })
+          .join("\n");
+
         const chatMessages = await createMessages(
           agent?.default_model || DEFAULT_LLM_MODEL,
           promptTemplates || DEFAULT_TEMPLATES,
           historyMessage,
-          searchResults || [],
-          chatContext || "",
-          sessionFilesContext,
+          chatSessionContext?.sources || [],
+          chatSessionContext?.context || "",
+          `User uploaded files: <UserUploadedFiles>${sessionFileContexts}</UserUploadedFiles>`,
         );
 
-        console.log("chatMessages", chatMessages);
-
-        try {
-          const response = await fetch("/api/v1/chat", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              model: agent?.default_model || DEFAULT_LLM_MODEL,
-              messages: chatMessages,
-            }),
-          });
-        } catch (error) {
-          // console.error("Error while streaming:", error);
-          onChatingStatusChange(false, CHAT_STATUS_ENUM.Interpret);
-          return;
-        }
-
         let answer = "";
-        // call llm
+
         try {
           const response = await fetch("/api/v1/chat", {
             method: "POST",
@@ -476,10 +530,11 @@ export default function MessageWindowWithWorkflow({
           content: answer,
           session_id: selectedSessionId || "",
           role: Message_Role_Enum.Assistant,
-          sources: searchResults,
+          sources: chatSessionContext?.sources || [],
           status: Message_Status_Enum.Success,
         });
-        onChatingStatusChange(false, CHAT_STATUS_ENUM.Finished);
+        dispatch(setChatStatus(CHAT_STATUS_ENUM.Finished));
+        dispatch(setIsChating(false));
       };
       generateAnswer();
       return () => {
@@ -487,13 +542,30 @@ export default function MessageWindowWithWorkflow({
         return;
       };
     }
-  }, [searchResults, isChating]);
+  }, [chatSessionContext, chatStatus]);
 
   useEffect(() => {
-    if (scrollRef.current) {
+    const scrollElement = scrollRef.current;
+    if (!scrollElement) return;
+
+    const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } = scrollElement;
+      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 10; // 10px threshold
+      setIsUserScrolling(!isAtBottom);
+    };
+
+    scrollElement.addEventListener("scroll", handleScroll);
+
+    return () => {
+      scrollElement.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (scrollRef.current && !isUserScrolling) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages, chatStatus, isChating]);
+  }, [messages, chatStatus, isChating, isUserScrolling]);
 
   const agentAvatarElement =
     agent && agent?.avatar ? (
@@ -519,39 +591,6 @@ export default function MessageWindowWithWorkflow({
     </div>
   );
 
-  // Calculate props for each message outside the map to ensure consistent hook calls
-  const messageCardPropsList = useMemo(() => {
-    return messages.map((msg, index) => ({
-      // key: msg.id,
-      messageId: msg.id,
-      isChating: msg.status === "draft" ? isChating : false,
-      chatStatus: msg.status === "draft" ? chatStatus : null,
-      attempts: index === 1 ? 2 : 1,
-      avatar:
-        msg.role === "assistant" ? (
-          agentAvatarElement
-        ) : (
-          <Avatar name={session.data?.user?.name || "User"} size="md" />
-        ),
-      currentAttempt: index === 1 ? 2 : 1,
-      message: msg.message || "",
-      isUser: msg.role === "user",
-      messageClassName:
-        msg.role === "user" ? "bg-content3 text-content3-foreground" : "bg-slate-50",
-      showFeedback: msg.role === "assistant",
-      sourceResults: msg.sources || [],
-      files: msg.files,
-      onSelectedSource: onSelectedSource,
-      tools: [],
-      agentId: agent?.id,
-      status: msg.status,
-      messageType: msg.messageType,
-      schema: msg.schema,
-      sessionId: selectedSessionId || "",
-      imageUrls: msg.imageUrls || [],
-    }));
-  }, [messages, isChating, chatStatus, agentAvatarElement, onSelectedSource]);
-
   return (
     <ScrollShadow
       ref={scrollRef}
@@ -559,8 +598,30 @@ export default function MessageWindowWithWorkflow({
       hideScrollBar={true}>
       <div className="flex flex-1 flex-grow flex-col gap-1 px-1" ref={ref}>
         {messages.length === 0 && featureContent}
-        {messageCardPropsList.map((props) => (
-          <MessageCard key={props.messageId} {...props} />
+        {messages.map((message) => (
+          <MessageCardV1
+            key={message.id}
+            message={message}
+            workflow_id={workflow_id}
+            chatingMessageId={message.status === "draft" ? message.id : null}
+            avatar={
+              message.role === "assistant" ? (
+                agentAvatarElement
+              ) : (
+                <Avatar name={session.data?.user?.name || "User"} size="md" />
+              )
+            }
+            currentAttempt={1}
+            messageClassName={
+              message.role === "user"
+                ? "bg-content3 text-content3-foreground"
+                : "bg-slate-50"
+            }
+            showFeedback={message.role === "assistant"}
+            tools={[]}
+            agentId={agent?.id}
+            promptTemplates={promptTemplates || DEFAULT_TEMPLATES}
+          />
         ))}
       </div>
       {isTestMode && workflowResults && isChating != true && (
