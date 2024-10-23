@@ -19,6 +19,7 @@ import {
   selectSelectedSessionId,
   setIsAircraftGenerating,
   setIsAircraftOpen,
+  setIsAskAI,
   setIsChating,
 } from "@/lib/features/chatListSlice";
 import { DEFAULT_LLM_MODEL } from "@/lib/models";
@@ -349,6 +350,7 @@ export default function Aircraft({
       } finally {
         dispatch(setIsAircraftGenerating(false));
         dispatch(setIsChating(false));
+        dispatch(setIsAskAI(false));
       }
     },
     [messagesContext, editor],

@@ -21,6 +21,7 @@ interface ChatListState {
   isAircraftGenerating: boolean;
   currentAircraftId: string | null;
   isChating: boolean;
+  isAskAI: boolean;
   chatStatus: CHAT_STATUS_ENUM | null;
   chatSessionContext: ChatSessionContext | null;
   sessionFiles: FilesListQuery["files"];
@@ -36,6 +37,7 @@ const initialState: ChatListState = {
     },
   ],
   isChating: false,
+  isAskAI: false,
   chatStatus: null,
   selectedChatId: null,
   selectedSessionId: null,
@@ -100,6 +102,9 @@ const chatListSlice = createSlice({
     setMessagesContext: (state, action: PayloadAction<StoredMessage[]>) => {
       state.messagesContext = action.payload;
     },
+    setIsAskAI: (state, action: PayloadAction<boolean>) => {
+      state.isAskAI = action.payload;
+    },
   },
 });
 
@@ -119,6 +124,7 @@ export const {
   setCurrentAircraftId,
   setSelectedSources,
   setMessagesContext,
+  setIsAskAI,
 } = chatListSlice.actions;
 
 export const selectChatList = (state: RootState): GroupedChatListDTO[] =>
@@ -149,5 +155,5 @@ export const selectSelectedSources = (state: RootState): SourceType[] =>
   state.chatList.selectedSources;
 export const selectMessagesContext = (state: RootState): StoredMessage[] =>
   state.chatList.messagesContext;
-
+export const selectIsAskAI = (state: RootState): boolean => state.chatList.isAskAI;
 export default chatListSlice.reducer;

@@ -1,9 +1,11 @@
 "use client";
+import { selectIsAskAI, setIsAskAI } from "@/lib/features/chatListSlice";
 import { Icon } from "@iconify/react";
 import { Button, Textarea } from "@nextui-org/react";
 import { BubbleMenu, Editor } from "@tiptap/react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export type AIBubbleMenuProps = {
   editor: Editor;
@@ -14,9 +16,10 @@ export const AIBubbleMenu = ({ editor, onAskAI }: AIBubbleMenuProps) => {
   const t = useTranslations("");
   // const commands = useTextMenuCommand(editor);
   // const states = useTextmenuStates(editor);
+  const dispatch = useDispatch();
   const [inputValue, setInputValue] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [isAskAI, setIsAskAI] = useState(false);
+  const isAskAI = useSelector(selectIsAskAI);
 
   useEffect(() => {
     const { from, to } = editor.state.selection;
@@ -41,10 +44,9 @@ export const AIBubbleMenu = ({ editor, onAskAI }: AIBubbleMenuProps) => {
 
   const handleAskAI = useCallback(
     (e: React.MouseEvent) => {
-      setIsAskAI(true);
+      dispatch(setIsAskAI(true));
       const { from, to } = editor.state.selection;
       const selectedText = editor.state.doc.textBetween(from, to, " ");
-
       onAskAI?.(inputValue.trim(), selectedText, from, to);
 
       // editor.chain().deleteRange({
@@ -73,7 +75,7 @@ export const AIBubbleMenu = ({ editor, onAskAI }: AIBubbleMenuProps) => {
       //   setInputValue("");
       // }, 2000);
 
-      setIsAskAI(false);
+      // setIsAskAI(false);
       setInputValue("");
     },
     [editor, inputValue, isAskAI, onAskAI, t],
@@ -153,7 +155,11 @@ export const AIBubbleMenu = ({ editor, onAskAI }: AIBubbleMenuProps) => {
               className="z-40"
               onClick={handleAskAI}
               onMouseDown={(e) => e.stopPropagation()}>
-              <Icon icon="mdi:send" className="text-gray-600" fontSize={24} />
+              <Icon
+                icon={isAskAI ? "mdi:loading" : "mdi:send"}
+                className="text-gray-600"
+                fontSize={24}
+              />
             </Button>
           }
         />
