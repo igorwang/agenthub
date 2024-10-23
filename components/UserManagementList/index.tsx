@@ -39,6 +39,7 @@ function UserManagementList({ action }: UserManagementListProps) {
       limit: rowsPerPage,
     },
   });
+
   useEffect(() => {
     if (data && data.users) {
       setUserList(data.users);
