@@ -13,13 +13,17 @@ query getUserList(
 ) {
   users(where: $where, order_by: $order_by, limit: $limit, offset: $offset) {
     id
-    # emailVerified
     email
     image
     name
     roles {
       id
       role
+    }
+  }
+  users_aggregate(where: $where) {
+    aggregate {
+      count
     }
   }
 }

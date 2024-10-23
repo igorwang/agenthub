@@ -30,7 +30,9 @@ function UserManagementList({ action }: UserManagementListProps) {
   const t = useTranslations();
   const [page, setPage] = useState<number>(1);
   const [userList, setUserList] = useState<GetUserListQuery["users"]>([]);
+  const [totalUsers, setTotalUsers] = useState<number>(0);
   const rowsPerPage = 10;
+
   const { data, loading, error, refetch } = useGetUserListQuery({
     variables: {
       offset: (page - 1) * rowsPerPage,
@@ -40,6 +42,9 @@ function UserManagementList({ action }: UserManagementListProps) {
   useEffect(() => {
     if (data && data.users) {
       setUserList(data.users);
+    }
+    if (data && data.users_aggregate) {
+      setTotalUsers(data.users_aggregate.aggregate?.count || data.users.length);
     }
   }, [data]);
 
@@ -155,7 +160,7 @@ function UserManagementList({ action }: UserManagementListProps) {
               showShadow
               color="secondary"
               page={page}
-              total={Math.ceil(userList.length / rowsPerPage)}
+              total={Math.ceil(totalUsers / rowsPerPage)}
               onChange={(page) => setPage(page)}
             />
           </div>
