@@ -259,6 +259,7 @@ export default function MessageWindowWithWorkflow({
       setMessages([]);
       dispatch(setSessionFiles([]));
     }
+    query.refetch();
   }, [selectedSessionId, isChangeSession]);
 
   // refetch message list
@@ -495,7 +496,13 @@ export default function MessageWindowWithWorkflow({
             if (done) {
               setMessages((prev) => {
                 if (prev.length == 1) {
-                  return [{ ...prev[0], message: prev[0].message + chunk }];
+                  return [
+                    {
+                      ...prev[0],
+                      message: prev[0].message,
+                      status: Message_Status_Enum.Success,
+                    },
+                  ];
                 }
                 const draftMessage = prev[prev.length - 1];
                 return [
