@@ -267,6 +267,39 @@ export default function LibraryFileList({
     setPage(1);
   }, []);
 
+  const handleExportFile = useCallback(
+    async (file: FileDTO) => {
+      // 实现导出文件的逻辑
+      const fileObject = files.find((f) => f.id === file.id);
+      console.log(fileObject);
+      const path = fileObject?.path;
+      const bucket = path?.split("/")[0];
+      const objectName = path?.split("/").slice(1).join("/");
+
+      console.log(bucket, objectName);
+
+      try {
+        const response = await fetch("/api/file/get_signed_url", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            bucket,
+            key: objectName,
+            expires: 60 * 10,
+          }),
+        });
+        const result = await response.json();
+        window.open(result.url, "_blank");
+        toast.success(t(`File exported successfully`));
+      } catch (error) {
+        console.error(t("Error to export file"), error);
+      }
+    },
+    [files],
+  );
+
   const openUploadModal = useCallback(() => {
     setIsUploadOpen(true);
   }, []);
@@ -388,6 +421,7 @@ export default function LibraryFileList({
         pages={pages}
         onPage={handleSetPage}
         onView={handleViewFile}
+        onExport={handleExportFile}
         onRedo={handleRedoFile}
         onDelete={(file: { id: string; name: string }) => {
           setDeleteModal(true);
