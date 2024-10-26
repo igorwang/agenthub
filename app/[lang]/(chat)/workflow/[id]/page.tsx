@@ -33,6 +33,7 @@ async function getNodeTypeListData() {
   if (!session?.user) return null;
 
   const variables: GetNodeTypeListQueryVariables = {
+    limit: 100,
     where: {
       _and: [
         {
