@@ -1,4 +1,6 @@
 "use client";
+
+import { PDFDocumentProxy } from "pdfjs-dist";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   PdfHighlighter,
@@ -42,6 +44,12 @@ export default function PdfViewer({ pdfUrl }: PdfViewerProps) {
     [highlights],
   );
 
+  const handlePdfLoad = (pdfDocument: PDFDocumentProxy) => {
+    pdfDocument.getPage(1).then((page) => {
+      const viewport = page.getViewport({ scale: 1.0 });
+    });
+  };
+
   // Scroll to highlight based on hash in the URL
   const scrollToHighlightFromHash = useCallback(() => {
     const highlight = getHighlightById(parseIdFromHash());
@@ -65,28 +73,32 @@ export default function PdfViewer({ pdfUrl }: PdfViewerProps) {
       <div className="relative w-3/4">
         <div className="custom-scrollbar absolute inset-0 overflow-auto">
           <PdfLoader document={pdfUrl}>
-            {(pdfDocument) => (
-              <PdfHighlighter
-                pdfDocument={pdfDocument}
-                highlights={highlights}
-                onScrollAway={resetHash}
-                utilsRef={(utils) => {
-                  if (utils) {
-                    highlighterUtilsRef.current = utils;
-                  }
-                }}
-                // 添加自定义样式
-                // scrollRef={null}
-                style={{
-                  backgroundColor: "#f5f5f5", // A light gray color
-                  scrollbarWidth: "thin",
-                }}>
-                <HighlightContainer editHighlight={() => {}} onContextMenu={() => {}} />
-              </PdfHighlighter>
-            )}
+            {(pdfDocument) => {
+              handlePdfLoad(pdfDocument);
+              return (
+                <PdfHighlighter
+                  pdfDocument={pdfDocument}
+                  highlights={highlights}
+                  onScrollAway={resetHash}
+                  utilsRef={(utils) => {
+                    if (utils) {
+                      highlighterUtilsRef.current = utils;
+                    }
+                  }}
+                  // 添加自定义样式
+                  // scrollRef={null}
+                  style={{
+                    backgroundColor: "#f5f5f5", // A light gray color
+                    scrollbarWidth: "thin",
+                  }}>
+                  <HighlightContainer editHighlight={() => {}} onContextMenu={() => {}} />
+                </PdfHighlighter>
+              );
+            }}
           </PdfLoader>
         </div>
       </div>
+
       <PdfViewerSidebar highlights={highlights} />
     </div>
   );

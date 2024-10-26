@@ -10,6 +10,8 @@ export default function PdfViewerSidebar({ highlights }: PdfViewerSidebarProps) 
     document.location.hash = `highlight-${highlight.id}`;
   };
 
+  console.log("PdfViewerSidebar", highlights);
+
   return (
     <div className="h-full w-[25vw] max-w-[500px] bg-content1 p-4">
       <ScrollShadow className="h-full">

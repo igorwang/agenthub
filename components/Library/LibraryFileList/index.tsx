@@ -123,8 +123,6 @@ export default function LibraryFileList({
 
   const handleViewFile = useCallback((file: FileDTO) => {
     router.push(`${pathname}/chunk?filename=${file.name}&fileId=${file.id}`);
-    // 实现查看文件的逻辑
-    // toast.error("Wating for implement");
   }, []);
 
   const handleRedoFile = useCallback(
