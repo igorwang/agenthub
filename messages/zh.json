@@ -94,6 +94,7 @@
   "Edit Multi Modal Input Node": "编辑多模态输入节点",
   "Edit Node": "编辑节点",
   "Edit Query Document Node": "编辑查询文档节点",
+  "Edit Rerank Node": "Edit Rerank Node",
   "Edit SearchMemory Node": "编辑搜索记忆节点",
   "Edit WorkflowInput Node": "编辑工作流输入节点",
   "Embedding model": "文档向量模型",

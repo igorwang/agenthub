@@ -43,6 +43,7 @@ export const nodeFormComponents: Map<string, any | null> = new Map([
     "httpRequestNode",
     (props) => <DefaultNodeForm {...props} title="Edit HttpRequest Node" />,
   ],
+  ["rerankNode", (props) => <DefaultNodeForm {...props} title="Edit Rerank Node" />],
   // 如果某种节点类型没有对应的表单，可以设置为 null
   // ['someOtherNode', null],
 ]);

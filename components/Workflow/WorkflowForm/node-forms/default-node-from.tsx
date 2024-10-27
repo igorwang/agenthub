@@ -34,7 +34,8 @@ export default function DefaultNodeForm({
     t("Edit Node") ||
     t("Edit Query Document Node") ||
     t("Edit Aircraft Node") ||
-    t("Edit HttpRequest Node");
+    t("Edit HttpRequest Node") ||
+    t("Edit Rerank Node");
 
   const onSubmit = (data: any) => {
     onNodeChange?.(data);
