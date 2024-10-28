@@ -77,8 +77,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     jwt: async ({ token, user, profile }) => {
       if (user) {
-        console.log("User logged in:", user);
-        console.log("User profile:", profile);
         // call role data
         const { data } = await client.query({
           query: GetUserRolesDocument,
@@ -86,11 +84,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             where: { user_id: { _eq: user.id } },
           },
         });
-
         const defaultRoles = ["user"];
         const additionalRoles = data.r_user_role?.map((item: any) => item.role) || [];
 
+        console.log("User logged in:", user);
+        console.log("User profile:", profile);
         console.log("additionalRoles", data, additionalRoles);
+
         const roles = Array.from(new Set([...defaultRoles, ...additionalRoles]));
 
         const payload = {
