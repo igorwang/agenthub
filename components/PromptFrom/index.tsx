@@ -1,6 +1,5 @@
 "use client";
 import PromptTemplateInput from "@/components/PromptFrom/prompt-template-input";
-import { PlusIcon } from "@/components/ui/icons";
 import {
   Message_Role_Enum,
   useCreateNewPromptMutation,
@@ -9,6 +8,7 @@ import {
   useUpadeAgentPromptMutation,
   useUpadeKnowledgeBasePromptMutation,
 } from "@/graphql/generated/types";
+import { Icon } from "@iconify/react";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { Button } from "@nextui-org/button";
 import { Input, Spacer } from "@nextui-org/react";
@@ -19,6 +19,19 @@ import React, { useEffect, useImperativeHandle, useRef, useState } from "react";
 import { toast } from "sonner";
 
 type TemplateStatus = "draft" | "saved";
+
+const CitationPromptTemplate = `
+You will be given multiple sources, each starting with a reference number [[source:x]] where x is a numerical identifier.
+
+Please follow these citation rules:
+1. Use the sources appropriately based on the question
+2. Add citations at the end of each sentence when using information from a source, using the format [source:x]
+3. Citations must be relevant to the content, avoid random citations
+4. Your response should be in the same language as the question, except for code, proper nouns, and citations
+
+Example:
+According to research, this technology can improve efficiency by 30% [source:1]. In practical applications, user satisfaction rates exceeded 90% [source:2].
+`;
 
 export type PromptTemplateType = {
   id: number | string;
@@ -236,6 +249,18 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
           return newTemplates;
         });
       }
+    };
+
+    const handleAddCitationTemplate = () => {
+      setTemplatesState((prevTemplates) => [
+        ...prevTemplates,
+        {
+          id: `temp${Date.now()}`,
+          template: CitationPromptTemplate,
+          role: "user",
+          status: "draft",
+        },
+      ]);
     };
 
     const handelVariableInputChange = (name: string, value: string) => {
@@ -502,18 +527,27 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
                   }
                   placeholder={t("Enter prompt name")}></Input>
               )}
-
               <span className="text-md font-bold">{t("Template Messages")}</span>
               {templatesElement}
-              <Button
-                className="m-2 gap-1 bg-white p-2"
-                size="sm"
-                variant="ghost"
-                isDisabled={!isEditing}
-                startContent={<PlusIcon size={14}></PlusIcon>}
-                onClick={handleAddMessage}>
-                {t("Message")}
-              </Button>
+              <div>
+                <Button
+                  className="m-2 gap-1 bg-white p-2"
+                  size="sm"
+                  variant="ghost"
+                  isDisabled={!isEditing}
+                  startContent={<Icon icon="ic:outline-add" />}
+                  onClick={handleAddMessage}>
+                  {t("Message")}
+                </Button>
+                <Button
+                  className="m-2 gap-1 bg-white p-2"
+                  size="sm"
+                  variant="ghost"
+                  startContent={<Icon icon="carbon:prompt-template" />}
+                  onClick={handleAddCitationTemplate}>
+                  {t("Citation Prompt Template")}
+                </Button>
+              </div>
             </div>
           </div>
         </div>
