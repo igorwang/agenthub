@@ -9,27 +9,13 @@ import {
   useUpadeAgentPromptMutation,
   useUpadeKnowledgeBasePromptMutation,
 } from "@/graphql/generated/types";
-import {
-  Edge,
-  extractClosestEdge,
-} from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
-import { getReorderDestinationIndex } from "@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index";
-import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import { reorder } from "@atlaskit/pragmatic-drag-and-drop/reorder";
-import { Icon } from "@iconify/react";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { Button } from "@nextui-org/button";
-import { Input, Spacer, Tooltip } from "@nextui-org/react";
+import { Input, Spacer } from "@nextui-org/react";
 import { clsx } from "clsx";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import React, {
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useImperativeHandle, useRef, useState } from "react";
 import { toast } from "sonner";
 
 type TemplateStatus = "draft" | "saved";
@@ -181,68 +167,6 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
       }
     }, [data, isNewPromot]);
 
-    const reorderItem = useCallback(
-      ({
-        startIndex,
-        indexOfTarget,
-        closestEdgeOfTarget,
-      }: {
-        startIndex: number;
-        indexOfTarget: number;
-        closestEdgeOfTarget: Edge | null;
-      }) => {
-        const finishIndex = getReorderDestinationIndex({
-          startIndex,
-          closestEdgeOfTarget,
-          indexOfTarget,
-          axis: "vertical",
-        });
-
-        if (finishIndex === startIndex) {
-          // If there would be no change, we skip the update
-          return;
-        }
-        setTemplatesState((prevTemplatesState) => {
-          return reorder({ list: prevTemplatesState, startIndex, finishIndex });
-        });
-      },
-      [],
-    );
-
-    useEffect(() => {
-      return monitorForElements({
-        onDrop({ source, location }) {
-          const target = location.current.dropTargets[0];
-
-          if (!target) {
-            return;
-          }
-
-          const sourceData = source.data;
-          const targetData = target.data;
-
-          const indexOfSource = templatesState.findIndex(
-            (template) => template.id === sourceData.templateId,
-          );
-          const indexOfTarget = templatesState.findIndex(
-            (template) => template.id === targetData.templateId,
-          );
-
-          if (indexOfTarget < 0 || indexOfSource < 0) {
-            return;
-          }
-
-          const closestEdgeOfTarget = extractClosestEdge(target.data);
-
-          reorderItem({
-            startIndex: indexOfSource,
-            indexOfTarget,
-            closestEdgeOfTarget,
-          });
-        },
-      });
-    }, [templatesState, reorderItem]);
-
     const handleChangePrompt = (id: number | null) => {
       if (id) {
         setPromptId(id);
@@ -287,6 +211,31 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
           template.id === id ? { ...template, role: role } : template,
         ),
       );
+    };
+
+    const handleTemplateMove = (id: number | string, direction: "up" | "down") => {
+      const index = templatesState.findIndex((template) => template.id === id);
+      if (index === 0 && direction === "up") return;
+      if (index === templatesState.length - 1 && direction === "down") return;
+      if (direction === "up") {
+        setTemplatesState((prevTemplates) => {
+          const newTemplates = [...prevTemplates];
+          [newTemplates[index], newTemplates[index - 1]] = [
+            newTemplates[index - 1],
+            newTemplates[index],
+          ];
+          return newTemplates;
+        });
+      } else {
+        setTemplatesState((prevTemplates) => {
+          const newTemplates = [...prevTemplates];
+          [newTemplates[index], newTemplates[index + 1]] = [
+            newTemplates[index + 1],
+            newTemplates[index],
+          ];
+          return newTemplates;
+        });
+      }
     };
 
     const handelVariableInputChange = (name: string, value: string) => {
@@ -463,8 +412,11 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
       setPrompt({ name: t("New Prompt") });
     };
 
-    const templatesElement = templatesState.map((template) => (
+    const templatesElement = templatesState.map((template, index) => (
       <PromptTemplateInput
+        index={index}
+        onTemplateMove={handleTemplateMove}
+        isLast={index === templatesState.length - 1}
         key={template.id}
         template={template}
         isDisabled={!isEditing}
@@ -503,7 +455,7 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
                   onValueChange={(value) =>
                     setPrompt((prevPrompt) => ({ ...prevPrompt, name: value }))
                   }
-                  placeholder="Enter prompt name"></Input>
+                  placeholer="Enter prompt name"></Input>
               ) : (
                 <PromptSearchBar handleChangePrompt={handleChangePrompt}></PromptSearchBar>
               )} */}
@@ -517,7 +469,7 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
               {/* <PromptSearchBar handleChangePrompt={handleChangePrompt}></PromptSearchBar> */}
             </div>
             <div className="flex flex-row gap-2">
-              <Tooltip content={t("Add new prompt")}>
+              {/* <Tooltip content={t("Add new prompt")}>
                 <Button
                   isIconOnly
                   variant="bordered"
@@ -525,7 +477,7 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
                   className={hiddenNewButton ? "hidden" : "visible"}>
                   <Icon icon={"ic:outline-add"} fontSize={30} color={"slate-200"}></Icon>
                 </Button>
-              </Tooltip>
+              </Tooltip> */}
               <Button
                 color="primary"
                 className={hiddenSaveButton ? "hidden" : "visible"}

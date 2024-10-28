@@ -81,23 +81,6 @@
   dependencies:
     node-fetch "^2.6.1"
 
-"@atlaskit/pragmatic-drag-and-drop-hitbox@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@atlaskit/pragmatic-drag-and-drop-hitbox/-/pragmatic-drag-and-drop-hitbox-1.0.3.tgz#fcce42f5e2c5a26007f4422397acad29608d3784"
-  integrity sha512-/Sbu/HqN2VGLYBhnsG7SbRNg98XKkbF6L7XDdBi+izRybfaK1FeMfodPpm/xnBHPJzwYMdkE0qtLyv6afhgMUA==
-  dependencies:
-    "@atlaskit/pragmatic-drag-and-drop" "^1.1.0"
-    "@babel/runtime" "^7.0.0"
-
-"@atlaskit/pragmatic-drag-and-drop@^1.1.0", "@atlaskit/pragmatic-drag-and-drop@^1.1.12":
-  version "1.1.12"
-  resolved "https://registry.yarnpkg.com/@atlaskit/pragmatic-drag-and-drop/-/pragmatic-drag-and-drop-1.1.12.tgz#9b2a094af99eacc592eb18e9111e41a36730a3a9"
-  integrity sha512-mg9fDg0T8XnxIbjnwUYL4U+zlpEJO24iS61FI071JFYaiX3A2J+zGMYzu3EyiWpamU8R7yeLoROtw1Fbs7MX6Q==
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-    bind-event-listener "^3.0.0"
-    raf-schd "^4.0.3"
-
 "@auth/core@0.32.0":
   version "0.32.0"
   resolved "https://registry.yarnpkg.com/@auth/core/-/core-0.32.0.tgz#2bc9ba7c52fba798ed46706bbd30d4d5c7021d75"
@@ -6436,11 +6419,6 @@ binary-search@^1.3.5:
   resolved "https://registry.yarnpkg.com/binary-search/-/binary-search-1.3.6.tgz#e32426016a0c5092f0f3598836a1c7da3560565c"
   integrity sha512-nbE1WxOTTrUWIfsfZ4aHGYu5DOuNkbxGokjV6Z2kxfJK3uaAb8zNK1muzOeipoLHZjInT4Br88BHpzevc681xA==
 
-bind-event-listener@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/bind-event-listener/-/bind-event-listener-3.0.0.tgz#c90f9a7fcb65cac21045f810c20ef7e647a74921"
-  integrity sha512-PJvH288AWQhKs2v9zyfYdPzlPqf5bXbGMmhmUIY9x4dAUGIWgomO771oBQNwJnMQSnUIXhKu6sgzpBRXTlvb8Q==
-
 bl@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/bl/-/bl-4.1.0.tgz#451535264182bec2fbbc83a62ab98cf11d9f7b3a"
@@ -11707,11 +11685,6 @@ queue-tick@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/queue-tick/-/queue-tick-1.0.1.tgz#f6f07ac82c1fd60f82e098b417a80e52f1f4c142"
   integrity sha512-kJt5qhMxoszgU/62PLP1CJytzd2NKetjSRnyuj31fDd3Rlcz3fzlFdFLD1SItunPwyqEOkca6GbV612BWfaBag==
-
-raf-schd@^4.0.3:
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/raf-schd/-/raf-schd-4.0.3.tgz#5d6c34ef46f8b2a0e880a8fcdb743efc5bfdbc1a"
-  integrity sha512-tQkJl2GRWh83ui2DiPTJz9wEiMN20syf+5oKfB03yYP7ioZcJwsIK8FjrtLwH1m7C7e+Tt2yYBlrOpdT+dyeIQ==
 
 rc9@^2.1.1:
   version "2.1.2"

@@ -1,21 +1,9 @@
-import { DropIndicator } from "@/components/PromptFrom/drop-indicator";
-import { DeleteOutlineIcon, SelectIcon } from "@/components/ui/icons";
-import {
-  attachClosestEdge,
-  extractClosestEdge,
-  type Edge,
-} from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
-import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
-import {
-  draggable,
-  dropTargetForElements,
-} from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import { SelectIcon } from "@/components/ui/icons";
+import { Icon } from "@iconify/react";
 import { Button } from "@nextui-org/button";
 import { Textarea } from "@nextui-org/input";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
-import clsx from "clsx";
-import React, { useEffect, useRef, useState } from "react";
-import invariant from "tiny-invariant";
+import React, { useRef } from "react";
 
 type TemplateStatus = "draft" | "saved";
 
@@ -29,95 +17,71 @@ export type PromptTemplateType = {
 const PromptTemplateInput = React.forwardRef<
   HTMLDivElement,
   {
+    index: number;
+    isLast: boolean;
     isDisabled?: boolean;
     template: PromptTemplateType;
     handleDeleteMessage?: (id: number | string) => void;
     handleValueChange?: (id: number | string, newValue: string) => void;
     handleRoleSelect?: (id: number | string, newRole: string) => void;
+    onTemplateMove?: (id: number | string, direction: "up" | "down") => void;
   }
 >(
   (
     {
+      index,
+      isLast,
       isDisabled,
       template,
       handleDeleteMessage,
       handleValueChange,
       handleRoleSelect,
+      onTemplateMove,
       ...props
     },
     ref,
   ) => {
     const refTextarea = useRef(null);
-    const [dragging, setDragging] = useState<boolean>(false); // NEW
-    const [isDraggedOver, setIsDraggedOver] = useState(false);
-    const [closestEdge, setClosestEdge] = useState<Edge | null>();
 
-    useEffect(() => {
-      const el = refTextarea.current;
-      invariant(el);
-      return combine(
-        draggable({
-          //Make element draggable
-          element: el,
-          getInitialData() {
-            return { templateId: template.id };
-          },
-          onDragStart: () => setDragging(true),
-          onDrop: () => setDragging(false),
-        }),
-
-        dropTargetForElements({
-          element: el,
-          canDrop({ source }) {
-            // not allowing dropping on yourself
-            if (source.element === el) {
-              return false;
-            }
-            // only allowing tasks to be dropped on me
-            return true;
-          },
-          onDragEnter({ self }) {
-            setIsDraggedOver(true);
-            const closestEdge = extractClosestEdge(self.data);
-            setClosestEdge(closestEdge);
-          },
-          onDragLeave: () => setIsDraggedOver(false),
-          onDrop({ self }) {
-            setIsDraggedOver(false);
-          },
-          getData({ input }) {
-            const data = { templateId: template.id };
-            return attachClosestEdge(data, {
-              element: el,
-              input,
-              allowedEdges: ["top", "bottom"],
-            });
-          },
-        }),
-      );
-    }, [template]);
     return (
       <div className="relative w-full">
         <Textarea
           key={template.id}
           ref={refTextarea}
-          variant={dragging || isDisabled ? "faded" : "bordered"}
+          variant={isDisabled ? "faded" : "bordered"}
           placeholder="Enter your template"
-          className={clsx("relative col-span-12 mb-2 md:col-span-6 md:mb-0", {
-            // "bg-slate-200": dragging,
-          })}
-          disabled={dragging || isDisabled}
+          className="relative col-span-12 mb-2 md:col-span-6 md:mb-0"
+          disabled={isDisabled}
           classNames={{ label: "mt-[-0.5em] h-6", input: "resize-y" }}
           onValueChange={(value) =>
             handleValueChange && handleValueChange(template.id, value)
           }
           endContent={
-            <Button
-              isIconOnly
-              variant="light"
-              className="absolute right-0 top-0 hidden group-hover:block data-[hover=true]:bg-transparent hover:cursor-pointer"
-              onClick={() => handleDeleteMessage && handleDeleteMessage(template.id)}
-              startContent={<DeleteOutlineIcon />}></Button>
+            <div className="absolute right-0 top-0 flex hidden flex-row items-center justify-center gap-0 group-hover:block">
+              {index > 0 && (
+                <Button
+                  isIconOnly
+                  variant="light"
+                  className="data-[hover=true]:bg-transparent"
+                  onClick={() => onTemplateMove && onTemplateMove(template.id, "up")}
+                  startContent={<Icon icon="mdi:arrow-up" />}></Button>
+              )}
+              {!isLast && (
+                <Button
+                  isIconOnly
+                  variant="light"
+                  className="data-[hover=true]:bg-transparent"
+                  onClick={() => onTemplateMove && onTemplateMove(template.id, "down")}
+                  startContent={<Icon icon="mdi:arrow-down" />}></Button>
+              )}
+              <Button
+                isIconOnly
+                variant="light"
+                color="danger"
+                className="data-[hover=true]:bg-transparent"
+                onClick={() => handleDeleteMessage && handleDeleteMessage(template.id)}
+                startContent={<Icon icon="ic:outline-delete" />}></Button>
+            </div>
           }
           value={template.template}
           label={
@@ -149,7 +113,6 @@ const PromptTemplateInput = React.forwardRef<
               </DropdownMenu>
             </Dropdown>
           }></Textarea>
-        {isDraggedOver && <DropIndicator edge={"bottom"} gap={"8px"}></DropIndicator>}
       </div>
     );
   },

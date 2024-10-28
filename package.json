@@ -19,8 +19,6 @@
   },
   "dependencies": {
     "@apollo/client": "^3.10.4",
-    "@atlaskit/pragmatic-drag-and-drop": "^1.1.12",
-    "@atlaskit/pragmatic-drag-and-drop-hitbox": "^1.0.3",
     "@auth/hasura-adapter": "^1.1.0",
     "@aws-sdk/client-dynamodb": "^3.679.0",
     "@aws-sdk/client-s3": "^3.679.0",
