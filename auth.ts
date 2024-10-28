@@ -89,7 +89,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         const defaultRoles = ["user"];
         const additionalRoles = data.r_user_role?.map((item: any) => item.role) || [];
-        console.log("additionalRoles", additionalRoles);
+
+        console.log("additionalRoles", data, additionalRoles);
         const roles = Array.from(new Set([...defaultRoles, ...additionalRoles]));
 
         const payload = {
