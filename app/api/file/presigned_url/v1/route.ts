@@ -1,5 +1,7 @@
 import { auth } from "@/auth";
 import s3Client from "@/lib/s3Client";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -8,6 +10,11 @@ const bodySchema = z.object({
   objectName: z.string(),
   contentType: z.string(),
   metadata: z.record(z.string()).optional(),
+  size: z
+    .number()
+    .min(1)
+    .max(100 * 1024 * 1024) // Max 100MB
+    .optional(), // Make size optional for backward compatibility
 });
 
 export async function POST(req: NextRequest) {
@@ -19,7 +26,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const parsedBody = bodySchema.parse(body); // Validate the body
+    const parsedBody = bodySchema.parse(body);
 
     const supportedLocations = ["chat", "nextcloud", "public", "tmp"];
     if (!supportedLocations.includes(parsedBody.bucket)) {
@@ -32,17 +39,30 @@ export async function POST(req: NextRequest) {
     const params = {
       Bucket: parsedBody.bucket,
       Key: parsedBody.objectName,
-      Expires: 2 * 60 * 60, // URL expiration time in seconds
       ContentType: parsedBody.contentType,
-      Metadata: parsedBody.metadata,
+      Metadata: {
+        ...parsedBody.metadata,
+        userId: session.user.id ?? "",
+      },
     };
 
-    const presignedPutUrl = await s3Client.getSignedUrlPromise("putObject", params);
+    const command = new PutObjectCommand(params);
+    const presignedPutUrl = await getSignedUrl(s3Client, command, {
+      expiresIn: 2 * 60 * 60, // 2 hours in seconds
+    });
 
     return NextResponse.json({
       presignedPutUrl: presignedPutUrl,
     });
   } catch (error) {
+    console.log("s3 error", error);
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: "Invalid request data", details: error.errors },
+        { status: 400 },
+      );
+    }
+
     console.error("Error generating presigned URL", error);
     return NextResponse.json(
       { error: "Error generating presigned URL" },

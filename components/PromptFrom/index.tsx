@@ -1,6 +1,5 @@
 "use client";
 import PromptTemplateInput from "@/components/PromptFrom/prompt-template-input";
-import { PlusIcon } from "@/components/ui/icons";
 import {
   Message_Role_Enum,
   useCreateNewPromptMutation,
@@ -9,30 +8,30 @@ import {
   useUpadeAgentPromptMutation,
   useUpadeKnowledgeBasePromptMutation,
 } from "@/graphql/generated/types";
-import {
-  Edge,
-  extractClosestEdge,
-} from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
-import { getReorderDestinationIndex } from "@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index";
-import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import { reorder } from "@atlaskit/pragmatic-drag-and-drop/reorder";
 import { Icon } from "@iconify/react";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { Button } from "@nextui-org/button";
-import { Input, Spacer, Tooltip } from "@nextui-org/react";
+import { Input, Spacer } from "@nextui-org/react";
 import { clsx } from "clsx";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import React, {
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useImperativeHandle, useRef, useState } from "react";
 import { toast } from "sonner";
 
 type TemplateStatus = "draft" | "saved";
+
+const CitationPromptTemplate = `
+You will be given multiple sources, each starting with a reference number [[source:x]] where x is a numerical identifier.
+
+Please follow these citation rules:
+1. Use the sources appropriately based on the question
+2. Add citations at the end of each sentence when using information from a source, using the format [source:x]
+3. Citations must be relevant to the content, avoid random citations
+4. Your response should be in the same language as the question, except for code, proper nouns, and citations
+
+Example:
+According to research, this technology can improve efficiency by 30% [source:1]. In practical applications, user satisfaction rates exceeded 90% [source:2].
+`;
 
 export type PromptTemplateType = {
   id: number | string;
@@ -181,68 +180,6 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
       }
     }, [data, isNewPromot]);
 
-    const reorderItem = useCallback(
-      ({
-        startIndex,
-        indexOfTarget,
-        closestEdgeOfTarget,
-      }: {
-        startIndex: number;
-        indexOfTarget: number;
-        closestEdgeOfTarget: Edge | null;
-      }) => {
-        const finishIndex = getReorderDestinationIndex({
-          startIndex,
-          closestEdgeOfTarget,
-          indexOfTarget,
-          axis: "vertical",
-        });
-
-        if (finishIndex === startIndex) {
-          // If there would be no change, we skip the update
-          return;
-        }
-        setTemplatesState((prevTemplatesState) => {
-          return reorder({ list: prevTemplatesState, startIndex, finishIndex });
-        });
-      },
-      [],
-    );
-
-    useEffect(() => {
-      return monitorForElements({
-        onDrop({ source, location }) {
-          const target = location.current.dropTargets[0];
-
-          if (!target) {
-            return;
-          }
-
-          const sourceData = source.data;
-          const targetData = target.data;
-
-          const indexOfSource = templatesState.findIndex(
-            (template) => template.id === sourceData.templateId,
-          );
-          const indexOfTarget = templatesState.findIndex(
-            (template) => template.id === targetData.templateId,
-          );
-
-          if (indexOfTarget < 0 || indexOfSource < 0) {
-            return;
-          }
-
-          const closestEdgeOfTarget = extractClosestEdge(target.data);
-
-          reorderItem({
-            startIndex: indexOfSource,
-            indexOfTarget,
-            closestEdgeOfTarget,
-          });
-        },
-      });
-    }, [templatesState, reorderItem]);
-
     const handleChangePrompt = (id: number | null) => {
       if (id) {
         setPromptId(id);
@@ -287,6 +224,43 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
           template.id === id ? { ...template, role: role } : template,
         ),
       );
+    };
+
+    const handleTemplateMove = (id: number | string, direction: "up" | "down") => {
+      const index = templatesState.findIndex((template) => template.id === id);
+      if (index === 0 && direction === "up") return;
+      if (index === templatesState.length - 1 && direction === "down") return;
+      if (direction === "up") {
+        setTemplatesState((prevTemplates) => {
+          const newTemplates = [...prevTemplates];
+          [newTemplates[index], newTemplates[index - 1]] = [
+            newTemplates[index - 1],
+            newTemplates[index],
+          ];
+          return newTemplates;
+        });
+      } else {
+        setTemplatesState((prevTemplates) => {
+          const newTemplates = [...prevTemplates];
+          [newTemplates[index], newTemplates[index + 1]] = [
+            newTemplates[index + 1],
+            newTemplates[index],
+          ];
+          return newTemplates;
+        });
+      }
+    };
+
+    const handleAddCitationTemplate = () => {
+      setTemplatesState((prevTemplates) => [
+        ...prevTemplates,
+        {
+          id: `temp${Date.now()}`,
+          template: CitationPromptTemplate,
+          role: "user",
+          status: "draft",
+        },
+      ]);
     };
 
     const handelVariableInputChange = (name: string, value: string) => {
@@ -463,8 +437,11 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
       setPrompt({ name: t("New Prompt") });
     };
 
-    const templatesElement = templatesState.map((template) => (
+    const templatesElement = templatesState.map((template, index) => (
       <PromptTemplateInput
+        index={index}
+        onTemplateMove={handleTemplateMove}
+        isLast={index === templatesState.length - 1}
         key={template.id}
         template={template}
         isDisabled={!isEditing}
@@ -503,7 +480,7 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
                   onValueChange={(value) =>
                     setPrompt((prevPrompt) => ({ ...prevPrompt, name: value }))
                   }
-                  placeholder="Enter prompt name"></Input>
+                  placeholer="Enter prompt name"></Input>
               ) : (
                 <PromptSearchBar handleChangePrompt={handleChangePrompt}></PromptSearchBar>
               )} */}
@@ -517,7 +494,7 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
               {/* <PromptSearchBar handleChangePrompt={handleChangePrompt}></PromptSearchBar> */}
             </div>
             <div className="flex flex-row gap-2">
-              <Tooltip content={t("Add new prompt")}>
+              {/* <Tooltip content={t("Add new prompt")}>
                 <Button
                   isIconOnly
                   variant="bordered"
@@ -525,7 +502,7 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
                   className={hiddenNewButton ? "hidden" : "visible"}>
                   <Icon icon={"ic:outline-add"} fontSize={30} color={"slate-200"}></Icon>
                 </Button>
-              </Tooltip>
+              </Tooltip> */}
               <Button
                 color="primary"
                 className={hiddenSaveButton ? "hidden" : "visible"}
@@ -550,18 +527,27 @@ const PromptForm = React.forwardRef<PromptFormHandle, PromptFormProps>(
                   }
                   placeholder={t("Enter prompt name")}></Input>
               )}
-
               <span className="text-md font-bold">{t("Template Messages")}</span>
               {templatesElement}
-              <Button
-                className="m-2 gap-1 bg-white p-2"
-                size="sm"
-                variant="ghost"
-                isDisabled={!isEditing}
-                startContent={<PlusIcon size={14}></PlusIcon>}
-                onClick={handleAddMessage}>
-                {t("Message")}
-              </Button>
+              <div>
+                <Button
+                  className="m-2 gap-1 bg-white p-2"
+                  size="sm"
+                  variant="ghost"
+                  isDisabled={!isEditing}
+                  startContent={<Icon icon="ic:outline-add" />}
+                  onClick={handleAddMessage}>
+                  {t("Message")}
+                </Button>
+                <Button
+                  className="m-2 gap-1 bg-white p-2"
+                  size="sm"
+                  variant="ghost"
+                  startContent={<Icon icon="carbon:prompt-template" />}
+                  onClick={handleAddCitationTemplate}>
+                  {t("Citation Prompt Template")}
+                </Button>
+              </div>
             </div>
           </div>
         </div>
