@@ -9,6 +9,10 @@ const withNextIntl = createNextIntlPlugin();
 
 const envConfig = dotenv.parse(fs.readFileSync(envFile));
 
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
+});
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   webpack: (config, { isServer }) => {
@@ -29,6 +33,17 @@ const nextConfig = {
     ];
   },
   env: envConfig,
+  // experimental: {
+  //   // 启用 turbopack
+  //   turbotrace: {
+  //     // enabled: true,
+  //     memoryLimit: 4000, // 限制内存使用
+  //   },
+  // },
+  // 静态资源优化
+  compress: true,
+  poweredByHeader: false,
+  ...(process.env.ANALYZE === "true" ? withBundleAnalyzer : {}),
   // env: {
   //   HTTP_API_HOST: process.env.HTTP_API_HOST,
   //   WS_API_HOST: process.env.WS_API_HOST,
