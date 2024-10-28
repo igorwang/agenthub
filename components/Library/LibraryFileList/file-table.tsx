@@ -3,6 +3,10 @@ import { Icon } from "@iconify/react";
 import {
   Button,
   Chip,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
   Pagination,
   Selection,
   SortDescriptor,
@@ -34,6 +38,7 @@ interface FileTableProps {
   onRedo: (file: FileDTO) => void;
   onDelete: (file: FileDTO) => void;
   onPage: (page: number) => void;
+  onExport: (file: FileDTO) => void;
   onFileListSelectedChange: (fileIds: string[]) => void;
   maxWidth?: string;
   reprocessingFiles: Set<string>;
@@ -62,6 +67,7 @@ const FileTable: FC<FileTableProps> = ({
   onDelete,
   onPage,
   onFileListSelectedChange,
+  onExport,
   maxWidth = "1280px",
   reprocessingFiles,
 }) => {
@@ -155,7 +161,7 @@ const FileTable: FC<FileTableProps> = ({
         case "actions":
           return (
             <div className="flex items-center justify-center gap-1">
-              <Tooltip content="Copy">
+              {/* <Tooltip content="Copy">
                 <Button
                   isIconOnly
                   size="sm"
@@ -167,7 +173,7 @@ const FileTable: FC<FileTableProps> = ({
                   }}>
                   <Icon icon="lets-icons:copy" className="text-lg" />
                 </Button>
-              </Tooltip>
+              </Tooltip> */}
               <Tooltip content="View">
                 <Button
                   isIconOnly
@@ -205,7 +211,7 @@ const FileTable: FC<FileTableProps> = ({
                   />
                 </Button>
               </Tooltip>
-              <Tooltip color="danger" content="Delete">
+              {/* <Tooltip color="danger" content="Delete">
                 <Button
                   isIconOnly
                   size="sm"
@@ -218,6 +224,43 @@ const FileTable: FC<FileTableProps> = ({
                   }}>
                   <Icon icon="openmoji:delete" className="text-lg" />
                 </Button>
+              </Tooltip> */}
+              <Tooltip content="More">
+                <Dropdown>
+                  <DropdownTrigger>
+                    <Button isIconOnly size="sm" variant="light">
+                      <Icon icon="icon-park-outline:more" width={18} />
+                    </Button>
+                  </DropdownTrigger>
+                  <DropdownMenu>
+                    <DropdownItem
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        navigator.clipboard.writeText(`${file.name}(${file.id})`);
+                      }}>
+                      {t("Copy")}
+                    </DropdownItem>
+                    <DropdownItem
+                      color="danger"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onDelete(file);
+                      }}>
+                      {t("Delete")}
+                    </DropdownItem>
+                    <DropdownItem
+                      color="danger"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onExport(file);
+                      }}>
+                      {t("Export Original")}
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
               </Tooltip>
             </div>
           );

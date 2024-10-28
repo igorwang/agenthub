@@ -27,6 +27,7 @@ export default function LibraryWorkflowRunningPane({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [expandedSteps, setExpandedSteps] = useState<{ [key: number]: boolean }>({});
   const [status, setStatus] = useState<Status_Enum | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { data, loading, error } = useSubExecuteResultsSubscription({
     variables: {
@@ -60,6 +61,7 @@ export default function LibraryWorkflowRunningPane({
   };
 
   const handleRedoFile = useCallback(async () => {
+    setIsLoading(true);
     setResults(null);
     try {
       const response = await fetch("/api/file/reprocess", {
@@ -81,6 +83,8 @@ export default function LibraryWorkflowRunningPane({
     } catch (error) {
       console.error("Error reprocessing file:", error);
       toast.error(`Failed to reprocess file "${fileName}". Please try again.`);
+    } finally {
+      setIsLoading(false);
     }
   }, [fileId, fileName]);
 
@@ -102,13 +106,14 @@ export default function LibraryWorkflowRunningPane({
           </Button>
         </Tooltip>
         <Spacer />
-        <Tooltip content={loading ? `${t("Start")}...` : t("Start")}>
+        <Tooltip content={isLoading ? `${t("Start")}...` : t("Start")}>
           <Button
             color="primary"
             variant="bordered"
             size="sm"
             onClick={handleRedoFile}
-            isLoading={loading}
+            isLoading={isLoading}
+            isDisabled={isLoading}
             startContent={<Icon icon="mdi:play" fontSize={20} />}>
             {t("Start")}
           </Button>

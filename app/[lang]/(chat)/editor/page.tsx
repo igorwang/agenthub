@@ -1,4 +1,5 @@
-import SmartEditor from "@/components/SmartEditor";
+"use client";
+import PdfViewer from "@/components/PdfViewer";
 import { useTranslations } from "next-intl";
 
 export default function EditorPage() {
@@ -6,7 +7,7 @@ export default function EditorPage() {
 
   return (
     <div className="mx-auto flex h-full w-full max-w-7xl flex-col">
-      <SmartEditor />
+      <PdfViewer pdfUrl="https://arxiv.org/pdf/2203.11115" />
     </div>
   );
 }

@@ -298,7 +298,7 @@ export const Conversation: React.FC<ConversationProps> = ({
           method: "POST",
           body: JSON.stringify({
             agent_id: agentId,
-            expires_at: 60 * 60 * 24,
+            expires_at: 60 * 60 * 24 * 30,
           }),
         });
         const data = await response.json();
