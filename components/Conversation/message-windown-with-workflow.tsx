@@ -500,6 +500,7 @@ export default function MessageWindowWithWorkflow({
                     {
                       ...prev[0],
                       message: prev[0].message,
+                      sources: chatSessionContext?.sources || [],
                       status: Message_Status_Enum.Success,
                     },
                   ];
@@ -507,7 +508,11 @@ export default function MessageWindowWithWorkflow({
                 const draftMessage = prev[prev.length - 1];
                 return [
                   ...prev.slice(0, -1),
-                  { ...draftMessage, status: Message_Status_Enum.Success },
+                  {
+                    ...draftMessage,
+                    status: Message_Status_Enum.Success,
+                    sources: chatSessionContext?.sources || [],
+                  },
                 ];
               });
               return;
