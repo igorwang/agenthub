@@ -78,7 +78,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     jwt: async ({ token, user, profile }) => {
       if (user) {
         // call role data
-        const { data } = await client.query({
+        const { data, error, loading } = await client.query({
           query: GetUserRolesDocument,
           variables: {
             where: { user_id: { _eq: user.id } },
@@ -89,7 +89,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         console.log("User logged in:", user);
         console.log("User profile:", profile);
-        console.log("additionalRoles", data, additionalRoles);
+        console.log("additionalRoles", data, error, loading, additionalRoles);
 
         const roles = Array.from(new Set([...defaultRoles, ...additionalRoles]));
 
