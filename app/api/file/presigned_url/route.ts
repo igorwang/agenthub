@@ -1,5 +1,7 @@
 import { auth } from "@/auth";
 import s3Client from "@/lib/s3Client";
+import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 import { uuid } from "uuidv4";
@@ -45,21 +47,27 @@ export async function GET(req: NextRequest) {
   const params = {
     Bucket: bucket,
     Key: s3Key,
-    Expires: 2 * 60 * 60, // URL expiration time in seconds
     ContentType: fileType,
     Metadata: {
       fileName: fileName,
-      creatorId: userId,
+      creatorId: userId || "",
     },
   };
 
   try {
-    const presignedPutUrl = await s3Client.getSignedUrlPromise("putObject", params);
-    const presignedGetUrl = await s3Client.getSignedUrlPromise("getObject", {
+    const putCommand = new PutObjectCommand(params);
+    const getCommand = new GetObjectCommand({
       Bucket: bucket,
       Key: s3Key,
-      Expires: 2 * 60 * 60,
     });
+
+    const presignedPutUrl = await getSignedUrl(s3Client, putCommand, {
+      expiresIn: 2 * 60 * 60,
+    });
+    const presignedGetUrl = await getSignedUrl(s3Client, getCommand, {
+      expiresIn: 2 * 60 * 60,
+    });
+
     return NextResponse.json({
       url: presignedPutUrl,
       previewUrl: presignedGetUrl,
