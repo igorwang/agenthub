@@ -56,14 +56,6 @@ import { useTranslations } from "next-intl";
 import { v4 } from "uuid";
 import AgentWorkflowResultsPane from "./agent-workflow-result-pane";
 
-type QueryAnalyzeResultSchema = {
-  isRelated?: boolean;
-  refineQuery?: string;
-  keywords?: string;
-  knowledge_base_ids?: string[];
-  isFollowUp?: boolean;
-};
-
 type MessageWindowProps = {
   agentId: string;
   workflow_id: string;
@@ -80,6 +72,7 @@ type MessageWindowProps = {
     sources?: any;
     message_type?: Message_Type_Enum;
     schema?: { [key: string]: any };
+    context?: string;
   }) => void;
 };
 
@@ -209,7 +202,6 @@ export default function MessageWindowWithWorkflow({
   // set messages
   useEffect(() => {
     if (data && data.message) {
-      console.log("data.message", data.message);
       const newMessages = data.message.map((item) => ({
         id: item.id,
         role: item.role,
@@ -226,6 +218,7 @@ export default function MessageWindowWithWorkflow({
         schema: item.schema || {},
         imageUrls: item.imageUrls || [],
         aircraft: item.aircraft || null,
+        context: item.context || "",
       }));
 
       if (data.message.length == 1 && selectedSessionId) {
@@ -437,10 +430,10 @@ export default function MessageWindowWithWorkflow({
           session_id: selectedSessionId || "",
           role: Message_Role_Enum.Assistant,
           sources: chatSessionContext?.sources || [],
+          context: chatSessionContext?.context || "",
           status: Message_Status_Enum.Generating,
         });
         // create new aircraft
-
         handleCreateNewAircraft(messages[messages.length - 1].id, aircraft);
         createMessagesContext();
         query.refetch();
@@ -501,6 +494,7 @@ export default function MessageWindowWithWorkflow({
                       ...prev[0],
                       message: prev[0].message,
                       sources: chatSessionContext?.sources || [],
+                      context: chatSessionContext?.context || "",
                       status: Message_Status_Enum.Success,
                     },
                   ];
@@ -512,6 +506,7 @@ export default function MessageWindowWithWorkflow({
                     ...draftMessage,
                     status: Message_Status_Enum.Success,
                     sources: chatSessionContext?.sources || [],
+                    context: chatSessionContext?.context || "",
                   },
                 ];
               });
@@ -546,6 +541,7 @@ export default function MessageWindowWithWorkflow({
           role: Message_Role_Enum.Assistant,
           sources: chatSessionContext?.sources || [],
           status: Message_Status_Enum.Success,
+          context: chatSessionContext?.context || "",
         });
         dispatch(setChatStatus(CHAT_STATUS_ENUM.Finished));
         dispatch(setIsChating(false));

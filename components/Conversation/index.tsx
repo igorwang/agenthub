@@ -242,6 +242,7 @@ export const Conversation: React.FC<ConversationProps> = ({
       sources?: any;
       message_type?: Message_Type_Enum;
       schema?: { [key: string]: any };
+      context?: string;
     }) => {
       try {
         const result = await createNewMessageMutation({
@@ -257,6 +258,7 @@ export const Conversation: React.FC<ConversationProps> = ({
               status: params.status,
               schema: params.schema,
               message_type: params.message_type,
+              context: params.context,
             },
             session_id: params.session_id,
           },
