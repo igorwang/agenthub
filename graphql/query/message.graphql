@@ -11,6 +11,7 @@ fragment messageFragment on message {
   message_type
   schema
   imageUrls
+  context
   aircraft {
     ...aircraftFragment
   }

@@ -32,6 +32,8 @@ import {
 } from "@/types/chatTypes";
 import { Icon } from "@iconify/react";
 import {
+  Accordion,
+  AccordionItem,
   Badge,
   Button,
   Dropdown,
@@ -40,6 +42,11 @@ import {
   DropdownTrigger,
   Image,
   Link,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  ScrollShadow,
   Spacer,
   Spinner,
 } from "@nextui-org/react";
@@ -107,6 +114,7 @@ const MessageCardV1 = React.forwardRef<HTMLDivElement, MessageCardProps>(
     const session = useSession();
     const currentAircraftId = useSelector(selectCurrentAircraftId);
     const isAircraftGenerating = useSelector(selectIsAircraftGenerating);
+    const [isContextOpen, setIsContextOpen] = useState(false);
     const { handleSetChatStatus, handleCreateNewMessage } = useConversationContext();
     const [updateMessageByIdMutation] = useUpdateMessageByIdMutation();
     const dispatch: AppDispatch = useDispatch();
@@ -165,6 +173,20 @@ const MessageCardV1 = React.forwardRef<HTMLDivElement, MessageCardProps>(
       },
       [],
     );
+
+    const paragraphs = useMemo(() => {
+      const content = (message.context || "")
+        .replace(/<p.*?>/g, "")
+        .replace(/<\/p>/g, "");
+      const paragraphs = content.split("\n\n");
+      return paragraphs;
+    }, [message]);
+
+    const handleContextOpen = () => {
+      if (paragraphs.length > 0) {
+        setIsContextOpen(true);
+      }
+    };
 
     const handleExportDocument = React.useCallback(async () => {
       try {
@@ -431,7 +453,11 @@ const MessageCardV1 = React.forwardRef<HTMLDivElement, MessageCardProps>(
               )}
               <Spacer x={2} />
               <div className="flex flex-row items-center justify-start gap-1 p-1">
-                <Icon className="text-lg text-default-600" icon="hugeicons:idea-01" />
+                <Icon
+                  className={`${paragraphs.length > 0 ? "cursor-pointer" : ""} text-lg text-default-600`}
+                  onClick={handleContextOpen}
+                  icon="hugeicons:idea-01"
+                />
                 <span className="text-slate-500">{t("Answer")}:</span>
               </div>
               {isChating &&
@@ -611,6 +637,40 @@ const MessageCardV1 = React.forwardRef<HTMLDivElement, MessageCardProps>(
             </div>
           </div>
         )}
+        <Modal isOpen={isContextOpen} onClose={() => setIsContextOpen(false)} size="3xl">
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">{t("Chunks")}</ModalHeader>
+                <ModalBody>
+                  <ScrollShadow className="custom-scrollbar h-[60vh]">
+                    {paragraphs.map((paragraph, index) => (
+                      <div
+                        key={index}
+                        className="mb-4 border-b border-default-200 pb-4 last:border-b-0">
+                        <h4 className="mb-2 text-sm font-semibold">Chunk-{index + 1}</h4>
+                        <Accordion>
+                          <AccordionItem
+                            key={index}
+                            aria-label={`Paragraph ${index + 1}`}
+                            title={
+                              <div className="line-clamp-3 text-sm text-default-600">
+                                {paragraph.slice(0, 300)}...
+                              </div>
+                            }>
+                            <p className="mt-2 whitespace-pre-wrap text-sm">
+                              {paragraph}
+                            </p>
+                          </AccordionItem>
+                        </Accordion>
+                      </div>
+                    ))}
+                  </ScrollShadow>
+                </ModalBody>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
       </div>
     );
   },

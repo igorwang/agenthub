@@ -74,6 +74,7 @@ export type MessageType = {
   schema?: { [key: string]: any };
   imageUrls?: string[];
   aircraft?: AircraftFragmentFragment[];
+  context?: string;
 };
 
 export type LibraryCardType = {
