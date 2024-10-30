@@ -183,7 +183,7 @@ export default function Aircraft({
     const handleScroll = () => {
       if (editorContentRef.current) {
         const { scrollTop, scrollHeight, clientHeight } = editorContentRef.current;
-        const isAtBottom = scrollTop + clientHeight >= scrollHeight - 10;
+        const isAtBottom = scrollTop + clientHeight >= scrollHeight;
         setUserScrolling(!isAtBottom);
       }
     };
@@ -428,7 +428,8 @@ export default function Aircraft({
           `,
       }),
     ];
-    let answer = aircraft?.content || "";
+
+    let answer = editor?.getHTML() || "";
 
     try {
       const response = await fetch("/api/v1/chat", {
