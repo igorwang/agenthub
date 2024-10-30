@@ -14,6 +14,8 @@ import {
 import {
   selectCurrentAircraftId,
   selectIsAircraftGenerating,
+  selectIsAskAI,
+  selectIsChating,
   selectMessagesContext,
   selectSelectedChatId,
   selectSelectedSessionId,
@@ -97,12 +99,16 @@ export default function Aircraft({
   const dispatch = useDispatch();
   const [aircraft, setAircraft] = useState<AircraftFragmentFragment | null>(null);
   const isAircraftGenerating = useSelector(selectIsAircraftGenerating);
+  const isAskAI = useSelector(selectIsAskAI);
   const chatId = useSelector(selectSelectedChatId);
   const sessionId = useSelector(selectSelectedSessionId);
+  const isChating = useSelector(selectIsChating);
   const messagesContext = useSelector(selectMessagesContext);
   const [userScrolling, setUserScrolling] = useState(false);
   const [previousContent, setPreviousContent] = useState("");
   const [isExporting, setIsExporting] = useState(false);
+  const [controller, setController] = useState<AbortController | null>(null);
+  const [isContinueGenerating, setIsContinueGenerating] = useState(false);
   const session = useSession();
 
   const editor = useBlockEditor({
@@ -121,6 +127,26 @@ export default function Aircraft({
     variables: { id: aircraftId },
     skip: !aircraftId,
   });
+
+  useEffect(() => {
+    return () => {
+      controller?.abort();
+    };
+  }, [controller]);
+
+  useEffect(() => {
+    if (!isChating) {
+      controller?.abort();
+      setController(null);
+    }
+  }, [isChating]);
+
+  useEffect(() => {
+    if (!isAskAI) {
+      controller?.abort();
+      setController(null);
+    }
+  }, [isAskAI]);
 
   useEffect(() => {
     if (data && data.aircraft_by_pk) {
@@ -197,6 +223,7 @@ export default function Aircraft({
 
   const handleGenerateAnswer = async (currentContent?: string) => {
     const controller = new AbortController(); // Create a new AbortController
+    setController(controller);
     const signal = controller.signal; // Get the signal from the controller
     const historyMessages = mapStoredMessagesToChatMessages(messagesContext) || [];
 
@@ -273,7 +300,8 @@ export default function Aircraft({
   const handleAskAI = useCallback(
     async (inputValue: string, selectedText: string, from: number, to: number) => {
       const controller = new AbortController(); // Create a new AbortController
-      const signal = controller.signal; // Get the signal from the controller
+      const signal = controller.signal;
+      setController(controller);
       const historyMessages = mapStoredMessagesToChatMessages(messagesContext) || [];
 
       const currentContent = editor?.getText() || "";
@@ -323,9 +351,6 @@ export default function Aircraft({
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
-        // Function to read the stream
-
-        // add a new paragraph at the end of the selected text
 
         editor
           ?.chain()
@@ -373,6 +398,92 @@ export default function Aircraft({
     },
     [messagesContext, editor],
   );
+
+  const handleContinueGenerating = useCallback(async () => {
+    setIsContinueGenerating(true);
+    const controller = new AbortController(); // Create a new AbortController
+    const signal = controller.signal;
+    setController(controller);
+    const historyMessages = mapStoredMessagesToChatMessages(messagesContext) || [];
+
+    const currentContent = editor?.getText() || "";
+    const chatMessages = [
+      ...historyMessages,
+      new HumanMessage({
+        content: `The current aircraft content is: ${currentContent}`,
+      }),
+      new HumanMessage({
+        content: `Update user content based on the following instructions: Continue generation and keep the same style, 
+        Return only the requested content without explanation, HTML tags, or follow-ups.
+        The response must:
+
+        Contain only the exact requested content/document
+        Remove all interaction elements (greetings, questions, clarifications)
+        Remove commentary and explanations
+        Keep formatting only if part of requested content
+        Maintain full accuracy and completion
+        Focus solely on document delivery
+
+        The response will deliver only the essential requested content with no additional interaction or explanation.
+          `,
+      }),
+    ];
+    let answer = aircraft?.content || "";
+
+    try {
+      const response = await fetch("/api/v1/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model,
+          messages: chatMessages.map((message) => message.toJSON()),
+        }),
+        signal: signal,
+      });
+
+      if (!response.body) {
+        throw new Error("ReadableStream not supported by the browser.");
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+
+      editor
+        ?.chain()
+        .insertContentAt(editor.state.doc.content.size, {
+          type: "paragraph",
+          content: [],
+        })
+        .focus()
+        .run();
+
+      const readStream = async () => {
+        const { done, value } = await reader.read();
+        if (done) {
+          setIsContinueGenerating(false);
+          handleUpdateAircraft(answer);
+          editor?.commands.setContent(answer);
+          return;
+        }
+        const chunk = decoder.decode(value, { stream: true });
+        answer += chunk;
+        try {
+          editor?.commands.insertContent(chunk);
+        } catch (error) {
+          console.error("Error while inserting content:", error);
+        }
+        await readStream();
+      };
+      await readStream();
+    } catch (error) {
+      console.error("Error while streaming:", error);
+      return;
+    } finally {
+      dispatch(setIsChating(false));
+    }
+  }, [messagesContext, editor]);
 
   const handleSave = () => {
     console.log("The HTML is:", editor?.getJSON());
@@ -468,11 +579,6 @@ export default function Aircraft({
           </Button>
         </Tooltip>
         <div>{aircraft?.title}</div>
-
-        {/* <Button isIconOnly onClick={handleSave}>
-          <Icon icon="lucide:save" width={20} height={20} />
-        </Button> */}
-        {/* <TextMenu editor={editor} /> */}
       </div>
       <div className="flex flex-row justify-end">
         <Tooltip content={t("Copy")}>
@@ -509,7 +615,7 @@ export default function Aircraft({
         </Tooltip>
       </div>
       <div
-        className="custom-scrollbar flex h-full flex-row overflow-auto"
+        className="custom-scrollbar relative flex h-full flex-row overflow-auto"
         ref={menuContainerRef}>
         <div
           className="custom-scrollbar relative flex h-full flex-1 flex-col overflow-auto rounded p-2"
@@ -526,6 +632,19 @@ export default function Aircraft({
           editor={editor}
         />
       </div>
+      {!isAircraftGenerating && !isAskAI && aircraft?.content && (
+        <div className="sticky -bottom-2 flex items-center justify-center bg-background">
+          <Button
+            isLoading={isContinueGenerating}
+            isDisabled={isContinueGenerating || isAircraftGenerating}
+            onClick={() => handleContinueGenerating()}
+            variant="light"
+            className="flex items-center gap-2 text-sm text-blue-600 hover:bg-gray-100">
+            <Icon icon="lucide:plus-circle" className="h-4 w-4" />
+            {t("Continue generation")}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
