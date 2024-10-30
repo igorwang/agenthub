@@ -173,7 +173,6 @@ export default function MessageWindowWithWorkflow({
       chatSessionContext?.context || "",
       `User uploaded files: <UserUploadedFiles>${sessionFileContexts}</UserUploadedFiles>`,
     );
-    console.log("chatMessages", mapChatMessagesToStoredMessages(chatMessages));
     dispatch(setMessagesContext(mapChatMessagesToStoredMessages(chatMessages)));
   }, [agent, promptTemplates, messages, chatSessionContext]);
 

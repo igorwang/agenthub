@@ -206,7 +206,16 @@ export default function Aircraft({
         content: `The previous aircraft content is: ${previousContent}`,
       }),
       new HumanMessage({
-        content: `${AI_WRITE_PROMPT}\nWrite based on the following instructions: ${aircraft?.commentary}`,
+        content: `${AI_WRITE_PROMPT}\nWrite based on the following instructions: ${aircraft?.commentary}
+      Return only the requested content without explanation，or follow-ups.
+      The response must:
+      Contain only the exact requested content/document
+      Remove all interaction elements (greetings, questions, clarifications)
+      Remove commentary and explanations
+      Maintain full accuracy and completion
+      Focus solely on document delivery
+
+        `,
       }),
     ];
 
@@ -279,8 +288,17 @@ export default function Aircraft({
         }),
         new HumanMessage({
           content: `Update user content based on the following instructions: ${inputValue}, 
-         Return only the concise modified content without explanation
-         Do not add any HTML tags
+        Return only the requested content without explanation, HTML tags, or follow-ups.
+        The response must:
+
+        Contain only the exact requested content/document
+        Remove all interaction elements (greetings, questions, clarifications)
+        Remove commentary and explanations
+        Keep formatting only if part of requested content
+        Maintain full accuracy and completion
+        Focus solely on document delivery
+
+        The response will deliver only the essential requested content with no additional interaction or explanation.
           `,
         }),
       ];
