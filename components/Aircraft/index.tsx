@@ -109,6 +109,7 @@ export default function Aircraft({
   const [isExporting, setIsExporting] = useState(false);
   const [controller, setController] = useState<AbortController | null>(null);
   const [isContinueGenerating, setIsContinueGenerating] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const session = useSession();
 
   const editor = useBlockEditor({
@@ -217,6 +218,7 @@ export default function Aircraft({
           setAircraft(response.data?.update_aircraft_by_pk);
         }
       }
+      setIsSaving(false);
     },
     [aircraft, updateAircraftMutation],
   );
@@ -486,9 +488,15 @@ export default function Aircraft({
     }
   }, [messagesContext, editor]);
 
-  const handleSave = () => {
-    console.log("The HTML is:", editor?.getJSON());
-  };
+  const handleSave = useCallback(() => {
+    setIsSaving(true);
+    try {
+      handleUpdateAircraft(editor?.getHTML() || "");
+      toast.success("Saved");
+    } catch (error) {
+      console.error("Error while saving:", error);
+    }
+  }, [editor]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(editor?.getText() || "");
@@ -600,6 +608,17 @@ export default function Aircraft({
             variant="light"
             className="transition-colors duration-200 hover:bg-gray-100">
             <Icon icon="lucide:download" className="h-5 w-5 text-gray-600" />
+          </Button>
+        </Tooltip>
+        <Tooltip content={t("Save")}>
+          <Button
+            isIconOnly
+            isLoading={isSaving}
+            isDisabled={isSaving}
+            onClick={handleSave}
+            variant="light"
+            className="transition-colors duration-200 hover:bg-gray-100">
+            <Icon icon="lucide:save" className="h-5 w-5 text-gray-600" />
           </Button>
         </Tooltip>
         <Tooltip content={t("Table of contents")}>
