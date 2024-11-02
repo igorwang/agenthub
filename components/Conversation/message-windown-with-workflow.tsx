@@ -231,7 +231,7 @@ export default function MessageWindowWithWorkflow({
         dispatch(setRefreshSession(true));
       }
       setMessages(newMessages);
-      // onMessageChange?.(messages);
+      createMessagesContext(); // share messages context
     }
   }, [data]);
 

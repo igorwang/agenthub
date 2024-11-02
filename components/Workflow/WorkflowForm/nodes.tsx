@@ -721,6 +721,37 @@ export const RerankNodeComponent: React.FC<NodeProps<RerankNode>> = memo(
   },
 );
 
+export type TranslatePairNode = Node<CustomNodeData, "TranslatePairNode">;
+export const TranslatePairNodeComponent: React.FC<NodeProps<TranslatePairNode>> = memo(
+  ({ data, selected }) => {
+    const borderColor = selected ? "border-blue-500" : "border-gray-200";
+
+    return (
+      <div
+        className={`rounded-md border ${borderColor} bg-white px-2 py-1 shadow-sm transition-colors duration-200`}>
+        <div className="flex items-center">
+          <div className="mr-1 flex h-6 w-6 items-center justify-center text-gray-500">
+            <Icon icon="lsicon:sort-z-to-a-outline" fontSize={16} />
+          </div>
+          <div>
+            <div className="text-xs font-medium text-gray-700">{data.label}</div>
+          </div>
+        </div>
+        <Handle
+          type="target"
+          position={Position.Left}
+          className="-ml-0.5 h-3 w-0.5 !border-1 !border-white !bg-gray-300"
+        />
+        <Handle
+          type="source"
+          position={Position.Right}
+          className="-mr-0.5 h-2 w-0.5 !border-1 !border-white !bg-gray-300"
+        />
+      </div>
+    );
+  },
+);
+
 StartNodeComponent.displayName = "StartNodeComponent";
 InputNodeComponent.displayName = "InputNodeComponent";
 llmNodeComponent.displayName = "llmNodeComponent";
@@ -743,6 +774,8 @@ QueryDocumentNodeComponent.displayName = "QueryDocumentNodeComponent";
 AircraftNodeComponent.displayName = "AircraftNodeComponent";
 HttpRequestNodeComponent.displayName = "HttpRequestNodeComponent";
 RerankNodeComponent.displayName = "RerankNodeComponent";
+TranslatePairNodeComponent.displayName = "TranslatePairNodeComponent";
+
 export const nodeTypes: NodeTypes = {
   startNode: StartNodeComponent,
   inputNode: InputNodeComponent,
@@ -766,4 +799,5 @@ export const nodeTypes: NodeTypes = {
   aircraftNode: AircraftNodeComponent,
   httpRequestNode: HttpRequestNodeComponent,
   rerankNode: RerankNodeComponent,
+  translatePairNode: TranslatePairNodeComponent,
 };

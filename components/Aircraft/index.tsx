@@ -47,7 +47,8 @@ Follow these guidelines:
   - Do not start html tags
 2. Format:
   - Use TipTap-compatible HTML format.
-  - Do not include <html> or <body> tags.
+  - Do not include <html> or <body> or code block markers tags.
+  - Do not include \`\`\` at at start or end of the content.
 
 3. Structure and Formatting:
   - Use appropriate HTML tags for content structure:
@@ -83,13 +84,13 @@ Generate the content maintaining a balance between informativeness and readabili
 interface AircraftProps {
   // isOpen: boolean;
   // aircraftId: string | null;
-  editable?: boolean;
+  defaultEditable?: boolean;
   model?: string;
   // onClose: () => void;
 }
 
 export default function Aircraft({
-  editable = true,
+  defaultEditable = true,
   model = DEFAULT_LLM_MODEL,
 }: AircraftProps) {
   const aircraftId = useSelector(selectCurrentAircraftId);
@@ -111,6 +112,7 @@ export default function Aircraft({
   const [isContinueGenerating, setIsContinueGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const session = useSession();
+  const [editable, setEditable] = useState(defaultEditable);
 
   const editor = useBlockEditor({
     content: aircraft?.content || "",
@@ -151,7 +153,7 @@ export default function Aircraft({
 
   useEffect(() => {
     if (data && data.aircraft_by_pk) {
-      const currentContent = editor?.getText();
+      const currentContent = editor?.getHTML();
       setAircraft(data.aircraft_by_pk);
       editor?.commands.setContent(data.aircraft_by_pk.content || "");
       if (currentContent !== data.aircraft_by_pk.content) {
@@ -167,7 +169,7 @@ export default function Aircraft({
       editor &&
       messagesContext
     ) {
-      const currentContent = editor.getText();
+      const currentContent = editor?.getHTML();
       editor.commands.setContent("");
       editor.commands.focus("start");
       handleGenerateAnswer(currentContent);
@@ -176,7 +178,9 @@ export default function Aircraft({
 
   const scrollToBottom = useCallback(() => {
     if (editorContentRef.current && !userScrolling) {
-      editorContentRef.current.scrollTop = editorContentRef.current.scrollHeight;
+      const scrollHeight = editorContentRef.current.scrollHeight;
+      const buttonHeight = 40; // Approximate height of the Continue generation button
+      editorContentRef.current.scrollTop = scrollHeight - buttonHeight;
     }
   }, [userScrolling]);
 
@@ -184,7 +188,9 @@ export default function Aircraft({
     const handleScroll = () => {
       if (editorContentRef.current) {
         const { scrollTop, scrollHeight, clientHeight } = editorContentRef.current;
-        const isAtBottom = scrollTop + clientHeight >= scrollHeight;
+        const buttonHeight = 40; // Same as above
+        // Consider the button height when calculating if we're at the bottom
+        const isAtBottom = scrollTop + clientHeight >= scrollHeight - buttonHeight;
         setUserScrolling(!isAtBottom);
       }
     };
@@ -243,7 +249,6 @@ export default function Aircraft({
       Remove commentary and explanations
       Maintain full accuracy and completion
       Focus solely on document delivery
-
         `,
       }),
     ];
@@ -275,14 +280,15 @@ export default function Aircraft({
         if (done) {
           dispatch(setIsAircraftGenerating(false));
           dispatch(setIsChating(false));
-
           handleUpdateAircraft(answer);
           editor?.commands.setContent(answer);
+          editor?.chain().setTextSelection({ from: 0, to: 0 }).focus().run();
           return;
         }
         const chunk = decoder.decode(value, { stream: true });
         answer += chunk;
         try {
+          editor?.commands.focus("end");
           editor?.commands.insertContent(chunk);
         } catch (error) {
           console.error("Error while inserting content:", error);
@@ -402,20 +408,23 @@ export default function Aircraft({
   );
 
   const handleContinueGenerating = useCallback(async () => {
+    setEditable(false);
     setIsContinueGenerating(true);
     const controller = new AbortController(); // Create a new AbortController
     const signal = controller.signal;
     setController(controller);
     const historyMessages = mapStoredMessagesToChatMessages(messagesContext) || [];
+    console.log("historyMessages:", historyMessages);
 
-    const currentContent = editor?.getText() || "";
+    const currentContent = editor?.getHTML() || "";
+
     const chatMessages = [
       ...historyMessages,
       new HumanMessage({
         content: `The current aircraft content is: ${currentContent}`,
       }),
       new HumanMessage({
-        content: `Update user content based on the following instructions: Continue generation and keep the same style, 
+        content: `Update user content based on the following instructions: Continue generation and keep the sameformat, 
         Return only the requested content without explanation, HTML tags, or follow-ups.
         The response must:
 
@@ -467,12 +476,15 @@ export default function Aircraft({
         if (done) {
           setIsContinueGenerating(false);
           handleUpdateAircraft(answer);
+          editor?.chain().setTextSelection({ from: 0, to: 0 }).focus().run();
           editor?.commands.setContent(answer);
+          toast.success("Continue generation finished");
           return;
         }
         const chunk = decoder.decode(value, { stream: true });
         answer += chunk;
         try {
+          editor?.commands.focus("end");
           editor?.commands.insertContent(chunk);
         } catch (error) {
           console.error("Error while inserting content:", error);
@@ -485,6 +497,7 @@ export default function Aircraft({
       return;
     } finally {
       dispatch(setIsChating(false));
+      setEditable(true);
     }
   }, [messagesContext, editor]);
 
@@ -590,6 +603,19 @@ export default function Aircraft({
         <div>{aircraft?.title}</div>
       </div>
       <div className="flex flex-row justify-end">
+        {/* <Tooltip content={t("Toggle editable")}>
+          <Button
+            isIconOnly
+            onClick={() => {
+              console.log("editor is editable:", editor?.isEditable);
+              // editor?.setEditable(!editor?.isEditable);
+              setEditable(!editable);
+            }}
+            variant="light"
+            className="transition-colors duration-200 hover:bg-gray-100">
+            <Icon icon="lucide:pencil" className="h-5 w-5 text-gray-600" />
+          </Button>
+        </Tooltip> */}
         <Tooltip content={t("Copy")}>
           <Button
             isIconOnly

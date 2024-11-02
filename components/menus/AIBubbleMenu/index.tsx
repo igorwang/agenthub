@@ -118,6 +118,7 @@ export const AIBubbleMenu = ({ editor, onAskAI }: AIBubbleMenuProps) => {
       // shouldShow={states.shouldShow}
       // shouldShow={() => true}
       shouldShow={({ from, to }) => {
+        console.log("shouldShow", from, to);
         // 默认显示
         if (from === to) {
           return false;
