@@ -27,8 +27,19 @@ import {
 import { DEFAULT_LLM_MODEL } from "@/lib/models";
 import "@/styles/index.css";
 import { Icon } from "@iconify/react";
-import { HumanMessage, mapStoredMessagesToChatMessages } from "@langchain/core/messages";
-import { Button, Tooltip } from "@nextui-org/react";
+import {
+  AIMessage,
+  HumanMessage,
+  mapStoredMessagesToChatMessages,
+} from "@langchain/core/messages";
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Tooltip,
+} from "@nextui-org/react";
 import { EditorContent } from "@tiptap/react";
 import { formatDate } from "date-fns";
 import { useSession } from "next-auth/react";
@@ -241,15 +252,16 @@ export default function Aircraft({
         content: `The previous aircraft content is: ${previousContent}`,
       }),
       new HumanMessage({
-        content: `${AI_WRITE_PROMPT}\nWrite based on the following instructions: ${aircraft?.commentary}
-      Return only the requested content without explanation，or follow-ups.
-      The response must:
-      Contain only the exact requested content/document
-      Remove all interaction elements (greetings, questions, clarifications)
-      Remove commentary and explanations
-      Maintain full accuracy and completion
-      Focus solely on document delivery
-        `,
+        content: `${AI_WRITE_PROMPT}\nWrite based on the following instructions: generate the content from scratch.
+      Provide only the exact requested content with:
+      1. No greetings or closings
+      2. No explanations or commentary
+      3. No follow-up questions
+      4. No clarifications
+      5. No additional context
+      6. Complete and accurate information
+      7. Direct content delivery only
+      `,
       }),
     ];
 
@@ -311,30 +323,21 @@ export default function Aircraft({
       const signal = controller.signal;
       setController(controller);
       const historyMessages = mapStoredMessagesToChatMessages(messagesContext) || [];
+      console.log("selectedText:", selectedText);
 
       const currentContent = editor?.getText() || "";
       const chatMessages = [
         ...historyMessages,
 
-        new HumanMessage({
+        new AIMessage({
           content: `The current aircraft content is: ${currentContent}`,
         }),
         new HumanMessage({
           content: `The user selected text is: ${selectedText}`,
         }),
         new HumanMessage({
-          content: `Update user content based on the following instructions: ${inputValue}, 
-        Return only the requested content without explanation, HTML tags, or follow-ups.
-        The response must:
-
-        Contain only the exact requested content/document
-        Remove all interaction elements (greetings, questions, clarifications)
-        Remove commentary and explanations
-        Keep formatting only if part of requested content
-        Maintain full accuracy and completion
-        Focus solely on document delivery
-
-        The response will deliver only the essential requested content with no additional interaction or explanation.
+          content: `Update user selected content based on the following instructions: ${inputValue},
+          Ignore all formatting instructions, only focus on the content and return as text format.       
           `,
         }),
       ];
@@ -407,6 +410,12 @@ export default function Aircraft({
     [messagesContext, editor],
   );
 
+  const handleStopGenerating = useCallback(() => {
+    setIsContinueGenerating(false);
+    controller?.abort();
+    setController(null);
+  }, [controller]);
+
   const handleContinueGenerating = useCallback(async () => {
     setEditable(false);
     setIsContinueGenerating(true);
@@ -414,29 +423,26 @@ export default function Aircraft({
     const signal = controller.signal;
     setController(controller);
     const historyMessages = mapStoredMessagesToChatMessages(messagesContext) || [];
-    console.log("historyMessages:", historyMessages);
 
     const currentContent = editor?.getHTML() || "";
+    console.log("currentContent:", currentContent);
 
     const chatMessages = [
       ...historyMessages,
-      new HumanMessage({
+      new AIMessage({
         content: `The current aircraft content is: ${currentContent}`,
       }),
       new HumanMessage({
-        content: `Update user content based on the following instructions: Continue generation and keep the sameformat, 
-        Return only the requested content without explanation, HTML tags, or follow-ups.
-        The response must:
-
-        Contain only the exact requested content/document
-        Remove all interaction elements (greetings, questions, clarifications)
-        Remove commentary and explanations
-        Keep formatting only if part of requested content
-        Maintain full accuracy and completion
-        Focus solely on document delivery
-
-        The response will deliver only the essential requested content with no additional interaction or explanation.
-          `,
+        content: `Continue generation based on the current content and keep the sequence.
+         Provide only the exact requested content with:
+        1. No greetings or closings
+        2. No explanations or commentary
+        3. No follow-up questions
+        4. No clarifications
+        5. No additional context
+        6. Complete and accurate information
+        7. Direct content delivery only
+        `,
       }),
     ];
 
@@ -513,6 +519,11 @@ export default function Aircraft({
 
   const handleCopy = () => {
     navigator.clipboard.writeText(editor?.getText() || "");
+  };
+
+  const handleExportTranslationVersion = async () => {
+    const content = editor?.getJSON() || "";
+    console.log("export translation version", content);
   };
 
   const handleDownload = async () => {
@@ -603,19 +614,6 @@ export default function Aircraft({
         <div>{aircraft?.title}</div>
       </div>
       <div className="flex flex-row justify-end">
-        {/* <Tooltip content={t("Toggle editable")}>
-          <Button
-            isIconOnly
-            onClick={() => {
-              console.log("editor is editable:", editor?.isEditable);
-              // editor?.setEditable(!editor?.isEditable);
-              setEditable(!editable);
-            }}
-            variant="light"
-            className="transition-colors duration-200 hover:bg-gray-100">
-            <Icon icon="lucide:pencil" className="h-5 w-5 text-gray-600" />
-          </Button>
-        </Tooltip> */}
         <Tooltip content={t("Copy")}>
           <Button
             isIconOnly
@@ -646,6 +644,23 @@ export default function Aircraft({
             className="transition-colors duration-200 hover:bg-gray-100">
             <Icon icon="lucide:save" className="h-5 w-5 text-gray-600" />
           </Button>
+        </Tooltip>
+        <Tooltip content={t("More actions")}>
+          <Dropdown>
+            <DropdownTrigger>
+              <Button
+                isIconOnly
+                variant="light"
+                className="transition-colors duration-200 hover:bg-gray-100">
+                <Icon icon="lucide:more-horizontal" className="h-5 w-5 text-gray-600" />
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu>
+              <DropdownItem onClick={handleExportTranslationVersion}>
+                {t("Export Translation Version")}
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
         </Tooltip>
         <Tooltip content={t("Table of contents")}>
           <Button
@@ -680,15 +695,26 @@ export default function Aircraft({
       </div>
       {!isAircraftGenerating && !isAskAI && aircraft?.content && (
         <div className="sticky -bottom-2 flex items-center justify-center bg-background">
-          <Button
-            isLoading={isContinueGenerating}
-            isDisabled={isContinueGenerating || isAircraftGenerating}
-            onClick={() => handleContinueGenerating()}
-            variant="light"
-            className="flex items-center gap-2 text-sm text-blue-600 hover:bg-gray-100">
-            <Icon icon="lucide:plus-circle" className="h-4 w-4" />
-            {t("Continue generation")}
-          </Button>
+          {isContinueGenerating ? (
+            <Button
+              isDisabled={!isContinueGenerating}
+              onClick={handleStopGenerating}
+              variant="light"
+              className="flex items-center gap-2 text-sm text-blue-600 hover:bg-gray-100">
+              <Icon icon="lucide:circle-x" className="h-4 w-4" />
+              {t("Stop generation")}
+            </Button>
+          ) : (
+            <Button
+              isLoading={isContinueGenerating}
+              isDisabled={isContinueGenerating || isAircraftGenerating}
+              onClick={() => handleContinueGenerating()}
+              variant="light"
+              className="flex items-center gap-2 text-sm text-blue-600 hover:bg-gray-100">
+              <Icon icon="lucide:plus-circle" className="h-4 w-4" />
+              {t("Continue generation")}
+            </Button>
+          )}
         </div>
       )}
     </div>

@@ -231,7 +231,6 @@ export default function MessageWindowWithWorkflow({
         dispatch(setRefreshSession(true));
       }
       setMessages(newMessages);
-      createMessagesContext(); // share messages context
     }
   }, [data]);
 
@@ -421,7 +420,7 @@ export default function MessageWindowWithWorkflow({
       messages[messages.length - 1].status === "draft"
     ) {
       const aircraft = chatSessionContext?.aircraft;
-      if (aircraft && (aircraft.action == "create" || aircraft.action == "update")) {
+      if (aircraft && aircraft.action == "create") {
         handleCreateNewMessage?.({
           id: messages[messages.length - 1].id,
           query: "",

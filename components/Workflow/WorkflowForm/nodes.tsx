@@ -731,7 +731,7 @@ export const TranslatePairNodeComponent: React.FC<NodeProps<TranslatePairNode>> 
         className={`rounded-md border ${borderColor} bg-white px-2 py-1 shadow-sm transition-colors duration-200`}>
         <div className="flex items-center">
           <div className="mr-1 flex h-6 w-6 items-center justify-center text-gray-500">
-            <Icon icon="lsicon:sort-z-to-a-outline" fontSize={16} />
+            <Icon icon="hugeicons:translate" fontSize={16} />
           </div>
           <div>
             <div className="text-xs font-medium text-gray-700">{data.label}</div>
