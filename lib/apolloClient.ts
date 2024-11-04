@@ -54,6 +54,10 @@ const createWSLink = (): WebSocketLink => {
 
   subscriptionClient.onConnected(() => {});
 
+  subscriptionClient.onError((error, _operation) => {
+    console.error("WebSocket error:", error);
+  });
+
   return new WebSocketLink(subscriptionClient);
 };
 
@@ -80,7 +84,6 @@ export function createApolloClient(
   });
 
   let link;
-  console.log(`ssrMode: ${ssrMode}`);
   if (ssrMode) {
     link = createHttpLink(headers);
   } else {

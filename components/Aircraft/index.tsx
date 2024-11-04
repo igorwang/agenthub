@@ -19,6 +19,7 @@ import {
   selectMessagesContext,
   selectSelectedChatId,
   selectSelectedSessionId,
+  selectSessionFiles,
   setIsAircraftGenerating,
   setIsAircraftOpen,
   setIsAskAI,
@@ -116,6 +117,7 @@ export default function Aircraft({
   const sessionId = useSelector(selectSelectedSessionId);
   const isChating = useSelector(selectIsChating);
   const messagesContext = useSelector(selectMessagesContext);
+  const sessionFiles = useSelector(selectSessionFiles);
   const [userScrolling, setUserScrolling] = useState(false);
   const [previousContent, setPreviousContent] = useState("");
   const [isExporting, setIsExporting] = useState(false);
@@ -522,8 +524,25 @@ export default function Aircraft({
   };
 
   const handleExportTranslationVersion = async () => {
-    const content = editor?.getJSON() || "";
-    console.log("export translation version", content);
+    const docJson = editor?.getJSON() || { content: [] };
+    const files = sessionFiles.map((file) => ({
+      id: file.id,
+      name: file.name,
+      path: file.path,
+    }));
+    try {
+      const response = await fetch("/api/chat/aircraft/export/translation", {
+        method: "POST",
+        body: JSON.stringify({ doc_json: docJson, session_files: files }),
+      });
+      if (!response.ok) {
+        toast.error("System error, failed to export file");
+        return;
+      }
+    } catch (error) {
+      console.error("error:", error);
+      toast.error("Error uploading data");
+    }
   };
 
   const handleDownload = async () => {
