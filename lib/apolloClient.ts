@@ -52,9 +52,15 @@ const createWSLink = (): WebSocketLink => {
     },
   });
 
-  subscriptionClient.onConnected(() => {});
+  subscriptionClient.onConnected(() => {
+    console.log("WebSocket connected");
+  });
 
-  subscriptionClient.onError((error, _operation) => {
+  subscriptionClient.onDisconnected(() => {
+    console.log("WebSocket disconnected");
+  });
+
+  subscriptionClient.onError((error) => {
     console.error("WebSocket error:", error);
   });
 
