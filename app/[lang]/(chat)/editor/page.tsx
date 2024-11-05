@@ -1,7 +1,6 @@
 "use client";
+import OfficeEditor from "@/components/OfficeEditor";
 import { useBlockEditor } from "@/components/SmartEditor/hooks/useBlockEditor";
-import { Button } from "@nextui-org/react";
-import { EditorContent } from "@tiptap/react";
 import { useTranslations } from "next-intl";
 
 export default function EditorPage() {
@@ -31,7 +30,7 @@ export default function EditorPage() {
   return (
     <div className="mx-auto flex h-full w-full max-w-7xl flex-col">
       {/* <PdfViewer pdfUrl="https://arxiv.org/pdf/2203.11115" /> */}
-      <div className="mt-4">
+      {/* <div className="mt-4">
         <EditorContent editor={editor} />
       </div>
       <Button
@@ -39,7 +38,8 @@ export default function EditorPage() {
           console.log(editor?.getHTML());
         }}>
         Get HTML
-      </Button>
+      </Button> */}
+      <OfficeEditor />
     </div>
   );
 }
