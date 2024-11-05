@@ -26,6 +26,7 @@ import {
   selectSelectedSessionId,
   selectSession,
   setIsChangeSession,
+  setSelectedSources as setSelectedSourcesFunc,
   setSessionFiles,
 } from "@/lib/features/chatListSlice";
 import { AppDispatch } from "@/lib/store";
@@ -320,10 +321,14 @@ export const Conversation: React.FC<ConversationProps> = ({
     if (selected) {
       const hasThisSource = selectedSources.some((item) => item.fileId == source.fileId);
       if (!hasThisSource) {
-        setSelectedSources((prev) => [...prev, source]);
+        const newSources = [...selectedSources, source];
+        setSelectedSources(newSources);
+        dispatch(setSelectedSourcesFunc(newSources));
       }
     } else {
-      setSelectedSources((prev) => prev.filter((item) => item.fileId != source.fileId));
+      const newSources = selectedSources.filter((item) => item.fileId != source.fileId);
+      setSelectedSources(newSources);
+      dispatch(setSelectedSourcesFunc(newSources));
     }
   };
 

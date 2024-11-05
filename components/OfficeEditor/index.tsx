@@ -41,10 +41,10 @@ export default function OfficeEditor() {
         documentType: "word",
         editorConfig: {
           mode: "edit",
-          callbackUrl: "https://office.techower.com/url-to-callback.ashx",
+          callbackUrl: "https://office.techower.com",
         },
         token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb2N1bWVudCI6eyJmaWxlVHlwZSI6ImRvY3giLCJrZXkiOiJjb252X3VuaXF1ZV9kb2Nfa2V5XzEyM182NSIsInRpdGxlIjoiRXhhbXBsZSBEb2N1bWVudCBUaXRsZS5kb2N4IiwidXJsIjoiaHR0cHM6Ly9zM3dlYi50ZWNob3dlci5jb20vcHVibGljL3RtcC9kb2N1bWVudF8yNC4wNC4zMCUyMC0lMjBbRW5nXSUyME5CSUYlMjAtJTIwS0ZTJTIwLSUyMEVNRCUyMExDLmRvY3giLCJwZXJtaXNzaW9ucyI6eyJlZGl0Ijp0cnVlLCJkb3dubG9hZCI6dHJ1ZSwicHJpbnQiOnRydWUsImNvcHkiOnRydWV9fSwiZG9jdW1lbnRUeXBlIjoid29yZCIsImVkaXRvckNvbmZpZyI6eyJtb2RlIjoiZWRpdCIsImNhbGxiYWNrVXJsIjoiaHR0cHM6Ly9vZmZpY2UudGVjaG93ZXIuY29tL3VybC10by1jYWxsYmFjay5hc2h4In19.uA8r6jK6JvIrrA5TxScTeGV1GVQD-e_5W7w2EUKQ0WE",
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb2N1bWVudCI6eyJmaWxlVHlwZSI6ImRvY3giLCJrZXkiOiJjb252X3VuaXF1ZV9kb2Nfa2V5XzEyM182NSIsInRpdGxlIjoiRXhhbXBsZSBEb2N1bWVudCBUaXRsZS5kb2N4IiwidXJsIjoiaHR0cHM6Ly9vZmZpY2UudGVjaG93ZXIuY29tL2NhY2hlL2ZpbGVzL2RhdGEvY29udl91bmlxdWVfZG9jX2tleV8xMjNfNjUvb3V0cHV0LmRvY3gvZG9jdW1lbnQuZG9jeD9tZDU9NGk4am5IQk9pTm15ckpWOGFwcnN0ZyZleHBpcmVzPTE3MzA3ODQ3MTcmc2hhcmRrZXk9MjIzLjY1LjE3My4yMjlfXzE3Mi4yNS4wLjF2MS5kb2N4MTczMDc4MDUyNjkyMyZmaWxlbmFtZT1kb2N1bWVudC5kb2N4IiwicGVybWlzc2lvbnMiOnsiZWRpdCI6dHJ1ZSwiZG93bmxvYWQiOnRydWUsInByaW50Ijp0cnVlLCJjb3B5Ijp0cnVlfX0sImRvY3VtZW50VHlwZSI6IndvcmQiLCJlZGl0b3JDb25maWciOnsibW9kZSI6ImVkaXQiLCJjYWxsYmFja1VybCI6Imh0dHBzOi8vb2ZmaWNlLnRlY2hvd2VyLmNvbSJ9fQ.xFe4a1_2nNWFQP7dxX6BCPHkQYcWuAvwMGKozIq8z3o",
       }}
       events_onDocumentReady={onDocumentReady}
       onLoadComponentError={onLoadComponentError}

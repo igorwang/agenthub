@@ -84,7 +84,7 @@ export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) =
             {paragraphs && paragraphs.length > 0 && (
               <span
                 onClick={() => setShowMore(true)}
-                className="absolute bottom-1 right-2 cursor-pointer text-xs text-primary">
+                className="absolute bottom-0.5 right-0.5 cursor-pointer text-[10px] text-primary">
                 {t("Show more")}
               </span>
             )}
