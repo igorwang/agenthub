@@ -173,7 +173,6 @@ export default function MessageWindowWithWorkflow({
       chatSessionContext?.context || "",
       `User uploaded files: <UserUploadedFiles>${sessionFileContexts}</UserUploadedFiles>`,
     );
-    console.log("chatMessages", mapChatMessagesToStoredMessages(chatMessages));
     dispatch(setMessagesContext(mapChatMessagesToStoredMessages(chatMessages)));
   }, [agent, promptTemplates, messages, chatSessionContext]);
 
@@ -232,7 +231,6 @@ export default function MessageWindowWithWorkflow({
         dispatch(setRefreshSession(true));
       }
       setMessages(newMessages);
-      // onMessageChange?.(messages);
     }
   }, [data]);
 
@@ -422,7 +420,7 @@ export default function MessageWindowWithWorkflow({
       messages[messages.length - 1].status === "draft"
     ) {
       const aircraft = chatSessionContext?.aircraft;
-      if (aircraft && (aircraft.action == "create" || aircraft.action == "update")) {
+      if (aircraft && aircraft.action == "create") {
         handleCreateNewMessage?.({
           id: messages[messages.length - 1].id,
           query: "",

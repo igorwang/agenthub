@@ -33,7 +33,7 @@ export default function ChatPage() {
 
   const [agent, setAgent] = useState<AgentFragmentFragment | null>(null);
 
-  const { data: agentData } = useGetAgentByIdQuery({
+  const { data: agentData, error: agentError } = useGetAgentByIdQuery({
     variables: {
       id: id,
     },

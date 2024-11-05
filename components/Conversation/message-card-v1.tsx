@@ -491,7 +491,7 @@ const MessageCardV1 = React.forwardRef<HTMLDivElement, MessageCardProps>(
                           <div className="text-sm font-medium text-slate-700 dark:text-slate-300">
                             {item.title}
                           </div>
-                          <div className="truncate text-xs text-slate-500 dark:text-slate-400">
+                          <div className="max-w-[200px] truncate text-xs text-slate-500 dark:text-slate-400">
                             {item.description}
                           </div>
                         </div>

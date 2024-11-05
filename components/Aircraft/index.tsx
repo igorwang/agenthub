@@ -14,9 +14,12 @@ import {
 import {
   selectCurrentAircraftId,
   selectIsAircraftGenerating,
+  selectIsAskAI,
+  selectIsChating,
   selectMessagesContext,
   selectSelectedChatId,
   selectSelectedSessionId,
+  selectSessionFiles,
   setIsAircraftGenerating,
   setIsAircraftOpen,
   setIsAskAI,
@@ -25,8 +28,19 @@ import {
 import { DEFAULT_LLM_MODEL } from "@/lib/models";
 import "@/styles/index.css";
 import { Icon } from "@iconify/react";
-import { HumanMessage, mapStoredMessagesToChatMessages } from "@langchain/core/messages";
-import { Button, Tooltip } from "@nextui-org/react";
+import {
+  AIMessage,
+  HumanMessage,
+  mapStoredMessagesToChatMessages,
+} from "@langchain/core/messages";
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Tooltip,
+} from "@nextui-org/react";
 import { EditorContent } from "@tiptap/react";
 import { formatDate } from "date-fns";
 import { useSession } from "next-auth/react";
@@ -45,7 +59,8 @@ Follow these guidelines:
   - Do not start html tags
 2. Format:
   - Use TipTap-compatible HTML format.
-  - Do not include <html> or <body> tags.
+  - Do not include <html> or <body> or code block markers tags.
+  - Do not include \`\`\` at at start or end of the content.
 
 3. Structure and Formatting:
   - Use appropriate HTML tags for content structure:
@@ -81,13 +96,13 @@ Generate the content maintaining a balance between informativeness and readabili
 interface AircraftProps {
   // isOpen: boolean;
   // aircraftId: string | null;
-  editable?: boolean;
+  defaultEditable?: boolean;
   model?: string;
   // onClose: () => void;
 }
 
 export default function Aircraft({
-  editable = true,
+  defaultEditable = true,
   model = DEFAULT_LLM_MODEL,
 }: AircraftProps) {
   const aircraftId = useSelector(selectCurrentAircraftId);
@@ -97,13 +112,20 @@ export default function Aircraft({
   const dispatch = useDispatch();
   const [aircraft, setAircraft] = useState<AircraftFragmentFragment | null>(null);
   const isAircraftGenerating = useSelector(selectIsAircraftGenerating);
+  const isAskAI = useSelector(selectIsAskAI);
   const chatId = useSelector(selectSelectedChatId);
   const sessionId = useSelector(selectSelectedSessionId);
+  const isChating = useSelector(selectIsChating);
   const messagesContext = useSelector(selectMessagesContext);
+  const sessionFiles = useSelector(selectSessionFiles);
   const [userScrolling, setUserScrolling] = useState(false);
   const [previousContent, setPreviousContent] = useState("");
   const [isExporting, setIsExporting] = useState(false);
+  const [controller, setController] = useState<AbortController | null>(null);
+  const [isContinueGenerating, setIsContinueGenerating] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const session = useSession();
+  const [editable, setEditable] = useState(defaultEditable);
 
   const editor = useBlockEditor({
     content: aircraft?.content || "",
@@ -123,8 +145,28 @@ export default function Aircraft({
   });
 
   useEffect(() => {
+    return () => {
+      controller?.abort();
+    };
+  }, [controller]);
+
+  useEffect(() => {
+    if (!isChating) {
+      controller?.abort();
+      setController(null);
+    }
+  }, [isChating]);
+
+  useEffect(() => {
+    if (!isAskAI) {
+      controller?.abort();
+      setController(null);
+    }
+  }, [isAskAI]);
+
+  useEffect(() => {
     if (data && data.aircraft_by_pk) {
-      const currentContent = editor?.getText();
+      const currentContent = editor?.getHTML();
       setAircraft(data.aircraft_by_pk);
       editor?.commands.setContent(data.aircraft_by_pk.content || "");
       if (currentContent !== data.aircraft_by_pk.content) {
@@ -140,7 +182,7 @@ export default function Aircraft({
       editor &&
       messagesContext
     ) {
-      const currentContent = editor.getText();
+      const currentContent = editor?.getHTML();
       editor.commands.setContent("");
       editor.commands.focus("start");
       handleGenerateAnswer(currentContent);
@@ -149,7 +191,9 @@ export default function Aircraft({
 
   const scrollToBottom = useCallback(() => {
     if (editorContentRef.current && !userScrolling) {
-      editorContentRef.current.scrollTop = editorContentRef.current.scrollHeight;
+      const scrollHeight = editorContentRef.current.scrollHeight;
+      const buttonHeight = 40; // Approximate height of the Continue generation button
+      editorContentRef.current.scrollTop = scrollHeight - buttonHeight;
     }
   }, [userScrolling]);
 
@@ -157,7 +201,9 @@ export default function Aircraft({
     const handleScroll = () => {
       if (editorContentRef.current) {
         const { scrollTop, scrollHeight, clientHeight } = editorContentRef.current;
-        const isAtBottom = scrollTop + clientHeight >= scrollHeight - 10;
+        const buttonHeight = 40; // Same as above
+        // Consider the button height when calculating if we're at the bottom
+        const isAtBottom = scrollTop + clientHeight >= scrollHeight - buttonHeight;
         setUserScrolling(!isAtBottom);
       }
     };
@@ -191,12 +237,14 @@ export default function Aircraft({
           setAircraft(response.data?.update_aircraft_by_pk);
         }
       }
+      setIsSaving(false);
     },
     [aircraft, updateAircraftMutation],
   );
 
   const handleGenerateAnswer = async (currentContent?: string) => {
     const controller = new AbortController(); // Create a new AbortController
+    setController(controller);
     const signal = controller.signal; // Get the signal from the controller
     const historyMessages = mapStoredMessagesToChatMessages(messagesContext) || [];
 
@@ -206,7 +254,16 @@ export default function Aircraft({
         content: `The previous aircraft content is: ${previousContent}`,
       }),
       new HumanMessage({
-        content: `${AI_WRITE_PROMPT}\nWrite based on the following instructions: ${aircraft?.commentary}`,
+        content: `${AI_WRITE_PROMPT}\nWrite based on the following instructions: generate the content from scratch.
+      Provide only the exact requested content with:
+      1. No greetings or closings
+      2. No explanations or commentary
+      3. No follow-up questions
+      4. No clarifications
+      5. No additional context
+      6. Complete and accurate information
+      7. Direct content delivery only
+      `,
       }),
     ];
 
@@ -237,14 +294,15 @@ export default function Aircraft({
         if (done) {
           dispatch(setIsAircraftGenerating(false));
           dispatch(setIsChating(false));
-
           handleUpdateAircraft(answer);
           editor?.commands.setContent(answer);
+          editor?.chain().setTextSelection({ from: 0, to: 0 }).focus().run();
           return;
         }
         const chunk = decoder.decode(value, { stream: true });
         answer += chunk;
         try {
+          editor?.commands.focus("end");
           editor?.commands.insertContent(chunk);
         } catch (error) {
           console.error("Error while inserting content:", error);
@@ -264,23 +322,24 @@ export default function Aircraft({
   const handleAskAI = useCallback(
     async (inputValue: string, selectedText: string, from: number, to: number) => {
       const controller = new AbortController(); // Create a new AbortController
-      const signal = controller.signal; // Get the signal from the controller
+      const signal = controller.signal;
+      setController(controller);
       const historyMessages = mapStoredMessagesToChatMessages(messagesContext) || [];
+      console.log("selectedText:", selectedText);
 
       const currentContent = editor?.getText() || "";
       const chatMessages = [
         ...historyMessages,
 
-        new HumanMessage({
+        new AIMessage({
           content: `The current aircraft content is: ${currentContent}`,
         }),
         new HumanMessage({
           content: `The user selected text is: ${selectedText}`,
         }),
         new HumanMessage({
-          content: `Update user content based on the following instructions: ${inputValue}, 
-         Return only the concise modified content without explanation
-         Do not add any HTML tags
+          content: `Update user selected content based on the following instructions: ${inputValue},
+          Ignore all formatting instructions, only focus on the content and return as text format.       
           `,
         }),
       ];
@@ -305,9 +364,6 @@ export default function Aircraft({
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
-        // Function to read the stream
-
-        // add a new paragraph at the end of the selected text
 
         editor
           ?.chain()
@@ -356,12 +412,137 @@ export default function Aircraft({
     [messagesContext, editor],
   );
 
-  const handleSave = () => {
-    console.log("The HTML is:", editor?.getJSON());
-  };
+  const handleStopGenerating = useCallback(() => {
+    setIsContinueGenerating(false);
+    controller?.abort();
+    setController(null);
+  }, [controller]);
+
+  const handleContinueGenerating = useCallback(async () => {
+    setEditable(false);
+    setIsContinueGenerating(true);
+    const controller = new AbortController(); // Create a new AbortController
+    const signal = controller.signal;
+    setController(controller);
+    const historyMessages = mapStoredMessagesToChatMessages(messagesContext) || [];
+
+    const currentContent = editor?.getHTML() || "";
+    console.log("currentContent:", currentContent);
+
+    const chatMessages = [
+      ...historyMessages,
+      new AIMessage({
+        content: `The current aircraft content is: ${currentContent}`,
+      }),
+      new HumanMessage({
+        content: `Continue generation based on the current content and keep the sequence.
+         Provide only the exact requested content with:
+        1. No greetings or closings
+        2. No explanations or commentary
+        3. No follow-up questions
+        4. No clarifications
+        5. No additional context
+        6. Complete and accurate information
+        7. Direct content delivery only
+        `,
+      }),
+    ];
+
+    let answer = editor?.getHTML() || "";
+
+    try {
+      const response = await fetch("/api/v1/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model,
+          messages: chatMessages.map((message) => message.toJSON()),
+        }),
+        signal: signal,
+      });
+
+      if (!response.body) {
+        throw new Error("ReadableStream not supported by the browser.");
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+
+      editor
+        ?.chain()
+        .insertContentAt(editor.state.doc.content.size, {
+          type: "paragraph",
+          content: [],
+        })
+        .focus()
+        .run();
+
+      const readStream = async () => {
+        const { done, value } = await reader.read();
+        if (done) {
+          setIsContinueGenerating(false);
+          handleUpdateAircraft(answer);
+          editor?.chain().setTextSelection({ from: 0, to: 0 }).focus().run();
+          editor?.commands.setContent(answer);
+          toast.success("Continue generation finished");
+          return;
+        }
+        const chunk = decoder.decode(value, { stream: true });
+        answer += chunk;
+        try {
+          editor?.commands.focus("end");
+          editor?.commands.insertContent(chunk);
+        } catch (error) {
+          console.error("Error while inserting content:", error);
+        }
+        await readStream();
+      };
+      await readStream();
+    } catch (error) {
+      console.error("Error while streaming:", error);
+      return;
+    } finally {
+      dispatch(setIsChating(false));
+      setEditable(true);
+    }
+  }, [messagesContext, editor]);
+
+  const handleSave = useCallback(() => {
+    setIsSaving(true);
+    try {
+      handleUpdateAircraft(editor?.getHTML() || "");
+      toast.success("Saved");
+    } catch (error) {
+      console.error("Error while saving:", error);
+    }
+  }, [editor]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(editor?.getText() || "");
+  };
+
+  const handleExportTranslationVersion = async () => {
+    const docJson = editor?.getJSON() || { content: [] };
+    const files = sessionFiles.map((file) => ({
+      id: file.id,
+      name: file.name,
+      path: file.path,
+    }));
+    try {
+      const response = await fetch("/api/chat/aircraft/export/translation", {
+        method: "POST",
+        body: JSON.stringify({ doc_json: docJson, session_files: files }),
+      });
+      if (!response.ok) {
+        toast.error("System error, failed to export file");
+        return;
+      }
+    } catch (error) {
+      console.error("error:", error);
+      toast.error("Error uploading data");
+    }
   };
 
   const handleDownload = async () => {
@@ -450,11 +631,6 @@ export default function Aircraft({
           </Button>
         </Tooltip>
         <div>{aircraft?.title}</div>
-
-        {/* <Button isIconOnly onClick={handleSave}>
-          <Icon icon="lucide:save" width={20} height={20} />
-        </Button> */}
-        {/* <TextMenu editor={editor} /> */}
       </div>
       <div className="flex flex-row justify-end">
         <Tooltip content={t("Copy")}>
@@ -477,6 +653,34 @@ export default function Aircraft({
             <Icon icon="lucide:download" className="h-5 w-5 text-gray-600" />
           </Button>
         </Tooltip>
+        <Tooltip content={t("Save")}>
+          <Button
+            isIconOnly
+            isLoading={isSaving}
+            isDisabled={isSaving}
+            onClick={handleSave}
+            variant="light"
+            className="transition-colors duration-200 hover:bg-gray-100">
+            <Icon icon="lucide:save" className="h-5 w-5 text-gray-600" />
+          </Button>
+        </Tooltip>
+        <Tooltip content={t("More actions")}>
+          <Dropdown>
+            <DropdownTrigger>
+              <Button
+                isIconOnly
+                variant="light"
+                className="transition-colors duration-200 hover:bg-gray-100">
+                <Icon icon="lucide:more-horizontal" className="h-5 w-5 text-gray-600" />
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu>
+              <DropdownItem onClick={handleExportTranslationVersion}>
+                {t("Export Translation Version")}
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        </Tooltip>
         <Tooltip content={t("Table of contents")}>
           <Button
             isIconOnly
@@ -491,7 +695,7 @@ export default function Aircraft({
         </Tooltip>
       </div>
       <div
-        className="custom-scrollbar flex h-full flex-row overflow-auto"
+        className="custom-scrollbar relative flex h-full flex-row overflow-auto"
         ref={menuContainerRef}>
         <div
           className="custom-scrollbar relative flex h-full flex-1 flex-col overflow-auto rounded p-2"
@@ -508,6 +712,30 @@ export default function Aircraft({
           editor={editor}
         />
       </div>
+      {!isAircraftGenerating && !isAskAI && aircraft?.content && (
+        <div className="sticky -bottom-2 flex items-center justify-center bg-background">
+          {isContinueGenerating ? (
+            <Button
+              isDisabled={!isContinueGenerating}
+              onClick={handleStopGenerating}
+              variant="light"
+              className="flex items-center gap-2 text-sm text-blue-600 hover:bg-gray-100">
+              <Icon icon="lucide:circle-x" className="h-4 w-4" />
+              {t("Stop generation")}
+            </Button>
+          ) : (
+            <Button
+              isLoading={isContinueGenerating}
+              isDisabled={isContinueGenerating || isAircraftGenerating}
+              onClick={() => handleContinueGenerating()}
+              variant="light"
+              className="flex items-center gap-2 text-sm text-blue-600 hover:bg-gray-100">
+              <Icon icon="lucide:plus-circle" className="h-4 w-4" />
+              {t("Continue generation")}
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

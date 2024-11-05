@@ -14,8 +14,6 @@ export type AIBubbleMenuProps = {
 
 export const AIBubbleMenu = ({ editor, onAskAI }: AIBubbleMenuProps) => {
   const t = useTranslations("");
-  // const commands = useTextMenuCommand(editor);
-  // const states = useTextmenuStates(editor);
   const dispatch = useDispatch();
   const [inputValue, setInputValue] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -23,9 +21,8 @@ export const AIBubbleMenu = ({ editor, onAskAI }: AIBubbleMenuProps) => {
 
   useEffect(() => {
     const { from, to } = editor.state.selection;
-    const nodes = editor.state.doc.nodesBetween(from, to, (node, pos) => {
-      return true;
-    });
+    const selectedText = editor.state.doc.textBetween(from, to, " ");
+    console.log("selectedText:", selectedText, from, to);
   }, [editor.state.selection]);
 
   const handleInputFocus = useCallback(() => {
@@ -49,82 +46,13 @@ export const AIBubbleMenu = ({ editor, onAskAI }: AIBubbleMenuProps) => {
       const selectedText = editor.state.doc.textBetween(from, to, " ");
       onAskAI?.(inputValue.trim(), selectedText, from, to);
 
-      // editor.chain().deleteRange({
-      //   from: thinkingNodePos,
-      //   to: thinkingNodePos + thinkingTips.length + 1,
-      // });
-
-      // Simulate AI response (replace with actual AI call)
-      // setTimeout(() => {
-      //   // Remove thinking node and insert AI response
-
-      //   editor
-      //     .chain()
-      //     .deleteRange({
-      //       from: thinkingNodePos,
-      //       to: thinkingNodePos + thinkingTips.length + 1,
-      //     })
-      //     .insertContentAt(thinkingNodePos, {
-      //       type: "paragraph",
-      //       content: [{ type: "text", text: "\n" }],
-      //     })
-      //     .focus()
-      //     .run();
-
-      //   setIsAskAI(false);
-      //   setInputValue("");
-      // }, 2000);
-
-      // setIsAskAI(false);
       setInputValue("");
     },
     [editor, inputValue, isAskAI, onAskAI, t],
   );
 
-  // const restoreSelection = useCallback(() => {
-  //   if (selectionRange) {
-  //     editor.commands.setTextSelection({
-  //       from: selectionRange.from,
-  //       to: selectionRange.to,
-  //     });
-  //   }
-  // }, [editor, selectionRange]);
-
   return (
-    <BubbleMenu
-      tippyOptions={{
-        popperOptions: {
-          placement: "top-start",
-          modifiers: [
-            {
-              name: "preventOverflow",
-              options: {
-                boundary: "viewport",
-                padding: 8,
-              },
-            },
-            {
-              name: "flip",
-              options: {
-                fallbackPlacements: ["bottom-start", "top-end", "bottom-end"],
-              },
-            },
-          ],
-        },
-        maxWidth: "none", // 移除最大宽度限制
-      }}
-      editor={editor}
-      pluginKey="textMenu"
-      // shouldShow={states.shouldShow}
-      // shouldShow={() => true}
-      shouldShow={({ from, to }) => {
-        // 默认显示
-        if (from === to) {
-          return false;
-        }
-        return true;
-      }}
-      updateDelay={300}>
+    <BubbleMenu editor={editor} pluginKey="textMenu" updateDelay={200}>
       <div className="flex w-[400px] items-center overflow-hidden border border-gray-200 bg-white shadow-xl">
         <Textarea
           className="flex-grow"

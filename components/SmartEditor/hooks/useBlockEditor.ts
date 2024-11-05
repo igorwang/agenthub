@@ -14,6 +14,7 @@ import { Mathematics } from "@tiptap-pro/extension-mathematics";
 import Placeholder from "@tiptap/extension-placeholder";
 
 import { TableOfContentsNode } from "@/components/SmartEditor/extensions/TableOfContentsNode";
+import { TranslationNode } from "@/components/SmartEditor/extensions/TranslationNode";
 import "@/styles/index.css";
 import TableOfContents from "@tiptap-pro/extension-table-of-contents";
 import Bold from "@tiptap/extension-bold";
@@ -254,6 +255,7 @@ export const useBlockEditor = ({
       }),
       TextStyle,
       Image,
+      TranslationNode,
     ],
     editable: editable,
     autofocus: true,

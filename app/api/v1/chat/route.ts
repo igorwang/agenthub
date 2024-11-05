@@ -8,7 +8,14 @@ export async function POST(req: NextRequest) {
   const encoder = new TextEncoder();
   const body = await req.json();
 
-  const { model, messages, modelParams = {} } = body;
+  const {
+    model,
+    messages,
+    modelParams = {},
+    maxTokens = 4096,
+    temperature = 0,
+    topP = 1,
+  } = body;
 
   const newMessages = messages.map((message: any) => {
     if (message.id[message.id.length - 1] == "SystemMessage") {
@@ -53,8 +60,6 @@ export async function POST(req: NextRequest) {
   //     ],
   //   }),
   // ];
-  console.log("messages", messages);
-  console.log("newMessages", newMessages);
 
   const llm = new ChatOpenAI({
     model: model,
@@ -62,6 +67,9 @@ export async function POST(req: NextRequest) {
     configuration: {
       baseURL: process.env.LITELLM_ENDPOINT,
     },
+    maxTokens: maxTokens,
+    temperature: temperature,
+    topP: topP,
   }).bind(modelParams);
 
   try {

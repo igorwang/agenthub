@@ -3653,6 +3653,13 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@onlyoffice/document-editor-react@^1.5.1":
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/@onlyoffice/document-editor-react/-/document-editor-react-1.5.1.tgz#40a2be6eba3930b9b9af3410fe08f0098e901355"
+  integrity sha512-8IlirX5RTjzbHS/IQYCftr5MBUKzPvH0bGjvSlWn7/ZWjCvXDWcJRW+0HXFpgjVzT9fe37/G9kFR3MAzPAUymw==
+  dependencies:
+    lodash "4.17.21"
+
 "@panva/hkdf@^1.1.1":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@panva/hkdf/-/hkdf-1.2.0.tgz#506b989e1ff9c215d77c19d5dae5a78a5243f4f6"

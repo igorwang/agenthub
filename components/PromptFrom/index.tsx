@@ -21,7 +21,7 @@ import { toast } from "sonner";
 type TemplateStatus = "draft" | "saved";
 
 const CitationPromptTemplate = `
-You will be given multiple sources, each starting with a reference number [[source:x]] where x is a numerical identifier.
+You will be given multiple sources, each starting with a reference number [[source:x](page y1,y2,y3)] where x is a numerical identifier and y1,y2,y3 is pagenumber.
 
 Please follow these citation rules:
 1. Use the sources appropriately based on the question
@@ -30,7 +30,7 @@ Please follow these citation rules:
 4. Your response should be in the same language as the question, except for code, proper nouns, and citations
 
 Example:
-According to research, this technology can improve efficiency by 30% [source:1]. In practical applications, user satisfaction rates exceeded 90% [source:2].
+According to research, this technology can improve efficiency by 30% [source:1 (page 1,7)]. In practical applications, user satisfaction rates exceeded 90% [source:2].
 `;
 
 export type PromptTemplateType = {

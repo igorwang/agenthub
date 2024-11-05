@@ -38,6 +38,7 @@
     "@langchain/openai": "^0.3.0",
     "@langchain/textsplitters": "^0.0.3",
     "@nextui-org/react": "^2.3.6",
+    "@onlyoffice/document-editor-react": "^1.5.1",
     "@react-aria/ssr": "^3.9.2",
     "@react-aria/visually-hidden": "^3.8.10",
     "@reduxjs/toolkit": "^2.2.5",

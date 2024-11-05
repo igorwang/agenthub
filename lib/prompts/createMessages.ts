@@ -51,17 +51,16 @@ export async function createMessages(
           content: [
             {
               type: "text",
-              text: chatContext,
+              text: `Chat Context: ${chatContext}`,
               cache_control: { type: "ephemeral" },
             },
           ],
         }),
       );
     } else {
-      chatMessages.push(new HumanMessage(chatContext));
+      chatMessages.push(new HumanMessage(`Chat Context: ${chatContext}`));
     }
   }
-
   if (sources && sources.length > 0) {
     const sourceContext = await createSourceContext(sources);
     if (hasContextCacheFunction && sourceContext && sourceContext.length > 4000) {

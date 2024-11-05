@@ -52,7 +52,17 @@ const createWSLink = (): WebSocketLink => {
     },
   });
 
-  subscriptionClient.onConnected(() => {});
+  subscriptionClient.onConnected(() => {
+    console.log("WebSocket connected");
+  });
+
+  subscriptionClient.onDisconnected(() => {
+    console.log("WebSocket disconnected");
+  });
+
+  subscriptionClient.onError((error) => {
+    console.error("WebSocket error:", error);
+  });
 
   return new WebSocketLink(subscriptionClient);
 };
@@ -80,7 +90,6 @@ export function createApolloClient(
   });
 
   let link;
-  console.log(`ssrMode: ${ssrMode}`);
   if (ssrMode) {
     link = createHttpLink(headers);
   } else {
