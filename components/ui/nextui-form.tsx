@@ -61,7 +61,8 @@ const CustomCheckbox: React.FC<WidgetProps> = (props) => {
 };
 
 const CustomSwitch: React.FC<WidgetProps> = (props) => {
-  const { id, value, disabled, readonly, onChange, label } = props;
+  const { id, value, disabled, readonly, onChange, label, schema } = props;
+
   return (
     <Switch
       id={id}
@@ -107,8 +108,6 @@ const CustomTextareaWidget: React.FC<WidgetProps> = (props) => {
     uiSchema,
     formContext,
   } = props;
-
-  console.log("name", name, value, defaultValue, schema);
 
   const hidden = uiSchema?.["ui:hidden"];
 
