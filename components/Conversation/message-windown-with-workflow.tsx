@@ -321,7 +321,6 @@ export default function MessageWindowWithWorkflow({
       messages[messages.length - 1].status === "draft"
     ) {
       dispatch(setChatStatus(CHAT_STATUS_ENUM.Searching));
-      console.log("selectedSources", selectedSources);
       const fetchChatWithWorkflow = async () => {
         const body: ChatFlowRequestSchema = {
           agent_id: agentId || "",

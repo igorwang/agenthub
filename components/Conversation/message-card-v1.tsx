@@ -438,7 +438,7 @@ const MessageCardV1 = React.forwardRef<HTMLDivElement, MessageCardProps>(
             messageClassName,
           )}>
           <div ref={messageRef} className={"min-h-8 px-1 text-medium"}>
-            <div className="mr-10 gap-3">
+            <div className="mr-10 gap-3 overflow-hidden">
               {librarySources && librarySources.length > 0 && (
                 <SourceSection
                   title={t("library Sources")}
@@ -447,9 +447,7 @@ const MessageCardV1 = React.forwardRef<HTMLDivElement, MessageCardProps>(
               )}
               <Spacer x={2} />
               {webSources && webSources.length > 0 && (
-                <SourceSection
-                  title={t("Web Sources")}
-                  items={webSources || []}></SourceSection>
+                <SourceSection title={t("Web Sources")} items={webSources || []} />
               )}
               <Spacer x={2} />
               <div className="flex flex-row items-center justify-start gap-1 p-1">
