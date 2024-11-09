@@ -18,6 +18,7 @@ import {
   setSelectedSources,
   setSessionFiles,
 } from "@/lib/features/chatListSlice";
+
 import { AppDispatch } from "@/lib/store";
 import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -321,6 +322,9 @@ export default function MessageWindowWithWorkflow({
       messages[messages.length - 1].status === "draft"
     ) {
       dispatch(setChatStatus(CHAT_STATUS_ENUM.Searching));
+
+      let controller = new AbortController();
+
       const fetchChatWithWorkflow = async () => {
         const body: ChatFlowRequestSchema = {
           agent_id: agentId || "",
@@ -341,13 +345,14 @@ export default function MessageWindowWithWorkflow({
           })),
         };
 
-        const response = await fetch("/api/workflow", {
+        const response = await fetch("/api/workflow/stream", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
+          signal: controller.signal,
         });
 
-        if (!response.ok) {
+        if (!response.ok || !response.body) {
           dispatch(setChatStatus(CHAT_STATUS_ENUM.Failed));
           dispatch(setChatSessionContext(null));
           dispatch(setIsChating(false));
@@ -367,13 +372,34 @@ export default function MessageWindowWithWorkflow({
           return;
         }
 
-        const workflowResults: ChatFlowResponseSchema = await response.json();
+        const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
+        let buffer = "";
+        let streamData = {};
+
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buffer += value;
+          if (buffer.startsWith("data: {") && buffer.endsWith("}\n\n")) {
+            try {
+              const data = JSON.parse(buffer.slice(6, -2));
+              streamData = { ...streamData, ...data };
+              console.log("Received", data);
+              buffer = "";
+            } catch (error) {
+              console.error("Error while parsing:", buffer);
+            }
+          }
+        }
+
+        const workflowResults: ChatFlowResponseSchema =
+          streamData as ChatFlowResponseSchema;
         const workflowOutput = workflowResults.workflow_output;
 
         setWorkflowResults(workflowResults);
 
         // Stop workflow
-        if (workflowOutput.type === "humanInLoopNode") {
+        if (workflowOutput?.type === "humanInLoopNode") {
           await handleCreateNewMessage?.({
             id: messages[messages.length - 1].id,
             query: "",
