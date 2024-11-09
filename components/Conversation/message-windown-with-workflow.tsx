@@ -18,6 +18,7 @@ import {
   setSelectedSources,
   setSessionFiles,
 } from "@/lib/features/chatListSlice";
+import { fetchEventSource } from "@microsoft/fetch-event-source";
 
 import { AppDispatch } from "@/lib/store";
 import { useSession } from "next-auth/react";
@@ -345,57 +346,46 @@ export default function MessageWindowWithWorkflow({
           })),
         };
 
-        const response = await fetch("/api/workflow/stream", {
+        let streamData = {};
+
+        await fetchEventSource("/api/workflow/stream", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
           signal: controller.signal,
-        });
-
-        if (!response.ok || !response.body) {
-          dispatch(setChatStatus(CHAT_STATUS_ENUM.Failed));
-          dispatch(setChatSessionContext(null));
-          dispatch(setIsChating(false));
-          setMessages((prev) => [
-            ...prev.slice(0, -1),
-            {
-              ...prev[prev.length - 1],
-              message: t("Agent execution failed, please try again"),
-              status: "failed",
-            },
-          ]);
-
-          setWorkflowResults({
-            error_message: `Workflow execution failed: ${response.statusText}`,
-            workflow_output: {},
-          });
-          return;
-        }
-
-        const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
-        let buffer = "";
-        let streamData = {};
-
-        while (true) {
-          const { value, done } = await reader.read();
-          if (done) break;
-          buffer += value;
-          if (buffer.startsWith("data: {") && buffer.endsWith("}\n\n")) {
+          onmessage: (event) => {
             try {
-              const data = JSON.parse(buffer.slice(6, -2));
+              const data = JSON.parse(event.data);
               streamData = { ...streamData, ...data };
               console.log("Received", data);
-              buffer = "";
             } catch (error) {
-              console.error("Error while parsing:", buffer);
+              console.error("Error parsing message:", error);
             }
-          }
-        }
+          },
+          onerror: (error) => {
+            console.error("EventSource error:", error);
+            dispatch(setChatStatus(CHAT_STATUS_ENUM.Failed));
+            dispatch(setChatSessionContext(null));
+            dispatch(setIsChating(false));
+            setMessages((prev) => [
+              ...prev.slice(0, -1),
+              {
+                ...prev[prev.length - 1],
+                message: t("Agent execution failed, please try again"),
+                status: "failed",
+              },
+            ]);
+            setWorkflowResults({
+              error_message: `Workflow execution failed: ${error.statusText}`,
+              workflow_output: {},
+            });
+            return;
+          },
+        });
 
         const workflowResults: ChatFlowResponseSchema =
           streamData as ChatFlowResponseSchema;
         const workflowOutput = workflowResults.workflow_output;
-
         setWorkflowResults(workflowResults);
 
         // Stop workflow
