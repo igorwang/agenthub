@@ -80,13 +80,15 @@ export const SourceCard = ({ index = 1, source, onFeedback }: SourceCardProps) =
         <Divider />
         <Tooltip content={source.fileName} placement="top" className="break-words">
           <CardBody className="relative h-14 overflow-hidden px-3 py-2">
-            <p className="line-clamp-2 text-xs text-default-500">{source.fileName}</p>
+            <p className="line-clamp-2 max-w-[200px] truncate text-xs text-default-500">
+              {source.fileName}
+            </p>
             {paragraphs && paragraphs.length > 0 && (
-              <span
-                onClick={() => setShowMore(true)}
-                className="absolute bottom-0.5 right-0.5 cursor-pointer text-[10px] text-primary">
-                {t("Show more")}
-              </span>
+              <Button
+                onPress={() => setShowMore(true)}
+                className="absolute -bottom-2 -right-2 border-none bg-transparent p-0 text-[10px] text-primary">
+                {t("More")}
+              </Button>
             )}
           </CardBody>
         </Tooltip>
