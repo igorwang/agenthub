@@ -1,7 +1,28 @@
 import { DocumentEditor } from "@onlyoffice/document-editor-react";
+import * as jose from "jose";
+import { useEffect, useState } from "react";
 
 function onDocumentReady(event: any): void {
   console.log("Document is loaded");
+}
+
+async function encodePayload(payload: any) {
+  try {
+    // Generate a secret key for signing
+    const secretKey = new TextEncoder().encode("bdddBS0hnEqA7lEtV2BcfSeG8iDY4dnz");
+
+    // Create a new JWT and sign it
+    const jwt = await new jose.SignJWT(payload)
+      .setProtectedHeader({ alg: "HS256" })
+      .setIssuedAt()
+      .setExpirationTime("2h") // Token expires in 2 hours
+      .sign(secretKey);
+
+    return jwt;
+  } catch (error) {
+    console.error("Error encoding payload:", error);
+    throw error;
+  }
 }
 
 function onLoadComponentError(errorCode: number, errorDescription: string): void {
@@ -21,31 +42,45 @@ function onLoadComponentError(errorCode: number, errorDescription: string): void
 }
 
 export default function OfficeEditor() {
+  const [token, setToken] = useState("");
+
+  const config = {
+    document: {
+      fileType: "docx",
+      key: "cDovLzEyNy4wLjAuMTo512321M",
+      title: "Example Document Title.docx",
+      url: "http://s3web.techower.com/api/v1/download-shared-object/aHR0cDovLzEyNy4wLjAuMTo5MDAwL2NoYXQvdG1wL3JldmlzZWRfMjAyNDEwMTExN18lRTUlOTUlODYlRTklOTMlQkElRTclQTclOUYlRTglQjUlODElRTUlOTAlODglRTUlOTAlOEMuZG9jeD9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPTNNM0c1SFVUWVFYWUxVM0k2WTZWJTJGMjAyNDExMTAlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQxMTEwVDAxMTgzMVomWC1BbXotRXhwaXJlcz00MzIwMCZYLUFtei1TZWN1cml0eS1Ub2tlbj1leUpoYkdjaU9pSklVelV4TWlJc0luUjVjQ0k2SWtwWFZDSjkuZXlKaFkyTmxjM05MWlhraU9pSXpUVE5ITlVoVlZGbFJXRmxNVlROSk5sazJWaUlzSW1WNGNDSTZNVGN6TVRJME1UTXdOU3dpY0dGeVpXNTBJam9pU0dKd2JtUkJialpqUWlKOS5LUDZlaGVsWTNIeFlhVjZpSzJiQzh6VFI0X2YxRTZWU3kzcjZHRk9aZlZLY1R2QTF1UFpXUE5qcE9UT0l2MloxNE9IYll3VklwbXVYY2U1OFFIakxwZyZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QmdmVyc2lvbklkPW51bGwmWC1BbXotU2lnbmF0dXJlPWJkN2QxNTJhMmMyZjc1MDE3ZDcyOTZiNzdkYjY0ZTY5MGRmNjAyYTlhNjVmNmE2YTJmZDBkOTIyNjQ1MDAxNjM=",
+      permissions: {
+        edit: true,
+        download: true,
+        print: true,
+        copy: true,
+      },
+    },
+    editorConfig: {
+      mode: "edit",
+      callbackUrl: "https://office.techower.com",
+    },
+  };
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const token = await encodePayload(config);
+      setToken(token);
+    };
+    fetchToken();
+  }, []);
+
+  console.log("token", token);
+
+  if (!token) return <div>Loading...</div>;
+
   return (
     <DocumentEditor
       id="docxEditor"
-      documentServerUrl="https://office.techower.com/"
-      config={{
-        document: {
-          fileType: "docx",
-          key: "conv_unique_doc_key_123_65",
-          title: "Example Document Title.docx",
-          url: "https://s3web.techower.com/public/tmp/document_24.04.30%20-%20[Eng]%20NBIF%20-%20KFS%20-%20EMD%20LC.docx",
-          permissions: {
-            edit: true,
-            download: true,
-            print: true,
-            copy: true,
-          },
-        },
-        documentType: "word",
-        editorConfig: {
-          mode: "edit",
-          callbackUrl: "https://office.techower.com",
-        },
-        token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb2N1bWVudCI6eyJmaWxlVHlwZSI6ImRvY3giLCJrZXkiOiJjb252X3VuaXF1ZV9kb2Nfa2V5XzEyM182NSIsInRpdGxlIjoiRXhhbXBsZSBEb2N1bWVudCBUaXRsZS5kb2N4IiwidXJsIjoiaHR0cHM6Ly9vZmZpY2UudGVjaG93ZXIuY29tL2NhY2hlL2ZpbGVzL2RhdGEvY29udl91bmlxdWVfZG9jX2tleV8xMjNfNjUvb3V0cHV0LmRvY3gvZG9jdW1lbnQuZG9jeD9tZDU9NGk4am5IQk9pTm15ckpWOGFwcnN0ZyZleHBpcmVzPTE3MzA3ODQ3MTcmc2hhcmRrZXk9MjIzLjY1LjE3My4yMjlfXzE3Mi4yNS4wLjF2MS5kb2N4MTczMDc4MDUyNjkyMyZmaWxlbmFtZT1kb2N1bWVudC5kb2N4IiwicGVybWlzc2lvbnMiOnsiZWRpdCI6dHJ1ZSwiZG93bmxvYWQiOnRydWUsInByaW50Ijp0cnVlLCJjb3B5Ijp0cnVlfX0sImRvY3VtZW50VHlwZSI6IndvcmQiLCJlZGl0b3JDb25maWciOnsibW9kZSI6ImVkaXQiLCJjYWxsYmFja1VybCI6Imh0dHBzOi8vb2ZmaWNlLnRlY2hvd2VyLmNvbSJ9fQ.xFe4a1_2nNWFQP7dxX6BCPHkQYcWuAvwMGKozIq8z3o",
-      }}
+      documentServerUrl="https://office.techower.com"
+      // documentServerUrl="http://localhost:9980"
+      config={{ ...config, token }}
       events_onDocumentReady={onDocumentReady}
       onLoadComponentError={onLoadComponentError}
     />

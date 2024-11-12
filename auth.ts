@@ -108,7 +108,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           process.env.HASURA_API_SECRET as string,
           {
             algorithm: "HS256",
-            expiresIn: 60 * 60 * 24 * 7,
+            expiresIn: 60 * 60 * 24 * 30,
           },
         );
         if (profile?.sub) {
@@ -127,6 +127,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           "https://api.dicebear.com/8.x/adventurer-neutral/svg?seed=Jasmine";
         session.user.roles = token.roles;
       }
+
       session.access_token = token.access_token as string;
       return session;
     },

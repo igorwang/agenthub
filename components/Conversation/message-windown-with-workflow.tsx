@@ -214,7 +214,10 @@ export default function MessageWindowWithWorkflow({
             key: index,
             fileName: attachment.fileName,
           })) || [],
-        sources: item.sources?.map((item: SourceType) => ({ ...item })),
+        sources: item.sources?.map((item: SourceType) => ({
+          ...item,
+          contents: item?.contents,
+        })),
         messageType: item.message_type || Message_Type_Enum.Text,
         schema: item.schema || {},
         imageUrls: item.imageUrls || [],
@@ -363,7 +366,6 @@ export default function MessageWindowWithWorkflow({
             }
           },
           onerror: (error) => {
-            console.error("EventSource error:", error);
             dispatch(setChatStatus(CHAT_STATUS_ENUM.Failed));
             dispatch(setChatSessionContext(null));
             dispatch(setIsChating(false));

@@ -3,12 +3,13 @@ import {
   HttpLink,
   InMemoryCache,
   NormalizedCacheObject,
+  from,
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { RetryLink } from "@apollo/client/link/retry";
-import { WebSocketLink } from "@apollo/client/link/ws";
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { createClient } from "graphql-ws";
 import { getSession } from "next-auth/react";
-import { SubscriptionClient } from "subscriptions-transport-ws";
 
 let accessToken: string | null = null;
 const requestAccessToken = async (): Promise<void> => {
@@ -28,6 +29,18 @@ const resetTokenLink = onError(({ networkError }) => {
   }
 });
 
+const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) => {
+  if (graphQLErrors)
+    graphQLErrors.forEach(({ message, locations, path }) =>
+      console.log(
+        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
+      ),
+    );
+  if (networkError) {
+    console.error(`[Network error]: ${networkError}`);
+  }
+});
+
 const createHttpLink = (headers: Record<string, string> | null) => {
   const httpLink = new HttpLink({
     uri: `${process.env.HTTP_API_HOST}`,
@@ -38,33 +51,34 @@ const createHttpLink = (headers: Record<string, string> | null) => {
   return httpLink;
 };
 
-const createWSLink = (): WebSocketLink => {
-  const subscriptionClient = new SubscriptionClient(`${process.env.WS_API_HOST}`, {
+const createWSLink = (): GraphQLWsLink => {
+  const link = createClient({
+    url: `${process.env.WS_API_HOST}`,
     lazy: true,
-    reconnect: true,
+    retryAttempts: 3,
     connectionParams: async () => {
       await requestAccessToken();
       return {
-        headers: {
-          Authorization: accessToken ? `Bearer ${accessToken}` : "",
-        },
+        headers: { Authorization: accessToken ? `Bearer ${accessToken}` : "" },
       };
+    },
+    on: {
+      opened: () => {
+        console.log("WebSocket opened");
+      },
+      closed: (event: any) => {
+        if (typeof window !== "undefined" && event?.code === 4403) {
+          window.location.href = "/auth/login";
+        }
+        console.log("WebSocket closed", event);
+      },
+      error: (error) => {
+        console.error("WebSocket error:", error);
+      },
     },
   });
 
-  subscriptionClient.onConnected(() => {
-    console.log("WebSocket connected");
-  });
-
-  subscriptionClient.onDisconnected(() => {
-    console.log("WebSocket disconnected");
-  });
-
-  subscriptionClient.onError((error) => {
-    console.error("WebSocket error:", error);
-  });
-
-  return new WebSocketLink(subscriptionClient);
+  return new GraphQLWsLink(link);
 };
 
 export interface InitialState {
@@ -98,7 +112,7 @@ export function createApolloClient(
 
   return new ApolloClient({
     ssrMode,
-    link: retryLink.concat(link),
+    link: from([errorLink, retryLink, link]),
     cache: new InMemoryCache().restore(initialState),
   });
 }
