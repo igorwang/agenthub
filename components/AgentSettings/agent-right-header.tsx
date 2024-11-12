@@ -1,14 +1,21 @@
+import { Icon } from "@iconify/react";
+import { Button } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { IcBaselineArrowBackIosNew } from "../ui/icons";
 
-interface RightHeaderProps {
+interface AgentRightHeaderProps {
   title?: string;
   callBackUri?: string;
 }
 
-export default function RightHeader(props: RightHeaderProps) {
+export default function AgentRightHeader(props: AgentRightHeaderProps) {
   const router = useRouter();
   const { title, callBackUri } = props;
+
+  const handleClick = () => {
+    const api_url = `${process.env.PLATFORM_API_URL}/docs`;
+    window.open(api_url, "_blank");
+  };
 
   return (
     //component needs to be used  with the styling of its parent node
@@ -20,6 +27,16 @@ export default function RightHeader(props: RightHeaderProps) {
         />
         <p className="text-base font-medium">{title}</p>
       </div>
+      <Button
+        isIconOnly
+        onClick={handleClick}
+        className="mr-4"
+        variant="light"
+        size="sm"
+        color="primary">
+        <Icon icon="mdi:api" className="text-lg" />
+      </Button>
+
       {/*<Tabs className="justify-center">*/}
       {/*  <Tab key="simple" title="Simple" />*/}
       {/*  <Tab key="deep" title="Deep" />*/}

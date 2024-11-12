@@ -1,11 +1,11 @@
 "use client";
 
 import AgentInformation, { AgentInfoRef } from "@/components/AgentInformation";
+import AgentRightHeader from "@/components/AgentSettings/agent-right-header";
 import HorizontalSteps from "@/components/AgentSettings/horizontal-steps";
 import { LibraryCart } from "@/components/Library/LibraryCart";
 import { LibraryFileHandle } from "@/components/Library/LibraryFile";
 import PromptFrom, { PromptFormHandle } from "@/components/PromptFrom";
-import RightHeader from "@/components/RightHeader";
 import { Unauthorized } from "@/components/ui/unauthorized";
 import WorkflowForm from "@/components/Workflow/WorkflowForm";
 import {
@@ -197,7 +197,7 @@ export default function AgentSettings({
 
   return (
     <div className="flex h-screen flex-col">
-      <RightHeader title={t("Agent Setting")} callBackUri={`/chat/${id}`} />
+      <AgentRightHeader title={t("Agent Setting")} callBackUri={`/chat/${id}`} />
       <div className="flex-grow overflow-auto scrollbar-none">
         <div className="mx-auto mt-10 flex w-full flex-col items-center px-4">
           <HorizontalSteps
