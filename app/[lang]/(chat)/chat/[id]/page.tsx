@@ -101,7 +101,7 @@ export default function ChatPage() {
         />
       </div>
       {isAircraftOpen && sessionId && (
-        <div className="flex w-full flex-1">
+        <div className="flex w-full min-w-[400px] flex-1">
           <Aircraft model={agent?.default_model || DEFAULT_LLM_MODEL} />
         </div>
       )}

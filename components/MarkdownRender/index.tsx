@@ -1,5 +1,5 @@
 import "katex/dist/katex.min.css";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeKatex from "rehype-katex";
 import rehypeRaw from "rehype-raw";
@@ -11,6 +11,23 @@ interface MarkdownRendererProps {
 }
 
 const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
+  const [maxWidth, setMaxWidth] = useState<string>("max-w-full");
+  const ref = useRef<HTMLDivElement>(null);
+
+  const updateMaxWidth = () => {
+    if (ref.current) {
+      console.log(ref.current.offsetWidth);
+      setMaxWidth(`max-w-[${ref.current.offsetWidth}px]`);
+    }
+  };
+
+  useEffect(() => {
+    updateMaxWidth();
+    window.addEventListener("resize", updateMaxWidth);
+    return () => {
+      window.removeEventListener("resize", updateMaxWidth);
+    };
+  }, []);
   const components = {
     p: ({ children }: any) => <p className="mb-4 break-words">{children}</p>,
     h1: ({ children }: any) => <h1 className="mb-4 text-2xl font-bold">{children}</h1>,
@@ -43,19 +60,15 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
         {children}
       </blockquote>
     ),
-    table: ({ children }: any) => (
-      <div className="my-4 w-full overflow-x-auto">
-        <table className="min-w-full border-collapse border border-gray-300">
-          {children}
-        </table>
-      </div>
-    ),
+    // table: ({ children }: any) => (
+    //   <div className={`my-4 flex max-w-[calc(100%-10px)] overflow-x-auto`}>
+    //     <table className="border-collapse border border-gray-300">{children}</table>
+    //   </div>
+    // ),
     th: ({ children }: any) => (
-      <th className="border border-gray-300 bg-gray-100 px-4 py-2">{children}</th>
+      <th className="border border-gray-300 bg-gray-100">{children}</th>
     ),
-    td: ({ children }: any) => (
-      <td className="border border-gray-300 px-4 py-2">{children}</td>
-    ),
+    td: ({ children }: any) => <td className="border border-gray-300">{children}</td>,
     unknown: ({ node, ...props }: any) => {
       if (node.type === "element") {
         return (
@@ -75,7 +88,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
   };
 
   return (
-    <div className="markdown-content w-full max-w-full overflow-hidden">
+    <div className="markdown-content w-full max-w-full overflow-hidden" ref={ref}>
       <ReactMarkdown
         remarkPlugins={[remarkMath, remarkGfm]}
         rehypePlugins={[rehypeKatex, rehypeRaw]}
