@@ -63,10 +63,10 @@ export function useSidebarItems(roles: string[]): SidebarItem[] {
   const isItemVisible = (item: SidebarItem, roles: string[]): boolean => {
     if (roles.includes("admin")) return true; // Admin can see everything
     if (item.key === "chat") return true; // All roles can see chat
-    if (item.key === "library") return roles.includes("creator");
+    if (item.key === "library") return true;
     if (item.key === "discover") return true;
-    if (item.key === "workflow") return roles.includes("creator");
-    if (item.key === "apiKey") return roles.includes("creator");
+    if (item.key === "workflow") return true;
+    if (item.key === "apiKey") return true;
     // Add more conditions here for other items
     return false;
   };

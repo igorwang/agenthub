@@ -1,6 +1,5 @@
 import NextAuth from "next-auth";
 
-import { GetUserRolesDocument } from "@/graphql/generated/types";
 import { initializeApollo } from "@/lib/apolloClient";
 import { HasuraAdapter } from "@auth/hasura-adapter";
 import jwt from "jsonwebtoken";
@@ -78,20 +77,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     jwt: async ({ token, user, profile }) => {
       if (user) {
         // call role data
-        const { data, error, loading } = await client.query({
-          query: GetUserRolesDocument,
-          variables: {
-            where: { user_id: { _eq: user.id } },
-          },
-        });
+        // const { data, error, loading } = await client.query({
+        //   query: GetUserRolesDocument,
+        //   variables: {
+        //     where: { user_id: { _eq: user.id } },
+        //   },
+        // });
         const defaultRoles = ["user"];
-        const additionalRoles = data.r_user_role?.map((item: any) => item.role) || [];
+        // const additionalRoles = data.r_user_role?.map((item: any) => item.role) || [];
 
         console.log("User logged in:", user);
         console.log("User profile:", profile);
-        console.log("additionalRoles", data, error, loading, additionalRoles);
+        // console.log("additionalRoles", data, error, loading, additionalRoles);
 
-        const roles = Array.from(new Set([...defaultRoles, ...additionalRoles]));
+        const roles = Array.from(new Set([...defaultRoles]));
 
         const payload = {
           "https://hasura.io/jwt/claims": {
