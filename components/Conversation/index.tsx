@@ -6,7 +6,6 @@ import PromptInputWithFaq from "@/components/Conversation/prompt-input-with-faq"
 import PromptInputWithFaqV1 from "@/components/Conversation/prompt-input-with-faq-v1";
 import SessionFilesHeader from "@/components/Conversation/session-files-header";
 import { RoleChip } from "@/components/ui/role-icons";
-import ShareLinkCard from "@/components/ui/share-link-card";
 import {
   Agent_Mode_Enum,
   FilesListQuery,
@@ -36,8 +35,12 @@ import {
   Avatar,
   Button,
   Chip,
-  Popover,
-  PopoverContent,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Modal,
+  ModalContent,
   ScrollShadow,
   Spacer,
   Tooltip,
@@ -56,6 +59,7 @@ import React, {
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import FileIcon from "../ui/file-icons";
+import ShareLinkCard from "../ui/share-link-card";
 
 // Define the shape of our context
 type ConversationContextType = {
@@ -282,7 +286,7 @@ export const Conversation: React.FC<ConversationProps> = ({
   );
 
   const handleToDashboard = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
+    (e: React.MouseEvent<HTMLLIElement>) => {
       e.preventDefault();
       e.stopPropagation();
       router.push(`${pathname}/dashboard?agentName=${agent?.name || ""}`);
@@ -292,7 +296,7 @@ export const Conversation: React.FC<ConversationProps> = ({
   );
 
   const handleShareClick = useCallback(
-    async (e: React.MouseEvent<HTMLButtonElement>) => {
+    async (e: React.MouseEvent<HTMLLIElement>) => {
       e.preventDefault();
       e.stopPropagation();
       setIsShareLoading(true);
@@ -351,6 +355,24 @@ export const Conversation: React.FC<ConversationProps> = ({
     );
   };
 
+  const handleReplicateAgent = useCallback(async () => {
+    try {
+      const response = await fetch("/api/chat/agent/replicate", {
+        method: "POST",
+        body: JSON.stringify({ agent_id: agentId }),
+      });
+      if (!response.ok) {
+        throw new Error("Replicate agent error");
+      }
+      const data = await response.json();
+      console.log("replicate agent", data);
+      toast.success(t("Agent replicated"));
+      router.push(`/chat/${data.agent_id}`);
+    } catch (error) {
+      toast.error(t("Replicate agent error"));
+    }
+  }, [agentId, router]);
+
   if (!agent || loading) {
     return <div>{t("Loading")}</div>;
   }
@@ -405,25 +427,6 @@ export const Conversation: React.FC<ConversationProps> = ({
       <div className="flex gap-1">
         {agent.creator_id === session.data?.user?.id && (
           <>
-            <Popover
-              isOpen={isSharePopoverOpen}
-              onOpenChange={(open) => setIsSharePopoverOpen(open)}
-              triggerRef={shareButtonRef}>
-              <Tooltip content={t("Share")}>
-                <Button
-                  ref={shareButtonRef}
-                  isIconOnly
-                  variant="light"
-                  onClick={handleShareClick}
-                  isLoading={isShareLoading}
-                  disabled={isShareLoading}>
-                  {!isShareLoading && <Icon icon="lucide:share" fontSize={24} />}
-                </Button>
-              </Tooltip>
-              <PopoverContent>
-                {shareLink && <ShareLinkCard shareLink={shareLink} />}
-              </PopoverContent>
-            </Popover>
             <Tooltip content={t("Configure Agent")}>
               <Button
                 isIconOnly
@@ -434,18 +437,72 @@ export const Conversation: React.FC<ConversationProps> = ({
                 {!isConfigLoading && <Icon icon="lucide:settings" fontSize={24} />}
               </Button>
             </Tooltip>
-            <Tooltip content={t("Agent Dashboard")}>
-              <Button
-                isIconOnly
-                variant="light"
-                onClick={handleToDashboard}
-                isLoading={isDashboardLoading}
-                disabled={isConfigLoading || isDashboardLoading}>
-                {!isDashboardLoading && (
-                  <Icon icon="lucide:layout-dashboard" fontSize={24} />
-                )}
-              </Button>
-            </Tooltip>
+            <Dropdown>
+              <DropdownTrigger>
+                <Button isIconOnly variant="light">
+                  <Icon icon="lucide:more-vertical" fontSize={24} />
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu>
+                <DropdownItem onClick={handleShareClick}>
+                  <div className="flex items-center gap-2">
+                    <Icon icon="lucide:share" fontSize={24} />
+                    {t("Share")}
+                  </div>
+                </DropdownItem>
+                <DropdownItem onClick={handleToDashboard}>
+                  <div className="flex items-center gap-2">
+                    <Icon icon="lucide:layout-dashboard" fontSize={24} />
+                    {t("Agent Dashboard")}
+                  </div>
+                </DropdownItem>
+                <DropdownItem onClick={handleReplicateAgent}>
+                  <div className="flex items-center gap-2">
+                    <Icon icon="lucide:copy" fontSize={24} />
+                    {t("Replicate Agent")}
+                  </div>
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+            <Modal
+              isOpen={isSharePopoverOpen}
+              onOpenChange={setIsSharePopoverOpen}
+              classNames={{
+                base: "bg-background",
+                wrapper: "max-w-[400px] mx-auto",
+                closeButton: "hover:bg-default/20",
+              }}
+              placement="auto"
+              motionProps={{
+                variants: {
+                  enter: {
+                    y: 0,
+                    opacity: 1,
+                    scale: 1,
+                    transition: {
+                      duration: 0.15,
+                      ease: "easeOut",
+                    },
+                  },
+                  exit: {
+                    y: 0,
+                    opacity: 0,
+                    scale: 0.95,
+                    transition: {
+                      duration: 0.1,
+                      ease: "easeIn",
+                    },
+                  },
+                },
+              }}>
+              <ModalContent className="p-6 shadow-sm">
+                {shareLink && <ShareLinkCard shareLink={shareLink} />}
+              </ModalContent>
+            </Modal>
+
+            {/* <PopoverContent>
+              {shareLink && <ShareLinkCard shareLink={shareLink} />}
+            </PopoverContent> */}
           </>
         )}
         {/* {!isAircraftOpen && (
