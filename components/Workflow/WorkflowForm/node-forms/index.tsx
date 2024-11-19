@@ -48,6 +48,7 @@ export const nodeFormComponents: Map<string, any | null> = new Map([
     "translatePairNode",
     (props) => <DefaultNodeForm {...props} title="Edit Translate Pair Node" />,
   ],
+  ["dbNode", (props) => <DefaultNodeForm {...props} title="Edit Db Node" />],
   // 如果某种节点类型没有对应的表单，可以设置为 null
   // ['someOtherNode', null],
 ]);
