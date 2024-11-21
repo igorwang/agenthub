@@ -12,7 +12,6 @@ export default function EmptyPage() {
   const userId = session?.data?.user?.id;
   const router = useRouter();
   const userRoles = session?.data?.user?.roles;
-  console.log("userRoles", userRoles);
   const hasCreatorRole = userRoles?.includes("admin") || userRoles?.includes("creator");
   const t = useTranslations();
 

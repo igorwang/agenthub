@@ -83,7 +83,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         //     where: { user_id: { _eq: user.id } },
         //   },
         // });
-        const defaultRoles = ["user"];
+        const defaultRoles = ["user", "creator"];
         // const additionalRoles = data.r_user_role?.map((item: any) => item.role) || [];
 
         console.log("User logged in:", user);

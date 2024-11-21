@@ -115,8 +115,8 @@ const ChatHub = ({ onToggleChatHub }: ChatHubProps) => {
 
   return (
     <div className="flex h-full w-full flex-col gap-y-2 border-r-1">
-      <div className="z-10 flex items-center justify-between px-2 pt-4 text-3xl font-semibold">
-        <div>{t("Agenthub")}</div>
+      <div className="z-10 flex items-center justify-between px-2 pt-4 text-xl font-semibold">
+        <div>{t("Makebell Studio")}</div>
         <Button
           isIconOnly
           variant="light"
