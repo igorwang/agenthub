@@ -117,7 +117,7 @@ const FileTable: FC<FileTableProps> = ({
         case "name":
           return (
             <div className="max-w-[200px] truncate text-center" title={file.name}>
-              {file.name}
+              <Tooltip content={file.name}>{file.name}</Tooltip>
             </div>
           );
         case "size":
