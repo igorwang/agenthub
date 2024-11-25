@@ -11,10 +11,11 @@ async function createSourceContext(sources: SourceType[]) {
   }
   const context = sources.map((source, index: number) => {
     const sourceUrl = source.url ? `(${source.url})` : "";
+    const sourceTitle = source?.title || "";
     const chunkText = source.contents
       .map((content, index) => `<Chunk-${index + 1}>\n${content}\n</Chunk>`)
       .join("\n");
-    return `\n<Source-${index + 1}>\nSource URL: ${sourceUrl}\nSource Metadata: ${source.metadata}\n\n Source Content: ${chunkText}\n</Source>\n`;
+    return `\n<Source-${index + 1} title="${sourceTitle}">\nSource URL: ${sourceUrl}\nSource Metadata: ${source.metadata}\n\n Source Content: ${chunkText}\n</Source>\n`;
   });
   return context.join("\n");
 }
